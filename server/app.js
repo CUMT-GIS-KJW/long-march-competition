@@ -60,6 +60,7 @@ const mimeTypes = {
 const apiFiles = {
   "/api/routes": "routes.json",
   "/api/resources": "resources.json",
+  "/api/red-tourism/resources": "resources.json",
   "/api/analysis/summary": "analysis-summary.json",
   "/api/analysis/province": "analysis-province.json",
   "/api/analysis/elevation": "analysis-elevation.json",

@@ -1,8 +1,8 @@
 (function () {
-  const EVENT_FIELD = {
+  const FIELD = {
     id: "\u4e8b\u4ef6\u7f16",
-    name: "\u5730\u540d",
-    description: "\u4e8b\u4ef6",
+    place: "\u5730\u540d",
+    event: "\u4e8b\u4ef6",
     stage: "\u4e8b\u4ef6\u9636",
     unit: "\u5173\u8054\u90e8",
     date: "\u4e8b\u4ef6\u65e5",
@@ -10,137 +10,206 @@
     people: "\u961f\u4f0d\u603b",
   };
 
-  const state = {
-    map: null,
-    events: [],
-    routeConfigs: [],
-    resources: [],
-    markers: new Map(),
-    routeLayers: {},
-    resourceLayer: null,
-    photoLayer: null,
-    animator: null,
-    activeRouteKey: "",
-    baseLayer: null,
-    baseKey: "ancient",
+  const routeUnitKeywords = {
+    route_zhongyang_zongdui: ["\u4e2d\u592e\u7eb5\u961f", "\u4e2d\u592e\u7ea2\u519b"],
+    route_hongyi_juntuan: ["\u7ea2\u4e00\u519b\u56e2"],
+    route_hongqi_juntuan: ["\u7ea2\u4e03\u519b\u56e2"],
+    route_hongsan_juntuan: ["\u7ea2\u4e09\u519b\u56e2"],
+    route_hongsanshi_jun: ["\u7ea2\u4e09\u5341\u519b"],
+    route_hongjiu_juntuan: ["\u7ea2\u4e5d\u519b\u56e2"],
+    route_honger_juntuan: ["\u7ea2\u4e8c\u519b\u56e2", "\u7ea2\u4e8c\u65b9\u9762\u519b"],
+    route_hongershiwu_jun: ["\u7ea2\u4e8c\u5341\u4e94\u519b"],
+    route_hongwu_juntuan: ["\u7ea2\u4e94\u519b\u56e2"],
+    route_hongliu_juntuan: ["\u7ea2\u516d\u519b\u56e2"],
+    route_hongshiba_shi: ["\u7ea2\u5341\u516b\u5e08"],
+    route_hongsi_juntuan: ["\u7ea2\u56db\u519b\u56e2", "\u7ea2\u56db\u65b9\u9762\u519b"],
   };
 
-  function createBaseLayer(key) {
-    const definition = APP_CONFIG.basemaps[key];
+  const state = {
+    map: null,
+    routeConfigs: [],
+    routeLayers: {},
+    eventFeatures: [],
+    eventTimeline: [],
+    eventMarkers: new Map(),
+    tourismResources: [],
+    tourismMarkers: new Map(),
+    eventLayerGroup: null,
+    tourismLayerGroup: null,
+    movingPeopleLayer: null,
+    animatedRouteLayer: null,
+    eventTimer: 0,
+    routeTimer: 0,
+    activeEventIndex: 0,
+    activeEventFilter: "all",
+    activeRouteKey: "",
+    isPlayingEvents: false,
+    isPlayingRoute: false,
+  };
 
-    return L.tileLayer(definition.url, definition.options);
-  }
+  const $ = (selector) => document.querySelector(selector);
 
-  function setBase(key) {
-    if (state.baseLayer) {
-      state.map.removeLayer(state.baseLayer);
+  function flash(message) {
+    const toast = $("#toast");
+
+    if (!toast) {
+      return;
     }
 
-    state.baseLayer = createBaseLayer(key);
-    state.baseLayer.addTo(state.map);
-    state.baseLayer.bringToBack();
-    state.baseKey = key;
+    toast.textContent = message;
+    toast.classList.add("show");
 
-    const mapArea = document.getElementById("mapArea");
-    mapArea.classList.remove(
-      "basemap-ancient",
-      "basemap-standard",
-      "basemap-satellite",
-    );
-    mapArea.classList.add(`basemap-${key}`);
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 1500);
+  }
 
-    document.querySelectorAll("#basemapMenu button").forEach((button) => {
-      button.classList.toggle("active", button.dataset.map === key);
+  function featureId(feature) {
+    return String(feature.properties?.[FIELD.id] ?? JSON.stringify(feature.geometry));
+  }
+
+  function featureLatLng(feature) {
+    const coordinates = feature.geometry?.coordinates || [0, 0];
+
+    return [coordinates[1], coordinates[0]];
+  }
+
+  function includesAny(text, keywords) {
+    return keywords.some((keyword) => {
+      return text.includes(keyword);
     });
   }
 
-  function readValue(properties, key, fallback = "") {
-    return properties[key] ?? fallback;
-  }
+  function getEventDisplayType(feature) {
+    const props = feature.properties || {};
+    const typeText = String(props[FIELD.type] || "");
+    const eventText = String(props[FIELD.event] || "");
+    const placeText = String(props[FIELD.place] || "");
+    const text = `${typeText} ${eventText} ${placeText}`;
 
-  function normalizeEvent(feature) {
-    const properties = feature.properties || {};
-    const coordinates = feature.geometry?.coordinates || [0, 0];
-    const people = Number(readValue(properties, EVENT_FIELD.people, 0)) || 0;
-    const eventClass = String(
-      readValue(properties, EVENT_FIELD.type, "\u4e8b\u4ef6"),
-    );
+    if (includesAny(text, ["\u4f1a\u5e08", "\u6c47\u5408", "\u80dc\u5229\u4f1a\u5e08"])) {
+      return "join";
+    }
 
-    return {
-      id: `event-${readValue(properties, EVENT_FIELD.id, coordinates.join("-"))}`,
-      name: readValue(properties, EVENT_FIELD.name, "\u672a\u547d\u540d\u4e8b\u4ef6\u70b9"),
-      date: readValue(properties, EVENT_FIELD.date, ""),
-      type: normalizeEventType(eventClass),
-      stage: readValue(properties, EVENT_FIELD.stage, "\u672a\u5206\u9636\u6bb5"),
-      tag: eventClass,
-      province: readValue(properties, EVENT_FIELD.unit, ""),
-      city: readValue(properties, EVENT_FIELD.name, ""),
-      lat: coordinates[1],
-      lng: coordinates[0],
-      people,
-      importance: getPeopleImportance(people),
-      description: readValue(properties, EVENT_FIELD.description, ""),
-      quote: "",
-      originalProperties: properties,
-      figures: [
-        {
-          label: "\u4e8b\u4ef6\u65e5",
-          value: readValue(properties, EVENT_FIELD.date, "\u672a\u5f55\u5165"),
-        },
-        {
-          label: "\u4e8b\u4ef6\u7c7b\u578b",
-          value: eventClass,
-        },
-        {
-          label: "\u5173\u8054\u90e8\u961f",
-          value: readValue(properties, EVENT_FIELD.unit, "\u672a\u5f55\u5165"),
-        },
-        {
-          label: "\u961f\u4f0d\u603b\u4eba\u6570",
-          value: people ? `${people.toLocaleString()} \u4eba` : "\u672a\u5f55\u5165",
-        },
-      ],
-    };
-  }
-
-  function normalizeEventType(eventClass) {
-    if (eventClass.includes("\u6218") || eventClass.includes("\u7a81\u7834")) {
+    if (includesAny(text, ["\u6218\u5f79", "\u6218\u6597", "\u653b\u5360", "\u5f3a\u6e21", "\u98de\u593a", "\u7a81\u7834", "\u963b\u51fb"])) {
       return "battle";
     }
 
-    if (eventClass.includes("\u4f1a") || eventClass.includes("\u4f1a\u8bae")) {
+    if (includesAny(text, ["\u4f1a\u8bae", "\u51b3\u7b56", "\u653f\u6cbb\u5c40", "\u90e8\u7f72"])) {
       return "meeting";
     }
 
-    if (eventClass.includes("\u6e21") || eventClass.includes("\u6c5f")) {
-      return "crossing";
+    if (includesAny(text, ["\u6e21", "\u6c5f", "\u6cb3", "\u8d64\u6c34", "\u91d1\u6c99\u6c5f", "\u5927\u6e21\u6cb3", "\u4e4c\u6c5f"])) {
+      return "river";
     }
 
-    if (eventClass.includes("\u5c71") || eventClass.includes("\u8349")) {
+    if (includesAny(text, ["\u96ea\u5c71", "\u8349\u5730", "\u5939\u91d1\u5c71", "\u7ffb\u8d8a", "\u6cbc\u6cfd", "\u814a\u5b50\u53e3"])) {
       return "mountain";
     }
 
-    return "event";
+    return "other";
   }
 
-  function getPeopleImportance(people) {
-    if (people >= 80000) {
-      return 5;
+  function getTroopCount(feature, index, total) {
+    const rawValue = Number(feature.properties?.[FIELD.people]);
+
+    if (Number.isFinite(rawValue) && rawValue > 0) {
+      return {
+        value: rawValue,
+        estimated: false,
+      };
     }
 
-    if (people >= 50000) {
-      return 4;
+    const progress = total <= 1 ? 0 : index / (total - 1);
+    const estimated = Math.round((86000 - 79000 * progress) / 1000) * 1000;
+
+    return {
+      value: Math.max(5000, estimated),
+      estimated: true,
+    };
+  }
+
+  function enrichEvents(events) {
+    const unique = new Map();
+
+    events.forEach((feature) => {
+      const id = featureId(feature);
+
+      if (!unique.has(id)) {
+        unique.set(id, feature);
+      }
+    });
+
+    return [...unique.values()].map((feature, index, list) => {
+      return {
+        ...feature,
+        displayType: getEventDisplayType(feature),
+        displayTroop: getTroopCount(feature, index, list.length),
+        timelineIndex: index,
+      };
+    });
+  }
+
+  function eventMatchesRoute(feature, routeKey) {
+    const keywords = routeUnitKeywords[routeKey] || [];
+
+    if (!routeKey || !keywords.length) {
+      return true;
     }
 
-    if (people >= 30000) {
-      return 3;
+    const unit = String(feature.properties?.[FIELD.unit] || "");
+
+    return includesAny(unit, keywords);
+  }
+
+  function getFilteredEvents() {
+    return state.eventFeatures;
+  }
+
+  function getRepresentativeEvents() {
+    return getFilteredEvents();
+  }
+
+  function getEventMarkerRadius(count) {
+    if (count >= 80000) {
+      return 11;
     }
 
-    if (people >= 10000) {
-      return 2;
+    if (count >= 50000) {
+      return 9;
     }
 
-    return 1;
+    if (count >= 30000) {
+      return 8;
+    }
+
+    if (count >= 10000) {
+      return 7;
+    }
+
+    return 6;
+  }
+
+  function initMap() {
+    state.map = L.map("map", {
+      center: APP_CONFIG.map.center,
+      zoom: APP_CONFIG.map.zoom,
+      minZoom: APP_CONFIG.map.minZoom,
+      maxZoom: APP_CONFIG.map.maxZoom,
+      zoomControl: true,
+    });
+
+    L.tileLayer(
+      APP_CONFIG.basemaps.ancient.url,
+      APP_CONFIG.basemaps.ancient.options,
+    ).addTo(state.map);
+  }
+
+  function initLayerGroups() {
+    state.eventLayerGroup = L.layerGroup().addTo(state.map);
+    state.tourismLayerGroup = L.layerGroup().addTo(state.map);
+    state.movingPeopleLayer = L.layerGroup().addTo(state.map);
+    state.animatedRouteLayer = L.layerGroup().addTo(state.map);
   }
 
   function toLatLngs(geometry) {
@@ -165,7 +234,7 @@
     return [];
   }
 
-  function flattenLineLatLngs(latLngs) {
+  function flattenLatLngs(latLngs) {
     if (!latLngs.length) {
       return [];
     }
@@ -177,85 +246,64 @@
     return latLngs;
   }
 
-  function buildRouteAnimationData(config, collection) {
-    const points = [];
-    const segments = [];
+  function renderRouteControls() {
+    $("#routeLayerList").innerHTML = state.routeConfigs
+      .map((config) => {
+        const checked = config.default_visible ? "checked" : "";
+
+        return `
+          <label>
+            <input type="checkbox" data-route-layer="${config.layer_key}" ${checked}>
+            <span>${config.layer_name}</span>
+          </label>
+        `;
+      })
+      .join("");
+
+    $("#routeSelect").innerHTML = state.routeConfigs
+      .map((config) => {
+        return `<option value="${config.layer_key}">${config.layer_name}</option>`;
+      })
+      .join("");
+  }
+
+  async function renderRouteLayer(config) {
+    const collection = await DataService.getRouteLayerFeatures(config.layer_key);
+    const layerGroup = L.featureGroup();
 
     collection.features.forEach((feature) => {
-      const latLngs = flattenLineLatLngs(toLatLngs(feature.geometry));
+      const latLngs = toLatLngs(feature.geometry);
 
       if (!latLngs.length) {
         return;
       }
 
-      const startIndex = points.length;
+      L.polyline(latLngs, {
+        color: "#f9ddb0",
+        weight: Number(config.line_width || 3) + 4,
+        opacity: 0.32,
+        lineCap: "round",
+        interactive: false,
+      }).addTo(layerGroup);
 
-      latLngs.forEach((point) => {
-        const previous = points[points.length - 1];
-
-        if (!previous || previous[0] !== point[0] || previous[1] !== point[1]) {
-          points.push(point);
-        }
-      });
-
-      segments.push({
-        startIndex,
-        endIndex: points.length - 1,
-        properties: feature.properties,
-      });
-    });
-
-    return {
-      id: config.layer_key,
-      name: config.layer_name,
-      color: config.color,
-      weight: Number(config.line_width || 4) + 2,
-      points,
-      segments,
-    };
-  }
-
-  function addRouteFeature(config, feature, layerGroup) {
-    const latLngs = toLatLngs(feature.geometry);
-
-    if (!latLngs.length) {
-      return;
-    }
-
-    L.polyline(latLngs, {
-      color: "#f1d89a",
-      weight: Number(config.line_width || 3) + 4,
-      opacity: 0.35,
-      lineCap: "round",
-      interactive: false,
-    }).addTo(layerGroup);
-
-    L.polyline(latLngs, {
-      color: config.color,
-      weight: Number(config.line_width || 3),
-      opacity: 0.78,
-      lineCap: "round",
-      lineJoin: "round",
-    })
-      .bindTooltip(config.layer_name, {
-        sticky: true,
-        direction: "top",
+      L.polyline(latLngs, {
+        color: config.color || "#b42318",
+        weight: Number(config.line_width || 3),
+        opacity: 0.88,
+        lineCap: "round",
+        lineJoin: "round",
       })
-      .addTo(layerGroup);
-  }
-
-  async function addRouteLayer(config) {
-    const collection = await DataService.getRouteLayerFeatures(config.layer_key);
-    const layerGroup = L.featureGroup();
-
-    collection.features.forEach((feature) => {
-      addRouteFeature(config, feature, layerGroup);
+        .on("click", () => {
+          setActiveRouteFilter(config.layer_key);
+          renderRouteDetail(feature, config);
+        })
+        .addTo(layerGroup);
     });
 
     state.routeLayers[config.layer_key] = {
       config,
+      collection,
       layerGroup,
-      features: collection.features,
       visible: Boolean(config.default_visible),
     };
 
@@ -264,369 +312,539 @@
     }
   }
 
-  async function addRoutes() {
-    await Promise.all(
-      state.routeConfigs.map((config) => {
-        return addRouteLayer(config);
-      }),
-    );
+  function toggleRouteLayer(layerKey, visible) {
+    const item = state.routeLayers[layerKey];
+
+    if (!item) {
+      return;
+    }
+
+    item.visible = visible;
+
+    if (visible) {
+      item.layerGroup.addTo(state.map);
+    } else {
+      state.map.removeLayer(item.layerGroup);
+    }
+
+    setActiveRouteFilter(layerKey);
   }
 
-  function addEvents(eventCollection) {
-    state.events = eventCollection.features.map(normalizeEvent);
+  function createEventIcon(feature) {
+    const type = feature.displayType || "other";
+    const count = feature.displayTroop?.value || 0;
+    const radius = getEventMarkerRadius(count);
+    const diameter = radius * 2;
 
-    state.events.forEach((event) => {
-      const marker = L.marker([event.lat, event.lng], {
-        icon: MapUtils.eventIcon(event),
-        zIndexOffset: event.importance * 100,
+    return L.divIcon({
+      className: "",
+      html: `<div class="event-marker ${type}" style="width:${diameter}px;height:${diameter}px"></div>`,
+      iconSize: [diameter, diameter],
+      iconAnchor: [radius, radius],
+    });
+  }
+
+  function renderEventMarkers() {
+    const events = getFilteredEvents();
+
+    state.eventLayerGroup.clearLayers();
+    state.eventMarkers.clear();
+
+    events.forEach((feature, index) => {
+      const marker = L.marker(featureLatLng(feature), {
+        icon: createEventIcon(feature),
+        zIndexOffset: 600 + index,
       });
 
-      marker.bindPopup(MapUtils.eventPopup(event));
       marker.on("click", () => {
-        document.dispatchEvent(
-          new CustomEvent("eventselect", {
-            detail: event,
-          }),
-        );
+        state.activeEventIndex = index;
+        activateEvent(feature, true);
       });
 
-      marker.addTo(state.map);
-      state.markers.set(event.id, marker);
+      marker.addTo(state.eventLayerGroup);
+      state.eventMarkers.set(featureId(feature), marker);
     });
-
-    state.map.on("zoomend", applyFilters);
   }
 
-  function addResources(resources) {
-    const markers = resources.map((resource) => {
-      const eventLike = {
-        ...resource,
-        date: resource.level,
-        type: "resource",
-        importance: 4,
-      };
+  function getTourismCategory(resource) {
+    const text = `${resource.name || ""} ${resource.type || ""} ${resource.business_area || ""}`;
 
-      return L.marker([resource.lat, resource.lng], {
-        icon: MapUtils.eventIcon(eventLike),
-      }).bindPopup(MapUtils.eventPopup(eventLike));
-    });
+    if (includesAny(text, ["\u7eaa\u5ff5\u9986", "\u535a\u7269\u9986", "\u5c55\u89c8\u9986"])) {
+      return "museum";
+    }
 
-    state.resourceLayer = L.layerGroup(markers);
+    if (includesAny(text, ["\u4f1a\u5740", "\u65e7\u5740", "\u9057\u5740", "\u6545\u5c45", "\u4f4f\u5c45"])) {
+      return "site";
+    }
+
+    if (includesAny(text, ["\u666f\u533a", "\u98ce\u666f", "\u666f\u70b9"])) {
+      return "scenic";
+    }
+
+    return "other";
   }
 
-  function createPhotoMarker(annotation) {
-    const icon = L.divIcon({
-      className: "lm-div-icon photo-icon",
-      html: `
-        <button class="map-photo ${annotation.className || ""}">
-          <span class="drop-thumb">
-            <img src="${annotation.image}" alt="${annotation.title}">
-          </span>
-          <span class="photo-copy">
-            <b>${annotation.title}</b>
-            <small>${annotation.caption}</small>
-          </span>
-        </button>
-      `,
-      iconSize: [48, 58],
-      iconAnchor: [24, 54],
-    });
-
-    const marker = L.marker(annotation.card, {
-      icon,
-      zIndexOffset: 800,
-      riseOnHover: true,
-    });
-
-    marker.on("click", () => {
-      document.querySelectorAll(".map-photo.expanded").forEach((element) => {
-        element.classList.remove("expanded");
-      });
-
-      const card = marker.getElement()?.querySelector(".map-photo");
-
-      if (card) {
-        card.classList.add("expanded");
-        clearTimeout(card.closeTimer);
-        card.closeTimer = setTimeout(() => {
-          card.classList.remove("expanded");
-        }, 6000);
-      }
-    });
-
-    const leader = L.polyline([annotation.anchor, annotation.card], {
-      color: "#9e2d23",
-      weight: 1.5,
-      dashArray: "4 4",
-      opacity: 0.65,
-      interactive: false,
-    });
-
-    return L.layerGroup([leader, marker]);
-  }
-
-  function addPhotoAnnotations() {
-    const annotations = [
-      {
-        anchor: [26.3, 102.9],
-        card: [25.55, 101.2],
-        image: "assets/img/red-army-march.jpg",
-        title: "\u7ea2\u519b\u884c\u519b\u5f71\u50cf",
-        caption: "\u897f\u5357\u8def\u7ebf \u00b7 \u56fe\u50cf\u8d44\u6599",
-      },
-      {
-        anchor: [30.958, 102.722],
-        card: [31.72, 100.95],
-        image: "assets/img/xueshan.jpg",
-        title: "\u7ffb\u8d8a\u96ea\u5c71",
-        caption: "\u96ea\u5c71\u9644\u8fd1 \u00b7 \u56fe\u50cf\u8d44\u6599",
-        className: "snow",
-      },
+  function renderTourismControls() {
+    const list = $("#resourceLayerList");
+    const preferredPatterns = [
+      /\u9075\u4e49\u4f1a\u8bae\u4f1a\u5740/,
+      /\u6cf8\u5b9a\u6865/,
+      /\u745e\u91d1\u4e2d\u592e\u9769\u547d\u6839\u636e\u5730\u7eaa\u5ff5\u9986|\u745e\u91d1/,
     ];
+    const preferredResources = preferredPatterns
+      .map((pattern) => {
+        return state.tourismResources.find((resource) => {
+          return pattern.test(resource.name || "");
+        });
+      })
+      .filter(Boolean);
+    const children = preferredResources
+      .map((resource) => {
+        return `
+          <label>
+            <input type="checkbox" data-resource-id="${resource.id}" checked>
+            <span>${resource.name}</span>
+          </label>
+        `;
+      })
+      .join("");
 
-    state.photoLayer = L.layerGroup(
-      annotations.map(createPhotoMarker),
-    ).addTo(state.map);
+    list.innerHTML = `
+      <label>
+        <input type="checkbox" id="tourismLayerToggle" checked>
+        <span>\u663e\u793a\u7ea2\u8272\u8d44\u6e90</span>
+      </label>
+      ${children}
+    `;
   }
 
-  function applyFilters() {
-    const selectedType =
-      document.querySelector("#typeFilters .on")?.dataset.type || "all";
-    const selectedStage =
-      document.getElementById("stageFilter")?.value || "all";
-    const zoom = state.map.getZoom();
-
-    const filtered = state.events.filter((event) => {
-      const typeMatches =
-        selectedType === "all" || event.type === selectedType;
-      const stageMatches =
-        selectedStage === "all" || event.stage === selectedStage;
-
-      return typeMatches && stageMatches;
-    });
-
-    state.events.forEach((event) => {
-      const minimumZoom =
-        event.importance >= 5
-          ? 4
-          : event.importance === 4
-            ? 6
-            : event.importance === 3
-              ? 7
-              : event.importance === 2
-                ? 8
-                : 9;
-
-      const shouldShow = filtered.includes(event) && zoom >= minimumZoom;
-      const marker = state.markers.get(event.id);
-
-      if (shouldShow && !state.map.hasLayer(marker)) {
-        marker.addTo(state.map);
-      }
-
-      if (!shouldShow && state.map.hasLayer(marker)) {
-        state.map.removeLayer(marker);
-      }
-    });
-
-    document.dispatchEvent(
-      new CustomEvent("filterchange", {
-        detail: filtered,
+  function renderTourismMarkers() {
+    const controlledInputs = [...document.querySelectorAll("input[data-resource-id]")];
+    const controlledIds = new Set(
+      controlledInputs.map((input) => {
+        return input.dataset.resourceId;
       }),
+    );
+    const checkedIds = new Set(
+      controlledInputs.filter((input) => {
+        return input.checked;
+      }).map((input) => {
+        return input.dataset.resourceId;
+      }),
+    );
+
+    state.tourismLayerGroup.clearLayers();
+    state.tourismMarkers.clear();
+
+    state.tourismResources.forEach((resource) => {
+      if (controlledIds.has(resource.id) && !checkedIds.has(resource.id)) {
+        return;
+      }
+
+      const category = getTourismCategory(resource);
+      const marker = L.marker([resource.lat, resource.lng], {
+        icon: L.divIcon({
+          className: "",
+          html: `<div class="tourism-marker ${category}"></div>`,
+          iconSize: [12, 12],
+          iconAnchor: [6, 6],
+        }),
+        zIndexOffset: 460,
+      });
+
+      marker.on("click", () => {
+        renderTourismDetail(resource);
+      });
+
+      marker.addTo(state.tourismLayerGroup);
+      state.tourismMarkers.set(resource.id, marker);
+    });
+  }
+
+  function renderPeopleIcons(troopCount, estimated) {
+    const iconCount = Math.max(1, Math.min(8, Math.round(troopCount / 12000)));
+    const label = `\u7ea6 ${Math.max(1, Math.round(troopCount / 10000))} \u4e07\u4eba`;
+    const suffix = estimated ? "\uff08\u4f30\u7b97\uff09" : "";
+
+    return `
+      <div class="people-icons">
+        <span class="icons">${"\ud83d\udc65".repeat(iconCount)}</span>
+        <strong>${label}${suffix}</strong>
+      </div>
+    `;
+  }
+
+  function updateMovingPeople(feature, troopInfo) {
+    const iconCount = Math.max(1, Math.min(5, Math.round(troopInfo.value / 18000)));
+
+    state.movingPeopleLayer.clearLayers();
+
+    L.marker(featureLatLng(feature), {
+      icon: L.divIcon({
+        className: "",
+        html: `
+          <div class="moving-people">
+            <b>${"\ud83d\udc65".repeat(iconCount)}</b>
+            <span>${Math.round(troopInfo.value / 10000)}\u4e07${troopInfo.estimated ? "\u00b7\u4f30" : ""}</span>
+          </div>
+        `,
+        iconSize: [90, 34],
+        iconAnchor: [45, 52],
+      }),
+      zIndexOffset: 520,
+      interactive: false,
+    }).addTo(state.movingPeopleLayer);
+  }
+
+  function clearMovingPeople() {
+    state.movingPeopleLayer.clearLayers();
+  }
+
+  function renderDefaultDetail() {
+    $("#detailPanel").innerHTML = `
+      <article class="detail-card">
+        <span class="detail-kicker">WEBGIS SYSTEM</span>
+        <h2>\u7ea2\u56fe\u7ed8\u957f\u5f81</h2>
+        <p>\u5de6\u4fa7\u63a7\u5236\u8def\u7ebf\u3001\u4e8b\u4ef6\u7c7b\u578b\u4e0e\u7ea2\u8272\u8d44\u6e90\uff1b\u8def\u7ebf\u4fdd\u6301\u72ec\u7acb SHP \u56fe\u5c42\uff0c\u4e8b\u4ef6\u6309\u519b\u56e2\u5173\u8054\u548c\u961f\u4f0d\u4eba\u6570\u8282\u70b9\u5c55\u793a\u3002</p>
+      </article>
+    `;
+  }
+
+  function renderEventDetail(feature, troopInfo) {
+    const props = feature.properties || {};
+    const description = props.descript || props[FIELD.event] || "";
+
+    $("#detailPanel").innerHTML = `
+      <article class="detail-card">
+        <span class="detail-kicker">\u4e8b\u4ef6\u8be6\u60c5</span>
+        <h2>${props[FIELD.place] || "\u672a\u547d\u540d\u4e8b\u4ef6"}</h2>
+        <div class="detail-grid">
+          <div class="detail-row"><span>\u4e8b\u4ef6\u7f16\u53f7</span><b>${props[FIELD.id] || "-"}</b></div>
+          <div class="detail-row"><span>\u4e8b\u4ef6\u65e5</span><b>${props[FIELD.date] || "-"}</b></div>
+          <div class="detail-row"><span>\u5730\u540d</span><b>${props[FIELD.place] || "-"}</b></div>
+          <div class="detail-row"><span>\u5173\u8054\u90e8\u961f</span><b>${props[FIELD.unit] || "-"}</b></div>
+          <div class="detail-row"><span>\u4e8b\u4ef6\u7c7b</span><b>${props[FIELD.type] || "-"}</b></div>
+          <div class="detail-row"><span>\u961f\u4f0d\u603b\u6570</span><b>${troopInfo.value.toLocaleString("zh-CN")} \u4eba${troopInfo.estimated ? "\uff08\u4f30\u7b97\uff09" : ""}</b></div>
+        </div>
+        ${renderPeopleIcons(troopInfo.value, troopInfo.estimated)}
+        <h3>\u5386\u53f2\u53d9\u4e8b</h3>
+        <p>${description}</p>
+      </article>
+    `;
+  }
+
+  function renderRouteDetail(feature, config) {
+    const props = feature.properties || {};
+
+    $("#detailPanel").innerHTML = `
+      <article class="detail-card">
+        <span class="detail-kicker">\u8def\u7ebf\u8be6\u60c5</span>
+        <h2>${config.layer_name}</h2>
+        <div class="detail-grid">
+          <div class="detail-row"><span>\u56fe\u5c42</span><b>${config.layer_name}</b></div>
+          <div class="detail-row"><span>\u519b\u56e2</span><b>${props.corps_name || "-"}</b></div>
+          <div class="detail-row"><span>\u9636\u6bb5</span><b>${props.stage_name || "-"}</b></div>
+          <div class="detail-row"><span>_order</span><b>${props._order ?? "-"}</b></div>
+          <div class="detail-row"><span>\u8d77\u6b62\u65f6\u95f4</span><b>${props.start_date || "-"} \u2014 ${props.end_date || "-"}</b></div>
+          <div class="detail-row"><span>\u957f\u5ea6</span><b>${props.Shape_Leng ?? "-"}</b></div>
+        </div>
+        <p>${props.descript || props.descriptio || "\u8be5\u8def\u7ebf\u6bb5\u6682\u65e0\u8bf4\u660e\u5b57\u6bb5\u3002"}</p>
+      </article>
+    `;
+  }
+
+  function renderTourismDetail(resource) {
+    $("#detailPanel").innerHTML = `
+      <article class="detail-card">
+        <span class="detail-kicker">\u7ea2\u8272\u8d44\u6e90</span>
+        <h2>${resource.name}</h2>
+        <div class="detail-grid">
+          <div class="detail-row"><span>\u7c7b\u578b</span><b>${resource.type || "-"}</b></div>
+          <div class="detail-row"><span>\u5730\u5740</span><b>${resource.address || "-"}</b></div>
+          <div class="detail-row"><span>\u7701\u5e02</span><b>${resource.pname || resource.province || ""}${resource.cityname || resource.city ? "\u00b7" + (resource.cityname || resource.city) : ""}</b></div>
+          <div class="detail-row"><span>\u5546\u5708</span><b>${resource.business_area || "-"}</b></div>
+          <div class="detail-row"><span>\u5750\u6807</span><b>${resource.lng}, ${resource.lat}</b></div>
+        </div>
+      </article>
+    `;
+  }
+
+  function updatePlayStatus(feature) {
+    const props = feature.properties || {};
+
+    $("#playStatusTitle").textContent =
+      `${props[FIELD.date] || ""} ${props[FIELD.place] || props[FIELD.event] || ""}`.trim();
+  }
+
+  function highlightEventMarker(feature) {
+    state.eventMarkers.forEach((marker) => {
+      marker.getElement()?.querySelector(".event-marker")?.classList.remove("active");
+    });
+
+    state.eventMarkers
+      .get(featureId(feature))
+      ?.getElement()
+      ?.querySelector(".event-marker")
+      ?.classList.add("active");
+  }
+
+  function activateEvent(feature, focusMap) {
+    const troopInfo = feature.displayTroop || getTroopCount(feature, 0, 1);
+
+    highlightEventMarker(feature);
+    updateMovingPeople(feature, troopInfo);
+    renderEventDetail(feature, troopInfo);
+    updatePlayStatus(feature);
+
+    if (focusMap) {
+      state.map.flyTo(featureLatLng(feature), Math.max(state.map.getZoom(), 7), {
+        duration: 0.55,
+      });
+    }
+  }
+
+  function pauseAnimation() {
+    state.isPlayingEvents = false;
+    state.isPlayingRoute = false;
+    clearInterval(state.eventTimer);
+    clearInterval(state.routeTimer);
+  }
+
+  function playEventsTimeline() {
+    pauseAnimation();
+
+    const events = getFilteredEvents();
+
+    if (!events.length) {
+      flash("\u5f53\u524d\u8def\u7ebf\u6ca1\u6709\u53ef\u64ad\u653e\u4e8b\u4ef6");
+      return;
+    }
+
+    state.isPlayingEvents = true;
+
+    const step = () => {
+      if (!state.isPlayingEvents) {
+        return;
+      }
+
+      if (state.activeEventIndex >= events.length) {
+        state.activeEventIndex = 0;
+        pauseAnimation();
+        $("#progressRange").value = "100";
+        return;
+      }
+
+      const feature = events[state.activeEventIndex];
+      activateEvent(feature, true);
+      $("#progressRange").value = String(
+        Math.round(((state.activeEventIndex + 1) / events.length) * 100),
+      );
+      state.activeEventIndex += 1;
+    };
+
+    step();
+    state.eventTimer = setInterval(step, 1100);
+  }
+
+  function playPrevious() {
+    const events = getFilteredEvents();
+
+    pauseAnimation();
+    state.activeEventIndex = Math.max(0, state.activeEventIndex - 1);
+
+    if (events[state.activeEventIndex]) {
+      activateEvent(events[state.activeEventIndex], true);
+    }
+  }
+
+  function playNext() {
+    const events = getFilteredEvents();
+
+    pauseAnimation();
+    state.activeEventIndex = Math.min(events.length - 1, state.activeEventIndex + 1);
+
+    if (events[state.activeEventIndex]) {
+      activateEvent(events[state.activeEventIndex], true);
+    }
+  }
+
+  function buildRoutePoints(collection) {
+    const sorted = [...collection.features].sort((left, right) => {
+      return Number(left.properties?._order ?? 999999) - Number(right.properties?._order ?? 999999);
+    });
+    const points = [];
+    const segments = [];
+
+    sorted.forEach((feature) => {
+      const latLngs = flattenLatLngs(toLatLngs(feature.geometry));
+      const startIndex = points.length;
+
+      latLngs.forEach((point) => {
+        points.push(point);
+      });
+
+      if (latLngs.length) {
+        segments.push({
+          feature,
+          startIndex,
+          endIndex: points.length - 1,
+        });
+      }
+    });
+
+    return {
+      points,
+      segments,
+    };
+  }
+
+  function findSegmentByPointIndex(segments, index) {
+    return (
+      segments.find((segment) => {
+        return index >= segment.startIndex && index <= segment.endIndex;
+      }) || segments[0]
     );
   }
 
-  function activateEvent(event, focus = false) {
-    state.markers.forEach((marker, id) => {
-      marker
-        .getElement()
-        ?.querySelector(".lm-marker")
-        ?.classList.toggle("is-active", id === event.id);
-    });
+  async function playSelectedRoute() {
+    pauseAnimation();
+    state.animatedRouteLayer.clearLayers();
 
-    if (!focus) {
-      return;
-    }
-
-    state.map.flyTo([event.lat, event.lng], Math.max(state.map.getZoom(), 7), {
-      duration: 0.8,
-    });
-
-    const marker = state.markers.get(event.id);
-
-    if (marker && state.map.hasLayer(marker)) {
-      marker.openPopup();
-    }
-  }
-
-  function getVisibleRouteBounds() {
-    const bounds = L.latLngBounds([]);
-
-    Object.values(state.routeLayers).forEach((item) => {
-      if (item.visible) {
-        const layerBounds = item.layerGroup.getBounds?.();
-
-        if (layerBounds?.isValid()) {
-          bounds.extend(layerBounds);
-        }
-      }
-    });
-
-    return bounds;
-  }
-
-  function reset() {
-    const bounds = getVisibleRouteBounds();
-
-    if (bounds.isValid()) {
-      state.map.fitBounds(bounds, {
-        padding: [35, 35],
-      });
-    }
-  }
-
-  function toggleRoute(layerKey, show) {
-    const layer = state.routeLayers[layerKey];
-
-    if (!layer) {
-      return;
-    }
-
-    layer.visible = show;
-
-    if (show) {
-      layer.layerGroup.addTo(state.map);
-      return;
-    }
-
-    state.map.removeLayer(layer.layerGroup);
-  }
-
-  function zoomToRoute(layerKey) {
-    const layer = state.routeLayers[layerKey];
-    const bounds = layer?.layerGroup.getBounds?.();
-
-    if (bounds?.isValid()) {
-      state.map.fitBounds(bounds, {
-        padding: [42, 42],
-      });
-    }
-  }
-
-  async function playRoute(layerKey) {
+    const layerKey = $("#routeSelect").value;
     const config = state.routeConfigs.find((item) => {
       return item.layer_key === layerKey;
     });
-
-    if (!config) {
-      return;
-    }
-
-    if (state.animator) {
-      state.animator.remove();
-    }
-
-    state.activeRouteKey = layerKey;
-
     const collection = await DataService.getRouteLayerAnimation(layerKey);
-    const route = buildRouteAnimationData(config, collection);
+    const routeData = buildRoutePoints(collection);
 
-    if (route.points.length < 2) {
+    if (!config || routeData.points.length < 2) {
       return;
     }
 
-    state.animator = new RouteAnimator(state.map, route, {
-      duration: 22000,
-      onProgress(detail) {
-        document.dispatchEvent(
-          new CustomEvent("routeprogress", {
-            detail,
-          }),
-        );
-      },
-      onComplete(detailRoute) {
-        document.dispatchEvent(
-          new CustomEvent("routecomplete", {
-            detail: detailRoute,
-          }),
-        );
-      },
+    setActiveRouteFilter(layerKey);
+    state.isPlayingRoute = true;
+
+    const glow = L.polyline([], {
+      color: "#ffd36b",
+      weight: 11,
+      opacity: 0.28,
+      interactive: false,
+    }).addTo(state.animatedRouteLayer);
+    const line = L.polyline([], {
+      color: config.color,
+      weight: Number(config.line_width || 4) + 2,
+      opacity: 0.98,
+      className: "animated-route",
+      interactive: false,
+    }).addTo(state.animatedRouteLayer);
+
+    state.map.fitBounds(L.latLngBounds(routeData.points), {
+      padding: [36, 36],
     });
 
-    zoomToRoute(layerKey);
-    state.animator.play();
+    let index = 0;
+
+    const step = () => {
+      if (!state.isPlayingRoute) {
+        return;
+      }
+
+      const count = Math.max(2, Math.ceil(routeData.points.length / 150));
+      index = Math.min(routeData.points.length - 1, index + count);
+      glow.setLatLngs(routeData.points.slice(0, index + 1));
+      line.setLatLngs(routeData.points.slice(0, index + 1));
+
+      const segment = findSegmentByPointIndex(routeData.segments, index);
+
+      if (segment) {
+        renderRouteDetail(segment.feature, config);
+      }
+
+      $("#playStatusTitle").textContent =
+        `${config.layer_name}  _order ${segment?.feature.properties?._order ?? "-"}`;
+      $("#progressRange").value = String(
+        Math.round((index / (routeData.points.length - 1)) * 100),
+      );
+
+      if (index >= routeData.points.length - 1) {
+        pauseAnimation();
+      }
+    };
+
+    step();
+    state.routeTimer = setInterval(step, 70);
   }
 
-  function toggleResources(show) {
-    if (show) {
-      state.resourceLayer.addTo(state.map);
-      return;
+  function setEventFilter(type) {
+    state.activeEventFilter = type || "all";
+    state.activeEventIndex = 0;
+    clearMovingPeople();
+    renderEventMarkers();
+  }
+
+  function setActiveRouteFilter(layerKey) {
+    state.activeRouteKey = layerKey || "";
+    state.activeEventIndex = 0;
+    clearMovingPeople();
+    renderEventMarkers();
+  }
+
+  function resetView() {
+    const bounds = L.latLngBounds([]);
+
+    Object.values(state.routeLayers).forEach((item) => {
+      if (item.visible && item.layerGroup.getBounds().isValid()) {
+        bounds.extend(item.layerGroup.getBounds());
+      }
+    });
+
+    if (bounds.isValid()) {
+      state.map.fitBounds(bounds, {
+        padding: [30, 30],
+      });
     }
-
-    state.map.removeLayer(state.resourceLayer);
   }
 
-  async function init() {
-    state.map = L.map("map", {
-      center: APP_CONFIG.map.center,
-      zoom: APP_CONFIG.map.zoom,
-      minZoom: APP_CONFIG.map.minZoom,
-      maxZoom: APP_CONFIG.map.maxZoom,
-      zoomControl: true,
-      attributionControl: true,
-    });
+  async function initApp() {
+    initMap();
+    initLayerGroups();
+    renderDefaultDetail();
 
-    setBase("ancient");
+    state.routeConfigs = await DataService.getRouteLayers();
+    state.activeRouteKey = state.routeConfigs[0]?.layer_key || "";
+    renderRouteControls();
 
-    const [routeConfigs, eventCollection, resources] = await Promise.all([
-      DataService.getRouteLayers(),
-      DataService.getEvents(),
-      DataService.getResources(),
-    ]);
-
-    state.routeConfigs = routeConfigs;
-    state.resources = resources;
-
-    await addRoutes();
-    addEvents(eventCollection);
-    addResources(resources);
-    addPhotoAnnotations();
-    reset();
-    applyFilters();
-
-    document.dispatchEvent(
-      new CustomEvent("mapready", {
-        detail: {
-          events: state.events,
-          routeConfigs,
-          routeLayers: state.routeLayers,
-          resources,
-        },
+    await Promise.all(
+      state.routeConfigs.map((config) => {
+        return renderRouteLayer(config);
       }),
     );
+
+    const events = await DataService.getEventTimeline();
+    state.eventTimeline = enrichEvents(events.features || []);
+    state.eventFeatures = state.eventTimeline;
+    renderEventMarkers();
+
+    state.tourismResources = await DataService.getRedTourismResources();
+    renderTourismControls();
+    renderTourismMarkers();
+
+    resetView();
   }
 
   window.IndexMap = {
     state,
-    init,
-    applyFilters,
-    setBase,
-    activateEvent,
-    focusEvent(event) {
-      activateEvent(event, true);
-    },
-    reset,
-    toggleRoute,
-    zoomToRoute,
-    playRoute,
-    toggleResources,
+    initApp,
+    resetView,
+    toggleRouteLayer,
+    setEventFilter,
+    setActiveRouteFilter,
+    renderTourismMarkers,
+    playEventsTimeline,
+    playSelectedRoute,
+    playPrevious,
+    playNext,
+    pauseAnimation,
+    flash,
   };
-
-  document.addEventListener("DOMContentLoaded", () => {
-    init().catch((error) => {
-      console.error(error);
-      document.getElementById("serviceState").textContent =
-        "\u4e8c\u7ef4\u5730\u56fe\u52a0\u8f7d\u5931\u8d25";
-    });
-  });
 })();
