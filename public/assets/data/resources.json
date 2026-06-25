@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ruijin_memorial",
+    "name": "中央革命根据地历史博物馆",
+    "type": "纪念馆",
+    "province": "江西",
+    "city": "瑞金",
+    "lat": 25.889,
+    "lng": 116.021,
+    "level": "国家一级博物馆",
+    "distanceToRoute": 1.4,
+    "description": "展示中央苏区历史的重要红色文化场馆。"
+  },
+  {
+    "id": "zunyi_site",
+    "name": "遵义会议会址",
+    "type": "革命旧址",
+    "province": "贵州",
+    "city": "遵义",
+    "lat": 27.686,
+    "lng": 106.92,
+    "level": "全国重点文物保护单位",
+    "distanceToRoute": 0.2,
+    "description": "遵义会议召开地，是长征重要历史节点。"
+  },
+  {
+    "id": "luding_memorial",
+    "name": "泸定桥革命文物纪念馆",
+    "type": "纪念馆",
+    "province": "四川",
+    "city": "泸定",
+    "lat": 29.917,
+    "lng": 102.231,
+    "level": "全国爱国主义教育示范基地",
+    "distanceToRoute": 0.1,
+    "description": "集中展示飞夺泸定桥战斗历史。"
+  },
+  {
+    "id": "huining_site",
+    "name": "红军会宁会师旧址",
+    "type": "革命旧址",
+    "province": "甘肃",
+    "city": "会宁",
+    "lat": 35.692,
+    "lng": 105.054,
+    "level": "全国重点文物保护单位",
+    "distanceToRoute": 0.3,
+    "description": "纪念红军三大主力胜利会师。"
+  }
+]

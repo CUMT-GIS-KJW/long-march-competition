@@ -1,0 +1,428 @@
+[
+  {
+    "id": "ruijin",
+    "name": "瑞金出发",
+    "date": "1934年10月10日",
+    "type": "event",
+    "stage": "战略转移阶段",
+    "tag": "出发",
+    "province": "江西",
+    "city": "瑞金",
+    "lat": 25.886,
+    "lng": 116.035,
+    "importance": 5,
+    "description": "中央红军主力从瑞金、于都等地出发，开始战略转移。",
+    "quote": "红军不怕远征难，万水千山只等闲。",
+    "figures": [
+      {
+        "label": "出发人数",
+        "value": "8.6万"
+      },
+      {
+        "label": "空间坐标",
+        "value": "25.886°N"
+      }
+    ]
+  },
+  {
+    "id": "xiangjiang",
+    "name": "湘江战役",
+    "date": "1934年11月27日",
+    "type": "battle",
+    "stage": "突破封锁阶段",
+    "tag": "战役",
+    "province": "广西",
+    "city": "兴安",
+    "lat": 25.611,
+    "lng": 110.711,
+    "importance": 5,
+    "description": "中央红军在湘江两岸突破第四道封锁线，付出巨大牺牲，保存了革命火种。",
+    "quote": "英雄血染湘江渡，江底尽埋英烈骨。",
+    "figures": [
+      {
+        "label": "所属阶段",
+        "value": "突破封锁"
+      },
+      {
+        "label": "重要等级",
+        "value": "★★★★★"
+      }
+    ]
+  },
+  {
+    "id": "tongdao",
+    "name": "通道转兵",
+    "date": "1934年12月12日",
+    "type": "meeting",
+    "stage": "突破封锁阶段",
+    "tag": "决策",
+    "province": "湖南",
+    "city": "通道",
+    "lat": 26.158,
+    "lng": 109.784,
+    "importance": 4,
+    "description": "通道会议促成行军方向调整，为遵义会议的伟大转折奠定重要基础。",
+    "quote": "实事求是，是从危局走向新生的起点。",
+    "figures": [
+      {
+        "label": "节点类型",
+        "value": "会议"
+      },
+      {
+        "label": "所在省份",
+        "value": "湖南"
+      }
+    ]
+  },
+  {
+    "id": "zunyi",
+    "name": "遵义会议",
+    "date": "1935年1月15日—17日",
+    "type": "meeting",
+    "stage": "遵义转折阶段",
+    "tag": "转折",
+    "province": "贵州",
+    "city": "遵义",
+    "lat": 27.725,
+    "lng": 106.928,
+    "height": 850,
+    "importance": 5,
+    "isFocus3D": true,
+    "modelType": "3DGS",
+    "description": "遵义会议独立自主地解决中国革命重大问题，是党的历史上生死攸关的转折点。",
+    "quote": "雄关漫道真如铁，而今迈步从头越。",
+    "figures": [
+      {
+        "label": "会议历时",
+        "value": "3天"
+      },
+      {
+        "label": "历史意义",
+        "value": "伟大转折"
+      },
+      {
+        "label": "参考高程",
+        "value": "约850m"
+      },
+      {
+        "label": "三维状态",
+        "value": "核心重建点"
+      }
+    ]
+  },
+  {
+    "id": "chishui",
+    "name": "四渡赤水",
+    "date": "1935年3月21日",
+    "type": "crossing",
+    "stage": "遵义转折阶段",
+    "tag": "渡江",
+    "province": "贵州",
+    "city": "赤水",
+    "lat": 28.59,
+    "lng": 105.7,
+    "importance": 5,
+    "description": "红军四渡赤水河，灵活调动敌军，展现高超的运动战指挥艺术。",
+    "quote": "四渡赤水出奇兵。",
+    "figures": [
+      {
+        "label": "渡河次数",
+        "value": "4次"
+      },
+      {
+        "label": "战术特征",
+        "value": "机动灵活"
+      }
+    ]
+  },
+  {
+    "id": "jinsha",
+    "name": "巧渡金沙江",
+    "date": "1935年5月3日—9日",
+    "type": "crossing",
+    "stage": "北上抗日阶段",
+    "tag": "渡江",
+    "province": "云南",
+    "city": "禄劝",
+    "lat": 26.3,
+    "lng": 102.9,
+    "importance": 5,
+    "description": "红军在皎平渡仅靠7只小船，经过7天7夜，2万多人的部队全部安全渡过金沙江，摆脱了数十万敌军的围追堵截。这次成功的渡江行动体现了红军指挥员的高超智慧。",
+    "quote": "金沙水拍云崖暖。",
+    "figures": [
+      {
+        "label": "渡船数量",
+        "value": "7只"
+      },
+      {
+        "label": "渡江时长",
+        "value": "7天7夜"
+      },
+      {
+        "label": "渡江人数",
+        "value": "2万+"
+      },
+      {
+        "label": "渡江损失",
+        "value": "0伤亡"
+      }
+    ]
+  },
+  {
+    "id": "dadu",
+    "name": "强渡大渡河",
+    "date": "1935年5月24日—25日",
+    "type": "battle",
+    "stage": "北上抗日阶段",
+    "tag": "战斗",
+    "province": "四川",
+    "city": "石棉",
+    "lat": 29.55,
+    "lng": 102.1,
+    "importance": 5,
+    "description": "大渡河水流湍急，两岸悬崖峭壁。红军先遣队17勇士在安顺场冒着密集火力，乘唯一一条小船冲向对岸，为后续部队打开通路。",
+    "quote": "大渡桥横铁索寒。",
+    "figures": [
+      {
+        "label": "勇士人数",
+        "value": "17人"
+      },
+      {
+        "label": "首渡船只",
+        "value": "1只"
+      },
+      {
+        "label": "历史间隔",
+        "value": "72年"
+      },
+      {
+        "label": "地形特征",
+        "value": "峡谷急流"
+      }
+    ]
+  },
+  {
+    "id": "luding",
+    "name": "飞夺泸定桥",
+    "date": "1935年5月29日",
+    "type": "battle",
+    "stage": "北上抗日阶段",
+    "tag": "战役",
+    "province": "四川",
+    "city": "泸定",
+    "lat": 29.915,
+    "lng": 102.235,
+    "importance": 5,
+    "description": "红军昼夜急行夺取泸定桥，突破大渡河天险，为主力北上打开通道。",
+    "quote": "大渡桥横铁索寒。",
+    "figures": [
+      {
+        "label": "桥长",
+        "value": "103米"
+      },
+      {
+        "label": "突击队员",
+        "value": "22人"
+      }
+    ]
+  },
+  {
+    "id": "jiajin",
+    "name": "翻越夹金山",
+    "date": "1935年6月17日",
+    "type": "mountain",
+    "stage": "北上抗日阶段",
+    "tag": "雪山",
+    "province": "四川",
+    "city": "宝兴",
+    "lat": 30.958,
+    "lng": 102.722,
+    "importance": 4,
+    "description": "中央红军翻越长征途中第一座大雪山，以顽强意志突破高寒缺氧环境。",
+    "quote": "更喜岷山千里雪。",
+    "figures": [
+      {
+        "label": "垭口海拔",
+        "value": "约4114m"
+      },
+      {
+        "label": "环境特征",
+        "value": "高寒缺氧"
+      }
+    ]
+  },
+  {
+    "id": "mougong",
+    "name": "懋功会师",
+    "date": "1935年6月14日",
+    "type": "meeting",
+    "stage": "北上抗日阶段",
+    "tag": "会师",
+    "province": "四川",
+    "city": "小金",
+    "lat": 31,
+    "lng": 102.37,
+    "importance": 5,
+    "description": "中央红军与红四方面军在四川懋功达维镇胜利会师。两军战友紧紧拥抱，欢声雷动，这是长征中第一次大会师，极大鼓舞了全军士气。",
+    "quote": "会师的喜悦是短暂的，但两军战友的情谊是永恒的。",
+    "figures": [
+      {
+        "label": "会师部队",
+        "value": "2军"
+      },
+      {
+        "label": "总兵力",
+        "value": "10万+"
+      },
+      {
+        "label": "会师地点",
+        "value": "达维镇"
+      },
+      {
+        "label": "会师日期",
+        "value": "6月14日"
+      }
+    ]
+  },
+  {
+    "id": "caodi",
+    "name": "穿越松潘草地",
+    "date": "1935年8月21日",
+    "type": "mountain",
+    "stage": "北上抗日阶段",
+    "tag": "草地",
+    "province": "四川",
+    "city": "松潘",
+    "lat": 33.1,
+    "lng": 103.3,
+    "importance": 5,
+    "description": "红军穿越高原沼泽，克服饥饿、寒冷和泥沼威胁，是长征最艰苦的历程之一。",
+    "quote": "风雨浸衣骨更硬，野菜充饥志越坚。",
+    "figures": [
+      {
+        "label": "平均海拔",
+        "value": "3500m"
+      },
+      {
+        "label": "行军环境",
+        "value": "沼泽草甸"
+      }
+    ]
+  },
+  {
+    "id": "lazikou",
+    "name": "腊子口战役",
+    "date": "1935年9月16日",
+    "type": "battle",
+    "stage": "北上抗日阶段",
+    "tag": "战役",
+    "province": "甘肃",
+    "city": "迭部",
+    "lat": 34.1,
+    "lng": 103.9,
+    "importance": 5,
+    "description": "腊子口是红军北上的关键通道。两侧悬崖峭壁，中间隘口仅约8米宽。红军正面佯攻，小分队从悬崖攀上敌军侧后，两面夹击，一举突破天险。",
+    "quote": "腊子口一开，全盘棋都活了。",
+    "figures": [
+      {
+        "label": "隘口宽度",
+        "value": "8米"
+      },
+      {
+        "label": "两侧地形",
+        "value": "悬崖"
+      },
+      {
+        "label": "战术方式",
+        "value": "夹击"
+      },
+      {
+        "label": "战略意义",
+        "value": "打开北上通道"
+      }
+    ]
+  },
+  {
+    "id": "wuqi",
+    "name": "吴起镇会师",
+    "date": "1935年10月19日",
+    "type": "meeting",
+    "stage": "会师胜利阶段",
+    "tag": "会师",
+    "province": "陕西",
+    "city": "吴起",
+    "lat": 36.93,
+    "lng": 108.17,
+    "importance": 5,
+    "description": "中央红军到达陕北吴起镇，与陕北红军胜利会师。",
+    "quote": "三军过后尽开颜。",
+    "figures": [
+      {
+        "label": "中央红军历时",
+        "value": "1年"
+      },
+      {
+        "label": "行程",
+        "value": "二万五千里"
+      }
+    ]
+  },
+  {
+    "id": "huining",
+    "name": "会宁大会师",
+    "date": "1936年10月9日",
+    "type": "meeting",
+    "stage": "会师胜利阶段",
+    "tag": "胜利",
+    "province": "甘肃",
+    "city": "会宁",
+    "lat": 35.69,
+    "lng": 105.05,
+    "importance": 5,
+    "description": "红一、二、四方面军胜利会师，标志着红军长征胜利结束。",
+    "quote": "长征是宣言书，长征是宣传队，长征是播种机。",
+    "figures": [
+      {
+        "label": "会师军团",
+        "value": "三大主力"
+      },
+      {
+        "label": "胜利年份",
+        "value": "1936"
+      }
+    ]
+  },
+  {
+    "id": "yanan",
+    "name": "延安——革命圣地",
+    "date": "1937年1月13日",
+    "type": "event",
+    "stage": "会师胜利阶段",
+    "tag": "终点",
+    "province": "陕西",
+    "city": "延安",
+    "lat": 36.59,
+    "lng": 109.49,
+    "importance": 5,
+    "description": "中共中央进驻延安，从此延安成为中国革命的指导中心和战略总后方。延安精神——自力更生、艰苦奋斗、实事求是、全心全意为人民服务——成为宝贵的精神财富。",
+    "quote": "延安的窑洞有马列主义。",
+    "figures": [
+      {
+        "label": "驻留时间",
+        "value": "13年"
+      },
+      {
+        "label": "历史时期",
+        "value": "1937—1947"
+      },
+      {
+        "label": "历史地位",
+        "value": "革命圣地"
+      },
+      {
+        "label": "精神遗产",
+        "value": "延安精神"
+      }
+    ]
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "distance": 0,
+    "elevation": 250,
+    "place": "瑞金"
+  },
+  {
+    "distance": 850,
+    "elevation": 420,
+    "place": "湘江"
+  },
+  {
+    "distance": 1800,
+    "elevation": 850,
+    "place": "遵义"
+  },
+  {
+    "distance": 3100,
+    "elevation": 520,
+    "place": "赤水"
+  },
+  {
+    "distance": 4800,
+    "elevation": 1680,
+    "place": "大渡河"
+  },
+  {
+    "distance": 5600,
+    "elevation": 4124,
+    "place": "夹金山"
+  },
+  {
+    "distance": 6800,
+    "elevation": 3500,
+    "place": "松潘草地"
+  },
+  {
+    "distance": 9100,
+    "elevation": 1760,
+    "place": "腊子口"
+  },
+  {
+    "distance": 12500,
+    "elevation": 1720,
+    "place": "会宁"
+  }
+]

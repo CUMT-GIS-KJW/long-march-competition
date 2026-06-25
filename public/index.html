@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>&#x7ea2;&#x56fe;&#x7ed8;&#x957f;&#x5f81;&#xff5c;&#x957f;&#x5f81;&#x8def;&#x7ebf; WebGIS</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/index.css">
+  <link rel="stylesheet" href="assets/css/theme-warm.css">
+  <link rel="stylesheet" href="assets/css/index-enhancements.css">
+</head>
+<body>
+  <div class="lm-app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="seal">&#x5f81;</div>
+        <div>
+          <h1>&#x7ea2;&#x56fe;&#x7ed8;&#x957f;&#x5f81;</h1>
+          <small>
+            &#x957f;&#x5f81;&#x8def;&#x7ebf; WebGIS &#x53ef;&#x89c6;&#x5206;&#x6790;&#x4e0e;&#x7ea2;&#x8272;&#x6587;&#x5316;&#x4f20;&#x64ad;&#x7cfb;&#x7edf;
+          </small>
+        </div>
+      </div>
+
+      <nav class="topnav">
+        <button class="nav-btn active">&#x4e8c;&#x7ef4;&#x8def;&#x7ebf;</button>
+        <button class="nav-btn" id="nodeNav">&#x5386;&#x53f2;&#x4e8b;&#x4ef6;</button>
+        <button class="nav-btn" id="resourceToggle">&#x7ea2;&#x8272;&#x8d44;&#x6e90;</button>
+        <button class="nav-btn" onclick="location.href='analysis.html'">
+          &#x6d4b;&#x7ed8;&#x5206;&#x6790;
+        </button>
+        <button class="nav-btn scene-entry" onclick="location.href='scene3d.html'">
+          3D &#x5730;&#x5f62; &#x2197;
+        </button>
+        <div class="system-state">
+          <i class="state-dot"></i>
+          <span id="serviceState">&#x4e8c;&#x7ef4;&#x6570;&#x636e;&#x51c6;&#x5907;&#x4e2d;</span>
+        </div>
+      </nav>
+    </header>
+
+    <main class="map-layout">
+      <aside class="timeline-panel cockpit">
+        <div class="panel-head">
+          <div>
+            <span class="panel-kicker">INDEPENDENT ROUTE LAYERS</span>
+            <h2>&#x8def;&#x7ebf;&#x56fe;&#x5c42;</h2>
+          </div>
+        </div>
+
+        <div class="route-layer-list" id="routeSwitches">
+          <div class="loading">&#x6b63;&#x5728;&#x52a0;&#x8f7d;&#x8def;&#x7ebf;&#x56fe;&#x5c42;&#x2026;</div>
+        </div>
+
+        <div class="panel-head event-head">
+          <div>
+            <span class="panel-kicker">EVENT TIMELINE</span>
+            <h2>&#x91cd;&#x8981;&#x4e8b;&#x4ef6;&#x70b9;</h2>
+          </div>
+          <b id="eventCount">0</b>
+        </div>
+
+        <div class="filter-block">
+          <label for="stageFilter">&#x4e8b;&#x4ef6;&#x9636;&#x6bb5;&#x7b5b;&#x9009;</label>
+          <select id="stageFilter">
+            <option value="all">&#x5168;&#x90e8;&#x5386;&#x53f2;&#x9636;&#x6bb5;</option>
+            <option>&#x957f;&#x5f81;&#x51fa;&#x53d1;&#x4e0e;&#x96c6;&#x7ed3;</option>
+            <option>&#x7a81;&#x7834;&#x5c01;&#x9501;</option>
+            <option>&#x9075;&#x4e49;&#x8f6c;&#x6298;</option>
+            <option>&#x5317;&#x4e0a;&#x6297;&#x65e5;</option>
+            <option>&#x4f1a;&#x5e08;&#x80dc;&#x5229;</option>
+          </select>
+        </div>
+
+        <div class="type-filters" id="typeFilters">
+          <button class="on" data-type="all">&#x5168;&#x90e8;</button>
+          <button data-type="battle">&#x6218;&#x6597;</button>
+          <button data-type="meeting">&#x4f1a;&#x8bae;</button>
+          <button data-type="crossing">&#x6e21;&#x6c5f;</button>
+          <button data-type="mountain">&#x96ea;&#x5c71;&#x8349;&#x5730;</button>
+        </div>
+
+        <div class="timeline-list" id="timelineList">
+          <div class="loading">&#x6b63;&#x5728;&#x8f7d;&#x5165;&#x4e8b;&#x4ef6;&#x65f6;&#x95f4;&#x8f74;&#x2026;</div>
+        </div>
+      </aside>
+
+      <section class="map-area ancient" id="mapArea">
+        <div id="map"></div>
+
+        <div class="map-heading">
+          <span>1934&#x2014;1936 &#x00b7; &#x4e07;&#x6c34;&#x5343;&#x5c71;</span>
+          <strong>&#x7ea2;&#x519b;&#x957f;&#x5f81;&#x65f6;&#x7a7a;&#x5168;&#x666f;</strong>
+        </div>
+
+        <div class="map-actions">
+          <button id="resetView" title="reset view">&#x21ba;</button>
+          <button id="basemapBtn" title="switch basemap">&#x56fe;</button>
+        </div>
+
+        <div class="basemap-menu cockpit" id="basemapMenu">
+          <button data-map="ancient" class="active">&#x53e4;&#x5730;&#x56fe;&#x98ce;&#x683c;</button>
+          <button data-map="standard">&#x6807;&#x51c6;&#x5730;&#x56fe;</button>
+          <button data-map="satellite">&#x536b;&#x661f;&#x5f71;&#x50cf;</button>
+        </div>
+
+        <div class="legend cockpit">
+          <b>&#x903b;&#x8f91;&#x8bf4;&#x660e;</b>
+          <span><i class="line central"></i>&#x8def;&#x7ebf;&#x56fe;&#x5c42;&#xff1a;&#x6bcf;&#x4e2a; SHP &#x72ec;&#x7acb;&#x663e;&#x793a;</span>
+          <span><i class="line second"></i>&#x8def;&#x7ebf;&#x52a8;&#x753b;&#xff1a;&#x6309;&#x5f53;&#x524d;&#x56fe;&#x5c42; _order</span>
+          <span><i class="dot meeting"></i>&#x4e8b;&#x4ef6;&#x52a8;&#x753b;&#xff1a;&#x6309;&#x4e8b;&#x4ef6;&#x70b9;&#x201c;&#x4e8b;&#x4ef6;&#x65e5;&#x201d;</span>
+          <span><i class="dot battle"></i>&#x4e24;&#x79cd;&#x52a8;&#x753b;&#x4e92;&#x4e0d;&#x6df7;&#x6392;</span>
+        </div>
+      </section>
+
+      <aside class="detail-panel cockpit">
+        <div id="detailEmpty" class="detail-empty">
+          <div class="compass">&#x2726;</div>
+          <h3>&#x4ece;&#x5730;&#x56fe;&#x8bfb;&#x61c2;&#x957f;&#x5f81;</h3>
+          <p>
+            &#x70b9;&#x51fb;&#x8def;&#x7ebf;&#x64ad;&#x653e;&#x67e5;&#x770b;&#x5f53;&#x524d;&#x8def;&#x7ebf;&#x6bb5;&#x5c5e;&#x6027;&#xff1b;&#x70b9;&#x51fb;&#x4e8b;&#x4ef6;&#x70b9;&#x6216;&#x6309;&#x4e8b;&#x4ef6;&#x64ad;&#x653e;&#x67e5;&#x770b;&#x5386;&#x53f2;&#x53d9;&#x4e8b;&#x3002;
+          </p>
+        </div>
+
+        <div id="detailContent" class="detail-content" hidden>
+          <div class="detail-cover">
+            <span id="detailTag">&#x5173;&#x952e;&#x8282;&#x70b9;</span>
+            <b id="detailImportance">&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</b>
+          </div>
+          <div class="narrative-label">HISTORICAL NARRATIVE &#x00b7; &#x5386;&#x53f2;&#x53d9;&#x4e8b;</div>
+          <p class="detail-date" id="detailDate"></p>
+          <h2 id="detailName"></h2>
+          <div class="location" id="detailLocation"></div>
+          <img class="detail-media" id="detailMedia" alt="historical image">
+          <p class="description" id="detailDescription"></p>
+          <blockquote id="detailQuote"></blockquote>
+          <div class="figure-grid" id="detailFigures"></div>
+          <div class="coordinate">
+            <span>&#x7a7a;&#x95f4;&#x5750;&#x6807; &#x00b7; WGS84</span>
+            <b id="detailCoordinate"></b>
+          </div>
+          <button class="detail-scene-button" id="detailSceneButton" hidden>
+            &#x8fdb;&#x5165;&#x9075;&#x4e49;&#x4f1a;&#x8bae;&#x4e09;&#x7ef4;&#x573a;&#x666f; &#x2197;
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="playbar">
+      <button class="play-main" id="playBtn">&#x7ee7;&#x7eed;&#x8def;&#x7ebf;</button>
+      <button class="minor event-play" id="eventPlayBtn">&#x6309;&#x4e8b;&#x4ef6;&#x64ad;&#x653e;</button>
+      <button class="minor" id="resetBtn">&#x91cd;&#x7f6e;</button>
+
+      <div class="now">
+        <small>&#x5f53;&#x524d;&#x64ad;&#x653e;&#x5bf9;&#x8c61;</small>
+        <b id="currentNode">&#x7b49;&#x5f85;&#x64ad;&#x653e;</b>
+      </div>
+
+      <div class="progress-wrap">
+        <input type="range" id="progressRange" min="0" max="100" value="0">
+        <div class="stage-labels">
+          <span>&#x8def;&#x7ebf; _order</span>
+          <span>&#x5355;&#x56fe;&#x5c42;</span>
+          <span>&#x72ec;&#x7acb;&#x64ad;&#x653e;</span>
+          <span>&#x4e8b;&#x4ef6;&#x65e5;</span>
+          <span>&#x65f6;&#x95f4;&#x8f74;</span>
+        </div>
+      </div>
+
+      <label class="speed-control">
+        &#x8def;&#x7ebf;&#x901f;&#x5ea6;
+        <select id="speedSelect">
+          <option value="0.8">0.8&#x00d7;</option>
+          <option value="1" selected>1&#x00d7;</option>
+          <option value="1.5">1.5&#x00d7;</option>
+          <option value="2">2&#x00d7;</option>
+        </select>
+      </label>
+
+      <div class="coord">WGS84 &#x00b7; &#x539f;&#x59cb; SHP &#x5b57;&#x6bb5;&#x4fdd;&#x7559;</div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <section class="agent-panel" id="agentPanel" aria-label="长征 GIS 智能助手">
+    <button class="agent-toggle" id="agentToggle" type="button">
+      AI
+    </button>
+    <div class="agent-window cockpit">
+      <div class="agent-head">
+        <div>
+          <span>DEEPSEEK AGENT</span>
+          <b>长征 GIS 智能助手</b>
+        </div>
+      </div>
+      <div class="agent-messages" id="agentMessages"></div>
+      <form class="agent-form" id="agentForm">
+        <input
+          id="agentInput"
+          autocomplete="off"
+          placeholder="问遵义会议、路线分析或答辩讲解"
+        >
+        <button type="submit">发送</button>
+      </form>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data-service.js"></script>
+  <script src="assets/js/map-utils.js"></script>
+  <script src="assets/js/route-animation.js"></script>
+  <script src="assets/js/index-map.js"></script>
+  <script src="assets/js/index-ui.js"></script>
+  <script src="assets/js/agent-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#e9dfc4"/><stop offset=".5" stop-color="#cbd8cb"/><stop offset="1" stop-color="#d8caa8"/></linearGradient>
+    <linearGradient id="mount" x2="0" y2="1"><stop stop-color="#f6f0df"/><stop offset=".55" stop-color="#718e86"/><stop offset="1" stop-color="#173f3b"/></linearGradient>
+    <filter id="grain"><feTurbulence baseFrequency=".7" numOctaves="3" seed="8" result="n"/><feBlend in="SourceGraphic" in2="n" mode="multiply"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#paper)"/>
+  <g opacity=".32" fill="#47645b">
+    <path d="M0 330L120 190l65 82 78-142 116 200 98-102 103 121 99-170 116 165 75-106 128 108 125-201 116 191 82-118 128 145 70-102v330H0z"/>
+  </g>
+  <g opacity=".88">
+    <path d="M0 720L116 540l82 74 120-251 126 272 103-113 81 86 134-275 101 225 76-75 116 156 99-128 72 52 109-252 137 304 128-155v440H0z" fill="url(#mount)"/>
+    <g fill="#faf6e8" opacity=".96">
+      <path d="M245 515l73-152 71 153-45-42-25 34-28-37z"/><path d="M682 496l80-163 72 159-37-38-35 44-27-48z"/>
+      <path d="M1263 499l52-188 94 208-51-60-39 48-26-65z"/>
+    </g>
+  </g>
+  <path d="M90 674C238 620 276 731 430 626S648 702 770 564s210 48 318-49 192-20 408-146" fill="none" stroke="#a62922" stroke-width="10" stroke-linecap="round" stroke-dasharray="2 18"/>
+  <path d="M90 674C238 620 276 731 430 626S648 702 770 564s210 48 318-49 192-20 408-146" fill="none" stroke="#922018" stroke-width="4"/>
+  <g fill="#8e271d" stroke="#f3dfb5" stroke-width="6"><circle cx="90" cy="674" r="10"/><circle cx="430" cy="626" r="10"/><circle cx="770" cy="564" r="10"/><circle cx="1088" cy="515" r="10"/><circle cx="1496" cy="369" r="10"/></g>
+  <g filter="url(#grain)" opacity=".06"><rect width="1600" height="900"/></g>
+</svg>

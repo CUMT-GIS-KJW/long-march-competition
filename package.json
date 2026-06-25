@@ -1,0 +1,11 @@
+{
+  "name": "long-march-geoscene-competition",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node server/app.js",
+    "format:css": "node scripts/format-css.js"
+  },
+  "engines": { "node": ">=18" }
+}

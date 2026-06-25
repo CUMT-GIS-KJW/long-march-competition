@@ -1,0 +1,44 @@
+[
+  {
+    "province": "江西",
+    "distance": 620,
+    "eventCount": 12,
+    "resourceCount": 8
+  },
+  {
+    "province": "湖南",
+    "distance": 860,
+    "eventCount": 15,
+    "resourceCount": 10
+  },
+  {
+    "province": "广西",
+    "distance": 540,
+    "eventCount": 11,
+    "resourceCount": 6
+  },
+  {
+    "province": "贵州",
+    "distance": 980,
+    "eventCount": 18,
+    "resourceCount": 15
+  },
+  {
+    "province": "四川",
+    "distance": 1860,
+    "eventCount": 29,
+    "resourceCount": 21
+  },
+  {
+    "province": "甘肃",
+    "distance": 760,
+    "eventCount": 14,
+    "resourceCount": 12
+  },
+  {
+    "province": "陕西",
+    "distance": 580,
+    "eventCount": 9,
+    "resourceCount": 8
+  }
+]

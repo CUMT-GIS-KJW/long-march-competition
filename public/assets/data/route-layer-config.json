@@ -1,0 +1,254 @@
+[
+  {
+    "id": 1,
+    "layer_key": "route_zhongyang_zongdui",
+    "layer_name": "中央纵队路线图",
+    "table_name": "route_zhongyang_zongdui",
+    "source_file": "中央纵队路线图.shp",
+    "color": "#b42318",
+    "line_width": 4,
+    "default_visible": true,
+    "display_order": 1,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 2,
+    "layer_key": "route_hongyi_juntuan",
+    "layer_name": "红一军团路线图",
+    "table_name": "route_hongyi_juntuan",
+    "source_file": "红一军团路线图.shp",
+    "color": "#cf6f18",
+    "line_width": 3,
+    "default_visible": true,
+    "display_order": 2,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 3,
+    "layer_key": "route_hongqi_juntuan",
+    "layer_name": "红七军团路线图",
+    "table_name": "route_hongqi_juntuan",
+    "source_file": "红七军团路线图.shp",
+    "color": "#8f1d14",
+    "line_width": 3,
+    "default_visible": true,
+    "display_order": 3,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 4,
+    "layer_key": "route_hongsan_juntuan",
+    "layer_name": "红三军团路线图",
+    "table_name": "route_hongsan_juntuan",
+    "source_file": "红三军团路线图.shp",
+    "color": "#365f91",
+    "line_width": 3,
+    "default_visible": true,
+    "display_order": 4,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 5,
+    "layer_key": "route_hongsanshi_jun",
+    "layer_name": "红三十军路线图",
+    "table_name": "route_hongsanshi_jun",
+    "source_file": "红三十军路线图.shp",
+    "color": "#9d6b1f",
+    "line_width": 3,
+    "default_visible": true,
+    "display_order": 5,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 6,
+    "layer_key": "route_hongjiu_juntuan",
+    "layer_name": "红九军团路线图",
+    "table_name": "route_hongjiu_juntuan",
+    "source_file": "红九军团路线图.shp",
+    "color": "#6b8e23",
+    "line_width": 3,
+    "default_visible": true,
+    "display_order": 6,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 7,
+    "layer_key": "route_honger_juntuan",
+    "layer_name": "红二军团路线图",
+    "table_name": "route_honger_juntuan",
+    "source_file": "红二军团路线图.shp",
+    "color": "#7a3e9d",
+    "line_width": 3,
+    "default_visible": false,
+    "display_order": 7,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date",
+      "stage_name"
+    ]
+  },
+  {
+    "id": 8,
+    "layer_key": "route_hongershiwu_jun",
+    "layer_name": "红二十五军路线图",
+    "table_name": "route_hongershiwu_jun",
+    "source_file": "红二十五军路线图.shp",
+    "color": "#b55a30",
+    "line_width": 3,
+    "default_visible": false,
+    "display_order": 8,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 9,
+    "layer_key": "route_hongwu_juntuan",
+    "layer_name": "红五军团路线图",
+    "table_name": "route_hongwu_juntuan",
+    "source_file": "红五军团路线图.shp",
+    "color": "#455a64",
+    "line_width": 3,
+    "default_visible": false,
+    "display_order": 9,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 10,
+    "layer_key": "route_hongliu_juntuan",
+    "layer_name": "红六军团路线图",
+    "table_name": "route_hongliu_juntuan",
+    "source_file": "红六军团路线图.shp",
+    "color": "#c43e35",
+    "line_width": 3,
+    "default_visible": false,
+    "display_order": 10,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descriptio",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 11,
+    "layer_key": "route_hongshiba_shi",
+    "layer_name": "红十八师路线图",
+    "table_name": "route_hongshiba_shi",
+    "source_file": "红十八师路线图.shp",
+    "color": "#2c7a7b",
+    "line_width": 3,
+    "default_visible": false,
+    "display_order": 11,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  },
+  {
+    "id": 12,
+    "layer_key": "route_hongsi_juntuan",
+    "layer_name": "红四军团路线图",
+    "table_name": "route_hongsi_juntuan",
+    "source_file": "红四军团路线图.shp",
+    "color": "#805ad5",
+    "line_width": 3,
+    "default_visible": false,
+    "display_order": 12,
+    "fields": [
+      "KML_FOLDER",
+      "Shape_Leng",
+      "corps_name",
+      "stage_name",
+      "_order",
+      "descript",
+      "start_date",
+      "end_date"
+    ]
+  }
+]

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>长征路线 GIS 空间分析平台</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/analysis.css">
+  <link rel="stylesheet" href="assets/css/theme-warm.css">
+</head>
+<body>
+  <div class="analysis-app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="seal">析</div>
+        <div>
+          <h1>长征路线 GIS 空间分析平台</h1>
+          <small>ROUTE · TERRAIN · BUFFER · RESOURCE</small>
+        </div>
+      </div>
+
+      <nav class="topnav">
+        <button class="nav-btn" onclick="location.href='index.html'">← 返回主地图</button>
+        <button class="nav-btn active">综合分析</button>
+        <button class="nav-btn" onclick="location.href='scene3d.html'">三维核心点</button>
+        <button class="nav-btn" id="reportBtn">成果报告</button>
+        <div class="system-state">
+          <i class="state-dot"></i>
+          静态分析数据就绪
+        </div>
+      </nav>
+    </header>
+
+    <main class="analysis-grid">
+      <aside class="tools-panel">
+        <p class="section-label">空间分析工具箱</p>
+
+        <div class="tool-list" id="toolList">
+          <button class="active" data-tool="route">
+            <i>统</i>
+            <span><b>路线统计分析</b><small>里程 · 省域 · 三军对比</small></span>
+          </button>
+          <button data-tool="terrain">
+            <i>高</i>
+            <span><b>地形起伏分析</b><small>DEM · 海拔剖面 · 最高点</small></span>
+          </button>
+          <button data-tool="buffer">
+            <i>缓</i>
+            <span><b>多尺度缓冲分析</b><small>5 / 10 / 20 km</small></span>
+          </button>
+          <button data-tool="node">
+            <i>点</i>
+            <span><b>节点类型统计</b><small>战役 · 会议 · 天险</small></span>
+          </button>
+          <button data-tool="resource">
+            <i>资</i>
+            <span><b>红色资源关联</b><small>沿线资源 · 热点识别</small></span>
+          </button>
+        </div>
+
+        <div class="parameter-panel">
+          <p class="section-label">模型参数</p>
+          <label>
+            分析路线
+            <select id="routeSelect">
+              <option value="central">中央红军路线</option>
+              <option value="second">红二方面军路线</option>
+              <option value="fourth">红四方面军路线</option>
+            </select>
+          </label>
+          <label>
+            缓冲半径
+            <select id="bufferSelect">
+              <option value="5">5 km</option>
+              <option value="10">10 km</option>
+              <option value="20">20 km</option>
+            </select>
+          </label>
+          <label>
+            空间参考
+            <input value="CGCS2000 / EPSG:4490" readonly>
+          </label>
+          <button class="run-analysis" id="runAnalysis">执行 GIS 分析</button>
+        </div>
+      </aside>
+
+      <section class="analysis-map">
+        <div id="analysisMap"></div>
+        <div class="map-title-card">
+          <span>当前专题</span>
+          <b id="mapTheme">路线统计分析</b>
+        </div>
+        <div class="analysis-legend" id="analysisLegend">
+          <b>专题图例</b>
+          <span><i class="route-symbol"></i>中央红军路线</span>
+          <span><i class="buffer-symbol"></i>分析结果范围</span>
+          <span><i class="resource-symbol"></i>红色资源点</span>
+        </div>
+      </section>
+
+      <aside class="metrics-panel">
+        <div class="metrics-head">
+          <p class="section-label">核心测绘指标</p>
+          <span id="taskState">等待分析</span>
+        </div>
+        <div class="metrics" id="metrics"></div>
+        <div class="chart-tabs">
+          <button class="active" data-chart="primary">专题统计</button>
+          <button data-chart="secondary">结构对比</button>
+        </div>
+        <div id="analysisChart"></div>
+        <div class="data-source">
+          <span>数据源</span>
+          <b>长征路线 / DEM / 红色资源点</b>
+          <small>当前为竞赛框架演示数据，接口结构已预留</small>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="conclusion">
+      <span class="result-badge">分析结论</span>
+      <p id="conclusionText">
+        长征路线跨越多个地形区，涉及山地、高原、河流和草地等复杂地理环境。
+      </p>
+      <div class="result-actions">
+        <button id="tableBtn">查看统计表</button>
+        <button id="exportBtn">导出分析结果</button>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data-service.js"></script>
+  <script src="assets/js/map-utils.js"></script>
+  <script src="assets/js/analysis-map.js"></script>
+  <script src="assets/js/analysis-ui.js"></script>
+</body>
+</html>

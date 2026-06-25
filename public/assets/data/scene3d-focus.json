@@ -1,0 +1,17 @@
+{
+  "id": "zunyi",
+  "name": "遵义会议会址",
+  "title": "长征转折点的三维测绘表达",
+  "lat": 27.725,
+  "lng": 106.928,
+  "height": 850,
+  "coordinateSystem": "CGCS2000 / WGS84 Web Display",
+  "modelType": "3DGS",
+  "modelUrl": "./assets/models/zunyi.ksplat",
+  "fallbackModel": "./assets/models/monument.glb",
+  "coverImage": "./assets/img/zunyi.jpg",
+  "province": "贵州省",
+  "city": "遵义市",
+  "stage": "遵义转折阶段",
+  "description": "本页面以遵义会议会址为核心三维点，使用三维地球、空间光柱、辅助节点和长征路线进行地理定位表达，并预留高斯泼溅实景模型接口。"
+}
