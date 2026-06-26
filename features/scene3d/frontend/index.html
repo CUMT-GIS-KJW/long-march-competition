@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>遵义会议三维场景 - 红图绘长征</title>
+  <link
+    rel="stylesheet"
+    href="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css"
+  >
+  <link rel="stylesheet" href="/features/shared/frontend/base.css">
+  <link rel="stylesheet" href="/features/scene3d/frontend/scene3d.css">
+</head>
+<body>
+  <div class="scene-app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="seal">维</div>
+        <div>
+          <h1>遵义会议三维测绘场景</h1>
+          <small>核心历史节点 / 空间定位 / 三维表达</small>
+        </div>
+      </div>
+
+      <nav class="topnav">
+        <button class="nav-btn" type="button" onclick="location.href='/index.html'">二维主地图</button>
+        <button class="nav-btn" type="button" onclick="location.href='/analysis.html'">测绘分析</button>
+        <button class="nav-btn active" type="button">三维核心点</button>
+        <div class="system-state">
+          <i class="state-dot"></i>
+          <span id="sceneState">三维场景初始化中</span>
+        </div>
+      </nav>
+    </header>
+
+    <main class="scene-layout">
+      <aside class="scene-archive">
+        <span class="panel-kicker">SPATIAL ARCHIVE</span>
+        <h2 id="focusName">遵义会议会址</h2>
+        <p class="archive-subtitle" id="focusTitle"></p>
+
+        <img id="focusCover" class="archive-cover" alt="遵义会议会址">
+
+        <dl class="archive-grid">
+          <div>
+            <dt>经度</dt>
+            <dd id="focusLng">-</dd>
+          </div>
+          <div>
+            <dt>纬度</dt>
+            <dd id="focusLat">-</dd>
+          </div>
+          <div>
+            <dt>参考高程</dt>
+            <dd id="focusHeight">-</dd>
+          </div>
+          <div>
+            <dt>坐标系统</dt>
+            <dd id="focusCrs">-</dd>
+          </div>
+          <div>
+            <dt>所属阶段</dt>
+            <dd id="focusStage">-</dd>
+          </div>
+          <div>
+            <dt>重建方式</dt>
+            <dd id="focusModel">-</dd>
+          </div>
+        </dl>
+
+        <div class="archive-description">
+          <b>场景说明</b>
+          <p id="focusDescription"></p>
+        </div>
+
+        <div class="model-status">
+          <span>实景模型接口</span>
+          <b>3DGS / RESERVED</b>
+          <small>当前使用空间光柱与纪念标志占位。</small>
+        </div>
+      </aside>
+
+      <section class="scene-stage">
+        <div id="cesiumContainer"></div>
+
+        <div class="scene-guide">
+          <b>三维操作</b>
+          <span>左键旋转</span>
+          <span>右键缩放</span>
+          <span>滚轮改变高度</span>
+        </div>
+
+        <div class="scene-legend">
+          <b>三维图例</b>
+          <span><i class="core"></i>遵义会议核心点</span>
+          <span><i class="battle"></i>战役节点</span>
+          <span><i class="meeting"></i>会议节点</span>
+          <span><i class="crossing"></i>渡江节点</span>
+          <span><i class="route"></i>长征路线</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="scene-controls">
+      <button id="flyToFocus" type="button">飞到核心点</button>
+      <button id="toggleRoute" class="active" type="button">显示路线</button>
+      <button id="toggleNodes" class="active" type="button">显示辅助节点</button>
+      <button id="orbitScene" type="button">自动环绕</button>
+      <button id="resetScene" type="button">重置视角</button>
+      <div class="scene-coordinate">
+        <span>核心坐标</span>
+        <b>106.928 E / 27.725 N / 850 m</b>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Cesium.js"></script>
+  <script src="/features/shared/frontend/config.js"></script>
+  <script src="/features/shared/frontend/data-service.js"></script>
+  <script src="/features/scene3d/frontend/scene3d.js"></script>
+</body>
+</html>

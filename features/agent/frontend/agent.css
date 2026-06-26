@@ -1,0 +1,137 @@
+.agent-panel {
+  position: fixed;
+  right: 18px;
+  bottom: 92px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.agent-toggle {
+  width: 52px;
+  height: 52px;
+  color: #ffe9ad;
+  background: radial-gradient(circle at 32% 24%, #e56a4d, #9e2d23 68%);
+  border: 1px solid rgba(245, 208, 122, 0.72);
+  border-radius: 50%;
+  box-shadow: 0 14px 30px rgba(44, 12, 7, 0.42);
+  cursor: pointer;
+  font-weight: 800;
+  pointer-events: auto;
+}
+
+.agent-window {
+  display: none;
+  width: min(380px, calc(100vw - 28px));
+  height: min(520px, calc(100vh - 170px));
+  overflow: hidden;
+  color: #efe6d0;
+  background: linear-gradient(160deg, rgba(42, 13, 9, 0.96), rgba(86, 28, 18, 0.94));
+  border: 1px solid rgba(223, 200, 139, 0.28);
+  border-radius: 8px;
+  box-shadow: 0 18px 44px rgba(6, 22, 20, 0.42);
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+}
+
+.agent-panel.open .agent-window {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.agent-head {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(223, 200, 139, 0.18);
+}
+
+.agent-head span,
+.agent-head b {
+  display: block;
+}
+
+.agent-head span {
+  color: #b9aa82;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.agent-head b {
+  margin-top: 3px;
+  color: #f3d47b;
+  font: 700 15px var(--serif);
+}
+
+.agent-messages {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 12px;
+  overflow: auto;
+}
+
+.agent-message {
+  max-width: 88%;
+  padding: 9px 10px;
+  border: 1px solid rgba(223, 200, 139, 0.14);
+  border-radius: 8px;
+  font: 12px/1.7 var(--serif);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.agent-message.user {
+  justify-self: end;
+  color: #fff1c2;
+  background: rgba(158, 45, 35, 0.52);
+}
+
+.agent-message.assistant {
+  justify-self: start;
+  color: #e1d8be;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.agent-form {
+  display: grid;
+  grid-template-columns: 1fr 64px;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid rgba(223, 200, 139, 0.18);
+}
+
+.agent-form input {
+  min-width: 0;
+  padding: 9px;
+  color: #efe6d0;
+  background: #32100c;
+  border: 1px solid rgba(223, 200, 139, 0.22);
+  border-radius: 8px;
+  outline: 0;
+}
+
+.agent-form button {
+  color: #7a241c;
+  background: #f6df9f;
+  border: 1px solid rgba(223, 200, 139, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.agent-form.is-loading button {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 800px) {
+  .agent-panel {
+    right: 10px;
+    bottom: 82px;
+  }
+
+  .agent-window {
+    height: min(440px, calc(100vh - 150px));
+  }
+}

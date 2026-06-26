@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>红图绘长征 WebGIS</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/features/shared/frontend/base.css">
+  <link rel="stylesheet" href="/features/home/frontend/home.css">
+  <link rel="stylesheet" href="/features/home/frontend/home-enhancements.css">
+  <link rel="stylesheet" href="/features/agent/frontend/agent.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar-main">
+      <div class="brand-block">
+        <strong>红图绘长征</strong>
+        <span>长征路线 WebGIS 测绘展示系统</span>
+      </div>
+
+      <div class="primary-nav">
+        <button class="scene-entry" type="button" onclick="location.href='/analysis.html'">综合分析</button>
+        <button class="scene-entry" id="scene3dEntry" type="button">3D 地形</button>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="resetViewBtn" type="button">重置视图</button>
+        <button id="legendToggleBtn" type="button">图例</button>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <aside class="left-panel">
+        <section class="control-card fold-card open" id="routeFold">
+          <button class="fold-title" data-fold="routeFold" type="button">
+            <span>路线图层</span>
+            <b>∨</b>
+          </button>
+          <div class="fold-body route-list" id="routeLayerList"></div>
+        </section>
+
+        <section class="control-card fold-card open" id="eventFold">
+          <button class="fold-title" data-fold="eventFold" type="button">
+            <span>重要事件</span>
+            <b>∨</b>
+          </button>
+          <div class="fold-body">
+            <div class="event-type-buttons" id="eventTypeButtons">
+              <button id="eventVisibilityBtn" type="button" data-events-visible="true">隐藏事件点</button>
+              <button class="active" type="button" data-event-type="all">全部</button>
+              <button type="button" data-event-type="battle">战斗</button>
+              <button type="button" data-event-type="meeting">会议</button>
+              <button type="button" data-event-type="river">渡江</button>
+              <button type="button" data-event-type="mountain">雪山草地</button>
+              <button type="button" data-event-type="join">会师</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="control-card fold-card open" id="resourceFold">
+          <button class="fold-title" data-fold="resourceFold" type="button">
+            <span>红色资源</span>
+            <b>∨</b>
+          </button>
+          <div class="fold-body resource-list" id="resourceLayerList">
+            <label>
+              <input type="checkbox" id="tourismLayerToggle" checked>
+              <span>显示红色资源</span>
+            </label>
+          </div>
+        </section>
+      </aside>
+
+      <section class="map-wrap">
+        <div id="map"></div>
+        <div class="map-title">
+          <span>1934-1936</span>
+          <b>长征路线与重要事件时空展示</b>
+        </div>
+        <div class="map-legend" id="mapLegend">
+          <b>图例</b>
+          <span><i class="legend-route"></i>独立路线图层</span>
+          <span><i class="legend-event battle"></i>战斗</span>
+          <span><i class="legend-event meeting"></i>会议</span>
+          <span><i class="legend-event river"></i>渡江</span>
+          <span><i class="legend-event mountain"></i>雪山草地</span>
+          <span><i class="legend-event join"></i>会师</span>
+          <span><i class="legend-tourism"></i>红色资源</span>
+        </div>
+      </section>
+
+      <aside class="right-detail" id="detailPanel"></aside>
+    </main>
+
+    <footer class="bottom-playbar">
+      <div class="play-group">
+        <span>事件播放</span>
+        <button id="playEventsBtn" type="button">播放事件</button>
+        <button id="pauseBtn" type="button">暂停</button>
+        <button id="prevBtn" type="button">上一个</button>
+        <button id="nextBtn" type="button">下一个</button>
+      </div>
+
+      <div class="play-group route-play-group">
+        <span>路线播放</span>
+        <select id="routeSelect"></select>
+        <button id="playRouteBtn" type="button">播放路线</button>
+      </div>
+
+      <div class="play-status">
+        <b id="playStatusTitle">等待播放</b>
+        <input type="range" id="progressRange" min="0" max="100" value="0">
+      </div>
+    </footer>
+  </div>
+
+  <div class="agent-panel" id="agentPanel">
+    <button class="agent-toggle" id="agentToggle" type="button">AI</button>
+    <section class="agent-window">
+      <header class="agent-head">
+        <span>LONG MARCH GIS AGENT</span>
+        <b>长征 GIS 智能助手</b>
+      </header>
+      <div class="agent-messages" id="agentMessages"></div>
+      <form class="agent-form" id="agentForm">
+        <input id="agentInput" type="text" placeholder="询问路线、事件或空间分析">
+        <button type="submit">发送</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/features/shared/frontend/config.js"></script>
+  <script src="/features/shared/frontend/data-service.js"></script>
+  <script src="/features/home/frontend/home-map.js"></script>
+  <script src="/features/home/frontend/home-ui.js"></script>
+  <script src="/features/agent/frontend/agent-ui.js"></script>
+</body>
+</html>
