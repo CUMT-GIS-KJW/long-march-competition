@@ -240,16 +240,32 @@
   }
 
   function drawResourceRelation() {
-    state.resultLayer = L.layerGroup(
-      state.resources.map((resource) => {
-        return L.circle([resource.lat, resource.lng], {
-          radius: 42000,
-          color: "#3f7b5c",
+    const layers = [];
+
+    state.resources.forEach((resource) => {
+      layers.push(
+        L.circle([resource.lat, resource.lng], {
+          radius: 52000,
+          color: "#d8a84f",
           weight: 1,
-          fillOpacity: 0.18,
-        });
-      }),
-    ).addTo(state.map);
+          opacity: 0.35,
+          fillColor: "#a8261d",
+          fillOpacity: 0.1,
+        }),
+      );
+      layers.push(
+        L.circle([resource.lat, resource.lng], {
+          radius: 18000,
+          color: "#f2d799",
+          weight: 1,
+          opacity: 0.45,
+          fillColor: "#d34a35",
+          fillOpacity: 0.28,
+        }),
+      );
+    });
+
+    state.resultLayer = L.layerGroup(layers).addTo(state.map);
   }
 
   function drawNodes() {

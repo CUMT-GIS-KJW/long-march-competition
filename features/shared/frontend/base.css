@@ -30,15 +30,71 @@ body {
         box-shadow:0 0 0 4px rgba(241,189,78,.14)
 }
 
+.site-nav {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px
+}
+
+.topbar,
+.topbar-main,
+.tourism-topbar {
+        position:relative
+}
+
+.topbar .site-nav,
+.topbar-main .site-nav,
+.tourism-topbar .site-nav {
+        position:absolute;
+        left:50%;
+        top:50%;
+        z-index:10;
+        margin-left:0!important;
+        transform:translate(-50%,-50%)
+}
+
+.site-nav .site-nav-btn {
+        min-width:88px;
+        height:32px;
+        padding:0 13px;
+        color:#fff3cf!important;
+        background:rgba(80,18,10,.52)!important;
+        border:1px solid rgba(255,232,168,.28)!important;
+        border-radius:999px!important;
+        box-shadow:none!important;
+        cursor:pointer;
+        font-size:13px;
+        line-height:30px;
+        white-space:nowrap
+}
+
+.site-nav .site-nav-btn:hover {
+        color:#fff8df!important;
+        background:rgba(139,41,24,.72)!important;
+        border-color:rgba(255,232,168,.46)!important
+}
+
 .site-nav-active,
-.topnav .site-nav-active,
-.primary-nav .site-nav-active,
-.tourism-nav .site-nav-active {
+.site-nav .site-nav-active {
         color:#4a120b!important;
         background:linear-gradient(180deg,#fff0b8,#e1b64e)!important;
         border-color:rgba(255,255,255,.42)!important;
         box-shadow:0 8px 18px rgba(225,182,78,.24)!important;
         font-weight:700
+}
+
+@media(max-width:920px) {
+        .topbar .site-nav,
+        .topbar-main .site-nav,
+        .tourism-topbar .site-nav {
+                position:static;
+                transform:none;
+                width:100%;
+                justify-content:flex-start;
+                overflow:auto;
+                order:10
+        }
 }
 
 .leaflet-container {

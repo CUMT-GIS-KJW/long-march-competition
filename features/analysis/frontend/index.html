@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>长征路线 GIS 空间分析平台</title>
+  <title>长征路线 GIS 综合分析平台</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/analysis/frontend/analysis.css">
@@ -15,21 +15,22 @@
       <div class="brand">
         <div class="seal">析</div>
         <div>
-          <h1>长征路线 GIS 空间分析平台</h1>
+          <h1>长征路线 GIS 综合分析平台</h1>
           <small>ROUTE / TERRAIN / BUFFER / RESOURCE</small>
         </div>
       </div>
 
-      <nav class="topnav">
-        <button class="nav-btn" type="button" onclick="location.href='/index.html'">二维主地图</button>
-        <button class="nav-btn site-nav-active" type="button">综合分析</button>
-        <button class="nav-btn" type="button" onclick="location.href='/scene3d.html'">3D地形</button>
-        <button class="nav-btn" type="button" onclick="location.href='/tourism.html'">红色旅游</button>
-        <div class="system-state">
-          <i class="state-dot"></i>
-          静态分析数据就绪
-        </div>
+      <nav class="topnav site-nav">
+        <button class="site-nav-btn" type="button" onclick="location.href='/index.html'">二维主地图</button>
+        <button class="site-nav-btn site-nav-active" type="button">综合分析</button>
+        <button class="site-nav-btn" type="button" onclick="location.href='/scene3d.html'">3D地形</button>
+        <button class="site-nav-btn" type="button" onclick="location.href='/tourism.html'">红色旅游</button>
       </nav>
+
+      <div class="system-state">
+        <i class="state-dot"></i>
+        <span id="taskState">等待分析</span>
+      </div>
     </header>
 
     <main class="analysis-grid">
@@ -39,23 +40,23 @@
         <div class="tool-list" id="toolList">
           <button class="active" type="button" data-tool="route">
             <i>线</i>
-            <span><b>路线统计分析</b><small>里程 / 省域 / 多军对比</small></span>
+            <span><b>路线统计分析</b><small>里程 / 省域 / 选线原因</small></span>
           </button>
           <button type="button" data-tool="terrain">
             <i>高</i>
-            <span><b>地形起伏分析</b><small>DEM / 海拔剖面 / 最高点</small></span>
+            <span><b>地形起伏分析</b><small>全军团高程 / 结构对比</small></span>
           </button>
           <button type="button" data-tool="buffer">
             <i>缓</i>
-            <span><b>多尺度缓冲分析</b><small>5 / 10 / 20 km</small></span>
+            <span><b>多尺度缓冲分析</b><small>5 / 10 / 20 km 图层接口</small></span>
           </button>
           <button type="button" data-tool="node">
             <i>点</i>
-            <span><b>节点类型统计</b><small>战斗 / 会议 / 天险</small></span>
+            <span><b>节点类型统计</b><small>战斗 / 会议 / 渡江 / 会师</small></span>
           </button>
           <button type="button" data-tool="resource">
-            <i>资</i>
-            <span><b>红色资源关联</b><small>沿线资源 / 热点识别</small></span>
+            <i>热</i>
+            <span><b>红色资源关联</b><small>资源热点 / 沿线关联</small></span>
           </button>
         </div>
 
@@ -63,23 +64,15 @@
           <p class="section-label">模型参数</p>
           <label>
             分析路线
-            <select id="routeSelect">
-              <option value="central">中央红军路线</option>
-              <option value="second">红二方面军路线</option>
-              <option value="fourth">红四方面军路线</option>
-            </select>
+            <select id="routeSelect"></select>
           </label>
           <label>
             缓冲半径
             <select id="bufferSelect">
-              <option value="5">5 km</option>
-              <option value="10">10 km</option>
-              <option value="20">20 km</option>
+              <option value="5">5 km：核心步行研学圈</option>
+              <option value="10">10 km：短驳可达圈</option>
+              <option value="20">20 km：县域联动圈</option>
             </select>
-          </label>
-          <label>
-            空间参考
-            <input value="CGCS2000 / EPSG:4490" readonly>
           </label>
           <button class="run-analysis" type="button" id="runAnalysis">执行 GIS 分析</button>
         </div>
@@ -93,41 +86,49 @@
         </div>
         <div class="analysis-legend" id="analysisLegend">
           <b>专题图例</b>
-          <span><i class="route-symbol"></i>中央红军路线</span>
-          <span><i class="buffer-symbol"></i>分析结果范围</span>
+          <span><i class="route-symbol"></i>当前路线</span>
+          <span><i class="buffer-symbol"></i>缓冲/热点结果</span>
           <span><i class="resource-symbol"></i>红色资源点</span>
         </div>
       </section>
 
       <aside class="metrics-panel">
         <div class="metrics-head">
-          <p class="section-label">核心测绘指标</p>
-          <span id="taskState">等待分析</span>
+          <p class="section-label">专题统计</p>
+          <span id="analysisMode">路线统计</span>
         </div>
         <div class="metrics" id="metrics"></div>
+
+        <div class="route-switch" id="terrainRouteButtons"></div>
+
         <div class="chart-tabs">
           <button class="active" type="button" data-chart="primary">专题统计</button>
           <button type="button" data-chart="secondary">结构对比</button>
         </div>
         <div id="analysisChart"></div>
-        <div class="data-source">
-          <span>数据源</span>
-          <b>长征路线 / DEM / 红色资源点</b>
-          <small>当前为竞赛框架演示数据，接口结构已预留。</small>
-        </div>
+
+        <div class="insight-panel" id="insightPanel"></div>
+        <div class="layer-interface-panel" id="layerInterfacePanel"></div>
+        <div class="route-image-card" id="routeImageCard"></div>
       </aside>
     </main>
 
     <footer class="conclusion">
       <span class="result-badge">分析结论</span>
-      <p id="conclusionText">
-        长征路线跨越多个地形区，涉及山地、高原、河流和草地等复杂地理环境。
-      </p>
+      <p id="conclusionText">请选择左侧专题并执行 GIS 分析，系统将解释选线原因、空间难点和应学习的长征精神。</p>
       <div class="result-actions">
         <button id="tableBtn" type="button">查看统计表</button>
         <button id="exportBtn" type="button">导出分析结果</button>
       </div>
     </footer>
+  </div>
+
+  <div class="analysis-modal" id="analysisModal" aria-hidden="true">
+    <div class="analysis-modal-card">
+      <button class="modal-close" id="modalCloseBtn" type="button">×</button>
+      <h2 id="modalTitle">统计结果</h2>
+      <div id="modalBody"></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
