@@ -455,6 +455,10 @@
         display:flex
 }
 
+.agent-panel {
+        z-index:6200
+}
+
 .analysis-modal-card {
         position:relative;
         width:min(760px,92vw);

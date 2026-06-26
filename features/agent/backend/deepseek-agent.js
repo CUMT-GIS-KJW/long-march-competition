@@ -3,6 +3,7 @@ const EMBEDDED_DEEPSEEK_API_KEY = "sk-36efe399f4fb4f88b9d50ab97cc78f4d";
 const REQUEST_TIMEOUT_MS = 15000;
 const DEFAULT_MODEL = "deepseek-chat";
 const MAX_HISTORY_MESSAGES = 12;
+const MAX_PAGE_CONTEXT_CHARS = 5000;
 
 function normalizeMessage(value) {
   return String(value || "").trim();
@@ -21,6 +22,32 @@ function createHttpError(message, statusCode) {
   const error = new Error(message);
   error.statusCode = statusCode;
   return error;
+}
+
+function normalizePageContext(value) {
+  if (!value) {
+    return "";
+  }
+
+  const text =
+    typeof value === "string" ? value : JSON.stringify(value, null, 2);
+
+  return normalizeMessage(text).slice(0, MAX_PAGE_CONTEXT_CHARS);
+}
+
+function buildSystemPrompt(pageContext) {
+  const basePrompt =
+    "你是一个简洁、可靠的中文 AI 助手。请直接回答用户问题。";
+
+  if (!pageContext) {
+    return basePrompt;
+  }
+
+  return `${basePrompt}
+
+当前页面提供了以下 GIS 分析上下文。用户询问分析结果、图表含义、空间关系或结论时，请优先依据这些上下文解释；不要编造上下文中没有的具体数值。
+
+${pageContext}`;
 }
 
 function normalizeHistory(history) {
@@ -45,8 +72,9 @@ function normalizeHistory(history) {
     });
 }
 
-async function callDeepSeek({ message, history, apiKey }) {
+async function callDeepSeek({ message, history, apiKey, pageContext }) {
   const resolvedApiKey = normalizeApiKey(apiKey) || getDefaultApiKey();
+  const contextText = normalizePageContext(pageContext);
 
   if (!resolvedApiKey) {
     throw createHttpError("DeepSeek API Key 未配置", 500);
@@ -69,7 +97,7 @@ async function callDeepSeek({ message, history, apiKey }) {
         messages: [
           {
             role: "system",
-            content: "你是一个简洁、可靠的中文 AI 助手。请直接回答用户问题。",
+            content: buildSystemPrompt(contextText),
           },
           ...history,
           {
@@ -115,6 +143,7 @@ async function chatWithAgent(payload) {
     message,
     history: normalizeHistory(payload?.history),
     apiKey: payload?.apiKey,
+    pageContext: payload?.pageContext,
   });
 
   return {

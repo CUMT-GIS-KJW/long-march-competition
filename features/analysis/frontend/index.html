@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/analysis/frontend/analysis.css">
   <link rel="stylesheet" href="/features/analysis/frontend/warm-theme.css">
+  <link rel="stylesheet" href="/features/agent/frontend/agent.css">
 </head>
 <body>
   <div class="analysis-app">
@@ -131,6 +132,21 @@
     </div>
   </div>
 
+  <div class="agent-panel" id="agentPanel">
+    <button class="agent-toggle" id="agentToggle" type="button">AI</button>
+    <section class="agent-window">
+      <header class="agent-head">
+        <span>LONG MARCH GIS AGENT</span>
+        <b>长征 GIS 智能助手</b>
+      </header>
+      <div class="agent-messages" id="agentMessages"></div>
+      <form class="agent-form" id="agentForm">
+        <input id="agentInput" type="text" placeholder="询问分析结果、路线或空间关系">
+        <button type="submit">发送</button>
+      </form>
+    </section>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -141,5 +157,6 @@
   <script src="/features/shared/frontend/map-utils.js"></script>
   <script src="/features/analysis/frontend/analysis-map.js"></script>
   <script src="/features/analysis/frontend/analysis-ui.js"></script>
+  <script src="/features/agent/frontend/agent-ui.js"></script>
 </body>
 </html>

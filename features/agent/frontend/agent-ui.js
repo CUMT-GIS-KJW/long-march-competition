@@ -7,16 +7,30 @@
   const messages = $("#agentMessages");
   const windowEl = $(".agent-window");
 
+  if (!panel || !toggle || !form || !input || !messages || !windowEl) {
+    return;
+  }
+
   const apiKeyStorageKey = "long-march-deepseek-api-key";
   let sending = false;
   const history = [];
+
+  function compactText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function readText(selector) {
+    const element = $(selector);
+
+    return compactText(element?.innerText || element?.textContent || "");
+  }
 
   function readApiKey() {
     return localStorage.getItem(apiKeyStorageKey) || "";
   }
 
   function writeApiKey(value) {
-    const apiKey = String(value || "").trim();
+    const apiKey = compactText(value);
 
     if (apiKey) {
       localStorage.setItem(apiKeyStorageKey, apiKey);
@@ -24,6 +38,35 @@
     }
 
     localStorage.removeItem(apiKeyStorageKey);
+  }
+
+  function collectAnalysisContext() {
+    if (!$(".analysis-app")) {
+      return null;
+    }
+
+    const selectedRoute = $("#routeSelect")?.selectedOptions?.[0]?.textContent;
+    const selectedBuffer = $("#bufferSelect")?.selectedOptions?.[0]?.textContent;
+    const metrics = Array.from(document.querySelectorAll("#metrics article"))
+      .map((item) => compactText(item.innerText || item.textContent))
+      .filter(Boolean);
+
+    return {
+      page: "综合分析页面",
+      topic: readText("#mapTheme") || readText("#analysisMode"),
+      selectedRoute: compactText(selectedRoute),
+      bufferRadius: compactText(selectedBuffer),
+      metrics,
+      insight: readText("#insightPanel"),
+      layerMethod: readText("#layerInterfacePanel"),
+      conclusion: readText("#conclusionText"),
+      modalTitle: $(".analysis-modal.show") ? readText("#modalTitle") : "",
+      modalBody: $(".analysis-modal.show") ? readText("#modalBody") : "",
+    };
+  }
+
+  function collectPageContext() {
+    return collectAnalysisContext();
   }
 
   function createKeySettings() {
@@ -47,11 +90,12 @@
     clearButton.type = "button";
     clearButton.textContent = "清除";
     status.className = "agent-key-status";
-    status.textContent = keyInput.value ? "使用用户 Key" : "使用默认 Key";
 
     function refreshStatus() {
       status.textContent = readApiKey() ? "使用用户 Key" : "使用默认 Key";
     }
+
+    refreshStatus();
 
     saveButton.addEventListener("click", () => {
       writeApiKey(keyInput.value);
@@ -116,7 +160,8 @@
         },
         body: JSON.stringify({
           message,
-          page: "index",
+          page: $(".analysis-app") ? "analysis" : "home",
+          pageContext: collectPageContext(),
           history: history.slice(0, -1),
           apiKey: readApiKey(),
         }),
@@ -172,7 +217,7 @@
 
   addMessage(
     "assistant",
-    "你好，我是长征 GIS 智能助手。可以问我历史节点、路线解读、空间分析或答辩讲解。",
+    "你好，我是长征 GIS 智能助手。可以问我当前分析结果、路线解读、空间关系或答辩讲解。",
   );
 
   createKeySettings();
