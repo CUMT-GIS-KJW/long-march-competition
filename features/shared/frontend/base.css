@@ -30,6 +30,17 @@ body {
         box-shadow:0 0 0 4px rgba(241,189,78,.14)
 }
 
+.site-nav-active,
+.topnav .site-nav-active,
+.primary-nav .site-nav-active,
+.tourism-nav .site-nav-active {
+        color:#4a120b!important;
+        background:linear-gradient(180deg,#fff0b8,#e1b64e)!important;
+        border-color:rgba(255,255,255,.42)!important;
+        box-shadow:0 8px 18px rgba(225,182,78,.24)!important;
+        font-weight:700
+}
+
 .leaflet-container {
         font-family:var(--sans);
         background:#d9d1b8

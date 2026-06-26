@@ -277,9 +277,11 @@
     }, 650);
   });
 
-  $("#reportBtn").addEventListener("click", () => {
-    flash("成果报告模块已预留");
-  });
+  if ($("#reportBtn")) {
+    $("#reportBtn").addEventListener("click", () => {
+      flash("成果报告模块已预留");
+    });
+  }
 
   $("#tableBtn").addEventListener("click", () => {
     flash("统计表格已生成（演示）");
