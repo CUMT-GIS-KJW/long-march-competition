@@ -811,13 +811,14 @@
     renderChart();
   });
 
-  $("#routeSelect").addEventListener("change", (event) => {
-    AnalysisMap.showRoute(event.target.value);
-    selectedTerrainRoute = "current";
-    syncTerrainButtons();
-    $("#taskState").textContent = "参数已变更，等待分析";
-    flash("路线已切换，请点击执行 GIS 分析刷新右侧结果");
-  });
+$("#routeSelect").addEventListener("change", (event) => {
+  AnalysisMap.showRoute(event.target.value);
+  AnalysisMap.clearResult();   // ✅ 清除之前的缓冲/热区等结果
+  selectedTerrainRoute = "current";
+  syncTerrainButtons();
+  $("#taskState").textContent = "参数已变更，等待分析";
+  flash("路线已切换，请点击执行 GIS 分析刷新右侧结果");
+});
 
   $("#bufferSelect").addEventListener("change", () => {
     $("#taskState").textContent = "参数已变更，等待分析";

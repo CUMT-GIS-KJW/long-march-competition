@@ -57,56 +57,41 @@
   }
 
   function getPeopleImportance(people) {
-    if (people >= 80000) {
-      return 5;
-    }
-
-    if (people >= 50000) {
-      return 4;
-    }
-
-    if (people >= 30000) {
-      return 3;
-    }
-
-    if (people >= 10000) {
-      return 2;
-    }
-
+    if (people >= 80000) return 5;
+    if (people >= 50000) return 4;
+    if (people >= 30000) return 3;
+    if (people >= 10000) return 2;
     return 1;
   }
 
-  function toLatLngs(geometry) {
-    if (!geometry) {
-      return [];
-    }
+  /* ---------- 修改点 1：拆分多段线 ---------- */
+  function toLatLngsList(geometry) {
+    if (!geometry) return [];
 
     if (geometry.type === "LineString") {
-      return geometry.coordinates.map((coordinate) => {
-        return [coordinate[1], coordinate[0]];
-      });
+      return [geometry.coordinates.map(c => [c[1], c[0]])];
     }
 
     if (geometry.type === "MultiLineString") {
-      return geometry.coordinates.flatMap((line) => {
-        return line.map((coordinate) => {
-          return [coordinate[1], coordinate[0]];
-        });
-      });
+      return geometry.coordinates.map(line =>
+        line.map(c => [c[1], c[0]])
+      );
     }
 
     return [];
   }
 
+  /* ---------- 修改点 2：同时保留 parts 和 points ---------- */
   function buildRoute(config, collection) {
-    const points = [];
+    const parts = [];   // 多条独立的线段
+    const points = [];  // 合并后的点集（用于缓冲、采样等）
 
-    collection.features.forEach((feature) => {
-      toLatLngs(feature.geometry).forEach((point) => {
-        const previous = points[points.length - 1];
-
-        if (!previous || previous[0] !== point[0] || previous[1] !== point[1]) {
-          points.push(point);
+    collection.features.forEach(feature => {
+      toLatLngsList(feature.geometry).forEach(latLngs => {
+        if (latLngs.length) {
+          parts.push(latLngs);
+          // 避免重复的点可以直接 push，turf 会处理
+          latLngs.forEach(p => points.push(p));
         }
       });
     });
@@ -115,31 +100,26 @@
       id: config.layer_key,
       name: config.layer_name,
       color: config.color,
-      points,
+      parts,          // 供绘制使用
+      points,         // 供缓冲、地形采样等
       features: collection.features,
     };
   }
 
   function renderRouteSelect() {
     const routeSelect = document.getElementById("routeSelect");
-
     routeSelect.innerHTML = state.routeConfigs
-      .map((config) => {
-        return `<option value="${config.layer_key}">${config.layer_name}</option>`;
-      })
+      .map(config => `<option value="${config.layer_key}">${config.layer_name}</option>`)
       .join("");
   }
 
   async function loadRoutes() {
     const configs = await DataService.getRouteLayers();
     const entries = await Promise.all(
-      configs.map(async (config) => {
-        const collection = await DataService.getRouteLayerFeatures(
-          config.layer_key,
-        );
-
+      configs.map(async config => {
+        const collection = await DataService.getRouteLayerFeatures(config.layer_key);
         return [config.layer_key, buildRoute(config, collection)];
-      }),
+      })
     );
 
     state.routeConfigs = configs;
@@ -173,7 +153,7 @@
     showRoute(state.routeConfigs[0].layer_key);
 
     state.resourceLayer = L.layerGroup(
-      state.resources.map((resource) => {
+      state.resources.map(resource => {
         const eventLike = {
           ...resource,
           type: "resource",
@@ -190,59 +170,73 @@
     document.dispatchEvent(new Event("analysismapready"));
   }
 
+  /* ---------- 修改点 3：使用 parts 逐段绘制 ---------- */
   function showRoute(routeId) {
     if (state.routeLayer) {
       state.map.removeLayer(state.routeLayer);
     }
 
     const route = state.routes[routeId] || Object.values(state.routes)[0];
+    if (!route) return;
 
-    state.routeLayer = L.polyline(route.points, {
-      color: route.color,
-      weight: 5,
-      opacity: 0.9,
-    }).addTo(state.map);
-
-    state.map.fitBounds(state.routeLayer.getBounds(), {
-      padding: [35, 35],
+    const fg = L.featureGroup();
+    route.parts.forEach(part => {
+      L.polyline(part, {
+        color: route.color,
+        weight: 5,
+        opacity: 0.9,
+      }).addTo(fg);
     });
+
+    state.routeLayer = fg.addTo(state.map);
+    if (fg.getBounds().isValid()) {
+      state.map.fitBounds(fg.getBounds(), { padding: [35, 35] });
+    }
   }
 
   function clearResult() {
-    if (!state.resultLayer) {
-      return;
-    }
-
+    if (!state.resultLayer) return;
     state.map.removeLayer(state.resultLayer);
     state.resultLayer = null;
   }
 
-  function drawBuffer(route, radius) {
-    const line = turf.lineString(
-      route.points.map((point) => {
-        return [point[1], point[0]];
-      }),
-    );
-    const polygon = turf.buffer(line, Number(radius), {
-      units: "kilometers",
+function drawBuffer(route, radius) {
+  // 将多条子线段转为 MultiLineString，避免错误连接
+  const multiLine = turf.multiLineString(
+    route.parts.map(part => part.map(p => [p[1], p[0]]))
+  );
+  let polygon;
+  try {
+    // 尝试直接对 MultiLineString 做缓冲（turf 6+ 支持）
+    polygon = turf.buffer(multiLine, Number(radius), { units: "kilometers" });
+  } catch (e) {
+    // 若不支持，则逐段缓冲后合并
+    const buffers = route.parts.map(part => {
+      const line = turf.lineString(part.map(p => [p[1], p[0]]));
+      return turf.buffer(line, Number(radius), { units: "kilometers" });
     });
-
-    state.resultLayer = L.geoJSON(polygon, {
-      style: {
-        color: "#a72b22",
-        weight: 2,
-        fillColor: "#d28b4c",
-        fillOpacity: 0.28,
-      },
-    }).addTo(state.map);
-
-    state.map.fitBounds(state.resultLayer.getBounds());
+    // 使用 union 依次合并所有多边形
+    polygon = buffers.reduce((acc, cur) => {
+      if (!acc) return cur;
+      return turf.union(acc, cur);
+    }, null);
   }
+
+  state.resultLayer = L.geoJSON(polygon, {
+    style: {
+      color: "#a72b22",
+      weight: 2,
+      fillColor: "#d28b4c",
+      fillOpacity: 0.28,
+    },
+  }).addTo(state.map);
+
+  state.map.fitBounds(state.resultLayer.getBounds());
+}
 
   function drawResourceRelation() {
     const layers = [];
-
-    state.resources.forEach((resource) => {
+    state.resources.forEach(resource => {
       layers.push(
         L.circle([resource.lat, resource.lng], {
           radius: 52000,
@@ -252,8 +246,6 @@
           fillColor: "#a8261d",
           fillOpacity: 0.1,
         }),
-      );
-      layers.push(
         L.circle([resource.lat, resource.lng], {
           radius: 18000,
           color: "#f2d799",
@@ -261,7 +253,7 @@
           opacity: 0.45,
           fillColor: "#d34a35",
           fillOpacity: 0.28,
-        }),
+        })
       );
     });
 
@@ -270,7 +262,7 @@
 
   function drawNodes() {
     state.resultLayer = L.layerGroup(
-      state.events.map((event) => {
+      state.events.map(event => {
         return L.circleMarker([event.lat, event.lng], {
           radius: 4 + event.importance,
           color: "#f2d799",
@@ -283,9 +275,7 @@
   }
 
   function drawTerrainSamples(route) {
-    const samples = route.points.filter((_, index) => {
-      return index % 180 === 0;
-    });
+    const samples = route.points.filter((_, index) => index % 180 === 0);
     const colors = ["#6c8b6d", "#c09242", "#9e3528"];
 
     state.resultLayer = L.layerGroup(
@@ -342,6 +332,7 @@
     state,
     showRoute,
     drawResult,
+    clearResult,
   };
 
   document.addEventListener("DOMContentLoaded", () => {
