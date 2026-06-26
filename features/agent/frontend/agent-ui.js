@@ -129,7 +129,8 @@
       console.error(error);
       addMessage(
         "assistant",
-        "智能助手暂时无法连接，请检查 DeepSeek Key 或网络后重试。",
+        error.message ||
+          "智能助手暂时无法连接，请检查 DeepSeek Key 或网络后重试。",
       );
     } finally {
       sending = false;

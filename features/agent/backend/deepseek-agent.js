@@ -75,6 +75,11 @@ async function callDeepSeek({ message, history, apiKey }) {
         stream: false,
       }),
     });
+  } catch (error) {
+    throw createHttpError(
+      "无法连接 DeepSeek API，请检查网络、代理或防火墙设置",
+      502,
+    );
   } finally {
     clearTimeout(timer);
   }
