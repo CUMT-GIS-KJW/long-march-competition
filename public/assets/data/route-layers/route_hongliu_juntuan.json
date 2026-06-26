@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "六军团",
-        "Shape_Leng": 14.4115158976,
+        "Shape_Leng": 1497.91024,
         "corps_name": "红六军团",
         "stage_name": "长征先遣队，为中央红军探路",
         "_order": 0,
@@ -18377,7 +18377,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "2-6军团A",
-        "Shape_Leng": 18.4911125436,
+        "Shape_Leng": 1922.045613,
         "corps_name": "红二军团、红六军团",
         "stage_name": "离开湘鄂川黔根据地，开始长征。",
         "_order": 1,
@@ -41613,7 +41613,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "六军团云南",
-        "Shape_Leng": 12.2222272961,
+        "Shape_Leng": 1289.914647,
         "corps_name": "红六军团",
         "stage_name": "兵分两路",
         "_order": 2,
@@ -57353,7 +57353,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "2-6军团B",
-        "Shape_Leng": 5.12785343607,
+        "Shape_Leng": 508.315757,
         "corps_name": "红二军团、红六军团",
         "stage_name": "会师甘孜，继续向北",
         "_order": 3,
@@ -64151,7 +64151,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "六军团甘肃A",
-        "Shape_Leng": 2.28244230896,
+        "Shape_Leng": 216.416009,
         "corps_name": "红二方面军",
         "stage_name": "哈达铺到两当转战",
         "_order": 4,
@@ -67177,7 +67177,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "六军团甘肃B",
-        "Shape_Leng": 0.462253572264,
+        "Shape_Leng": 46.253747,
         "corps_name": "红二方面军",
         "stage_name": "马家庄到徽县转战",
         "_order": 5,
@@ -67775,7 +67775,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "二六军团会师",
-        "Shape_Leng": 3.01318178845,
+        "Shape_Leng": 307.203756,
         "corps_name": "红二方面军",
         "stage_name": "红川到将台堡北上会师",
         "_order": 6,

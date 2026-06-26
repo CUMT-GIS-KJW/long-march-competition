@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "九军团出发",
-        "Shape_Leng": 11.3813379737,
+        "Shape_Leng": 1180.04634,
         "corps_name": "红九军团",
         "stage_name": "钟屋到余庆转战",
         "_order": 1,
@@ -14645,7 +14645,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "九军团四渡赤水",
-        "Shape_Leng": 10.2047479197,
+        "Shape_Leng": 1059.017734,
         "corps_name": "红九军团",
         "stage_name": "余庆到沙土转战",
         "_order": 2,
@@ -27761,7 +27761,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "九军团单独行动",
-        "Shape_Leng": 7.22507661117,
+        "Shape_Leng": 757.40936,
         "corps_name": "红九军团",
         "stage_name": "沙土到小庙转战",
         "_order": 3,
@@ -37047,7 +37047,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "九军团懋功会师",
-        "Shape_Leng": 4.39971264217,
+        "Shape_Leng": 463.728489,
         "corps_name": "红九军团",
         "stage_name": "小庙到懋功转战",
         "_order": 4,

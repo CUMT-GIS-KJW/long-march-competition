@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "25军A",
-        "Shape_Leng": 24.9455819468,
+        "Shape_Leng": 2482.46641,
         "corps_name": "红二十五军",
         "stage_name": "何家冲到杨家斜转战",
         "_order": 1,
@@ -31817,7 +31817,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "25军B",
-        "Shape_Leng": 12.4712561667,
+        "Shape_Leng": 1206.463215,
         "corps_name": "红二十五军",
         "stage_name": "杨家斜到永坪转战",
         "_order": 2,

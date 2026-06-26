@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "中央纵队011月湖南",
-        "Shape_Leng": 7.31966761098,
+        "Shape_Leng": 758.753815,
         "corps_name": "中央纵队",
         "stage_name": "梅坑到杨湾转战",
         "_order": 1,
@@ -9443,7 +9443,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "中央纵队一渡赤水",
-        "Shape_Leng": 7.21171159687,
+        "Shape_Leng": 746.883049,
         "corps_name": "中央纵队",
         "stage_name": "一渡赤水到扎西",
         "_order": 2,
@@ -18729,7 +18729,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "中央纵队四渡赤水",
-        "Shape_Leng": 6.54435670039,
+        "Shape_Leng": 682.682071,
         "corps_name": "中央纵队",
         "stage_name": "四渡赤水到鸡场坝",
         "_order": 3,
@@ -27153,7 +27153,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "中央纵队渡金沙江",
-        "Shape_Leng": 5.87763307633,
+        "Shape_Leng": 610.303994,
         "corps_name": "中央纵队",
         "stage_name": "渡金沙江到中屋山",
         "_order": 4,
@@ -34791,7 +34791,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "中央纵队过泸定",
-        "Shape_Leng": 4.24340102145,
+        "Shape_Leng": 463.045384,
         "corps_name": "中央纵队",
         "stage_name": "过泸定到化林坪",
         "_order": 5,
@@ -40249,7 +40249,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "中央纵队懋功会师",
-        "Shape_Leng": 2.05967522518,
+        "Shape_Leng": 213.81703,
         "corps_name": "中央纵队",
         "stage_name": "懋功会师",
         "_order": 6,
