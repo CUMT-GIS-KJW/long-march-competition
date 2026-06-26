@@ -563,6 +563,16 @@ function eventType(props) {
   return "行军驻扎";
 }
 
+function resourceType(props) {
+  const text = `${props.name || ""}${props.type || ""}${props.category || ""}`;
+
+  if (/纪念馆|博物馆|museum/i.test(text)) return "纪念馆";
+  if (/旧址|遗址|会址|site/i.test(text)) return "革命旧址";
+  if (/景区|风景|scenic/i.test(text)) return "红色景区";
+
+  return "其他资源";
+}
+
 function loadRoutes() {
   const configs = readJson("route-layer-config.json");
 
@@ -683,6 +693,12 @@ function buildBufferStats(primaryRoute, events, resources) {
   }));
 }
 
+function featuresWithinRoute(features, route, radius = 20) {
+  return features.filter((feature) => {
+    return distanceToRouteKm(featurePoint(feature), route.lineParts) <= radius;
+  });
+}
+
 async function buildElevation(primaryRoute) {
   const samples = sampleRoute(primaryRoute.lineParts, 9);
   return Promise.all(samples.map(async (point) => {
@@ -755,6 +771,31 @@ function buildSummary(routes, province, elevation, buffer, events, resources) {
   };
 }
 
+function buildRouteSummary(route, province, elevation, buffer) {
+  const widestBuffer = buffer[buffer.length - 1] || {};
+  const provinces = new Set(
+    province
+      .filter((item) => item.distance > 0 || item.eventCount > 0 || item.resourceCount > 0)
+      .map((item) => item.province)
+      .filter((item) => item !== "其他"),
+  );
+
+  return {
+    routeKey: route.layer_key,
+    routeName: route.layer_name,
+    totalDistance: round(route.distance),
+    totalEvents: widestBuffer.eventCount || 0,
+    totalProvinces: provinces.size,
+    totalResources: widestBuffer.resourceCount || 0,
+    averageElevation: elevation.length
+      ? round(elevation.reduce((sum, item) => sum + item.elevation, 0) / elevation.length)
+      : 0,
+    maxElevation: elevation.length ? Math.max(...elevation.map((item) => item.elevation)) : 0,
+    bufferArea: widestBuffer.area || 0,
+    description: `${route.layer_name} 的路线级 GIS 分析结果。`,
+  };
+}
+
 function buildNodeTypeStats(events) {
   const groups = new Map();
 
@@ -764,6 +805,40 @@ function buildNodeTypeStats(events) {
   });
 
   return [...groups.entries()].map(([type, count]) => ({ type, count }));
+}
+
+function buildResourceTypeStats(resources) {
+  const groups = new Map();
+
+  resources.forEach((feature) => {
+    const type = resourceType(featureProps(feature));
+    groups.set(type, (groups.get(type) || 0) + 1);
+  });
+
+  return [...groups.entries()].map(([type, count]) => ({ type, count }));
+}
+
+async function buildRouteAnalysis(route, events, resources, provinceIndex, referencePoints) {
+  const routeEvents = featuresWithinRoute(events, route, 20);
+  const routeResources = featuresWithinRoute(resources, route, 20);
+  const province = buildProvinceStats(route, routeEvents, routeResources, provinceIndex, referencePoints);
+  const elevation = await buildElevation(route);
+  const buffer = buildBufferStats(route, events, resources);
+  const stage = buildStageStats(route, routeEvents);
+  const nodeTypes = buildNodeTypeStats(routeEvents);
+  const resourceTypes = buildResourceTypeStats(routeResources);
+
+  return {
+    routeKey: route.layer_key,
+    routeName: route.layer_name,
+    summary: buildRouteSummary(route, province, elevation, buffer),
+    province,
+    elevation,
+    buffer,
+    stage,
+    nodeTypes,
+    resourceTypes,
+  };
 }
 
 async function main() {
@@ -780,6 +855,11 @@ async function main() {
   const stage = buildStageStats(primaryRoute, events);
   const summary = buildSummary(routes, province, elevation, buffer, events, resources);
   const nodeTypes = buildNodeTypeStats(events);
+  const routeAnalyses = await Promise.all(
+    routes.map((route) => {
+      return buildRouteAnalysis(route, events, resources, provinceIndex, referencePoints);
+    }),
+  );
 
   writeJson("analysis-summary.json", summary);
   writeJson("analysis-province.json", province);
@@ -787,6 +867,7 @@ async function main() {
   writeJson("analysis-buffer.json", buffer);
   writeJson("analysis-stage.json", stage);
   writeJson("analysis-node-types.json", nodeTypes);
+  writeJson("analysis-routes.json", routeAnalyses);
 
   console.log("GIS analysis data generated:");
   console.log(`- routes: ${routes.length}`);
@@ -794,6 +875,7 @@ async function main() {
   console.log(`- resources: ${resources.length}`);
   console.log(`- province rows: ${province.length}`);
   console.log(`- province polygons: ${provinceIndex.length}`);
+  console.log(`- route analyses: ${routeAnalyses.length}`);
   console.log(`- province source: ${PROVINCE_SOURCE_URL}`);
   console.log(`- DEM source: ${TERRARIUM_URL} z${TERRARIUM_ZOOM}`);
   console.log(`- output: ${DATA_DIR}`);

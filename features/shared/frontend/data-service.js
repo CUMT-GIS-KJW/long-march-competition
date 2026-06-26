@@ -97,6 +97,7 @@
     getAnalysisBuffer: () => fetchJson("analysisBuffer"),
     getAnalysisStage: () => fetchJson("analysisStage"),
     getAnalysisNodeTypes: () => fetchJson("analysisNodeTypes"),
+    getAnalysisRoutes: () => fetchJson("analysisRoutes"),
     getScene3dFocus: () => fetchJson("scene3dFocus"),
   };
 })();

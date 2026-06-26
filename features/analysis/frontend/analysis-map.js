@@ -309,11 +309,11 @@
     }).addTo(state.map);
   }
 
-  function drawResult(tool, radius = 10) {
+  function drawResult(tool, radius = 10, routeId = null) {
     clearResult();
 
-    const routeId = document.getElementById("routeSelect").value;
-    const route = state.routes[routeId] || Object.values(state.routes)[0];
+    const selectedRouteId = routeId || document.getElementById("routeSelect").value;
+    const route = state.routes[selectedRouteId] || Object.values(state.routes)[0];
 
     if (tool === "buffer" && window.turf) {
       drawBuffer(route, radius);

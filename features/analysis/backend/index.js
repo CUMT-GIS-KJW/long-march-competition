@@ -8,6 +8,7 @@ const analysisFiles = {
   "/api/analysis/buffer": "analysis-buffer.json",
   "/api/analysis/stage": "analysis-stage.json",
   "/api/analysis/node-types": "analysis-node-types.json",
+  "/api/analysis/routes": "analysis-routes.json",
 };
 
 const bufferLayerInterfaces = {

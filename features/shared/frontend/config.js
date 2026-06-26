@@ -16,6 +16,7 @@ window.APP_CONFIG = {
     analysisBuffer: "/assets/data/analysis-buffer.json",
     analysisStage: "/assets/data/analysis-stage.json",
     analysisNodeTypes: "/assets/data/analysis-node-types.json",
+    analysisRoutes: "/assets/data/analysis-routes.json",
     scene3dFocus: "/assets/data/scene3d-focus.json",
   },
 
@@ -33,6 +34,7 @@ window.APP_CONFIG = {
     analysisBuffer: "/analysis/buffer",
     analysisStage: "/analysis/stage",
     analysisNodeTypes: "/analysis/node-types",
+    analysisRoutes: "/analysis/routes",
     scene3dFocus: "/scene3d/focus",
   },
 

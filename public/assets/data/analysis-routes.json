@@ -1,0 +1,2359 @@
+[
+  {
+    "routeKey": "route_zhongyang_zongdui",
+    "routeName": "中央纵队路线图",
+    "summary": {
+      "routeKey": "route_zhongyang_zongdui",
+      "routeName": "中央纵队路线图",
+      "totalDistance": 3478,
+      "totalEvents": 70,
+      "totalProvinces": 7,
+      "totalResources": 135,
+      "averageElevation": 1216,
+      "maxElevation": 2531,
+      "bufferArea": 140377,
+      "description": "中央纵队路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "贵州",
+        "distance": 1341,
+        "eventCount": 15,
+        "resourceCount": 37
+      },
+      {
+        "province": "四川",
+        "distance": 936,
+        "eventCount": 8,
+        "resourceCount": 19
+      },
+      {
+        "province": "湖南",
+        "distance": 374,
+        "eventCount": 17,
+        "resourceCount": 5
+      },
+      {
+        "province": "云南",
+        "distance": 364,
+        "eventCount": 1,
+        "resourceCount": 14
+      },
+      {
+        "province": "江西",
+        "distance": 275,
+        "eventCount": 20,
+        "resourceCount": 56
+      },
+      {
+        "province": "广西",
+        "distance": 188,
+        "eventCount": 6,
+        "resourceCount": 4
+      },
+      {
+        "province": "广东",
+        "distance": 0,
+        "eventCount": 3,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 226,
+        "place": "瑞金"
+      },
+      {
+        "distance": 435,
+        "elevation": 565,
+        "place": "湘江"
+      },
+      {
+        "distance": 869,
+        "elevation": 630,
+        "place": "湘江"
+      },
+      {
+        "distance": 1304,
+        "elevation": 1178,
+        "place": "赤水"
+      },
+      {
+        "distance": 1739,
+        "elevation": 1150,
+        "place": "遵义"
+      },
+      {
+        "distance": 2174,
+        "elevation": 897,
+        "place": "遵义"
+      },
+      {
+        "distance": 2608,
+        "elevation": 2071,
+        "place": "赤水"
+      },
+      {
+        "distance": 3043,
+        "elevation": 1695,
+        "place": "大渡河"
+      },
+      {
+        "distance": 3478,
+        "elevation": 2531,
+        "place": "夹金山"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 82,
+        "eventCount": 39,
+        "area": 34859
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 94,
+        "eventCount": 51,
+        "area": 69874
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 135,
+        "eventCount": 70,
+        "area": 140377
+      }
+    ],
+    "stage": [
+      {
+        "stage": "长征出发与集结",
+        "distance": 447,
+        "eventCount": 9,
+        "startDate": "1934-10-06",
+        "endDate": "1934-10-20"
+      },
+      {
+        "stage": "突破封锁线",
+        "distance": 1491,
+        "eventCount": 30,
+        "startDate": "1934-10-21",
+        "endDate": "1934-11-25"
+      },
+      {
+        "stage": "湘江战役",
+        "distance": 248,
+        "eventCount": 5,
+        "startDate": "1934-11-27",
+        "endDate": "1934-12-04"
+      },
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 248,
+        "eventCount": 5,
+        "startDate": "1934-12-10",
+        "endDate": "1934-12-31"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 50,
+        "eventCount": 1,
+        "startDate": "1935-01-04",
+        "endDate": "1935-01-04"
+      },
+      {
+        "stage": "遵义转折",
+        "distance": 99,
+        "eventCount": 2,
+        "startDate": "1935-01-15",
+        "endDate": "1935-01-19"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 596,
+        "eventCount": 12,
+        "startDate": "1935-01-23",
+        "endDate": "1935-03-31"
+      },
+      {
+        "stage": "巧渡金沙江与会理",
+        "distance": 99,
+        "eventCount": 2,
+        "startDate": "1935-05-12",
+        "endDate": "1935-05-16"
+      },
+      {
+        "stage": "强渡大渡河与飞夺泸定桥",
+        "distance": 99,
+        "eventCount": 2,
+        "startDate": "1935-05-24",
+        "endDate": "1935-05-29"
+      },
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 99,
+        "eventCount": 2,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-12"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "雪山草地",
+        "count": 4
+      },
+      {
+        "type": "行军驻扎",
+        "count": 32
+      },
+      {
+        "type": "战斗",
+        "count": 26
+      },
+      {
+        "type": "会议",
+        "count": 7
+      },
+      {
+        "type": "会师",
+        "count": 1
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 61
+      },
+      {
+        "type": "纪念馆",
+        "count": 43
+      },
+      {
+        "type": "红色景区",
+        "count": 31
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongyi_juntuan",
+    "routeName": "红一军团路线图",
+    "summary": {
+      "routeKey": "route_hongyi_juntuan",
+      "routeName": "红一军团路线图",
+      "totalDistance": 5260,
+      "totalEvents": 76,
+      "totalProvinces": 11,
+      "totalResources": 143,
+      "averageElevation": 1289,
+      "maxElevation": 2159,
+      "bufferArea": 211661,
+      "description": "红一军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "四川",
+        "distance": 1738,
+        "eventCount": 9,
+        "resourceCount": 31
+      },
+      {
+        "province": "贵州",
+        "distance": 1498,
+        "eventCount": 16,
+        "resourceCount": 45
+      },
+      {
+        "province": "甘肃",
+        "distance": 482,
+        "eventCount": 3,
+        "resourceCount": 8
+      },
+      {
+        "province": "云南",
+        "distance": 437,
+        "eventCount": 1,
+        "resourceCount": 17
+      },
+      {
+        "province": "湖南",
+        "distance": 342,
+        "eventCount": 16,
+        "resourceCount": 5
+      },
+      {
+        "province": "江西",
+        "distance": 265,
+        "eventCount": 19,
+        "resourceCount": 31
+      },
+      {
+        "province": "广西",
+        "distance": 184,
+        "eventCount": 7,
+        "resourceCount": 3
+      },
+      {
+        "province": "宁夏",
+        "distance": 119,
+        "eventCount": 1,
+        "resourceCount": 0
+      },
+      {
+        "province": "广东",
+        "distance": 100,
+        "eventCount": 3,
+        "resourceCount": 0
+      },
+      {
+        "province": "陕西",
+        "distance": 81,
+        "eventCount": 1,
+        "resourceCount": 3
+      },
+      {
+        "province": "重庆",
+        "distance": 15,
+        "eventCount": 0,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 154,
+        "place": "瑞金"
+      },
+      {
+        "distance": 658,
+        "elevation": 422,
+        "place": "湘江"
+      },
+      {
+        "distance": 1315,
+        "elevation": 1172,
+        "place": "遵义"
+      },
+      {
+        "distance": 1973,
+        "elevation": 1268,
+        "place": "赤水"
+      },
+      {
+        "distance": 2630,
+        "elevation": 775,
+        "place": "遵义"
+      },
+      {
+        "distance": 3288,
+        "elevation": 1865,
+        "place": "大渡河"
+      },
+      {
+        "distance": 3945,
+        "elevation": 1816,
+        "place": "大渡河"
+      },
+      {
+        "distance": 4603,
+        "elevation": 1971,
+        "place": "腊子口"
+      },
+      {
+        "distance": 5260,
+        "elevation": 2159,
+        "place": "会宁"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 101,
+        "eventCount": 48,
+        "area": 52680
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 114,
+        "eventCount": 60,
+        "area": 105516
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 143,
+        "eventCount": 76,
+        "area": 211661
+      }
+    ],
+    "stage": [
+      {
+        "stage": "长征出发与集结",
+        "distance": 415,
+        "eventCount": 6,
+        "startDate": "1934-10-06",
+        "endDate": "1934-10-20"
+      },
+      {
+        "stage": "突破封锁线",
+        "distance": 2146,
+        "eventCount": 31,
+        "startDate": "1934-10-21",
+        "endDate": "1934-11-25"
+      },
+      {
+        "stage": "湘江战役",
+        "distance": 415,
+        "eventCount": 6,
+        "startDate": "1934-11-27",
+        "endDate": "1934-12-04"
+      },
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 277,
+        "eventCount": 4,
+        "startDate": "1934-12-10",
+        "endDate": "1934-12-23"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 69,
+        "eventCount": 1,
+        "startDate": "1935-01-02",
+        "endDate": "1935-01-02"
+      },
+      {
+        "stage": "遵义转折",
+        "distance": 208,
+        "eventCount": 3,
+        "startDate": "1935-01-11",
+        "endDate": "1935-01-19"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 900,
+        "eventCount": 13,
+        "startDate": "1935-01-23",
+        "endDate": "1935-03-31"
+      },
+      {
+        "stage": "巧渡金沙江与会理",
+        "distance": 138,
+        "eventCount": 2,
+        "startDate": "1935-05-12",
+        "endDate": "1935-05-16"
+      },
+      {
+        "stage": "强渡大渡河与飞夺泸定桥",
+        "distance": 138,
+        "eventCount": 2,
+        "startDate": "1935-05-24",
+        "endDate": "1935-05-29"
+      },
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 208,
+        "eventCount": 3,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-26"
+      },
+      {
+        "stage": "北上陕甘与到达陕北",
+        "distance": 277,
+        "eventCount": 4,
+        "startDate": "1935-09-17",
+        "endDate": "1935-10-19"
+      },
+      {
+        "stage": "三军会师",
+        "distance": 69,
+        "eventCount": 1,
+        "startDate": "1936-10-22",
+        "endDate": "1936-10-22"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "雪山草地",
+        "count": 4
+      },
+      {
+        "type": "行军驻扎",
+        "count": 31
+      },
+      {
+        "type": "战斗",
+        "count": 30
+      },
+      {
+        "type": "会议",
+        "count": 8
+      },
+      {
+        "type": "会师",
+        "count": 3
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 67
+      },
+      {
+        "type": "纪念馆",
+        "count": 40
+      },
+      {
+        "type": "红色景区",
+        "count": 36
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongqi_juntuan",
+    "routeName": "红七军团路线图",
+    "summary": {
+      "routeKey": "route_hongqi_juntuan",
+      "routeName": "红七军团路线图",
+      "totalDistance": 1816,
+      "totalEvents": 4,
+      "totalProvinces": 4,
+      "totalResources": 30,
+      "averageElevation": 332,
+      "maxElevation": 388,
+      "bufferArea": 73907,
+      "description": "红七军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "浙江",
+        "distance": 651,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "福建",
+        "distance": 642,
+        "eventCount": 1,
+        "resourceCount": 0
+      },
+      {
+        "province": "安徽",
+        "distance": 294,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "江西",
+        "distance": 229,
+        "eventCount": 3,
+        "resourceCount": 30
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 198,
+        "place": "瑞金"
+      },
+      {
+        "distance": 227,
+        "elevation": 285,
+        "place": "瑞金"
+      },
+      {
+        "distance": 454,
+        "elevation": 323,
+        "place": "瑞金"
+      },
+      {
+        "distance": 681,
+        "elevation": 327,
+        "place": "瑞金"
+      },
+      {
+        "distance": 908,
+        "elevation": 348,
+        "place": "瑞金"
+      },
+      {
+        "distance": 1135,
+        "elevation": 366,
+        "place": "瑞金"
+      },
+      {
+        "distance": 1362,
+        "elevation": 367,
+        "place": "瑞金"
+      },
+      {
+        "distance": 1589,
+        "elevation": 382,
+        "place": "瑞金"
+      },
+      {
+        "distance": 1816,
+        "elevation": 388,
+        "place": "瑞金"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 27,
+        "eventCount": 2,
+        "area": 18241
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 27,
+        "eventCount": 2,
+        "area": 36639
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 30,
+        "eventCount": 4,
+        "area": 73907
+      }
+    ],
+    "stage": [
+      {
+        "stage": "长征出发与集结",
+        "distance": 1816,
+        "eventCount": 4,
+        "startDate": "1934-09-30",
+        "endDate": "1934-10-10"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "行军驻扎",
+        "count": 4
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 8
+      },
+      {
+        "type": "红色景区",
+        "count": 7
+      },
+      {
+        "type": "纪念馆",
+        "count": 15
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongsan_juntuan",
+    "routeName": "红三军团路线图",
+    "summary": {
+      "routeKey": "route_hongsan_juntuan",
+      "routeName": "红三军团路线图",
+      "totalDistance": 3473,
+      "totalEvents": 62,
+      "totalProvinces": 6,
+      "totalResources": 110,
+      "averageElevation": 1201,
+      "maxElevation": 2685,
+      "bufferArea": 140195,
+      "description": "红三军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "贵州",
+        "distance": 1281,
+        "eventCount": 16,
+        "resourceCount": 39
+      },
+      {
+        "province": "四川",
+        "distance": 1031,
+        "eventCount": 8,
+        "resourceCount": 18
+      },
+      {
+        "province": "湖南",
+        "distance": 344,
+        "eventCount": 14,
+        "resourceCount": 5
+      },
+      {
+        "province": "云南",
+        "distance": 339,
+        "eventCount": 1,
+        "resourceCount": 13
+      },
+      {
+        "province": "江西",
+        "distance": 285,
+        "eventCount": 17,
+        "resourceCount": 30
+      },
+      {
+        "province": "广西",
+        "distance": 194,
+        "eventCount": 6,
+        "resourceCount": 5
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 181,
+        "place": "瑞金"
+      },
+      {
+        "distance": 434,
+        "elevation": 365,
+        "place": "湘江"
+      },
+      {
+        "distance": 868,
+        "elevation": 564,
+        "place": "湘江"
+      },
+      {
+        "distance": 1303,
+        "elevation": 855,
+        "place": "遵义"
+      },
+      {
+        "distance": 1737,
+        "elevation": 612,
+        "place": "赤水"
+      },
+      {
+        "distance": 2171,
+        "elevation": 397,
+        "place": "赤水"
+      },
+      {
+        "distance": 2605,
+        "elevation": 2685,
+        "place": "赤水"
+      },
+      {
+        "distance": 3039,
+        "elevation": 2618,
+        "place": "大渡河"
+      },
+      {
+        "distance": 3473,
+        "elevation": 2531,
+        "place": "夹金山"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 63,
+        "eventCount": 39,
+        "area": 34813
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 77,
+        "eventCount": 51,
+        "area": 69783
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 110,
+        "eventCount": 62,
+        "area": 140195
+      }
+    ],
+    "stage": [
+      {
+        "stage": "长征出发与集结",
+        "distance": 224,
+        "eventCount": 4,
+        "startDate": "1934-10-11",
+        "endDate": "1934-10-16"
+      },
+      {
+        "stage": "突破封锁线",
+        "distance": 1513,
+        "eventCount": 27,
+        "startDate": "1934-10-21",
+        "endDate": "1934-11-25"
+      },
+      {
+        "stage": "湘江战役",
+        "distance": 280,
+        "eventCount": 5,
+        "startDate": "1934-11-27",
+        "endDate": "1934-12-04"
+      },
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 224,
+        "eventCount": 4,
+        "startDate": "1934-12-10",
+        "endDate": "1934-12-31"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 112,
+        "eventCount": 2,
+        "startDate": "1935-01-01",
+        "endDate": "1935-01-04"
+      },
+      {
+        "stage": "遵义转折",
+        "distance": 112,
+        "eventCount": 2,
+        "startDate": "1935-01-15",
+        "endDate": "1935-01-19"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 672,
+        "eventCount": 12,
+        "startDate": "1935-01-23",
+        "endDate": "1935-03-31"
+      },
+      {
+        "stage": "巧渡金沙江与会理",
+        "distance": 112,
+        "eventCount": 2,
+        "startDate": "1935-05-12",
+        "endDate": "1935-05-16"
+      },
+      {
+        "stage": "强渡大渡河与飞夺泸定桥",
+        "distance": 112,
+        "eventCount": 2,
+        "startDate": "1935-05-24",
+        "endDate": "1935-05-29"
+      },
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 112,
+        "eventCount": 2,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-12"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "行军驻扎",
+        "count": 27
+      },
+      {
+        "type": "战斗",
+        "count": 25
+      },
+      {
+        "type": "雪山草地",
+        "count": 3
+      },
+      {
+        "type": "会议",
+        "count": 6
+      },
+      {
+        "type": "会师",
+        "count": 1
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 54
+      },
+      {
+        "type": "纪念馆",
+        "count": 29
+      },
+      {
+        "type": "红色景区",
+        "count": 27
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongsanshi_jun",
+    "routeName": "红三十军路线图",
+    "summary": {
+      "routeKey": "route_hongsanshi_jun",
+      "routeName": "红三十军路线图",
+      "totalDistance": 514,
+      "totalEvents": 3,
+      "totalProvinces": 1,
+      "totalResources": 3,
+      "averageElevation": 3116,
+      "maxElevation": 3593,
+      "bufferArea": 21819,
+      "description": "红三十军路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "四川",
+        "distance": 514,
+        "eventCount": 3,
+        "resourceCount": 3
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 2749,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 64,
+        "elevation": 2878,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 129,
+        "elevation": 2883,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 193,
+        "elevation": 3091,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 257,
+        "elevation": 3319,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 321,
+        "elevation": 3370,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 386,
+        "elevation": 3593,
+        "place": "夹金山"
+      },
+      {
+        "distance": 450,
+        "elevation": 3435,
+        "place": "夹金山"
+      },
+      {
+        "distance": 514,
+        "elevation": 2726,
+        "place": "夹金山"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 1,
+        "eventCount": 2,
+        "area": 5219
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 1,
+        "eventCount": 3,
+        "area": 10595
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 3,
+        "eventCount": 3,
+        "area": 21819
+      }
+    ],
+    "stage": [
+      {
+        "stage": "红四方面军长征",
+        "distance": 171,
+        "eventCount": 1,
+        "startDate": "1935-03-28",
+        "endDate": "1935-03-28"
+      },
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 343,
+        "eventCount": 2,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-12"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "战斗",
+        "count": 1
+      },
+      {
+        "type": "会师",
+        "count": 1
+      },
+      {
+        "type": "雪山草地",
+        "count": 1
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "纪念馆",
+        "count": 1
+      },
+      {
+        "type": "红色景区",
+        "count": 2
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongjiu_juntuan",
+    "routeName": "红九军团路线图",
+    "summary": {
+      "routeKey": "route_hongjiu_juntuan",
+      "routeName": "红九军团路线图",
+      "totalDistance": 3462,
+      "totalEvents": 69,
+      "totalProvinces": 8,
+      "totalResources": 118,
+      "averageElevation": 1081,
+      "maxElevation": 2531,
+      "bufferArea": 139754,
+      "description": "红九军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "贵州",
+        "distance": 1321,
+        "eventCount": 15,
+        "resourceCount": 46
+      },
+      {
+        "province": "四川",
+        "distance": 894,
+        "eventCount": 7,
+        "resourceCount": 17
+      },
+      {
+        "province": "湖南",
+        "distance": 431,
+        "eventCount": 15,
+        "resourceCount": 5
+      },
+      {
+        "province": "江西",
+        "distance": 269,
+        "eventCount": 19,
+        "resourceCount": 42
+      },
+      {
+        "province": "云南",
+        "distance": 267,
+        "eventCount": 1,
+        "resourceCount": 5
+      },
+      {
+        "province": "广西",
+        "distance": 166,
+        "eventCount": 7,
+        "resourceCount": 3
+      },
+      {
+        "province": "广东",
+        "distance": 63,
+        "eventCount": 3,
+        "resourceCount": 0
+      },
+      {
+        "province": "福建",
+        "distance": 50,
+        "eventCount": 2,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 426,
+        "place": "湘江"
+      },
+      {
+        "distance": 433,
+        "elevation": 812,
+        "place": "湘江"
+      },
+      {
+        "distance": 866,
+        "elevation": 282,
+        "place": "瑞金"
+      },
+      {
+        "distance": 1298,
+        "elevation": 836,
+        "place": "遵义"
+      },
+      {
+        "distance": 1731,
+        "elevation": 1237,
+        "place": "遵义"
+      },
+      {
+        "distance": 2164,
+        "elevation": 433,
+        "place": "赤水"
+      },
+      {
+        "distance": 2597,
+        "elevation": 1215,
+        "place": "遵义"
+      },
+      {
+        "distance": 3030,
+        "elevation": 1955,
+        "place": "大渡河"
+      },
+      {
+        "distance": 3462,
+        "elevation": 2531,
+        "place": "夹金山"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 68,
+        "eventCount": 48,
+        "area": 34703
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 96,
+        "eventCount": 57,
+        "area": 69563
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 118,
+        "eventCount": 69,
+        "area": 139754
+      }
+    ],
+    "stage": [
+      {
+        "stage": "长征出发与集结",
+        "distance": 452,
+        "eventCount": 9,
+        "startDate": "1934-09-30",
+        "endDate": "1934-10-20"
+      },
+      {
+        "stage": "突破封锁线",
+        "distance": 1455,
+        "eventCount": 29,
+        "startDate": "1934-10-22",
+        "endDate": "1934-11-25"
+      },
+      {
+        "stage": "湘江战役",
+        "distance": 301,
+        "eventCount": 6,
+        "startDate": "1934-11-27",
+        "endDate": "1934-12-04"
+      },
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 100,
+        "eventCount": 2,
+        "startDate": "1934-12-10",
+        "endDate": "1934-12-12"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 50,
+        "eventCount": 1,
+        "startDate": "1935-01-02",
+        "endDate": "1935-01-02"
+      },
+      {
+        "stage": "遵义转折",
+        "distance": 201,
+        "eventCount": 4,
+        "startDate": "1935-01-08",
+        "endDate": "1935-01-19"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 652,
+        "eventCount": 13,
+        "startDate": "1935-01-23",
+        "endDate": "1935-03-31"
+      },
+      {
+        "stage": "巧渡金沙江与会理",
+        "distance": 50,
+        "eventCount": 1,
+        "startDate": "1935-04-29",
+        "endDate": "1935-04-29"
+      },
+      {
+        "stage": "强渡大渡河与飞夺泸定桥",
+        "distance": 100,
+        "eventCount": 2,
+        "startDate": "1935-05-24",
+        "endDate": "1935-05-29"
+      },
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 100,
+        "eventCount": 2,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-12"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "行军驻扎",
+        "count": 31
+      },
+      {
+        "type": "雪山草地",
+        "count": 4
+      },
+      {
+        "type": "战斗",
+        "count": 29
+      },
+      {
+        "type": "会议",
+        "count": 4
+      },
+      {
+        "type": "会师",
+        "count": 1
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 50
+      },
+      {
+        "type": "纪念馆",
+        "count": 38
+      },
+      {
+        "type": "红色景区",
+        "count": 30
+      }
+    ]
+  },
+  {
+    "routeKey": "route_honger_juntuan",
+    "routeName": "红二军团路线图",
+    "summary": {
+      "routeKey": "route_honger_juntuan",
+      "routeName": "红二军团路线图",
+      "totalDistance": 4622,
+      "totalEvents": 10,
+      "totalProvinces": 8,
+      "totalResources": 38,
+      "averageElevation": 1760,
+      "maxElevation": 3012,
+      "bufferArea": 186148,
+      "description": "红二军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "贵州",
+        "distance": 1053,
+        "eventCount": 3,
+        "resourceCount": 9
+      },
+      {
+        "province": "云南",
+        "distance": 1053,
+        "eventCount": 1,
+        "resourceCount": 15
+      },
+      {
+        "province": "甘肃",
+        "distance": 870,
+        "eventCount": 3,
+        "resourceCount": 8
+      },
+      {
+        "province": "四川",
+        "distance": 826,
+        "eventCount": 1,
+        "resourceCount": 6
+      },
+      {
+        "province": "湖南",
+        "distance": 674,
+        "eventCount": 1,
+        "resourceCount": 0
+      },
+      {
+        "province": "陕西",
+        "distance": 66,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "西藏",
+        "distance": 64,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "宁夏",
+        "distance": 15,
+        "eventCount": 1,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 1426,
+        "place": "遵义"
+      },
+      {
+        "distance": 578,
+        "elevation": 1241,
+        "place": "遵义"
+      },
+      {
+        "distance": 1156,
+        "elevation": 797,
+        "place": "遵义"
+      },
+      {
+        "distance": 1733,
+        "elevation": 468,
+        "place": "湘江"
+      },
+      {
+        "distance": 2311,
+        "elevation": 1903,
+        "place": "大渡河"
+      },
+      {
+        "distance": 2889,
+        "elevation": 2790,
+        "place": "大渡河"
+      },
+      {
+        "distance": 3467,
+        "elevation": 3012,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 4044,
+        "elevation": 2401,
+        "place": "腊子口"
+      },
+      {
+        "distance": 4622,
+        "elevation": 1801,
+        "place": "会宁"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 21,
+        "eventCount": 6,
+        "area": 46301
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 26,
+        "eventCount": 7,
+        "area": 92760
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 38,
+        "eventCount": 10,
+        "area": 186148
+      }
+    ],
+    "stage": [
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 462,
+        "eventCount": 1,
+        "startDate": "1934-12-31",
+        "endDate": "1934-12-31"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 462,
+        "eventCount": 1,
+        "startDate": "1935-01-02",
+        "endDate": "1935-01-02"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 462,
+        "eventCount": 1,
+        "startDate": "1935-03-13",
+        "endDate": "1935-03-13"
+      },
+      {
+        "stage": "北上陕甘与到达陕北",
+        "distance": 1387,
+        "eventCount": 3,
+        "startDate": "1935-09-17",
+        "endDate": "1935-09-27"
+      },
+      {
+        "stage": "红二方面军长征",
+        "distance": 1387,
+        "eventCount": 3,
+        "startDate": "1935-11-19",
+        "endDate": "1936-07-02"
+      },
+      {
+        "stage": "三军会师",
+        "distance": 462,
+        "eventCount": 1,
+        "startDate": "1936-10-22",
+        "endDate": "1936-10-22"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "会议",
+        "count": 2
+      },
+      {
+        "type": "战斗",
+        "count": 3
+      },
+      {
+        "type": "会师",
+        "count": 3
+      },
+      {
+        "type": "行军驻扎",
+        "count": 2
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 20
+      },
+      {
+        "type": "红色景区",
+        "count": 6
+      },
+      {
+        "type": "纪念馆",
+        "count": 12
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongershiwu_jun",
+    "routeName": "红二十五军路线图",
+    "summary": {
+      "routeKey": "route_hongershiwu_jun",
+      "routeName": "红二十五军路线图",
+      "totalDistance": 3688,
+      "totalEvents": 6,
+      "totalProvinces": 5,
+      "totalResources": 11,
+      "averageElevation": 1932,
+      "maxElevation": 2445,
+      "bufferArea": 148762,
+      "description": "红二十五军路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "陕西",
+        "distance": 2051,
+        "eventCount": 2,
+        "resourceCount": 3
+      },
+      {
+        "province": "甘肃",
+        "distance": 664,
+        "eventCount": 1,
+        "resourceCount": 8
+      },
+      {
+        "province": "河南",
+        "distance": 566,
+        "eventCount": 2,
+        "resourceCount": 0
+      },
+      {
+        "province": "湖北",
+        "distance": 323,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "宁夏",
+        "distance": 84,
+        "eventCount": 1,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 476,
+        "place": "瑞金"
+      },
+      {
+        "distance": 461,
+        "elevation": 1921,
+        "place": "会宁"
+      },
+      {
+        "distance": 922,
+        "elevation": 1903,
+        "place": "会宁"
+      },
+      {
+        "distance": 1383,
+        "elevation": 2445,
+        "place": "会宁"
+      },
+      {
+        "distance": 1844,
+        "elevation": 1955,
+        "place": "会宁"
+      },
+      {
+        "distance": 2305,
+        "elevation": 1947,
+        "place": "会宁"
+      },
+      {
+        "distance": 2766,
+        "elevation": 2400,
+        "place": "腊子口"
+      },
+      {
+        "distance": 3227,
+        "elevation": 2041,
+        "place": "会宁"
+      },
+      {
+        "distance": 3688,
+        "elevation": 2296,
+        "place": "会宁"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 4,
+        "eventCount": 5,
+        "area": 36955
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 5,
+        "eventCount": 5,
+        "area": 74067
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 11,
+        "eventCount": 6,
+        "area": 148762
+      }
+    ],
+    "stage": [
+      {
+        "stage": "红二十五军长征",
+        "distance": 3073,
+        "eventCount": 5,
+        "startDate": "1934-11-16",
+        "endDate": "1935-09-15"
+      },
+      {
+        "stage": "三军会师",
+        "distance": 615,
+        "eventCount": 1,
+        "startDate": "1936-10-22",
+        "endDate": "1936-10-22"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "行军驻扎",
+        "count": 2
+      },
+      {
+        "type": "战斗",
+        "count": 3
+      },
+      {
+        "type": "会师",
+        "count": 1
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "红色景区",
+        "count": 2
+      },
+      {
+        "type": "纪念馆",
+        "count": 6
+      },
+      {
+        "type": "革命旧址",
+        "count": 3
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongwu_juntuan",
+    "routeName": "红五军团路线图",
+    "summary": {
+      "routeKey": "route_hongwu_juntuan",
+      "routeName": "红五军团路线图",
+      "totalDistance": 3671,
+      "totalEvents": 67,
+      "totalProvinces": 7,
+      "totalResources": 101,
+      "averageElevation": 1170,
+      "maxElevation": 2531,
+      "bufferArea": 148079,
+      "description": "红五军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "贵州",
+        "distance": 1395,
+        "eventCount": 15,
+        "resourceCount": 38
+      },
+      {
+        "province": "四川",
+        "distance": 1039,
+        "eventCount": 8,
+        "resourceCount": 19
+      },
+      {
+        "province": "湖南",
+        "distance": 407,
+        "eventCount": 16,
+        "resourceCount": 5
+      },
+      {
+        "province": "云南",
+        "distance": 367,
+        "eventCount": 1,
+        "resourceCount": 14
+      },
+      {
+        "province": "江西",
+        "distance": 269,
+        "eventCount": 17,
+        "resourceCount": 22
+      },
+      {
+        "province": "广西",
+        "distance": 193,
+        "eventCount": 7,
+        "resourceCount": 3
+      },
+      {
+        "province": "广东",
+        "distance": 0,
+        "eventCount": 3,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 171,
+        "place": "瑞金"
+      },
+      {
+        "distance": 459,
+        "elevation": 421,
+        "place": "湘江"
+      },
+      {
+        "distance": 918,
+        "elevation": 593,
+        "place": "湘江"
+      },
+      {
+        "distance": 1376,
+        "elevation": 817,
+        "place": "赤水"
+      },
+      {
+        "distance": 1835,
+        "elevation": 874,
+        "place": "遵义"
+      },
+      {
+        "distance": 2294,
+        "elevation": 778,
+        "place": "遵义"
+      },
+      {
+        "distance": 2753,
+        "elevation": 2220,
+        "place": "赤水"
+      },
+      {
+        "distance": 3212,
+        "elevation": 2127,
+        "place": "大渡河"
+      },
+      {
+        "distance": 3671,
+        "elevation": 2531,
+        "place": "夹金山"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 71,
+        "eventCount": 40,
+        "area": 36784
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 81,
+        "eventCount": 53,
+        "area": 73725
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 101,
+        "eventCount": 67,
+        "area": 148079
+      }
+    ],
+    "stage": [
+      {
+        "stage": "长征出发与集结",
+        "distance": 219,
+        "eventCount": 4,
+        "startDate": "1934-10-06",
+        "endDate": "1934-10-20"
+      },
+      {
+        "stage": "突破封锁线",
+        "distance": 1698,
+        "eventCount": 31,
+        "startDate": "1934-10-21",
+        "endDate": "1934-11-25"
+      },
+      {
+        "stage": "湘江战役",
+        "distance": 329,
+        "eventCount": 6,
+        "startDate": "1934-11-27",
+        "endDate": "1934-12-04"
+      },
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 274,
+        "eventCount": 5,
+        "startDate": "1934-12-10",
+        "endDate": "1934-12-31"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 55,
+        "eventCount": 1,
+        "startDate": "1935-01-04",
+        "endDate": "1935-01-04"
+      },
+      {
+        "stage": "遵义转折",
+        "distance": 110,
+        "eventCount": 2,
+        "startDate": "1935-01-15",
+        "endDate": "1935-01-19"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 657,
+        "eventCount": 12,
+        "startDate": "1935-01-23",
+        "endDate": "1935-03-31"
+      },
+      {
+        "stage": "巧渡金沙江与会理",
+        "distance": 110,
+        "eventCount": 2,
+        "startDate": "1935-05-12",
+        "endDate": "1935-05-16"
+      },
+      {
+        "stage": "强渡大渡河与飞夺泸定桥",
+        "distance": 110,
+        "eventCount": 2,
+        "startDate": "1935-05-24",
+        "endDate": "1935-05-29"
+      },
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 110,
+        "eventCount": 2,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-12"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "雪山草地",
+        "count": 4
+      },
+      {
+        "type": "行军驻扎",
+        "count": 27
+      },
+      {
+        "type": "战斗",
+        "count": 28
+      },
+      {
+        "type": "会议",
+        "count": 7
+      },
+      {
+        "type": "会师",
+        "count": 1
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 51
+      },
+      {
+        "type": "纪念馆",
+        "count": 24
+      },
+      {
+        "type": "红色景区",
+        "count": 26
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongliu_juntuan",
+    "routeName": "红六军团路线图",
+    "summary": {
+      "routeKey": "route_hongliu_juntuan",
+      "routeName": "红六军团路线图",
+      "totalDistance": 5791,
+      "totalEvents": 27,
+      "totalProvinces": 8,
+      "totalResources": 47,
+      "averageElevation": 1300,
+      "maxElevation": 2719,
+      "bufferArea": 232893,
+      "description": "红六军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "贵州",
+        "distance": 1654,
+        "eventCount": 4,
+        "resourceCount": 11
+      },
+      {
+        "province": "湖南",
+        "distance": 1375,
+        "eventCount": 12,
+        "resourceCount": 1
+      },
+      {
+        "province": "云南",
+        "distance": 1115,
+        "eventCount": 1,
+        "resourceCount": 17
+      },
+      {
+        "province": "四川",
+        "distance": 791,
+        "eventCount": 1,
+        "resourceCount": 6
+      },
+      {
+        "province": "甘肃",
+        "distance": 644,
+        "eventCount": 3,
+        "resourceCount": 8
+      },
+      {
+        "province": "广西",
+        "distance": 113,
+        "eventCount": 5,
+        "resourceCount": 3
+      },
+      {
+        "province": "江西",
+        "distance": 83,
+        "eventCount": 0,
+        "resourceCount": 1
+      },
+      {
+        "province": "宁夏",
+        "distance": 15,
+        "eventCount": 1,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 429,
+        "place": "湘江"
+      },
+      {
+        "distance": 724,
+        "elevation": 316,
+        "place": "瑞金"
+      },
+      {
+        "distance": 1448,
+        "elevation": 799,
+        "place": "遵义"
+      },
+      {
+        "distance": 2172,
+        "elevation": 993,
+        "place": "赤水"
+      },
+      {
+        "distance": 2895,
+        "elevation": 547,
+        "place": "湘江"
+      },
+      {
+        "distance": 3619,
+        "elevation": 1662,
+        "place": "大渡河"
+      },
+      {
+        "distance": 4343,
+        "elevation": 2433,
+        "place": "大渡河"
+      },
+      {
+        "distance": 5067,
+        "elevation": 2719,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 5791,
+        "elevation": 1801,
+        "place": "会宁"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 26,
+        "eventCount": 11,
+        "area": 57988
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 31,
+        "eventCount": 15,
+        "area": 116132
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 47,
+        "eventCount": 27,
+        "area": 232893
+      }
+    ],
+    "stage": [
+      {
+        "stage": "突破封锁线",
+        "distance": 1930,
+        "eventCount": 9,
+        "startDate": "1934-11-01",
+        "endDate": "1934-11-25"
+      },
+      {
+        "stage": "湘江战役",
+        "distance": 1287,
+        "eventCount": 6,
+        "startDate": "1934-11-27",
+        "endDate": "1934-12-04"
+      },
+      {
+        "stage": "通道转兵与入黔",
+        "distance": 643,
+        "eventCount": 3,
+        "startDate": "1934-12-12",
+        "endDate": "1934-12-31"
+      },
+      {
+        "stage": "强渡乌江",
+        "distance": 214,
+        "eventCount": 1,
+        "startDate": "1935-01-02",
+        "endDate": "1935-01-02"
+      },
+      {
+        "stage": "四渡赤水",
+        "distance": 214,
+        "eventCount": 1,
+        "startDate": "1935-03-13",
+        "endDate": "1935-03-13"
+      },
+      {
+        "stage": "北上陕甘与到达陕北",
+        "distance": 643,
+        "eventCount": 3,
+        "startDate": "1935-09-17",
+        "endDate": "1935-09-27"
+      },
+      {
+        "stage": "红二方面军长征",
+        "distance": 643,
+        "eventCount": 3,
+        "startDate": "1935-11-19",
+        "endDate": "1936-07-02"
+      },
+      {
+        "stage": "三军会师",
+        "distance": 214,
+        "eventCount": 1,
+        "startDate": "1936-10-22",
+        "endDate": "1936-10-22"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "战斗",
+        "count": 11
+      },
+      {
+        "type": "雪山草地",
+        "count": 2
+      },
+      {
+        "type": "行军驻扎",
+        "count": 7
+      },
+      {
+        "type": "会议",
+        "count": 4
+      },
+      {
+        "type": "会师",
+        "count": 3
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 24
+      },
+      {
+        "type": "红色景区",
+        "count": 10
+      },
+      {
+        "type": "纪念馆",
+        "count": 13
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongshiba_shi",
+    "routeName": "红十八师路线图",
+    "summary": {
+      "routeKey": "route_hongshiba_shi",
+      "routeName": "红十八师路线图",
+      "totalDistance": 752,
+      "totalEvents": 1,
+      "totalProvinces": 4,
+      "totalResources": 0,
+      "averageElevation": 909,
+      "maxElevation": 964,
+      "bufferArea": 31334,
+      "description": "红十八师路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "湖南",
+        "distance": 356,
+        "eventCount": 1,
+        "resourceCount": 0
+      },
+      {
+        "province": "重庆",
+        "distance": 206,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "贵州",
+        "distance": 117,
+        "eventCount": 0,
+        "resourceCount": 0
+      },
+      {
+        "province": "湖北",
+        "distance": 72,
+        "eventCount": 0,
+        "resourceCount": 0
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 917,
+        "place": "遵义"
+      },
+      {
+        "distance": 94,
+        "elevation": 863,
+        "place": "遵义"
+      },
+      {
+        "distance": 188,
+        "elevation": 832,
+        "place": "遵义"
+      },
+      {
+        "distance": 282,
+        "elevation": 916,
+        "place": "遵义"
+      },
+      {
+        "distance": 376,
+        "elevation": 910,
+        "place": "遵义"
+      },
+      {
+        "distance": 470,
+        "elevation": 940,
+        "place": "遵义"
+      },
+      {
+        "distance": 564,
+        "elevation": 964,
+        "place": "遵义"
+      },
+      {
+        "distance": 658,
+        "elevation": 928,
+        "place": "遵义"
+      },
+      {
+        "distance": 752,
+        "elevation": 911,
+        "place": "遵义"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 0,
+        "eventCount": 1,
+        "area": 7598
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 0,
+        "eventCount": 1,
+        "area": 15353
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 0,
+        "eventCount": 1,
+        "area": 31334
+      }
+    ],
+    "stage": [
+      {
+        "stage": "红二方面军长征",
+        "distance": 752,
+        "eventCount": 1,
+        "startDate": "1935-11-19",
+        "endDate": "1935-11-19"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "行军驻扎",
+        "count": 1
+      }
+    ],
+    "resourceTypes": []
+  },
+  {
+    "routeKey": "route_hongsi_juntuan",
+    "routeName": "红四军团路线图",
+    "summary": {
+      "routeKey": "route_hongsi_juntuan",
+      "routeName": "红四军团路线图",
+      "totalDistance": 2358,
+      "totalEvents": 6,
+      "totalProvinces": 2,
+      "totalResources": 27,
+      "averageElevation": 2805,
+      "maxElevation": 3343,
+      "bufferArea": 95566,
+      "description": "红四军团路线图 的路线级 GIS 分析结果。"
+    },
+    "province": [
+      {
+        "province": "四川",
+        "distance": 2026,
+        "eventCount": 4,
+        "resourceCount": 21
+      },
+      {
+        "province": "甘肃",
+        "distance": 331,
+        "eventCount": 2,
+        "resourceCount": 6
+      }
+    ],
+    "elevation": [
+      {
+        "distance": 0,
+        "elevation": 2554,
+        "place": "大渡河"
+      },
+      {
+        "distance": 295,
+        "elevation": 2523,
+        "place": "夹金山"
+      },
+      {
+        "distance": 589,
+        "elevation": 3053,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 884,
+        "elevation": 3132,
+        "place": "夹金山"
+      },
+      {
+        "distance": 1179,
+        "elevation": 3343,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 1474,
+        "elevation": 3340,
+        "place": "松潘草地"
+      },
+      {
+        "distance": 1768,
+        "elevation": 2455,
+        "place": "腊子口"
+      },
+      {
+        "distance": 2063,
+        "elevation": 1780,
+        "place": "会宁"
+      },
+      {
+        "distance": 2358,
+        "elevation": 3065,
+        "place": "松潘草地"
+      }
+    ],
+    "buffer": [
+      {
+        "buffer": "5km",
+        "resourceCount": 21,
+        "eventCount": 5,
+        "area": 23656
+      },
+      {
+        "buffer": "10km",
+        "resourceCount": 24,
+        "eventCount": 5,
+        "area": 47469
+      },
+      {
+        "buffer": "20km",
+        "resourceCount": 27,
+        "eventCount": 6,
+        "area": 95566
+      }
+    ],
+    "stage": [
+      {
+        "stage": "雪山草地与北上决策",
+        "distance": 1179,
+        "eventCount": 3,
+        "startDate": "1935-06-12",
+        "endDate": "1935-06-26"
+      },
+      {
+        "stage": "北上陕甘与到达陕北",
+        "distance": 393,
+        "eventCount": 1,
+        "startDate": "1935-09-27",
+        "endDate": "1935-09-27"
+      },
+      {
+        "stage": "红四方面军长征",
+        "distance": 393,
+        "eventCount": 1,
+        "startDate": "1935-10-05",
+        "endDate": "1935-10-05"
+      },
+      {
+        "stage": "三军会师",
+        "distance": 393,
+        "eventCount": 1,
+        "startDate": "1936-10-10",
+        "endDate": "1936-10-10"
+      }
+    ],
+    "nodeTypes": [
+      {
+        "type": "会师",
+        "count": 2
+      },
+      {
+        "type": "雪山草地",
+        "count": 1
+      },
+      {
+        "type": "会议",
+        "count": 3
+      }
+    ],
+    "resourceTypes": [
+      {
+        "type": "革命旧址",
+        "count": 15
+      },
+      {
+        "type": "纪念馆",
+        "count": 4
+      },
+      {
+        "type": "红色景区",
+        "count": 8
+      }
+    ]
+  }
+]

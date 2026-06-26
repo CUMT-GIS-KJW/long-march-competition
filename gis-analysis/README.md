@@ -25,6 +25,7 @@ npm run gis:analysis
 - `public/assets/data/analysis-buffer.json`
 - `public/assets/data/analysis-stage.json`
 - `public/assets/data/analysis-node-types.json`
+- `public/assets/data/analysis-routes.json`
 
 ## 当前实现
 
@@ -33,6 +34,7 @@ npm run gis:analysis
 - 地形剖面：使用 3D 页面同源的 AWS Terrain Tiles Terrarium DEM 瓦片采样；无法联网时使用关键地形控制点插值兜底。
 - 缓冲分析：计算事件点、资源点到路线的最近距离，统计 5km、10km、20km 覆盖数量。
 - 阶段统计：按事件阶段统计事件数量，并按事件占比分配路线里程。
+- 路线级结果：为每条独立路线生成 `summary/province/elevation/buffer/stage/nodeTypes/resourceTypes`，前端按当前选择路线展示。
 
 ## 数据来源与缓存
 

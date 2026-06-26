@@ -49,6 +49,7 @@
 
     const selectedRoute = $("#routeSelect")?.selectedOptions?.[0]?.textContent;
     const selectedBuffer = $("#bufferSelect")?.selectedOptions?.[0]?.textContent;
+    const applied = window.AnalysisUI?.getAppliedAnalysis?.();
     const metrics = Array.from(document.querySelectorAll("#metrics article"))
       .map((item) => {
         const label = compactText(item.querySelector("span")?.textContent || "");
@@ -61,8 +62,9 @@
     return {
       page: "综合分析页面",
       topic: readText("#mapTheme") || readText("#analysisMode"),
-      selectedRoute: compactText(selectedRoute),
-      bufferRadius: compactText(selectedBuffer),
+      routeKey: applied?.routeId || $("#routeSelect")?.value || "",
+      selectedRoute: compactText(applied?.routeName || selectedRoute),
+      bufferRadius: compactText(applied?.radius ? `${applied.radius} km` : selectedBuffer),
       metrics,
       insight: readText("#insightPanel"),
       layerMethod: readText("#layerInterfacePanel"),
@@ -164,6 +166,7 @@
       buffer,
       stage,
       nodeTypes,
+      routeAnalyses,
     ] = await Promise.all([
       DataService.getAnalysisSummary(),
       DataService.getAnalysisProvince(),
@@ -171,6 +174,7 @@
       DataService.getAnalysisBuffer(),
       DataService.getAnalysisStage(),
       loadNodeTypes(),
+      DataService.getAnalysisRoutes ? DataService.getAnalysisRoutes() : [],
     ]);
 
     return {
@@ -180,6 +184,7 @@
       buffer,
       stage,
       nodeTypes,
+      routeAnalyses,
     };
   }
 
@@ -211,7 +216,13 @@
   }
 
   function buildComprehensiveAnalysis(results, context) {
-    const { summary, province, elevation, buffer, stage, nodeTypes } = results;
+    const routeResult = (results.routeAnalyses || []).find((item) => item.routeKey === context?.routeKey);
+    const summary = routeResult?.summary || results.summary;
+    const province = routeResult?.province || results.province;
+    const elevation = routeResult?.elevation || results.elevation;
+    const buffer = routeResult?.buffer || results.buffer;
+    const stage = routeResult?.stage || results.stage;
+    const nodeTypes = routeResult?.nodeTypes || results.nodeTypes;
     const topDistanceProvinces = topNames(province, (item) => item.distance)
       .map((item) => `${item.province}${window.MapUtils?.formatNumber ? MapUtils.formatNumber(item.distance) : item.distance}km`)
       .join("、");
