@@ -36,10 +36,9 @@ input {
 }
 
 .topbar-main {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  gap: 16px;
+  position: relative;
   height: 56px;
   padding: 0 18px;
   color: #fff4d4;
@@ -73,15 +72,17 @@ input {
 }
 
 .primary-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: center;
   gap: 8px;
 }
 
 .topbar-actions {
   display: flex;
-  justify-content: flex-end;
   gap: 8px;
+  margin-left: auto;          /* 推到最右侧 */
 }
 
 .topbar-actions button,
