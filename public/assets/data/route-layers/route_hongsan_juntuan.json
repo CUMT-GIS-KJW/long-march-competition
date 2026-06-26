@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "三军团出发",
-        "Shape_Leng": 12.4616306563,
+        "Shape_Leng": 1286.324723,
         "corps_name": "红三军团",
         "stage_name": "长胜到土城转战",
         "_order": 1,
@@ -16107,7 +16107,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "三军团泗渡赤水B",
-        "Shape_Leng": 8.53772991579,
+        "Shape_Leng": 887.099924,
         "corps_name": "红三军团",
         "stage_name": "土城到广顺转战",
         "_order": 2,
@@ -27217,7 +27217,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "三军团金沙江",
-        "Shape_Leng": 5.20740499382,
+        "Shape_Leng": 542.944395,
         "corps_name": "红三军团",
         "stage_name": "广顺到洪门场转战",
         "_order": 3,
@@ -33975,7 +33975,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "三军团彝区",
-        "Shape_Leng": 5.7030243576,
+        "Shape_Leng": 613.905598,
         "corps_name": "红三军团",
         "stage_name": "洪门场到天全转战",
         "_order": 4,
@@ -41355,7 +41355,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "三军团懋功会师",
-        "Shape_Leng": 1.33912201802,
+        "Shape_Leng": 140.81825,
         "corps_name": "红三军团",
         "stage_name": "天全到懋功会师",
         "_order": 5,

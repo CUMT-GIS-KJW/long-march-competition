@@ -5,7 +5,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团011月城口",
-        "Shape_Leng": 3.46174501117,
+        "Shape_Leng": 361.12398,
         "corps_name": "红一军团",
         "stage_name": "从洪门出发，开始长征。",
         "_order": 1,
@@ -4467,7 +4467,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团012月过湘江",
-        "Shape_Leng": 7.02721232373,
+        "Shape_Leng": 727.242555,
         "corps_name": "红一军团",
         "stage_name": "九峰镇到余庆转战（过湘江）",
         "_order": 2,
@@ -13505,7 +13505,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团1月1师一渡赤水",
-        "Shape_Leng": 5.82025852453,
+        "Shape_Leng": 604.144644,
         "corps_name": "红一军团1师",
         "stage_name": "余庆到分水岭转战（一渡赤水）",
         "_order": 3,
@@ -21145,7 +21145,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团1月2师援助青杠坡",
-        "Shape_Leng": 0.638958916096,
+        "Shape_Leng": 66.718647,
         "corps_name": "红一军团2师",
         "stage_name": "土城到青杠坡增援",
         "_order": 3,
@@ -22007,7 +22007,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团2月兵临贵阳",
-        "Shape_Leng": 5.3601347372,
+        "Shape_Leng": 558.252178,
         "corps_name": "红一军团",
         "stage_name": "四渡赤水，兵临贵阳",
         "_order": 4,
@@ -28987,7 +28987,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团4月金沙江",
-        "Shape_Leng": 11.6156716363,
+        "Shape_Leng": 1221.713522,
         "corps_name": "红一军团",
         "stage_name": "底寨到泸定转战（过金沙江）",
         "_order": 5,
@@ -43981,7 +43981,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团二师大树堡",
-        "Shape_Leng": 1.86849363158,
+        "Shape_Leng": 199.363549,
         "corps_name": "红一军团2师",
         "stage_name": "泸沽经大树堡到安顺场",
         "_order": 6,
@@ -46461,7 +46461,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团一师大渡河东岸A",
-        "Shape_Leng": 0.724710219375,
+        "Shape_Leng": 77.634991,
         "corps_name": "红一军团1师",
         "stage_name": "安顺场到飞越岭（东岸A）",
         "_order": 6,
@@ -47379,7 +47379,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团一师大渡河东岸B",
-        "Shape_Leng": 0.684309945135,
+        "Shape_Leng": 72.383968,
         "corps_name": "红一军团1师",
         "stage_name": "安顺场到龙八布（东岸B）",
         "_order": 6,
@@ -48273,7 +48273,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团一师大渡河东岸C",
-        "Shape_Leng": 0.15105233462,
+        "Shape_Leng": 16.726086,
         "corps_name": "红一军团1师",
         "stage_name": "泸定到沈村（东岸C）",
         "_order": 6,
@@ -48487,7 +48487,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团6月懋功会师",
-        "Shape_Leng": 2.64927463614,
+        "Shape_Leng": 277.652544,
         "corps_name": "红一军团",
         "stage_name": "翻越雪山，懋功会师",
         "_order": 7,
@@ -51941,7 +51941,7 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "一军团吴起会师",
-        "Shape_Leng": 10.6495329422,
+        "Shape_Leng": 1073.629007,
         "corps_name": "红一军团",
         "stage_name": "懋功到吴起镇（长征胜利）",
         "_order": 8,
