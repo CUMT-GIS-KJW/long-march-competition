@@ -46,6 +46,10 @@
     activeRouteKey: "",
     isPlayingEvents: false,
     isPlayingRoute: false,
+    routePlaybackMode: false,
+    routePlaybackEventIds: new Set(),
+    routePlaybackEventIndexes: new Map(),
+    routePlaybackStartTime: 0,
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -163,8 +167,111 @@
     return includesAny(unit, keywords);
   }
 
+  function parseDateTime(value) {
+    const text = String(value || "").replace(/[./]/g, "-");
+    const time = Date.parse(text);
+
+    return Number.isFinite(time) ? time : 0;
+  }
+
+  function getEventTime(feature) {
+    return parseDateTime(feature.properties?.[FIELD.date]);
+  }
+
+  function getSegmentStartTime(segment) {
+    return parseDateTime(segment?.feature?.properties?.start_date);
+  }
+
+  function getSegmentEndTime(segment) {
+    const props = segment?.feature?.properties || {};
+
+    return parseDateTime(props.end_date || props.start_date);
+  }
+
+  function coordinateDistance(left, right) {
+    if (!left || !right) {
+      return Number.POSITIVE_INFINITY;
+    }
+
+    const latGap = left[0] - right[0];
+    const lngGap = left[1] - right[1];
+
+    return Math.sqrt(latGap * latGap + lngGap * lngGap);
+  }
+
+  function buildRouteEventIndexes(layerKey, routeData) {
+    const eventIndexes = new Map();
+    const routePoints = routeData.points || [];
+
+    if (!routePoints.length) {
+      return eventIndexes;
+    }
+
+    state.eventFeatures.forEach((feature) => {
+      if (!eventMatchesRoute(feature, layerKey)) {
+        return;
+      }
+
+      const eventPoint = featureLatLng(feature);
+      let nearestIndex = 0;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+
+      routePoints.forEach((routePoint, index) => {
+        const distance = coordinateDistance(eventPoint, routePoint);
+
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+
+      eventIndexes.set(featureId(feature), nearestIndex);
+    });
+
+    return eventIndexes;
+  }
+
+  function updateRoutePlaybackEvents(currentIndex) {
+    const eventIds = new Set();
+
+    state.routePlaybackEventIndexes.forEach((routeIndex, eventId) => {
+      if (routeIndex <= currentIndex) {
+        eventIds.add(eventId);
+      }
+    });
+
+    const unchanged =
+      eventIds.size === state.routePlaybackEventIds.size &&
+      [...eventIds].every((id) => {
+        return state.routePlaybackEventIds.has(id);
+      });
+
+    if (unchanged) {
+      return;
+    }
+
+    state.routePlaybackEventIds = eventIds;
+    renderEventMarkers();
+  }
+
   function getFilteredEvents() {
-    return state.eventFeatures;
+    return state.eventFeatures.filter((feature) => {
+      const matchesType =
+        state.activeEventFilter === "all" ||
+        feature.displayType === state.activeEventFilter;
+
+      const matchesRoute = eventMatchesRoute(feature, state.activeRouteKey);
+
+      if (state.routePlaybackMode) {
+        return (
+          matchesType &&
+          matchesRoute &&
+          state.routePlaybackEventIds.has(featureId(feature))
+        );
+      }
+
+      return matchesType && matchesRoute;
+    });
   }
 
   function getRepresentativeEvents() {
@@ -607,6 +714,10 @@
   function pauseAnimation() {
     state.isPlayingEvents = false;
     state.isPlayingRoute = false;
+    state.routePlaybackMode = false;
+    state.routePlaybackEventIds = new Set();
+    state.routePlaybackEventIndexes = new Map();
+    renderEventMarkers();
     clearInterval(state.eventTimer);
     clearInterval(state.routeTimer);
   }
@@ -669,33 +780,74 @@
     }
   }
 
+  function getRouteLatLngParts(geometry) {
+    const latLngs = toLatLngs(geometry);
+
+    if (!latLngs.length) {
+      return [];
+    }
+
+    if (Array.isArray(latLngs[0][0])) {
+      return latLngs.filter((part) => {
+        return part.length;
+      });
+    }
+
+    return [latLngs];
+  }
+
   function buildRoutePoints(collection) {
-    const sorted = [...collection.features].sort((left, right) => {
-      return Number(left.properties?._order ?? 999999) - Number(right.properties?._order ?? 999999);
-    });
+    const sorted = [...collection.features]
+      .map((feature, index) => {
+        return {
+          feature,
+          index,
+        };
+      })
+      .sort((left, right) => {
+        const orderGap =
+          Number(left.feature.properties?._order ?? 999999) -
+          Number(right.feature.properties?._order ?? 999999);
+
+        if (orderGap !== 0) {
+          return orderGap;
+        }
+
+        return left.index - right.index;
+      })
+      .map((item) => {
+        return item.feature;
+      });
     const points = [];
     const segments = [];
+    const parts = [];
 
     sorted.forEach((feature) => {
-      const latLngs = flattenLatLngs(toLatLngs(feature.geometry));
-      const startIndex = points.length;
+      getRouteLatLngParts(feature.geometry).forEach((latLngs) => {
+        const startIndex = points.length;
 
-      latLngs.forEach((point) => {
-        points.push(point);
-      });
-
-      if (latLngs.length) {
-        segments.push({
-          feature,
-          startIndex,
-          endIndex: points.length - 1,
+        latLngs.forEach((point) => {
+          points.push(point);
         });
-      }
+
+        if (latLngs.length) {
+          const part = {
+            feature,
+            points: latLngs,
+            startIndex,
+            endIndex: points.length - 1,
+          };
+
+          parts.push(part);
+          segments.push(part);
+        }
+      });
     });
 
     return {
       points,
       segments,
+      parts,
     };
   }
 
@@ -705,6 +857,25 @@
         return index >= segment.startIndex && index <= segment.endIndex;
       }) || segments[0]
     );
+  }
+
+  function getRenderedRouteParts(routeData, index) {
+    const renderedParts = [];
+
+    routeData.parts.forEach((part) => {
+      if (index < part.startIndex) {
+        return;
+      }
+
+      const localEndIndex = Math.min(index, part.endIndex) - part.startIndex;
+      const renderedPart = part.points.slice(0, localEndIndex + 1);
+
+      if (renderedPart.length) {
+        renderedParts.push(renderedPart);
+      }
+    });
+
+    return renderedParts;
   }
 
   async function playSelectedRoute() {
@@ -723,6 +894,27 @@
     }
 
     setActiveRouteFilter(layerKey);
+
+    state.routePlaybackMode = true;
+    state.routePlaybackEventIds = new Set();
+    state.routePlaybackEventIndexes = buildRouteEventIndexes(layerKey, routeData);
+    state.routePlaybackStartTime = getSegmentStartTime(routeData.segments[0]) || 0;
+    state.eventsVisible = true;
+
+    if (!state.map.hasLayer(state.eventLayerGroup)) {
+      state.eventLayerGroup.addTo(state.map);
+    }
+
+    const eventVisibilityBtn = $("#eventVisibilityBtn");
+
+    if (eventVisibilityBtn) {
+      eventVisibilityBtn.dataset.eventsVisible = "true";
+      eventVisibilityBtn.textContent = "\u9690\u85cf\u4e8b\u4ef6\u70b9";
+      eventVisibilityBtn.classList.remove("is-off");
+    }
+
+    updateRoutePlaybackEvents(0);
+
     state.isPlayingRoute = true;
 
     const glow = L.polyline([], {
@@ -752,10 +944,13 @@
 
       const count = Math.max(2, Math.ceil(routeData.points.length / 150));
       index = Math.min(routeData.points.length - 1, index + count);
-      glow.setLatLngs(routeData.points.slice(0, index + 1));
-      line.setLatLngs(routeData.points.slice(0, index + 1));
+      const renderedParts = getRenderedRouteParts(routeData, index);
+
+      glow.setLatLngs(renderedParts);
+      line.setLatLngs(renderedParts);
 
       const segment = findSegmentByPointIndex(routeData.segments, index);
+      updateRoutePlaybackEvents(index);
 
       if (segment) {
         renderRouteDetail(segment.feature, config);
@@ -777,6 +972,9 @@
   }
 
   function setEventFilter(type) {
+    state.routePlaybackMode = false;
+    state.routePlaybackEventIds = new Set();
+    state.routePlaybackEventIndexes = new Map();
     state.activeEventFilter = type || "all";
     state.activeEventIndex = 0;
     clearMovingPeople();
@@ -784,24 +982,27 @@
   }
 
   function setEventLayerVisible(visible) {
-  state.eventsVisible = visible;
+    state.eventsVisible = visible;
 
-  if (visible) {
-    if (!state.map.hasLayer(state.eventLayerGroup)) {
-      state.eventLayerGroup.addTo(state.map);
+    if (visible) {
+      if (!state.map.hasLayer(state.eventLayerGroup)) {
+        state.eventLayerGroup.addTo(state.map);
+      }
+      return;
     }
-    return;
-  }
 
-  pauseAnimation();
-  clearMovingPeople();
+    pauseAnimation();
+    clearMovingPeople();
 
-  if (state.map.hasLayer(state.eventLayerGroup)) {
-    state.map.removeLayer(state.eventLayerGroup);
+    if (state.map.hasLayer(state.eventLayerGroup)) {
+      state.map.removeLayer(state.eventLayerGroup);
+    }
   }
-}
 
   function setActiveRouteFilter(layerKey) {
+    state.routePlaybackMode = false;
+    state.routePlaybackEventIds = new Set();
+    state.routePlaybackEventIndexes = new Map();
     state.activeRouteKey = layerKey || "";
     state.activeEventIndex = 0;
     clearMovingPeople();
