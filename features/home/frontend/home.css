@@ -417,6 +417,19 @@ input {
   width: 150px;
 }
 
+.route-play-group .speed-control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: rgba(255, 244, 212, 0.78);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.route-play-group .speed-control select {
+  width: 78px;
+}
+
 .play-status {
   display: grid;
   gap: 5px;
@@ -433,6 +446,7 @@ input {
 #progressRange {
   width: 100%;
   accent-color: var(--gold);
+  cursor: pointer;
 }
 
 .toast {
@@ -588,6 +602,42 @@ input {
   font-weight: 700;
 }
 
+.march-head-icon {
+  background: transparent;
+  border: 0;
+}
+
+.march-head {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: #ffe7a0;
+  background: #a9251b;
+  border: 3px solid #f6d776;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 6px rgba(207, 46, 31, 0.2),
+    0 0 22px rgba(240, 191, 78, 0.92);
+  animation: marchHead 0.9s ease-in-out infinite;
+}
+
+.march-head span {
+  width: 8px;
+  height: 8px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.march-head i {
+  position: absolute;
+  inset: -7px;
+  border: 2px solid rgba(205, 48, 31, 0.65);
+  border-radius: 50%;
+  animation: marchWave 1.5s ease-out infinite;
+}
+
 .animated-route {
   stroke-dasharray: 12 8;
   animation: routeDash 0.9s linear infinite;
@@ -616,6 +666,19 @@ input {
 @keyframes marchFloat {
   50% {
     transform: translateY(-5px);
+  }
+}
+
+@keyframes marchHead {
+  50% {
+    transform: scale(1.18) translateY(-2px);
+  }
+}
+
+@keyframes marchWave {
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
   }
 }
 

@@ -64,6 +64,10 @@
       IndexMap.playSelectedRoute();
     });
 
+    $("#progressRange").addEventListener("input", (event) => {
+      IndexMap.seekRouteProgress(event.target.value);
+    });
+
     $("#routeSelect").addEventListener("change", (event) => {
       // 只用于播放，不直接影响事件过滤
     });

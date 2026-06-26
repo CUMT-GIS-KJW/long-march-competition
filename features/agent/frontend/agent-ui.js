@@ -39,7 +39,7 @@
     label.textContent = "DeepSeek Key";
     keyInput.id = "agentApiKey";
     keyInput.type = "password";
-    keyInput.placeholder = "填写后保存在本机浏览器";
+    keyInput.placeholder = "不填则使用系统默认 Key";
     keyInput.autocomplete = "off";
     keyInput.value = readApiKey();
     saveButton.type = "button";
@@ -47,22 +47,26 @@
     clearButton.type = "button";
     clearButton.textContent = "清除";
     status.className = "agent-key-status";
-    status.textContent = keyInput.value ? "已保存" : "未填写";
+    status.textContent = keyInput.value ? "使用用户 Key" : "使用默认 Key";
+
+    function refreshStatus() {
+      status.textContent = readApiKey() ? "使用用户 Key" : "使用默认 Key";
+    }
 
     saveButton.addEventListener("click", () => {
       writeApiKey(keyInput.value);
-      status.textContent = readApiKey() ? "已保存" : "未填写";
+      refreshStatus();
     });
 
     clearButton.addEventListener("click", () => {
       keyInput.value = "";
       writeApiKey("");
-      status.textContent = "已清除";
+      refreshStatus();
     });
 
     keyInput.addEventListener("input", () => {
       writeApiKey(keyInput.value);
-      status.textContent = readApiKey() ? "已保存" : "未填写";
+      refreshStatus();
     });
 
     settings.append(label, keyInput, saveButton, clearButton, status);

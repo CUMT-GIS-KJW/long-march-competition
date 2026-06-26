@@ -39,6 +39,7 @@
     animatedRouteLayer: null,
     eventTimer: 0,
     routeTimer: 0,
+    routeAnimationFrame: 0,
     activeEventIndex: 0,
     activeEventFilter: "all",
     eventsVisible: true,
@@ -50,6 +51,8 @@
     routePlaybackEventIndexes: new Map(),
     routePlaybackStartTime: 0,
     routeNearbyEventIds: {},
+    routePlayback: null,
+    routeHeadMarker: null,
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -459,6 +462,52 @@
     $("#playStatusTitle").textContent = `${props[FIELD.date] || ""} ${props[FIELD.place] || props[FIELD.event] || ""}`.trim();
   }
 
+  function setProgressValue(value) {
+    const progressRange = $("#progressRange");
+    if (progressRange) progressRange.value = String(Math.round(value));
+  }
+
+  function setRoutePlayButtonLabel(text) {
+    const button = $("#playRouteBtn");
+    if (button) button.textContent = text;
+  }
+
+  function getRouteSpeed() {
+    const value = Number($("#routeSpeedSelect")?.value || 1);
+    return Number.isFinite(value) && value > 0 ? value : 1;
+  }
+
+  function cancelRouteFrame() {
+    if (state.routeAnimationFrame) {
+      cancelAnimationFrame(state.routeAnimationFrame);
+      state.routeAnimationFrame = 0;
+    }
+  }
+
+  function clearRoutePlayback(options = {}) {
+    const { clearLayer = true, resetEvents = true } = options;
+    cancelRouteFrame();
+    state.isPlayingRoute = false;
+    state.routePlayback = null;
+    state.routeHeadMarker = null;
+    state.activeRouteKey = "";
+    if (clearLayer) state.animatedRouteLayer.clearLayers();
+    if (resetEvents) {
+      state.routePlaybackMode = false;
+      state.routePlaybackEventIds = new Set();
+      state.routePlaybackEventIndexes = new Map();
+      renderEventMarkers();
+    }
+    setRoutePlayButtonLabel("播放路线");
+  }
+
+  function stopAnimation(options = {}) {
+    state.isPlayingEvents = false;
+    clearInterval(state.eventTimer);
+    clearInterval(state.routeTimer);
+    clearRoutePlayback(options);
+  }
+
   function highlightEventMarker(feature) {
     state.eventMarkers.forEach(marker => {
       marker.getElement()?.querySelector(".event-marker")?.classList.remove("active");
@@ -480,16 +529,16 @@
   function pauseAnimation() {
     state.isPlayingEvents = false;
     state.isPlayingRoute = false;
-    state.routePlaybackMode = false;
-    state.routePlaybackEventIds = new Set();
-    state.routePlaybackEventIndexes = new Map();
-    renderEventMarkers();
     clearInterval(state.eventTimer);
     clearInterval(state.routeTimer);
+    cancelRouteFrame();
+    if (state.routePlayback && state.routePlayback.progress < 1) {
+      setRoutePlayButtonLabel("继续路线");
+    }
   }
 
   function playEventsTimeline() {
-    pauseAnimation();
+    stopAnimation({ clearLayer: true, resetEvents: true });
     const events = getFilteredEvents();
     if (!events.length) {
       flash("当前路线没有可播放事件");
@@ -506,7 +555,7 @@
       }
       const feature = events[state.activeEventIndex];
       activateEvent(feature, true);
-      $("#progressRange").value = String(Math.round(((state.activeEventIndex + 1) / events.length) * 100));
+      setProgressValue(((state.activeEventIndex + 1) / events.length) * 100);
       state.activeEventIndex += 1;
     };
     step();
@@ -515,14 +564,14 @@
 
   function playPrevious() {
     const events = getFilteredEvents();
-    pauseAnimation();
+    stopAnimation({ clearLayer: true, resetEvents: true });
     state.activeEventIndex = Math.max(0, state.activeEventIndex - 1);
     if (events[state.activeEventIndex]) activateEvent(events[state.activeEventIndex], true);
   }
 
   function playNext() {
     const events = getFilteredEvents();
-    pauseAnimation();
+    stopAnimation({ clearLayer: true, resetEvents: true });
     state.activeEventIndex = Math.min(events.length - 1, state.activeEventIndex + 1);
     if (events[state.activeEventIndex]) activateEvent(events[state.activeEventIndex], true);
   }
@@ -540,13 +589,21 @@
       .map(item => item.feature);
 
     const points = [];
+    const cumulativeDistances = [];
     const segments = [];
     const parts = [];
+    let totalDistance = 0;
 
     sorted.forEach(feature => {
       getRouteLatLngParts(feature.geometry).forEach(latLngs => {
         const startIndex = points.length;
-        latLngs.forEach(pt => points.push(pt));
+        latLngs.forEach((pt, localIndex) => {
+          if (localIndex > 0) {
+            totalDistance += L.latLng(latLngs[localIndex - 1]).distanceTo(L.latLng(pt));
+          }
+          points.push(pt);
+          cumulativeDistances.push(totalDistance);
+        });
         if (latLngs.length) {
           const part = { feature, points: latLngs, startIndex, endIndex: points.length - 1 };
           parts.push(part);
@@ -555,7 +612,7 @@
       });
     });
 
-    return { points, segments, parts };
+    return { points, cumulativeDistances, totalDistance, segments, parts };
   }
 
   function findSegmentByPointIndex(segments, index) {
@@ -573,12 +630,144 @@
     return rendered;
   }
 
-  async function playSelectedRoute() {
-    pauseAnimation();
-    state.animatedRouteLayer.clearLayers();
+  function findPointIndexByProgress(routeData, progress) {
+    const pointCount = routeData.points.length;
+    if (pointCount <= 1) return 0;
+    const clamped = Math.max(0, Math.min(1, progress));
+    if (!routeData.totalDistance) return Math.round((pointCount - 1) * clamped);
 
+    const targetDistance = routeData.totalDistance * clamped;
+    const distances = routeData.cumulativeDistances;
+    let left = 0;
+    let right = distances.length - 1;
+    while (left < right) {
+      const middle = Math.floor((left + right) / 2);
+      if (distances[middle] < targetDistance) left = middle + 1;
+      else right = middle;
+    }
+    return Math.max(0, Math.min(pointCount - 1, left));
+  }
+
+  function getRouteDurationMs(routeData) {
+    const pointDriven = routeData.points.length * 28;
+    const segmentDriven = routeData.segments.length * 180;
+    return Math.min(26000, Math.max(11000, pointDriven, segmentDriven));
+  }
+
+  function createRouteHeadIcon() {
+    return L.divIcon({
+      className: "march-head-icon",
+      html: `<div class="march-head"><i></i><span></span></div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    });
+  }
+
+  function updateRouteHead(playback, index) {
+    const point = playback.routeData.points[index];
+    if (!point) return;
+    if (!state.routeHeadMarker) {
+      state.routeHeadMarker = L.marker(point, {
+        icon: createRouteHeadIcon(),
+        zIndexOffset: 720,
+        interactive: false,
+      }).addTo(state.animatedRouteLayer);
+      return;
+    }
+    state.routeHeadMarker.setLatLng(point);
+  }
+
+  function renderRoutePlaybackFrame(playback, updateRange = true) {
+    const routeData = playback.routeData;
+    const index = findPointIndexByProgress(routeData, playback.progress);
+    const rendered = getRenderedRouteParts(routeData, index);
+    playback.glow.setLatLngs(rendered);
+    playback.line.setLatLngs(rendered);
+    updateRouteHead(playback, index);
+    updateRoutePlaybackEvents(index);
+
+    const segment = findSegmentByPointIndex(routeData.segments, index);
+    const segmentKey = `${segment?.startIndex ?? 0}-${segment?.feature.properties?._order ?? ""}`;
+    if (segment && playback.lastSegmentKey !== segmentKey) {
+      playback.lastSegmentKey = segmentKey;
+      renderRouteDetail(segment.feature, playback.config);
+    }
+
+    const progressPercent = Math.round(playback.progress * 100);
+    const orderText = segment?.feature.properties?._order ?? "-";
+    $("#playStatusTitle").textContent = `${playback.config.layer_name} · ${progressPercent}% · _order ${orderText}`;
+    if (updateRange) setProgressValue(progressPercent);
+  }
+
+  function finishRoutePlayback() {
+    const playback = state.routePlayback;
+    if (!playback) return;
+    cancelRouteFrame();
+    state.isPlayingRoute = false;
+    playback.progress = 1;
+    renderRoutePlaybackFrame(playback);
+    $("#playStatusTitle").textContent = `${playback.config.layer_name} · 播放完成`;
+    setRoutePlayButtonLabel("重播路线");
+  }
+
+  function animateRouteFrame(now) {
+    const playback = state.routePlayback;
+    if (!state.isPlayingRoute || !playback) return;
+
+    const lastFrameTime = playback.lastFrameTime || now;
+    const elapsed = now - lastFrameTime;
+    playback.lastFrameTime = now;
+    playback.progress = Math.min(
+      1,
+      playback.progress + (elapsed * getRouteSpeed()) / playback.durationMs,
+    );
+
+    renderRoutePlaybackFrame(playback);
+    if (playback.progress >= 1) {
+      finishRoutePlayback();
+      return;
+    }
+    state.routeAnimationFrame = requestAnimationFrame(animateRouteFrame);
+  }
+
+  function startRoutePlayback(playback) {
+    cancelRouteFrame();
+    state.routePlayback = playback;
+    state.isPlayingRoute = true;
+    state.routePlaybackMode = true;
+    playback.lastFrameTime = performance.now();
+    setRoutePlayButtonLabel("暂停路线");
+    state.routeAnimationFrame = requestAnimationFrame(animateRouteFrame);
+  }
+
+  function seekRouteProgress(value) {
+    const playback = state.routePlayback;
+    if (!playback) {
+      setProgressValue(Number(value) || 0);
+      return;
+    }
+    const progress = Math.max(0, Math.min(100, Number(value) || 0)) / 100;
+    playback.progress = progress;
+    playback.lastFrameTime = performance.now();
+    state.routePlaybackMode = true;
+    renderRoutePlaybackFrame(playback, false);
+    setProgressValue(progress * 100);
+    if (!state.isPlayingRoute && progress < 1) setRoutePlayButtonLabel("继续路线");
+    if (progress >= 1) finishRoutePlayback();
+  }
+
+  async function playSelectedRoute() {
     const layerKey = $("#routeSelect").value;
     if (!layerKey) return;
+
+    if (state.routePlayback?.layerKey === layerKey && state.routePlayback.progress < 1) {
+      if (state.isPlayingRoute) pauseAnimation();
+      else startRoutePlayback(state.routePlayback);
+      return;
+    }
+
+    stopAnimation({ clearLayer: true, resetEvents: true });
+    state.animatedRouteLayer.clearLayers();
 
     if (!state.routeLayers[layerKey]?.visible) {
       toggleRouteLayer(layerKey, true);
@@ -618,23 +807,20 @@
 
     state.map.fitBounds(L.latLngBounds(routeData.points), { padding: [36, 36] });
 
-    let index = 0;
-    const step = () => {
-      if (!state.isPlayingRoute) return;
-      const count = Math.max(2, Math.ceil(routeData.points.length / 150));
-      index = Math.min(routeData.points.length - 1, index + count);
-      const rendered = getRenderedRouteParts(routeData, index);
-      glow.setLatLngs(rendered);
-      line.setLatLngs(rendered);
-      const segment = findSegmentByPointIndex(routeData.segments, index);
-      updateRoutePlaybackEvents(index);
-      if (segment) renderRouteDetail(segment.feature, config);
-      $("#playStatusTitle").textContent = `${config.layer_name}  _order ${segment?.feature.properties?._order ?? "-"}`;
-      $("#progressRange").value = String(Math.round((index / (routeData.points.length - 1)) * 100));
-      if (index >= routeData.points.length - 1) pauseAnimation();
+    const playback = {
+      layerKey,
+      config,
+      routeData,
+      glow,
+      line,
+      durationMs: getRouteDurationMs(routeData),
+      progress: 0,
+      lastFrameTime: 0,
+      lastSegmentKey: "",
     };
-    step();
-    state.routeTimer = setInterval(step, 70);
+    state.routePlayback = playback;
+    renderRoutePlaybackFrame(playback);
+    startRoutePlayback(playback);
   }
 
   function setEventFilter(type) {
@@ -704,6 +890,7 @@
     playPrevious,
     playNext,
     pauseAnimation,
+    seekRouteProgress,
     flash,
   };
 })();
