@@ -22,25 +22,16 @@
 
     $("#routeLayerList").addEventListener("change", (event) => {
       const input = event.target.closest("input[data-route-layer]");
-
-      if (!input) {
-        return;
-      }
-
+      if (!input) return;
       IndexMap.toggleRouteLayer(input.dataset.routeLayer, input.checked);
     });
 
     $("#eventTypeButtons").addEventListener("click", (event) => {
       const button = event.target.closest("button[data-event-type]");
-
-      if (!button) {
-        return;
-      }
-
+      if (!button) return;
       $("#eventTypeButtons").querySelectorAll("button").forEach((item) => {
         item.classList.toggle("active", item === button);
       });
-
       IndexMap.setEventFilter(button.dataset.eventType);
     });
 
@@ -51,22 +42,6 @@
       button.textContent = visible ? "隐藏事件点" : "显示事件点";
       button.classList.toggle("is-off", !visible);
       IndexMap.setEventLayerVisible(visible);
-    });
-
-    $("#resourceLayerList").addEventListener("change", (event) => {
-      if (event.target.id === "tourismLayerToggle") {
-        if (event.target.checked) {
-          IndexMap.state.tourismLayerGroup.addTo(IndexMap.state.map);
-          return;
-        }
-
-        IndexMap.state.map.removeLayer(IndexMap.state.tourismLayerGroup);
-        return;
-      }
-
-      if (event.target.matches("input[data-resource-id]")) {
-        IndexMap.renderTourismMarkers();
-      }
     });
 
     $("#playEventsBtn").addEventListener("click", () => {
@@ -90,13 +65,12 @@
     });
 
     $("#routeSelect").addEventListener("change", (event) => {
-      IndexMap.setActiveRouteFilter(event.target.value);
+      // 只用于播放，不直接影响事件过滤
     });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     bindControls();
-
     IndexMap.initApp().catch((error) => {
       console.error(error);
       IndexMap.flash("地图初始化失败");
