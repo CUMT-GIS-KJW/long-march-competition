@@ -42,7 +42,19 @@
   grid-template-rows: auto auto 1fr auto;
 }
 
+.agent-panel.open .agent-window.agent-auto-mode {
+  grid-template-rows: auto 1fr;
+}
+
+.agent-window.agent-auto-mode .agent-form {
+  display: none;
+}
+
 .agent-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 12px 14px;
   border-bottom: 1px solid rgba(223, 200, 139, 0.18);
 }
@@ -62,6 +74,24 @@
   margin-top: 3px;
   color: #f3d47b;
   font: 700 15px var(--serif);
+}
+
+.agent-close {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  color: #f8dc91;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(246, 211, 122, 0.28);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.agent-close:hover {
+  color: #fff4c7;
+  background: rgba(158, 45, 35, 0.45);
 }
 
 .agent-key-settings {

@@ -420,6 +420,7 @@
 
 .result-actions {
         display:flex;
+        align-items:center;
         gap:7px
 }
 
@@ -455,8 +456,63 @@
         display:flex
 }
 
-.agent-panel {
-        z-index:6200
+.analysis-app .analysis-agent {
+        position:relative;
+        right:auto;
+        bottom:auto;
+        z-index:6200;
+        display:block;
+        pointer-events:auto
+}
+
+.analysis-app .analysis-agent .agent-toggle {
+        width:auto;
+        height:auto;
+        min-width:96px;
+        padding:8px 12px;
+        color:#ffe8a6;
+        background:rgba(197,164,93,.08);
+        border:1px solid var(--line);
+        border-radius:8px;
+        box-shadow:none;
+        font:700 9px var(--serif)
+}
+
+.analysis-app .analysis-agent .agent-toggle:hover {
+        border-color:rgba(246,211,122,.5);
+        background:rgba(197,164,93,.16)
+}
+
+.analysis-app .analysis-agent .agent-window {
+        position:absolute;
+        right:0;
+        bottom:calc(100% + 12px)
+}
+
+.analysis-app .analysis-agent.open .agent-window {
+        position:fixed;
+        top:50%;
+        right:auto;
+        bottom:auto;
+        left:50%;
+        width:min(720px,calc(100vw - 44px));
+        height:min(620px,calc(100vh - 96px));
+        transform:translate(-50%,-50%);
+        z-index:6300
+}
+
+.analysis-app .analysis-agent.open::before {
+        content:"";
+        position:fixed;
+        inset:0;
+        z-index:6290;
+        pointer-events:none;
+        background:rgba(36,10,7,.28);
+        backdrop-filter:blur(2px)
+}
+
+.analysis-app .analysis-agent.open .agent-window.agent-auto-mode {
+        grid-template-rows:auto 1fr
 }
 
 .analysis-modal-card {

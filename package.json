@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node server/app.js",
     "dev": "node server/app.js",
+    "gis:analysis": "node gis-analysis/run-analysis.js",
     "format:css": "node scripts/format-css.js"
   },
   "engines": { "node": ">=18" }

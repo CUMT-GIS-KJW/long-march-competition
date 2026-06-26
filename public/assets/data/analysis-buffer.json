@@ -1,20 +1,20 @@
 [
   {
     "buffer": "5km",
-    "resourceCount": 28,
-    "eventCount": 35,
-    "area": 64000
+    "resourceCount": 82,
+    "eventCount": 39,
+    "area": 34859
   },
   {
     "buffer": "10km",
-    "resourceCount": 46,
-    "eventCount": 52,
-    "area": 118000
+    "resourceCount": 94,
+    "eventCount": 51,
+    "area": 69874
   },
   {
     "buffer": "20km",
-    "resourceCount": 86,
-    "eventCount": 91,
-    "area": 183000
+    "resourceCount": 135,
+    "eventCount": 70,
+    "area": 140377
   }
 ]

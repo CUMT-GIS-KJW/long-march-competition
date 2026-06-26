@@ -119,7 +119,23 @@
       <p id="conclusionText">请选择左侧专题并执行 GIS 分析，系统将解释选线原因、空间难点和应学习的长征精神。</p>
       <div class="result-actions">
         <button id="tableBtn" type="button">查看统计表</button>
-        <button id="exportBtn" type="button">导出分析结果</button>
+        <div class="agent-panel analysis-agent" id="agentPanel">
+          <button class="agent-toggle" id="agentToggle" type="button">AI 分析结果</button>
+          <section class="agent-window">
+            <header class="agent-head">
+              <div>
+                <span>LONG MARCH GIS AGENT</span>
+                <b>长征 GIS 智能助手</b>
+              </div>
+              <button class="agent-close" id="agentCloseBtn" type="button" aria-label="关闭 AI 分析">×</button>
+            </header>
+            <div class="agent-messages" id="agentMessages"></div>
+            <form class="agent-form" id="agentForm">
+              <input id="agentInput" type="text" placeholder="询问分析结果、路线或空间关系">
+              <button type="submit">发送</button>
+            </form>
+          </section>
+        </div>
       </div>
     </footer>
   </div>
@@ -130,21 +146,6 @@
       <h2 id="modalTitle">统计结果</h2>
       <div id="modalBody"></div>
     </div>
-  </div>
-
-  <div class="agent-panel" id="agentPanel">
-    <button class="agent-toggle" id="agentToggle" type="button">AI</button>
-    <section class="agent-window">
-      <header class="agent-head">
-        <span>LONG MARCH GIS AGENT</span>
-        <b>长征 GIS 智能助手</b>
-      </header>
-      <div class="agent-messages" id="agentMessages"></div>
-      <form class="agent-form" id="agentForm">
-        <input id="agentInput" type="text" placeholder="询问分析结果、路线或空间关系">
-        <button type="submit">发送</button>
-      </form>
-    </section>
   </div>
 
   <div class="toast" id="toast"></div>

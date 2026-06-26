@@ -1,44 +1,80 @@
 [
   {
-    "province": "江西",
-    "distance": 620,
-    "eventCount": 12,
-    "resourceCount": 8
-  },
-  {
-    "province": "湖南",
-    "distance": 860,
-    "eventCount": 15,
-    "resourceCount": 10
-  },
-  {
-    "province": "广西",
-    "distance": 540,
-    "eventCount": 11,
-    "resourceCount": 6
-  },
-  {
     "province": "贵州",
-    "distance": 980,
-    "eventCount": 18,
-    "resourceCount": 15
+    "distance": 1341,
+    "eventCount": 20,
+    "resourceCount": 56
   },
   {
     "province": "四川",
-    "distance": 1860,
-    "eventCount": 29,
-    "resourceCount": 21
+    "distance": 936,
+    "eventCount": 13,
+    "resourceCount": 35
   },
   {
-    "province": "甘肃",
-    "distance": 760,
-    "eventCount": 14,
-    "resourceCount": 12
+    "province": "湖南",
+    "distance": 374,
+    "eventCount": 18,
+    "resourceCount": 5
+  },
+  {
+    "province": "云南",
+    "distance": 364,
+    "eventCount": 2,
+    "resourceCount": 36
+  },
+  {
+    "province": "江西",
+    "distance": 275,
+    "eventCount": 24,
+    "resourceCount": 94
+  },
+  {
+    "province": "广西",
+    "distance": 188,
+    "eventCount": 7,
+    "resourceCount": 5
+  },
+  {
+    "province": "福建",
+    "distance": 0,
+    "eventCount": 2,
+    "resourceCount": 0
+  },
+  {
+    "province": "广东",
+    "distance": 0,
+    "eventCount": 3,
+    "resourceCount": 0
+  },
+  {
+    "province": "河南",
+    "distance": 0,
+    "eventCount": 2,
+    "resourceCount": 0
   },
   {
     "province": "陕西",
-    "distance": 580,
-    "eventCount": 9,
-    "resourceCount": 8
+    "distance": 0,
+    "eventCount": 3,
+    "resourceCount": 45
+  },
+  {
+    "province": "甘肃",
+    "distance": 0,
+    "eventCount": 5,
+    "resourceCount": 19
+  },
+  {
+    "province": "宁夏",
+    "distance": 0,
+    "eventCount": 1,
+    "resourceCount": 0
+  },
+  {
+    "province": "湖北",
+    "distance": 0,
+    "eventCount": 0,
+    "resourceCount": 1
   }
 ]

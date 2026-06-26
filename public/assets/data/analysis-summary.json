@@ -1,10 +1,10 @@
 {
-  "totalDistance": 12500,
-  "totalEvents": 128,
-  "totalProvinces": 14,
-  "totalResources": 86,
-  "averageElevation": 2100,
-  "maxElevation": 4124,
-  "bufferArea": 183000,
-  "description": "长征路线跨越多个地形区，涉及山地、高原、河流、草地等复杂地理环境。"
+  "totalDistance": 18004,
+  "totalEvents": 100,
+  "totalProvinces": 13,
+  "totalResources": 296,
+  "averageElevation": 1216,
+  "maxElevation": 2531,
+  "bufferArea": 140377,
+  "description": "由 Node.js 脚本读取路线、事件与红色资源数据后自动生成，覆盖路线统计、省域近邻、海拔剖面、缓冲区和阶段统计。"
 }

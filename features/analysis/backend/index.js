@@ -7,6 +7,7 @@ const analysisFiles = {
   "/api/analysis/elevation": "analysis-elevation.json",
   "/api/analysis/buffer": "analysis-buffer.json",
   "/api/analysis/stage": "analysis-stage.json",
+  "/api/analysis/node-types": "analysis-node-types.json",
 };
 
 const bufferLayerInterfaces = {

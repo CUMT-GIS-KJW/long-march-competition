@@ -15,6 +15,7 @@ window.APP_CONFIG = {
     analysisElevation: "/assets/data/analysis-elevation.json",
     analysisBuffer: "/assets/data/analysis-buffer.json",
     analysisStage: "/assets/data/analysis-stage.json",
+    analysisNodeTypes: "/assets/data/analysis-node-types.json",
     scene3dFocus: "/assets/data/scene3d-focus.json",
   },
 
@@ -31,6 +32,7 @@ window.APP_CONFIG = {
     analysisElevation: "/analysis/elevation",
     analysisBuffer: "/analysis/buffer",
     analysisStage: "/analysis/stage",
+    analysisNodeTypes: "/analysis/node-types",
     scene3dFocus: "/scene3d/focus",
   },
 

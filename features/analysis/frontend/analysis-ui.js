@@ -703,7 +703,7 @@
   });
 
   $("#tableBtn").addEventListener("click", showStatsModal);
-  $("#exportBtn").addEventListener("click", showExportModal);
+  $("#exportBtn")?.addEventListener("click", showExportModal);
   $("#modalCloseBtn").addEventListener("click", closeModal);
   $("#analysisModal").addEventListener("click", (event) => {
     if (event.target.id === "analysisModal") {

@@ -1,37 +1,107 @@
 [
   {
-    "stage": "战略转移阶段",
-    "distance": 1200,
-    "eventCount": 18,
-    "startDate": "1934年10月",
-    "endDate": "1934年11月"
+    "stage": "长征出发与集结",
+    "distance": 452,
+    "eventCount": 13,
+    "startDate": "1934-09-30",
+    "endDate": "1934-10-20"
   },
   {
-    "stage": "突破封锁阶段",
-    "distance": 1600,
-    "eventCount": 24,
-    "startDate": "1934年11月",
-    "endDate": "1934年12月"
+    "stage": "突破封锁线",
+    "distance": 1113,
+    "eventCount": 32,
+    "startDate": "1934-10-21",
+    "endDate": "1934-11-25"
   },
   {
-    "stage": "遵义转折阶段",
-    "distance": 1800,
-    "eventCount": 22,
-    "startDate": "1935年1月",
-    "endDate": "1935年4月"
+    "stage": "红二十五军长征",
+    "distance": 174,
+    "eventCount": 5,
+    "startDate": "1934-11-16",
+    "endDate": "1935-09-15"
   },
   {
-    "stage": "北上抗日阶段",
-    "distance": 4200,
-    "eventCount": 39,
-    "startDate": "1935年5月",
-    "endDate": "1935年9月"
+    "stage": "湘江战役",
+    "distance": 209,
+    "eventCount": 6,
+    "startDate": "1934-11-27",
+    "endDate": "1934-12-04"
   },
   {
-    "stage": "会师胜利阶段",
-    "distance": 3700,
-    "eventCount": 25,
-    "startDate": "1935年10月",
-    "endDate": "1936年10月"
+    "stage": "通道转兵与入黔",
+    "distance": 174,
+    "eventCount": 5,
+    "startDate": "1934-12-10",
+    "endDate": "1934-12-31"
+  },
+  {
+    "stage": "强渡乌江",
+    "distance": 104,
+    "eventCount": 3,
+    "startDate": "1935-01-01",
+    "endDate": "1935-01-04"
+  },
+  {
+    "stage": "遵义转折",
+    "distance": 139,
+    "eventCount": 4,
+    "startDate": "1935-01-08",
+    "endDate": "1935-01-19"
+  },
+  {
+    "stage": "四渡赤水",
+    "distance": 452,
+    "eventCount": 13,
+    "startDate": "1935-01-23",
+    "endDate": "1935-03-31"
+  },
+  {
+    "stage": "红四方面军长征",
+    "distance": 70,
+    "eventCount": 2,
+    "startDate": "1935-03-28",
+    "endDate": "1935-10-05"
+  },
+  {
+    "stage": "巧渡金沙江与会理",
+    "distance": 104,
+    "eventCount": 3,
+    "startDate": "1935-04-29",
+    "endDate": "1935-05-16"
+  },
+  {
+    "stage": "强渡大渡河与飞夺泸定桥",
+    "distance": 70,
+    "eventCount": 2,
+    "startDate": "1935-05-24",
+    "endDate": "1935-05-29"
+  },
+  {
+    "stage": "雪山草地与北上决策",
+    "distance": 104,
+    "eventCount": 3,
+    "startDate": "1935-06-12",
+    "endDate": "1935-06-26"
+  },
+  {
+    "stage": "北上陕甘与到达陕北",
+    "distance": 139,
+    "eventCount": 4,
+    "startDate": "1935-09-17",
+    "endDate": "1935-10-19"
+  },
+  {
+    "stage": "红二方面军长征",
+    "distance": 104,
+    "eventCount": 3,
+    "startDate": "1935-11-19",
+    "endDate": "1936-07-02"
+  },
+  {
+    "stage": "三军会师",
+    "distance": 70,
+    "eventCount": 2,
+    "startDate": "1936-10-10",
+    "endDate": "1936-10-22"
   }
 ]

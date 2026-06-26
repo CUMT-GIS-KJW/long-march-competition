@@ -1,47 +1,47 @@
 [
   {
     "distance": 0,
-    "elevation": 250,
+    "elevation": 226,
     "place": "瑞金"
   },
   {
-    "distance": 850,
-    "elevation": 420,
+    "distance": 435,
+    "elevation": 565,
     "place": "湘江"
   },
   {
-    "distance": 1800,
-    "elevation": 850,
-    "place": "遵义"
+    "distance": 869,
+    "elevation": 630,
+    "place": "湘江"
   },
   {
-    "distance": 3100,
-    "elevation": 520,
+    "distance": 1304,
+    "elevation": 1178,
     "place": "赤水"
   },
   {
-    "distance": 4800,
-    "elevation": 1680,
+    "distance": 1739,
+    "elevation": 1150,
+    "place": "遵义"
+  },
+  {
+    "distance": 2174,
+    "elevation": 897,
+    "place": "遵义"
+  },
+  {
+    "distance": 2608,
+    "elevation": 2071,
+    "place": "赤水"
+  },
+  {
+    "distance": 3043,
+    "elevation": 1695,
     "place": "大渡河"
   },
   {
-    "distance": 5600,
-    "elevation": 4124,
+    "distance": 3478,
+    "elevation": 2531,
     "place": "夹金山"
-  },
-  {
-    "distance": 6800,
-    "elevation": 3500,
-    "place": "松潘草地"
-  },
-  {
-    "distance": 9100,
-    "elevation": 1760,
-    "place": "腊子口"
-  },
-  {
-    "distance": 12500,
-    "elevation": 1720,
-    "place": "会宁"
   }
 ]
