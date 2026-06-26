@@ -9,10 +9,10 @@
   };
 
   const categoryMeta = {
-    site: { label: "旧址", color: "#8E7DBE", icon: "址" },
-    museum: { label: "馆", color: "#A98467", icon: "馆" },
-    scenic: { label: "景", color: "#7A9EBD", icon: "景" },
-    other: { label: "红", color: "#B56576", icon: "红" },
+    site: { label: "旧址", color: "#8E7DBE", icon: "" },
+    museum: { label: "馆", color: "#A98467", icon: "" },
+    scenic: { label: "景", color: "#7A9EBD", icon: "" },
+    other: { label: "红", color: "#B56576", icon: "" },
   };
 
   const palette = [
@@ -150,7 +150,7 @@
       className: "",
       html: `
         <div class="resource-marker ${active ? "focus" : ""}" style="--size:${size}px;--color:${meta.color}">
-          <i>${meta.icon}</i>
+          <i></i>
         </div>
       `,
       iconSize: [size, size],
