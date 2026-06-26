@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>红色旅游研学专题｜红图绘长征</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/features/shared/frontend/base.css">
+  <link rel="stylesheet" href="/features/tourism/frontend/tourism.css">
+</head>
+<body>
+  <div class="tourism-app">
+    <header class="tourism-topbar">
+      <div class="tourism-brand">
+        <strong>红色旅游研学专题</strong>
+        <span>红色资源 · 多城市研学方案 · 长征事件关联表达</span>
+      </div>
+
+      <nav class="tourism-nav">
+        <button type="button" onclick="location.href='/index.html'">二维主地图</button>
+        <button type="button" onclick="location.href='/analysis.html'">综合分析</button>
+        <button type="button" onclick="location.href='/scene3d.html'">3D 地形</button>
+        <button class="active" type="button">红色旅游</button>
+      </nav>
+    </header>
+
+    <main class="tourism-layout">
+      <aside class="tourism-left">
+        <section class="panel-card">
+          <span class="panel-kicker">RESOURCE FILTER</span>
+          <h2>资源筛选</h2>
+          <label>
+            <span>省份</span>
+            <select id="provinceSelect"></select>
+          </label>
+          <label>
+            <span>资源类型</span>
+            <select id="categorySelect"></select>
+          </label>
+          <label>
+            <span>关键词</span>
+            <input id="keywordInput" type="search" placeholder="泸定桥、纪念馆、会址……">
+          </label>
+          <button class="primary-action" id="applyFilterBtn" type="button">刷新资源点</button>
+        </section>
+
+        <section class="panel-card">
+          <span class="panel-kicker">STUDY ROUTE</span>
+          <h2>研学方案生成</h2>
+          <label>
+            <span>固定出发地</span>
+            <input id="startInput" type="text" value="中国矿业大学（南湖校区）" readonly>
+          </label>
+          <label>
+            <span>研学主题</span>
+            <select id="themeSelect"></select>
+          </label>
+          <label>
+            <span>研学天数</span>
+            <select id="daysSelect">
+              <option value="1">1 天精华路线</option>
+              <option value="2">2 天拓展路线</option>
+              <option value="3" selected>3 天深度路线</option>
+            </select>
+          </label>
+          <button class="primary-action glow" id="generateRouteBtn" type="button">
+            一键生成研学方案
+          </button>
+          <p class="hint">系统会按天数自动匹配近距离、不绕路的城市：1 天 1 城，2 天 2-3 城，3 天 3-5 城。</p>
+        </section>
+
+        <section class="panel-card stats-card">
+          <span class="panel-kicker">OVERVIEW</span>
+          <h2>资源概览</h2>
+          <div class="stat-grid">
+            <div>
+              <b id="resourceTotal">0</b>
+              <span>资源点</span>
+            </div>
+            <div>
+              <b id="routeDistance">--</b>
+              <span>路线公里</span>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="tourism-map-wrap">
+        <div id="tourismMap"></div>
+        <div class="map-badge">
+          <span>RED TOURISM GIS</span>
+          <b>红色资源与研学路线动态分析</b>
+        </div>
+        <div class="analysis-overlay" id="analysisOverlay">
+          <div class="scan-ring"></div>
+          <b>正在生成研学方案</b>
+          <span>多城市资源筛选 · 天气餐饮建议 · 长征事件关联 · 路线空间变化</span>
+        </div>
+      </section>
+
+      <aside class="tourism-right">
+        <section class="detail-panel" id="detailPanel">
+          <span class="panel-kicker">DETAIL</span>
+          <h2>点击红色资源点查看详情</h2>
+          <p>地图默认展示筛选后的红色资源点。点击点位可查看它所在的省、市、地址和资源类型。</p>
+        </section>
+
+        <section class="route-panel" id="routePanel">
+          <span class="panel-kicker">ROUTE PLAN</span>
+          <h2>重点研学方案</h2>
+          <p>请选择主题和天数后生成方案。三天路线会比一天覆盖更多周边点位，并按每天“从哪里到哪里”分段展示。</p>
+        </section>
+
+        <section class="chart-panel">
+          <span class="panel-kicker">EVENT LINK</span>
+          <h2>长征事件关联表达</h2>
+          <div class="chart-block">
+            <b>资源类型环图</b>
+            <div id="donutChart" class="donut-chart"></div>
+          </div>
+          <div class="chart-block">
+            <b>城市资源热度</b>
+            <div id="cityChart" class="bubble-chart"></div>
+          </div>
+          <div class="chart-block">
+            <b>研学关键词云</b>
+            <div id="wordCloud" class="word-cloud"></div>
+          </div>
+          <div class="chart-block">
+            <b>关联历史事件</b>
+            <div id="eventList" class="event-list"></div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/features/shared/frontend/config.js"></script>
+  <script src="/features/tourism/frontend/tourism.js"></script>
+</body>
+</html>

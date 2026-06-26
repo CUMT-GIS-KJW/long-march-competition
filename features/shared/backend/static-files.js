@@ -25,6 +25,8 @@ const pageAliases = {
   "/zhuye.html": "/features/home/frontend/index.html",
   "/analysis.html": "/features/analysis/frontend/index.html",
   "/fenxi.html": "/features/analysis/frontend/index.html",
+  "/tourism.html": "/features/tourism/frontend/index.html",
+  "/red-tourism.html": "/features/tourism/frontend/index.html",
   "/scene3d.html": "/features/scene3d/frontend/index.html",
   "/sanwei-changjing.html": "/features/scene3d/frontend/index.html",
 };
