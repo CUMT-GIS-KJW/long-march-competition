@@ -191,6 +191,16 @@ input {
   border-color: var(--red);
 }
 
+#eventVisibilityBtn {
+  font-weight: 700;
+}
+
+#eventVisibilityBtn.is-off {
+  color: #7a5b48;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(122, 91, 72, 0.28);
+}
+
 .map-wrap {
   position: relative;
   min-width: 0;

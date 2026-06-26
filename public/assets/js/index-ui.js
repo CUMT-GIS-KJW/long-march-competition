@@ -44,6 +44,15 @@
       IndexMap.setEventFilter(button.dataset.eventType);
     });
 
+    $("#eventVisibilityBtn").addEventListener("click", (event) => {
+      const button = event.currentTarget;
+      const visible = button.dataset.eventsVisible !== "true";
+      button.dataset.eventsVisible = String(visible);
+      button.textContent = visible ? "隐藏事件点" : "显示事件点";
+      button.classList.toggle("is-off", !visible);
+      IndexMap.setEventLayerVisible(visible);
+    });
+
     $("#resourceLayerList").addEventListener("change", (event) => {
       if (event.target.id === "tourismLayerToggle") {
         if (event.target.checked) {

@@ -42,6 +42,7 @@
     routeTimer: 0,
     activeEventIndex: 0,
     activeEventFilter: "all",
+    eventsVisible: true,
     activeRouteKey: "",
     isPlayingEvents: false,
     isPlayingRoute: false,
@@ -782,6 +783,24 @@
     renderEventMarkers();
   }
 
+  function setEventLayerVisible(visible) {
+  state.eventsVisible = visible;
+
+  if (visible) {
+    if (!state.map.hasLayer(state.eventLayerGroup)) {
+      state.eventLayerGroup.addTo(state.map);
+    }
+    return;
+  }
+
+  pauseAnimation();
+  clearMovingPeople();
+
+  if (state.map.hasLayer(state.eventLayerGroup)) {
+    state.map.removeLayer(state.eventLayerGroup);
+  }
+}
+
   function setActiveRouteFilter(layerKey) {
     state.activeRouteKey = layerKey || "";
     state.activeEventIndex = 0;
@@ -839,6 +858,7 @@
     toggleRouteLayer,
     setEventFilter,
     setActiveRouteFilter,
+    setEventLayerVisible,
     renderTourismMarkers,
     playEventsTimeline,
     playSelectedRoute,
