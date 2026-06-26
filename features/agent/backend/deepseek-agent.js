@@ -7,6 +7,10 @@ function normalizeMessage(value) {
   return String(value || "").trim();
 }
 
+function normalizeApiKey(value) {
+  return String(value || "").trim();
+}
+
 function createHttpError(message, statusCode) {
   const error = new Error(message);
   error.statusCode = statusCode;
@@ -35,10 +39,10 @@ function normalizeHistory(history) {
     });
 }
 
-async function callDeepSeek({ message, history }) {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+async function callDeepSeek({ message, history, apiKey }) {
+  const resolvedApiKey = normalizeApiKey(apiKey) || process.env.DEEPSEEK_API_KEY;
 
-  if (!apiKey) {
+  if (!resolvedApiKey) {
     throw createHttpError("DeepSeek API Key 未配置", 500);
   }
 
@@ -51,7 +55,7 @@ async function callDeepSeek({ message, history }) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${resolvedApiKey}`,
       },
       signal: controller.signal,
       body: JSON.stringify({
@@ -99,6 +103,7 @@ async function chatWithAgent(payload) {
   const reply = await callDeepSeek({
     message,
     history: normalizeHistory(payload?.history),
+    apiKey: payload?.apiKey,
   });
 
   return {

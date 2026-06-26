@@ -5,9 +5,69 @@
   const form = $("#agentForm");
   const input = $("#agentInput");
   const messages = $("#agentMessages");
+  const windowEl = $(".agent-window");
 
+  const apiKeyStorageKey = "long-march-deepseek-api-key";
   let sending = false;
   const history = [];
+
+  function readApiKey() {
+    return localStorage.getItem(apiKeyStorageKey) || "";
+  }
+
+  function writeApiKey(value) {
+    const apiKey = String(value || "").trim();
+
+    if (apiKey) {
+      localStorage.setItem(apiKeyStorageKey, apiKey);
+      return;
+    }
+
+    localStorage.removeItem(apiKeyStorageKey);
+  }
+
+  function createKeySettings() {
+    const settings = document.createElement("div");
+    const label = document.createElement("label");
+    const keyInput = document.createElement("input");
+    const saveButton = document.createElement("button");
+    const clearButton = document.createElement("button");
+    const status = document.createElement("span");
+
+    settings.className = "agent-key-settings";
+    label.className = "agent-key-label";
+    label.textContent = "DeepSeek Key";
+    keyInput.id = "agentApiKey";
+    keyInput.type = "password";
+    keyInput.placeholder = "填写后保存在本机浏览器";
+    keyInput.autocomplete = "off";
+    keyInput.value = readApiKey();
+    saveButton.type = "button";
+    saveButton.textContent = "保存";
+    clearButton.type = "button";
+    clearButton.textContent = "清除";
+    status.className = "agent-key-status";
+    status.textContent = keyInput.value ? "已保存" : "未填写";
+
+    saveButton.addEventListener("click", () => {
+      writeApiKey(keyInput.value);
+      status.textContent = readApiKey() ? "已保存" : "未填写";
+    });
+
+    clearButton.addEventListener("click", () => {
+      keyInput.value = "";
+      writeApiKey("");
+      status.textContent = "已清除";
+    });
+
+    keyInput.addEventListener("input", () => {
+      writeApiKey(keyInput.value);
+      status.textContent = readApiKey() ? "已保存" : "未填写";
+    });
+
+    settings.append(label, keyInput, saveButton, clearButton, status);
+    windowEl.insertBefore(settings, messages);
+  }
 
   function addMessage(role, text) {
     const item = document.createElement("div");
@@ -54,6 +114,7 @@
           message,
           page: "index",
           history: history.slice(0, -1),
+          apiKey: readApiKey(),
         }),
       });
       const result = await response.json();
@@ -108,4 +169,6 @@
     "assistant",
     "你好，我是长征 GIS 智能助手。可以问我历史节点、路线解读、空间分析或答辩讲解。",
   );
+
+  createKeySettings();
 })();
