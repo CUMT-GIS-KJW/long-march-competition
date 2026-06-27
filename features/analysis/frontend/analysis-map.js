@@ -17,6 +17,7 @@
     routeLayer: null,
     resultLayer: null,
     resourceLayer: null,
+    hillshadeLayer: null,
   };
 
   function normalizeEvent(feature) {
@@ -132,6 +133,7 @@
       center: APP_CONFIG.map.center,
       zoom: APP_CONFIG.map.zoom,
       minZoom: APP_CONFIG.map.minZoom,
+      preferCanvas: true,
       zoomControl: true,
     });
 
@@ -139,6 +141,8 @@
       APP_CONFIG.basemaps.ancient.url,
       APP_CONFIG.basemaps.ancient.options,
     ).addTo(state.map);
+
+    addHillshadeLayer();
 
     const [resources, eventCollection] = await Promise.all([
       DataService.getResources(),
@@ -170,6 +174,29 @@
     document.dispatchEvent(new Event("analysismapready"));
   }
 
+  function addHillshadeLayer() {
+    const hillshade = APP_CONFIG.basemaps?.hillshade;
+
+    if (!hillshade?.url) {
+      return;
+    }
+
+    state.map.createPane("hillshadePane");
+    const pane = state.map.getPane("hillshadePane");
+
+    if (pane) {
+      pane.style.zIndex = 260;
+      pane.style.pointerEvents = "none";
+      pane.classList.add("hillshade-pane");
+    }
+
+    state.hillshadeLayer = L.tileLayer(hillshade.url, {
+      ...hillshade.options,
+      pane: "hillshadePane",
+      crossOrigin: true,
+    }).addTo(state.map);
+  }
+
   /* ---------- 修改点 3：使用 parts 逐段绘制 ---------- */
   function showRoute(routeId) {
     if (state.routeLayer) {
@@ -182,9 +209,18 @@
     const fg = L.featureGroup();
     route.parts.forEach(part => {
       L.polyline(part, {
-        color: route.color,
-        weight: 5,
-        opacity: 0.9,
+        color: "#f0cf7a",
+        weight: 10,
+        opacity: 0.32,
+        lineCap: "round",
+        lineJoin: "round",
+      }).addTo(fg);
+      L.polyline(part, {
+        color: route.color || "#a72b22",
+        weight: 4,
+        opacity: 0.96,
+        lineCap: "round",
+        lineJoin: "round",
       }).addTo(fg);
     });
 
@@ -292,11 +328,29 @@ function drawBuffer(route, radius) {
   }
 
   function drawRouteHighlight(route) {
-    state.resultLayer = L.polyline(route.points, {
-      color: "#e6c66d",
-      weight: 9,
-      opacity: 0.38,
-    }).addTo(state.map);
+    const layers = [];
+
+    route.parts.forEach((part) => {
+      layers.push(
+        L.polyline(part, {
+          color: "#f6d56f",
+          weight: 12,
+          opacity: 0.34,
+          lineCap: "round",
+          lineJoin: "round",
+        }),
+        L.polyline(part, {
+          color: "#ffffff",
+          weight: 3,
+          opacity: 0.36,
+          dashArray: "8 10",
+          lineCap: "round",
+          lineJoin: "round",
+        }),
+      );
+    });
+
+    state.resultLayer = L.layerGroup(layers).addTo(state.map);
   }
 
   function drawResult(tool, radius = 10, routeId = null) {

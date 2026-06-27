@@ -67,7 +67,6 @@
       bufferRadius: compactText(applied?.radius ? `${applied.radius} km` : selectedBuffer),
       metrics,
       insight: readText("#insightPanel"),
-      layerMethod: readText("#layerInterfacePanel"),
       conclusion: readText("#conclusionText"),
       modalTitle: $(".analysis-modal.show") ? readText("#modalTitle") : "",
       modalBody: $(".analysis-modal.show") ? readText("#modalBody") : "",

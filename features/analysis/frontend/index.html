@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/analysis/frontend/analysis.css">
   <link rel="stylesheet" href="/features/analysis/frontend/warm-theme.css">
-  <link rel="stylesheet" href="/features/agent/frontend/agent.css">
 </head>
 <body>
   <div class="analysis-app">
@@ -67,7 +66,7 @@
             分析路线
             <select id="routeSelect"></select>
           </label>
-          <label>
+          <label class="buffer-radius-field" id="bufferRadiusField">
             缓冲半径
             <select id="bufferSelect">
               <option value="5">5 km：核心步行研学圈</option>
@@ -77,6 +76,17 @@
           </label>
           <button class="run-analysis" type="button" id="runAnalysis">执行 GIS 分析</button>
         </div>
+
+        <section class="ai-result-card" id="insightPanel">
+          <div class="panel-title-row">
+            <span>AI 分析结果</span>
+            <b id="aiResultState">待生成</b>
+          </div>
+          <p class="ai-result-empty">
+            选择专题与路线后点击“执行 GIS 分析”，这里会展示当前路线的智能解读、空间难点和答辩表述。
+          </p>
+        </section>
+
       </aside>
 
       <section class="analysis-map">
@@ -90,6 +100,22 @@
           <span><i class="route-symbol"></i>当前路线</span>
           <span><i class="buffer-symbol"></i>缓冲/热点结果</span>
           <span><i class="resource-symbol"></i>红色资源点</span>
+          <span><i class="hillshade-symbol"></i>山体阴影底纹</span>
+        </div>
+        <div class="map-progress" id="analysisProgress" aria-hidden="true">
+          <div class="map-progress-head">
+            <span id="progressLabel">GIS 分析准备中</span>
+            <b id="progressValue">0%</b>
+          </div>
+          <div class="map-progress-track">
+            <i id="progressBar"></i>
+          </div>
+          <div class="map-progress-steps" id="progressSteps">
+            <span data-progress-step="0">读取数据</span>
+            <span data-progress-step="1">空间计算</span>
+            <span data-progress-step="2">绘制图层</span>
+            <span data-progress-step="3">生成结论</span>
+          </div>
         </div>
       </section>
 
@@ -108,9 +134,7 @@
         </div>
         <div id="analysisChart"></div>
 
-        <div class="insight-panel" id="insightPanel"></div>
-        <div class="layer-interface-panel" id="layerInterfacePanel"></div>
-        <div class="route-image-card" id="routeImageCard"></div>
+        <section class="overall-analysis-panel" id="overallAnalysisPanel"></section>
       </aside>
     </main>
 
@@ -119,23 +143,6 @@
       <p id="conclusionText">请选择左侧专题并执行 GIS 分析，系统将解释选线原因、空间难点和应学习的长征精神。</p>
       <div class="result-actions">
         <button id="tableBtn" type="button">查看统计表</button>
-        <div class="agent-panel analysis-agent" id="agentPanel">
-          <button class="agent-toggle" id="agentToggle" type="button">AI 分析结果</button>
-          <section class="agent-window">
-            <header class="agent-head">
-              <div>
-                <span>LONG MARCH GIS AGENT</span>
-                <b>长征 GIS 智能助手</b>
-              </div>
-              <button class="agent-close" id="agentCloseBtn" type="button" aria-label="关闭 AI 分析">×</button>
-            </header>
-            <div class="agent-messages" id="agentMessages"></div>
-            <form class="agent-form" id="agentForm">
-              <input id="agentInput" type="text" placeholder="询问分析结果、路线或空间关系">
-              <button type="submit">发送</button>
-            </form>
-          </section>
-        </div>
       </div>
     </footer>
   </div>
@@ -158,6 +165,5 @@
   <script src="/features/shared/frontend/map-utils.js"></script>
   <script src="/features/analysis/frontend/analysis-map.js"></script>
   <script src="/features/analysis/frontend/analysis-ui.js"></script>
-  <script src="/features/agent/frontend/agent-ui.js"></script>
 </body>
 </html>

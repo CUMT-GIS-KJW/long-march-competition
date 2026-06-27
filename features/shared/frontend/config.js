@@ -89,5 +89,14 @@ window.APP_CONFIG = {
         maxZoom: 18,
       },
     },
+    hillshade: {
+      name: "\u5c71\u4f53\u9634\u5f71",
+      url: "https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}",
+      options: {
+        attribution: "Hillshade \u00a9 Esri",
+        maxZoom: 16,
+        opacity: 0.34,
+      },
+    },
   },
 };
