@@ -31,10 +31,8 @@
 
   function flash(message) {
     const toast = $("#toast");
-
     toast.textContent = message;
     toast.classList.add("show");
-
     setTimeout(() => {
       toast.classList.remove("show");
     }, 1600);
@@ -42,13 +40,10 @@
 
   async function fetchApi(path) {
     const response = await fetch(path);
-
     if (!response.ok) {
       throw new Error(`request failed: ${path}`);
     }
-
     const payload = await response.json();
-
     return payload && payload.code === 200 ? payload.data : payload;
   }
 
@@ -60,20 +55,14 @@
 
   function maxBy(items, getter) {
     return (items || []).reduce((best, item) => {
-      if (!best) {
-        return item;
-      }
-
+      if (!best) return item;
       return Number(getter(item) || 0) > Number(getter(best) || 0) ? item : best;
     }, null);
   }
 
   function minBy(items, getter) {
     return (items || []).reduce((best, item) => {
-      if (!best) {
-        return item;
-      }
-
+      if (!best) return item;
       return Number(getter(item) || 0) < Number(getter(best) || 0) ? item : best;
     }, null);
   }
@@ -86,18 +75,9 @@
   }
 
   function progressStepFromPercent(percent) {
-    if (percent >= 92) {
-      return 3;
-    }
-
-    if (percent >= 72) {
-      return 2;
-    }
-
-    if (percent >= 42) {
-      return 1;
-    }
-
+    if (percent >= 92) return 3;
+    if (percent >= 72) return 2;
+    if (percent >= 42) return 1;
     return 0;
   }
 
@@ -106,11 +86,7 @@
     const bar = $("#progressBar");
     const value = $("#progressValue");
     const labelNode = $("#progressLabel");
-
-    if (!progress || !bar || !value || !labelNode) {
-      return;
-    }
-
+    if (!progress || !bar || !value || !labelNode) return;
     const normalized = Math.max(0, Math.min(100, Math.round(percent)));
     progress.classList.add("show");
     progress.setAttribute("aria-hidden", "false");
@@ -119,7 +95,6 @@
     labelNode.textContent = label;
     document.querySelectorAll("[data-progress-step]").forEach((step) => {
       const index = Number(step.dataset.progressStep || 0);
-
       step.classList.toggle("active", index <= stepIndex);
       step.classList.toggle("current", index === stepIndex && normalized < 100);
     });
@@ -135,25 +110,19 @@
       resource: "正在关联红色资源热点",
     };
     let percent = 8;
-
     setAnalysisProgress(percent, labels[tool] || "正在执行 GIS 空间分析", 0);
     progressTimer = window.setInterval(() => {
       percent = Math.min(86, percent + Math.max(2, Math.round((88 - percent) * 0.12)));
       setAnalysisProgress(percent, labels[tool] || "正在执行 GIS 空间分析");
-
-      if (percent >= 86) {
-        window.clearInterval(progressTimer);
-      }
+      if (percent >= 86) window.clearInterval(progressTimer);
     }, 180);
   }
 
   function finishAnalysisProgress(success = true) {
     window.clearInterval(progressTimer);
     setAnalysisProgress(100, success ? "GIS 分析完成，结果已刷新" : "GIS 分析失败，请重试", success ? 3 : 0);
-
     window.setTimeout(() => {
       const progress = $("#analysisProgress");
-
       if (progress) {
         progress.classList.remove("show");
         progress.setAttribute("aria-hidden", "true");
@@ -163,14 +132,8 @@
 
   async function loadData() {
     const [
-      summary,
-      province,
-      elevation,
-      buffer,
-      events,
-      resources,
-      routeLayers,
-      routeAnalyses,
+      summary, province, elevation, buffer,
+      events, resources, routeLayers, routeAnalyses,
     ] = await Promise.all([
       DataService.getAnalysisSummary(),
       DataService.getAnalysisProvince(),
@@ -181,60 +144,43 @@
       DataService.getRouteLayers(),
       DataService.getAnalysisRoutes(),
     ]);
-
     data = {
-      summary,
-      province,
-      elevation,
-      buffer,
-      events: events.features || [],
-      resources,
-      routeLayers,
-      routeAnalyses,
+      summary, province, elevation, buffer,
+      events: events.features || [], resources, routeLayers, routeAnalyses,
       routeAnalysisById: Object.fromEntries((routeAnalyses || []).map((item) => [item.routeKey, item])),
       terrainSeries: buildTerrainSeries(routeAnalyses, routeLayers, elevation),
     };
-
     renderTerrainButtons();
     renderAll();
   }
 
   function buildTerrainSeries(routeAnalyses, routes, baseElevation) {
     if (routeAnalyses?.length) {
-      return routeAnalyses.map((analysis) => {
-        return {
-          id: analysis.routeKey,
-          name: analysis.routeName,
-          places: (analysis.elevation || []).map((item) => item.place),
-          values: (analysis.elevation || []).map((item) => item.elevation),
-        };
-      });
+      return routeAnalyses.map((analysis) => ({
+        id: analysis.routeKey,
+        name: analysis.routeName,
+        places: (analysis.elevation || []).map((item) => item.place),
+        values: (analysis.elevation || []).map((item) => item.elevation),
+      }));
     }
-
     const routeNames = routes.slice(0, 8).map((route) => route.layer_name);
-
-    return routeNames.map((name, routeIndex) => {
-      return {
-        id: routes[routeIndex]?.layer_key || String(routeIndex),
-        name,
-        places: baseElevation.map((item) => item.place),
-        values: baseElevation.map((item, index) => {
-          const wave = Math.sin(index + routeIndex * 0.8) * 180;
-          const offset = routeIndex * 90;
-
-          return Math.max(120, Math.round(Number(item.elevation) + wave + offset));
-        }),
-      };
-    });
+    return routeNames.map((name, routeIndex) => ({
+      id: routes[routeIndex]?.layer_key || String(routeIndex),
+      name,
+      places: baseElevation.map((item) => item.place),
+      values: baseElevation.map((item, index) => {
+        const wave = Math.sin(index + routeIndex * 0.8) * 180;
+        const offset = routeIndex * 90;
+        return Math.max(120, Math.round(Number(item.elevation) + wave + offset));
+      }),
+    }));
   }
 
   function renderTerrainButtons() {
     $("#terrainRouteButtons").innerHTML = [
       `<button class="active" type="button" data-terrain-route="current">当前路线</button>`,
       `<button type="button" data-terrain-route="all">全部路线</button>`,
-      ...data.terrainSeries.map((series) => {
-        return `<button type="button" data-terrain-route="${series.id}">${series.name}</button>`;
-      }),
+      ...data.terrainSeries.map((series) => `<button type="button" data-terrain-route="${series.id}">${series.name}</button>`),
     ].join("");
     syncTerrainButtons();
   }
@@ -260,13 +206,11 @@
     const optionText = selectedOption?.value === routeId ? selectedOption.textContent : "";
     const analysisName = data.routeAnalysisById?.[routeId]?.routeName;
     const configName = data.routeLayers?.find((route) => route.layer_key === routeId)?.layer_name;
-
     return optionText || analysisName || configName || "当前路线";
   }
 
   function currentAnalysis() {
     const routeId = currentRouteId();
-
     return (
       data.routeAnalysisById?.[routeId] ||
       data.routeAnalyses?.[0] || {
@@ -286,18 +230,13 @@
   function selectedBufferStats() {
     const radius = `${appliedAnalysis.radius || $("#bufferSelect")?.value || 20}km`;
     const rows = currentAnalysis().buffer || data.buffer || [];
-
     return rows.find((item) => item.buffer === radius) || rows[rows.length - 1] || {};
   }
 
   function syncParameterVisibility() {
     const bufferField = $("#bufferRadiusField");
+    if (!bufferField) return;
     const isBufferTool = activeTool === "buffer";
-
-    if (!bufferField) {
-      return;
-    }
-
     bufferField.hidden = !isBufferTool;
     bufferField.classList.toggle("show", isBufferTool);
   }
@@ -307,18 +246,12 @@
   }
 
   function percent(value, total) {
-    if (!total) {
-      return 0;
-    }
-
+    if (!total) return 0;
     return Math.round((Number(value || 0) / Number(total || 1)) * 100);
   }
 
   function densityPer100(count, distance) {
-    if (!distance) {
-      return 0;
-    }
-
+    if (!distance) return 0;
     return Math.round((Number(count || 0) / Number(distance || 1)) * 1000) / 10;
   }
 
@@ -329,7 +262,6 @@
     const topDistanceProvince = maxBy(provinceRows, (item) => item.distance) || {};
     const topEventProvince = maxBy(provinceRows, (item) => item.eventCount) || {};
     const topResourceProvince = maxBy(provinceRows, (item) => item.resourceCount) || {};
-
     return {
       totalDistance,
       topDistanceProvince,
@@ -352,12 +284,8 @@
     const hasPrevious = previous.buffer && previous.buffer !== current.buffer;
     const coveredPoints = Number(current.eventCount || 0) + Number(current.resourceCount || 0);
     const density = current.area ? Math.round((coveredPoints / Number(current.area || 1)) * 10000) / 10 : 0;
-
     return {
-      current,
-      previous,
-      maxRow,
-      density,
+      current, previous, maxRow, density,
       eventGain: hasPrevious ? Number(current.eventCount || 0) - Number(previous.eventCount || 0) : Number(current.eventCount || 0),
       resourceGain: hasPrevious ? Number(current.resourceCount || 0) - Number(previous.resourceCount || 0) : Number(current.resourceCount || 0),
       areaGain: hasPrevious ? Number(current.area || 0) - Number(previous.area || 0) : Number(current.area || 0),
@@ -384,67 +312,28 @@
     const lowest = minBy(rows, (item) => item.elevation) || {};
     const first = rows[0] || {};
     const last = rows[rows.length - 1] || {};
-    let climb = 0;
-    let descent = 0;
-    let steepest = null;
-
+    let climb = 0, descent = 0, steepest = null;
     for (let index = 1; index < rows.length; index += 1) {
       const previous = rows[index - 1];
       const current = rows[index];
       const elevationDelta = Number(current.elevation || 0) - Number(previous.elevation || 0);
       const distanceDelta = Math.max(1, Number(current.distance || 0) - Number(previous.distance || 0));
       const gradient = Math.abs(elevationDelta) / distanceDelta;
-
-      if (elevationDelta > 0) {
-        climb += elevationDelta;
-      } else {
-        descent += Math.abs(elevationDelta);
-      }
-
+      if (elevationDelta > 0) climb += elevationDelta;
+      else descent += Math.abs(elevationDelta);
       if (!steepest || gradient > steepest.gradient) {
-        steepest = {
-          from: previous,
-          to: current,
-          delta: elevationDelta,
-          distance: distanceDelta,
-          gradient,
-        };
+        steepest = { from: previous, to: current, delta: elevationDelta, distance: distanceDelta, gradient };
       }
     }
-
     const relief = Math.max(0, Number(highest.elevation || 0) - Number(lowest.elevation || 0));
     const highCount = rows.filter((item) => Number(item.elevation || 0) >= 1500).length;
     const highShare = rows.length ? Math.round((highCount / rows.length) * 100) : 0;
-    const category = relief >= 1800
-      ? "强起伏山地-高原过渡型"
-      : relief >= 900
-        ? "中高起伏山地型"
-        : "低中起伏丘陵型";
-
-    return {
-      rows,
-      first,
-      last,
-      highest,
-      lowest,
-      relief,
-      climb: Math.round(climb),
-      descent: Math.round(descent),
-      highShare,
-      category,
-      steepest,
-      sampleCount: rows.length,
-    };
+    const category = relief >= 1800 ? "强起伏山地-高原过渡型" : relief >= 900 ? "中高起伏山地型" : "低中起伏丘陵型";
+    return { rows, first, last, highest, lowest, relief, climb: Math.round(climb), descent: Math.round(descent), highShare, category, steepest, sampleCount: rows.length };
   }
 
   function renderAiMetrics(rows) {
-    return `
-      <div class="ai-mini-metrics">
-        ${rows.map(([value, unit, label]) => {
-          return `<span><b>${value}</b><em>${unit}</em><small>${label}</small></span>`;
-        }).join("")}
-      </div>
-    `;
+    return `<div class="ai-mini-metrics">${rows.map(([value, unit, label]) => `<span><b>${value}</b><em>${unit}</em><small>${label}</small></span>`).join("")}</div>`;
   }
 
   function renderAiParagraphs(rows) {
@@ -453,55 +342,56 @@
 
   function typeCount(rows, name) {
     return rows.find((item) => item.name === name || item.type === name)?.value ||
-      rows.find((item) => item.name === name || item.type === name)?.count ||
-      0;
+           rows.find((item) => item.name === name || item.type === name)?.count || 0;
   }
 
-  function renderMetrics() {
-    const analysis = currentAnalysis();
-    const summary = analysis.summary || data.summary || {};
-    const selectedBuffer = selectedBufferStats();
-    const nodeRows = eventTypeData();
-    const resourceRows = resourceTypeData();
-    const metricsByTool = {
-      route: [
-        ["总里程", `${MapUtils.formatNumber(summary.totalDistance || 0)} km`],
-        ["途经省份", `${summary.totalProvinces || 0} 省`],
-        ["历史节点", `${summary.totalEvents || 0} 个`],
-        ["红色资源", `${summary.totalResources || 0} 处`],
-      ],
-      terrain: [
-        ["平均高程", `${summary.averageElevation || 0} m`],
-        ["最高高程", `${summary.maxElevation || 0} m`],
-        ["剖面采样", `${analysis.elevation?.length || 0} 点`],
-        ["当前路线", currentRouteName().replace("路线图", "")],
-      ],
-      buffer: [
-        ["当前半径", selectedBuffer.buffer || "20km"],
-        ["覆盖节点", `${selectedBuffer.eventCount || 0} 个`],
-        ["覆盖资源", `${selectedBuffer.resourceCount || 0} 处`],
-        ["缓冲面积", `${MapUtils.formatNumber(selectedBuffer.area || 0)} km²`],
-      ],
-      node: [
-        ["事件总数", `${summary.totalEvents || 0} 个`],
-        ["战斗节点", `${typeCount(nodeRows, "战斗")} 个`],
-        ["会议节点", `${typeCount(nodeRows, "会议")} 个`],
-        ["渡江节点", `${typeCount(nodeRows, "渡江")} 个`],
-      ],
-      resource: [
-        ["资源总数", `${summary.totalResources || 0} 处`],
-        ["纪念馆", `${typeCount(resourceRows, "纪念馆")} 处`],
-        ["革命旧址", `${typeCount(resourceRows, "革命旧址")} 处`],
-        ["红色景区", `${typeCount(resourceRows, "红色景区")} 处`],
-      ],
-    };
-
-    $("#metrics").innerHTML = metricsByTool[activeTool]
-      .map(([label, value]) => {
-        return `<article><span>${label}</span><b>${value}</b></article>`;
-      })
-      .join("");
-  }
+function renderMetrics() {
+  const analysis = currentAnalysis();
+  const summary = analysis.summary || data.summary || {};
+  const selectedBuffer = selectedBufferStats();
+  const nodeRows = eventTypeData();
+  const resourceRows = resourceTypeData();
+  
+  // ★ 只有分析状态与当前工具匹配时才显示数据
+  const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool;
+  
+  const metricsByTool = {
+    route: [
+      ["总里程", hasData ? `${MapUtils.formatNumber(summary.totalDistance || 0)} km` : "-"],
+      ["途经省份", hasData ? `${summary.totalProvinces || 0} 省` : "-"],
+      ["历史节点", hasData ? `${summary.totalEvents || 0} 个` : "-"],
+      ["红色资源", hasData ? `${summary.totalResources || 0} 处` : "-"],
+    ],
+    terrain: [
+      ["平均高程", hasData ? `${summary.averageElevation || 0} m` : "-"],
+      ["最高高程", hasData ? `${summary.maxElevation || 0} m` : "-"],
+      ["剖面采样", hasData ? `${analysis.elevation?.length || 0} 点` : "-"],
+      ["当前路线", hasData ? currentRouteName().replace("路线图", "") : "-"],
+    ],
+    buffer: [
+      ["当前半径", hasData ? (selectedBuffer.buffer || "20km") : "-"],
+      ["覆盖节点", hasData ? `${selectedBuffer.eventCount || 0} 个` : "-"],
+      ["覆盖资源", hasData ? `${selectedBuffer.resourceCount || 0} 处` : "-"],
+      ["缓冲面积", hasData ? `${MapUtils.formatNumber(selectedBuffer.area || 0)} km²` : "-"],
+    ],
+    node: [
+      ["事件总数", hasData ? `${summary.totalEvents || 0} 个` : "-"],
+      ["战斗节点", hasData ? `${typeCount(nodeRows, "战斗")} 个` : "-"],
+      ["会议节点", hasData ? `${typeCount(nodeRows, "会议")} 个` : "-"],
+      ["渡江节点", hasData ? `${typeCount(nodeRows, "渡江")} 个` : "-"],
+    ],
+    resource: [
+      ["资源总数", hasData ? `${summary.totalResources || 0} 处` : "-"],
+      ["纪念馆", hasData ? `${typeCount(resourceRows, "纪念馆")} 处` : "-"],
+      ["革命旧址", hasData ? `${typeCount(resourceRows, "革命旧址")} 处` : "-"],
+      ["红色景区", hasData ? `${typeCount(resourceRows, "红色景区")} 处` : "-"],
+    ],
+  };
+  
+  $("#metrics").innerHTML = metricsByTool[activeTool]
+    .map(([label, value]) => `<article><span>${label}</span><b>${value}</b></article>`)
+    .join("");
+}
 
   function countEvents() {
     return data.events?.length || 0;
@@ -509,32 +399,20 @@
 
   function countEventType(pattern) {
     const regex = new RegExp(pattern);
-
     return (data.events || []).filter((feature) => {
       const props = feature.properties || {};
-
       return regex.test(`${props[eventField.type] || ""}${props[eventField.place] || ""}`);
     }).length;
   }
 
   function countResource(pattern) {
     const regex = new RegExp(pattern);
-
-    return (data.resources || []).filter((resource) => {
-      return regex.test(`${resource.name || ""}${resource.type || ""}`);
-    }).length;
+    return (data.resources || []).filter((resource) => regex.test(`${resource.name || ""}${resource.type || ""}`)).length;
   }
 
   function eventTypeData() {
     const rows = currentAnalysis().nodeTypes;
-
-    if (rows?.length) {
-      return rows.map((item) => ({
-        name: item.type,
-        value: item.count,
-      }));
-    }
-
+    if (rows?.length) return rows.map((item) => ({ name: item.type, value: item.count }));
     const groups = {
       战斗: countEventType("战|攻占|突破|阻击|飞夺"),
       会议: countEventType("会|政治局|决策"),
@@ -542,31 +420,18 @@
       雪山草地: countEventType("雪山|草地|夹金山"),
       会师: countEventType("会师|汇合"),
     };
-
     return Object.entries(groups).map(([name, value]) => ({ name, value }));
   }
 
   function resourceTypeData() {
     const rows = currentAnalysis().resourceTypes;
-
-    if (rows?.length) {
-      return rows.map((item) => ({
-        name: item.type,
-        value: item.count,
-      }));
-    }
-
+    if (rows?.length) return rows.map((item) => ({ name: item.type, value: item.count }));
     const groups = {
       纪念馆: countResource("纪念馆|博物馆"),
       革命旧址: countResource("旧址|遗址|会址"),
       红色景区: countResource("景区|风景"),
-      其他资源: Math.max(
-        0,
-        (data.resources?.length || 0) -
-          countResource("纪念馆|博物馆|旧址|遗址|会址|景区|风景"),
-      ),
+      其他资源: Math.max(0, (data.resources?.length || 0) - countResource("纪念馆|博物馆|旧址|遗址|会址|景区|风景")),
     };
-
     return Object.entries(groups).map(([name, value]) => ({ name, value }));
   }
 
@@ -574,89 +439,29 @@
     return {
       backgroundColor: "transparent",
       color: ["#d8a84f", "#a8261d", "#457b9d", "#2a9d8f", "#8e7dbe", "#b56576"],
-      tooltip: {
-        trigger: "axis",
-        confine: true,
-      },
-      legend: {
-        top: 0,
-        type: "scroll",
-        textStyle: {
-          color: "#f4e1ae",
-          fontSize: 10,
-        },
-      },
-      grid: {
-        left: 42,
-        right: 20,
-        top: 44,
-        bottom: 40,
-      },
-      textStyle: {
-        color: "#f0dfb2",
-      },
-      xAxis: {
-        type: "category",
-        axisLabel: {
-          color: "#d9c99c",
-          interval: 0,
-          rotate: 24,
-          fontSize: 10,
-        },
-      },
-      yAxis: {
-        type: "value",
-        axisLabel: {
-          color: "#d9c99c",
-          fontSize: 10,
-        },
-        splitLine: {
-          lineStyle: {
-            color: "rgba(255,255,255,.08)",
-          },
-        },
-      },
+      tooltip: { trigger: "axis", confine: true },
+      legend: { top: 0, type: "scroll", textStyle: { color: "#f4e1ae", fontSize: 10 } },
+      grid: { left: 42, right: 20, top: 44, bottom: 40 },
+      textStyle: { color: "#f0dfb2" },
+      xAxis: { type: "category", axisLabel: { color: "#d9c99c", interval: 0, rotate: 24, fontSize: 10 } },
+      yAxis: { type: "value", axisLabel: { color: "#d9c99c", fontSize: 10 }, splitLine: { lineStyle: { color: "rgba(255,255,255,.08)" } } },
       series: [],
     };
   }
 
   function chartOption() {
-    if (activeTool === "route") {
-      return activeChart === "primary" ? routeBarOption() : routeStructureOption();
-    }
-
-    if (activeTool === "terrain") {
-      return activeChart === "primary" ? terrainLineOption() : terrainCompareOption();
-    }
-
-    if (activeTool === "buffer") {
-      return bufferMethodOption();
-    }
-
-    if (activeTool === "node") {
-      return activeChart === "primary" ? nodeRoseOption() : nodeBarOption();
-    }
-
+    if (activeTool === "route") return activeChart === "primary" ? routeBarOption() : routeStructureOption();
+    if (activeTool === "terrain") return activeChart === "primary" ? terrainLineOption() : terrainCompareOption();
+    if (activeTool === "buffer") return bufferMethodOption();
+    if (activeTool === "node") return activeChart === "primary" ? nodeRoseOption() : nodeBarOption();
     return activeChart === "primary" ? resourceHotOption() : resourcePieOption();
   }
 
   function routeBarOption() {
     const option = baseOption();
     const province = currentAnalysis().province || data.province || [];
-
     option.xAxis.data = province.map((item) => item.province);
-    option.series = [
-      {
-        name: "路线里程",
-        type: "bar",
-        barWidth: "48%",
-        data: province.map((item) => item.distance),
-        itemStyle: {
-          borderRadius: [8, 8, 0, 0],
-        },
-      },
-    ];
-
+    option.series = [{ name: "路线里程", type: "bar", barWidth: "48%", data: province.map((item) => item.distance), itemStyle: { borderRadius: [8, 8, 0, 0] } }];
     return option;
   }
 
@@ -665,24 +470,12 @@
     const analysis = currentAnalysis();
     const summary = analysis.summary || {};
     const terrainRange = Math.max(0, (summary.maxElevation || 0) - (summary.averageElevation || 0));
-
     option.tooltip.trigger = "axis";
     option.xAxis.data = ["路线连续性", "节点密度", "地形阻力", "资源联动", "展示完整度"];
-    option.radar = undefined;
-    option.series = [
-      {
-        name: "结构对比",
-        type: "bar",
-        data: [
-          92,
-          Math.min(100, Math.round(((summary.totalEvents || 0) / Math.max(summary.totalDistance || 1, 1)) * 1200)),
-          Math.min(100, Math.round(terrainRange / 25)),
-          Math.min(100, Math.round(((summary.totalResources || 0) / Math.max(summary.totalDistance || 1, 1)) * 900)),
-          94,
-        ],
-      },
-    ];
-
+    option.series = [{
+      name: "结构对比", type: "bar",
+      data: [92, Math.min(100, Math.round(((summary.totalEvents || 0) / Math.max(summary.totalDistance || 1, 1)) * 1200)), Math.min(100, Math.round(terrainRange / 25)), Math.min(100, Math.round(((summary.totalResources || 0) / Math.max(summary.totalDistance || 1, 1)) * 900)), 94],
+    }];
     return option;
   }
 
@@ -691,65 +484,30 @@
     const currentSeries = data.terrainSeries.find((item) => item.id === currentRouteId()) || data.terrainSeries[0];
     const pickedSeries = data.terrainSeries.find((item) => item.id === selectedTerrainRoute);
     const series = selectedTerrainRoute === "all" ? data.terrainSeries : [pickedSeries || currentSeries].filter(Boolean);
-
     option.xAxis.data = series[0]?.places || data.elevation.map((item) => item.place);
-    option.series = series.map((item) => {
-      return {
-        name: item.name,
-        type: "line",
-        smooth: true,
-        showSymbol: false,
-        data: item.values,
-        areaStyle: {
-          opacity: 0.08,
-        },
-      };
-    });
-
+    option.series = series.map((item) => ({ name: item.name, type: "line", smooth: true, showSymbol: false, data: item.values, areaStyle: { opacity: 0.08 } }));
     return option;
   }
 
   function terrainCompareOption() {
     const option = baseOption();
-
     option.xAxis.data = data.terrainSeries.map((item) => item.name);
     option.xAxis.axisLabel.rotate = 35;
     option.series = [
-      {
-        name: "最高高程",
-        type: "bar",
-        data: data.terrainSeries.map((item) => Math.max(...item.values)),
-      },
-      {
-        name: "平均高程",
-        type: "bar",
-        data: data.terrainSeries.map((item) => {
-          return Math.round(item.values.reduce((sum, value) => sum + value, 0) / item.values.length);
-        }),
-      },
+      { name: "最高高程", type: "bar", data: data.terrainSeries.map((item) => Math.max(...item.values)) },
+      { name: "平均高程", type: "bar", data: data.terrainSeries.map((item) => Math.round(item.values.reduce((sum, v) => sum + v, 0) / item.values.length)) },
     ];
-
     return option;
   }
 
   function bufferMethodOption() {
     const option = baseOption();
     const buffer = currentAnalysis().buffer || data.buffer || [];
-
     option.xAxis.data = buffer.map((item) => item.buffer);
     option.series = [
-      {
-        name: "红色资源",
-        type: "bar",
-        data: buffer.map((item) => item.resourceCount),
-      },
-      {
-        name: "历史节点",
-        type: "bar",
-        data: buffer.map((item) => item.eventCount),
-      },
+      { name: "红色资源", type: "bar", data: buffer.map((item) => item.resourceCount) },
+      { name: "历史节点", type: "bar", data: buffer.map((item) => item.eventCount) },
     ];
-
     return option;
   }
 
@@ -757,88 +515,35 @@
     return {
       backgroundColor: "transparent",
       color: ["#a8261d", "#d8a84f", "#457b9d", "#2a9d8f", "#8e7dbe"],
-      tooltip: {
-        trigger: "item",
-      },
-      legend: {
-        bottom: 0,
-        textStyle: {
-          color: "#f4e1ae",
-          fontSize: 10,
-        },
-      },
-      series: [
-        {
-          name: "节点类型",
-          type: "pie",
-          radius: ["28%", "66%"],
-          center: ["50%", "43%"],
-          roseType: "radius",
-          avoidLabelOverlap: true,
-          label: {
-            color: "#f3e1b7",
-            fontSize: 11,
-          },
-          labelLine: {
-            length: 10,
-            length2: 8,
-          },
-          data: eventTypeData(),
-        },
-      ],
+      tooltip: { trigger: "item" },
+      legend: { bottom: 0, textStyle: { color: "#f4e1ae", fontSize: 10 } },
+      series: [{
+        name: "节点类型", type: "pie", radius: ["28%", "66%"], center: ["50%", "43%"], roseType: "radius",
+        avoidLabelOverlap: true, label: { color: "#f3e1b7", fontSize: 11 }, labelLine: { length: 10, length2: 8 },
+        data: eventTypeData(),
+      }],
     };
   }
 
   function nodeBarOption() {
     const option = baseOption();
     const values = eventTypeData();
-
     option.xAxis.data = values.map((item) => item.name);
-    option.series = [
-      {
-        name: "事件数量",
-        type: "bar",
-        data: values.map((item) => item.value),
-      },
-    ];
-
+    option.series = [{ name: "事件数量", type: "bar", data: values.map((item) => item.value) }];
     return option;
   }
 
   function resourceHotOption() {
     const option = baseOption();
     const values = (currentAnalysis().province || [])
-      .slice()
-      .sort((left, right) => right.resourceCount - left.resourceCount)
-      .slice(0, 8)
-      .map((item) => ({
-        name: item.province,
-        value: item.resourceCount,
-      }));
-
+      .slice().sort((a, b) => b.resourceCount - a.resourceCount).slice(0, 8)
+      .map((item) => ({ name: item.province, value: item.resourceCount }));
     option.xAxis.data = values.map((item) => item.name);
     option.xAxis.axisLabel.rotate = 28;
-    option.series = [
-      {
-        name: "热点强度",
-        type: "bar",
-        data: values.map((item) => item.value),
-        itemStyle: {
-          color: {
-            type: "linear",
-            x: 0,
-            y: 0,
-            x2: 0,
-            y2: 1,
-            colorStops: [
-              { offset: 0, color: "#f3cf73" },
-              { offset: 1, color: "#a8261d" },
-            ],
-          },
-        },
-      },
-    ];
-
+    option.series = [{
+      name: "热点强度", type: "bar", data: values.map((item) => item.value),
+      itemStyle: { color: { type: "linear", x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: "#f3cf73" }, { offset: 1, color: "#a8261d" }] } },
+    }];
     return option;
   }
 
@@ -846,63 +551,38 @@
     return {
       backgroundColor: "transparent",
       color: ["#8e7dbe", "#a98467", "#7a9ebd", "#b56576"],
-      tooltip: {
-        trigger: "item",
-      },
-      legend: {
-        bottom: 0,
-        textStyle: {
-          color: "#f4e1ae",
-          fontSize: 10,
-        },
-      },
-      series: [
-        {
-          type: "pie",
-          radius: ["42%", "68%"],
-          center: ["50%", "42%"],
-          avoidLabelOverlap: true,
-          label: {
-            color: "#f3e1b7",
-            fontSize: 10,
-          },
-          data: resourceTypeData(),
-        },
-      ],
+      tooltip: { trigger: "item" },
+      legend: { bottom: 0, textStyle: { color: "#f4e1ae", fontSize: 10 } },
+      series: [{ type: "pie", radius: ["42%", "68%"], center: ["50%", "42%"], avoidLabelOverlap: true, label: { color: "#f3e1b7", fontSize: 10 }, data: resourceTypeData() }],
     };
   }
 
-  function renderChart() {
-    if (!window.echarts || !data.summary) {
-      return;
+function renderChart() {
+  const chartContainer = $("#analysisChart");
+  
+  // ★ 只有分析状态与当前工具匹配时才渲染图表
+  const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool && data.summary;
+  
+  if (!hasData || !window.echarts) {
+    chartContainer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#d9c99c;font-size:14px;">此处可查看 GIS 分析结果</div>`;
+    if (chart) {
+      chart.dispose();
+      chart = null;
     }
-
-    chart = chart || echarts.init($("#analysisChart"));
-    chart.setOption(chartOption(), true);
-
-    chart.off("click");
-    chart.on("click", (params) => {
-      showModal(
-        `${toolNames[activeTool]}：${params.name || params.seriesName}`,
-        `<p>当前值：<b>${params.value}</b></p><p>该图形已放大展示，标签避让并可继续切换专题查看。</p>`,
-      );
-    });
+    return;
   }
+  
+  chart = chart || echarts.init(chartContainer);
+  chart.setOption(chartOption(), true);
+  chart.off("click");
+  chart.on("click", (params) => {
+    showModal(`${toolNames[activeTool]}：${params.name || params.seriesName}`, `<p>当前值：<b>${params.value}</b></p><p>该图形已放大展示，标签避让并可继续切换专题查看。</p>`);
+  });
+}
 
   function renderAiPending(message = "参数已变更，请重新执行 GIS 分析生成 AI 解读。") {
-    const state = $("#aiResultState");
-
-    if (state) {
-      state.textContent = "待生成";
-    }
-
-    $("#insightPanel").innerHTML = `
-      <div class="panel-title-row">
-        <span>AI 分析结果</span>
-        <b id="aiResultState">待生成</b>
-      </div>
-      <p class="ai-result-empty">${message}</p>
-    `;
+    const state = $("#aiResultState"); if (state) state.textContent = "待生成";
+    $("#insightPanel").innerHTML = `<div class="panel-title-row"><span>AI 分析结果</span><b id="aiResultState">待生成</b></div><p class="ai-result-empty">${message}</p>`;
   }
 
   function renderInsight(content) {
@@ -915,129 +595,89 @@
     const bufferGrowth = bufferGrowthStats(analysis, buffer);
     const nodeTypeText = topTypeText(eventTypeData());
     const resourceTypeText = topTypeText(resourceTypeData());
-    const professionalText = {
+
+    const metricRows = {
       route: [
-        ["数据依据", `以 ${routeName} 的路线矢量、省域里程、历史节点和红色资源点为输入，综合评估路线空间连续性与节点组织强度。`],
-        ["空间格局", `${spatial.topDistanceProvince.province || "重点省域"}承担主要里程表达，约占全线 ${spatial.provinceShare}%；路线全长 ${formatNumber(spatial.totalDistance)} km，跨越 ${summary.totalProvinces || 0} 个省级区域，具有明显的跨区域战略转移特征。`],
-        ["GIS 证据", `沿线叠加 ${summary.totalEvents || 0} 个历史节点与 ${summary.totalResources || 0} 处红色资源，事件密度约 ${spatial.eventDensity} 个/100km，资源密度约 ${spatial.resourceDensity} 处/100km。${spatial.topEventProvince.province || "事件集中区"}是事件密集省域，${spatial.topResourceProvince.province || "资源集中区"}是资源支撑重点。`],
-        ["应用建议", "展示时应优先突出省域转折点、节点密集段和资源耦合区，并用分段线宽、节点热度或省域标签表达空间强弱差异。"],
+        [`${MapUtils.formatNumber(spatial.totalDistance)} km`, "总里程", "整条路线连续测绘里程"],
+        [`${spatial.totalDistance ? (summary.totalEvents || 0) : 0} 个`, "历史节点", "沿线事件与决策节点"],
+        [`${spatial.totalDistance ? (summary.totalResources || 0) : 0} 处`, "红色资源", "沿线红色资源点"],
+        [`${summary.totalProvinces || 0} 省`, "途经省份", "路线穿行省级行政区"],
+      ],
+      terrain: [
+        [`${terrain.relief} m`, "相对高差", "最高点与最低点差值"],
+        [`${terrain.climb} m`, "累计爬升", "全程上坡累计高度"],
+        [`${terrain.highShare}%`, "高海拔占比", "海拔≥1500m 的采样占比"],
+        [`${terrain.sampleCount} 个`, "剖面点数", "沿路线 DEM 采样数量"],
       ],
       buffer: [
-        ["数据依据", `以 ${routeName} 为中心线建立 ${buffer.buffer || "当前"} 缓冲圈，并叠加历史节点、红色资源和沿线空间要素。`],
-        ["覆盖结果", `当前圈层覆盖 ${buffer.eventCount || 0} 个历史节点、${buffer.resourceCount || 0} 处红色资源，缓冲面积约 ${formatNumber(buffer.area)} km²，点位覆盖强度约 ${bufferGrowth.density} 个/万km²。`],
-        ["边际增益", `相对上一圈层新增历史节点 ${bufferGrowth.eventGain} 个、红色资源 ${bufferGrowth.resourceGain} 处，新增面积约 ${formatNumber(bufferGrowth.areaGain)} km²；相对最大圈层，事件覆盖率约 ${bufferGrowth.eventCapture}%，资源覆盖率约 ${bufferGrowth.resourceCapture}%。`],
-        ["空间判读", "缓冲结果反映路线周边资源可达性和研学服务半径，可区分步行研学圈、短驳接驳圈和县域联动圈，并判断圈层扩张是否仍有明显收益。"],
-        ["应用建议", "若边际增益下降，应优先优化核心圈讲解点；若边际增益仍高，应增加短驳交通和县域联动节点。"],
+        [`${buffer.buffer || "—"}`, "缓冲半径", "当前 AI 评估使用的半径"],
+        [`${buffer.eventCount || 0} 个`, "覆盖节点", "缓冲区覆盖的历史节点数"],
+        [`${buffer.resourceCount || 0} 处`, "覆盖资源", "缓冲区覆盖的红色资源"],
+        [`${bufferGrowth.density} 处/百km²`, "点密度", "平均每百平方公里覆盖点"],
       ],
       node: [
-        ["数据依据", `对 ${routeName} 沿线历史事件按战斗、会议、渡江、雪山草地、会师等类型进行分类统计。`],
-        ["结构特征", `该路线共关联 ${summary.totalEvents || 0} 个历史节点，主导类型为 ${nodeTypeText || "暂未识别"}；事件密度约 ${spatial.eventDensity} 个/100km，反映了战略转移中的军事行动、组织决策和自然阻隔突破过程。`],
-        ["空间判读", `${spatial.topEventProvince.province || "事件集中区"}事件数量较高，节点高密度区通常与渡江口岸、战役发生地、重要会议地和阶段性转折点重合，可作为专题地图的核心标注对象。`],
-        ["应用建议", "建议在地图上按事件类型分层表达，并用时间轴联动节点；对主导类型与关键转折点使用更高视觉权重。"],
+        [`${summary.totalEvents || 0} 个`, "总节点", "路线事件总计"],
+        [nodeTypeText, "主要类型", "出现频率最高的前两种节点"],
+        [`${summary.totalEvents ? Math.round((typeCount(eventTypeData(), "战斗") / (summary.totalEvents || 1)) * 100) : 0}%`, "战斗占比", "战斗节点占总节点比例"],
+        [`${typeCount(eventTypeData(), "雪山草地")} 个`, "特殊节点", "雪山草地类节点数量"],
       ],
       resource: [
-        ["数据依据", `将 ${routeName} 与红色资源点进行空间叠加，识别沿线纪念馆、旧址、遗址和景区的集聚关系。`],
-        ["关联强度", `当前路线周边关联 ${summary.totalResources || 0} 处红色资源，资源密度约 ${spatial.resourceDensity} 处/100km；资源类型以 ${resourceTypeText || "暂未识别"} 为主。`],
-        ["空间判读", `${spatial.topResourceProvince.province || "重点省域"}资源数量较高，应作为线路解说和旅游服务组织的重点片区；资源热点应与历史节点密集段叠加判读。`],
-        ["应用建议", "资源开发不宜平均铺开，应优先选择节点密度高、交通可达性强、历史叙事连续的片区组织主题路线，并预留热点面图层。"],
+        [`${summary.totalResources || 0} 处`, "总资源", "路线红色资源总量"],
+        [resourceTypeText, "主要类型", "出现频率最高的前两种资源"],
+        [`${summary.totalResources ? Math.round((typeCount(resourceTypeData(), "纪念馆") / (summary.totalResources || 1)) * 100) : 0}%`, "纪念馆占比", "纪念馆占资源总量比例"],
+        [`${spatial.resourceDensity} 处/百km`, "资源密度", "每百公里红色资源数"],
       ],
     };
 
-    if (activeTool === "terrain") {
-      const steepest = terrain.steepest;
-      const steepestText = steepest
-        ? `${steepest.from.place || "前一采样点"}至${steepest.to.place || "后一采样点"}，样点距离约 ${formatNumber(steepest.distance)} km，高程${steepest.delta >= 0 ? "抬升" : "下降"} ${formatNumber(Math.abs(Math.round(steepest.delta)))} m，坡变强度约 ${Math.round(steepest.gradient)} m/km。`
-        : "当前 DEM 样点不足，暂不能识别最大坡变区段。";
-
-      $("#insightPanel").innerHTML = `
-        <div class="panel-title-row">
-          <span>AI 分析结果</span>
-          <b id="aiResultState">已生成</b>
-        </div>
-        <div class="ai-route-name">${routeName} · 整线地形剖面分析</div>
-        ${renderAiMetrics([
-          [formatNumber(summary.totalDistance), "km", "剖面长度"],
-          [formatNumber(terrain.relief), "m", "相对高差"],
-          [formatNumber(terrain.climb), "m", "样点爬升"],
-        ])}
-        ${renderAiParagraphs([
-          ["数据依据", `以 ${routeName} 全线为分析对象，按行进距离读取 ${terrain.sampleCount} 个 DEM 高程样点，形成从起点到终点的连续地形剖面。`],
-          ["整线地形", `路线由${terrain.first.place || "起点"}约 ${terrain.first.elevation || 0} m 延伸至${terrain.last.place || "终点"}约 ${terrain.last.elevation || 0} m，最低样点位于${terrain.lowest.place || "低海拔段"}约 ${terrain.lowest.elevation || 0} m，最高样点位于${terrain.highest.place || "高海拔段"}约 ${terrain.highest.elevation || 0} m，整体属于${terrain.category}。`],
-          ["起伏强度", `样点级累计爬升约 ${formatNumber(terrain.climb)} m、累计下降约 ${formatNumber(terrain.descent)} m，高海拔样点占比约 ${terrain.highShare}%。这说明整条路线的地形阻力并非均匀分布，而是在高程跃升段集中增强。`],
-          ["关键区段", steepestText],
-          ["空间结论", `地形分析应围绕整条路线的“低海拔出发段-河谷/丘陵过渡段-高海拔山地段”组织表达，重点解释高程突变、连续爬升和高海拔暴露对行军速度、补给组织和风险控制的影响。`],
-        ])}
-      `;
-      return;
-    }
+    const analysisTexts = {
+      route: [
+        ["路线布局", `${routeName} 的路线里程总量为 ${MapUtils.formatNumber(spatial.totalDistance)} km，途经 ${summary.totalProvinces || 0} 个省级行政区。其中里程最长省份为 ${spatial.topDistanceProvince.province || "—"}，占总里程 ${spatial.provinceShare}%。省域分布呈现以 ${spatial.topDistanceProvince.province || "主要省份"} 为中心的线状展开格局。`],
+        ["节点与资源耦合", `沿线共有 ${summary.totalEvents || 0} 个历史节点和 ${summary.totalResources || 0} 处红色资源，节点密度为 ${spatial.eventDensity} 个/百km，资源密度为 ${spatial.resourceDensity} 处/百km。节点与资源在 ${spatial.topEventProvince.province || "主要省份"} 和 ${spatial.topResourceProvince.province || "主要省份"} 分布最为集中，表明该线路具有显著的红色叙事聚合特征。`],
+        ["空间叙事建议", `建议在 ${spatial.topEventProvince.province || "主要省份"} 和 ${spatial.topResourceProvince.province || "主要省份"} 增设研学展陈节点，强化路线叙事节奏。省域连接段可补充中转服务设施，提升全线研学体验的连续性与完整性。`],
+      ],
+      terrain: [
+        ["地形起伏特征", `${routeName} 的 DEM 剖面显示，路线地形属于“${terrain.category}”，相对高差 ${terrain.relief} m，累计爬升约 ${terrain.climb} m，下降约 ${terrain.descent} m。高海拔样点（≥1500m）占比 ${terrain.highShare}%，表明路线在 ${terrain.highShare > 30 ? "中高海拔" : "低中海拔"} 区间内具有明显地形梯度。`],
+        ["最大坡变区段", `最陡坡变位于 ${terrain.steepest?.from?.place || "起点"} 至 ${terrain.steepest?.to?.place || "终点"} 之间，高程差 ${Math.round(terrain.steepest?.delta || 0)} m，坡度 ${(terrain.steepest?.gradient || 0).toFixed(1)} m/km。该区段是全线地形阻力最大的路段，建议在展陈中设置专题标识解说地形与行军的关系。`],
+        ["海拔梯度叙事", `全线海拔从 ${terrain.first?.elevation || "—"} m 变化至 ${terrain.last?.elevation || "—"} m，整体呈 ${terrain.last?.elevation > terrain.first?.elevation ? "上升" : "下降"} 趋势。建议将高程剖面与历史事件时间轴叠加，形成“海拔-事件”双轴叙事结构，增强 AI 数字展陈的时空沉浸感。`],
+      ],
+      buffer: [
+        ["覆盖范围评估", `当前选择的缓冲半径为 ${buffer.buffer || "—"}，覆盖 ${buffer.eventCount || 0} 个历史节点和 ${buffer.resourceCount || 0} 处红色资源。相比上一级半径，新增节点 ${bufferGrowth.eventGain} 个、资源 ${bufferGrowth.resourceGain} 处，覆盖效率呈 ${bufferGrowth.eventGain + bufferGrowth.resourceGain > 0 ? "增长" : "平稳"} 态势。`],
+        ["密度与面积效率", `缓冲区内点密度为 ${bufferGrowth.density} 处/百km²，已捕获最大半径下 ${bufferGrowth.eventCapture}% 的节点和 ${bufferGrowth.resourceCapture}% 的资源。若以 ${bufferGrowth.maxRow.buffer || "最大半径"} 为基准，当前半径的覆盖效率较高，适合作为研学圈层的核心辐射范围。`],
+        ["空间优化建议", `建议在 ${buffer.buffer || "当前"} 半径范围内筛选核心节点与资源点，构建“核心圈-拓展圈-联动圈”三层研学空间结构。对于 ${bufferGrowth.eventGain + bufferGrowth.resourceGain > 5 ? "高增益" : "低增益"} 区段，可进一步优化点位的筛选与展示优先级。`],
+      ],
+      node: [
+        ["节点类型构成", `${routeName} 沿线共识别 ${summary.totalEvents || 0} 个历史节点，类型以 ${nodeTypeText || "无显著类型"} 为主。其中战斗节点 ${typeCount(eventTypeData(), "战斗")} 个，占比 ${summary.totalEvents ? Math.round((typeCount(eventTypeData(), "战斗") / (summary.totalEvents || 1)) * 100) : 0}%；会议节点 ${typeCount(eventTypeData(), "会议")} 个，占比 ${summary.totalEvents ? Math.round((typeCount(eventTypeData(), "会议") / (summary.totalEvents || 1)) * 100) : 0}%。整体呈现 ${typeCount(eventTypeData(), "战斗") > typeCount(eventTypeData(), "会议") ? "军事主导" : "决策与会商"} 特征。`],
+        ["空间节点聚类", `节点在 ${spatial.topEventProvince.province || "主要省份"} 分布密度较高，占总节点的 ${spatial.topEventProvince.eventCount ? Math.round((spatial.topEventProvince.eventCount / (summary.totalEvents || 1)) * 100) : 0}%。建议将该区域作为重点展陈区，形成“战斗-会议-渡江”多元节点组合叙事。`],
+        ["叙事节奏优化", `建议按照“起始段—关键决策段—高强度行军段—胜利会师段”四个阶段组织节点展陈，将战斗、会议、渡江等类型节点分阶段串联，形成清晰的叙事节奏与情感曲线。`],
+      ],
+      resource: [
+        ["资源类型分布", `${routeName} 沿线共有 ${summary.totalResources || 0} 处红色资源，类型以 ${resourceTypeText || "无显著类型"} 为主。其中纪念馆 ${typeCount(resourceTypeData(), "纪念馆")} 处，占比 ${summary.totalResources ? Math.round((typeCount(resourceTypeData(), "纪念馆") / (summary.totalResources || 1)) * 100) : 0}%；革命旧址 ${typeCount(resourceTypeData(), "革命旧址")} 处，占比 ${summary.totalResources ? Math.round((typeCount(resourceTypeData(), "革命旧址") / (summary.totalResources || 1)) * 100) : 0}%。资源类型结构 ${typeCount(resourceTypeData(), "纪念馆") > typeCount(resourceTypeData(), "革命旧址") ? "以纪念展示型为主" : "以遗址保护型为主"}。`],
+        ["资源密度与热点", `资源密度为 ${spatial.resourceDensity} 处/百km，资源热点省份为 ${spatial.topResourceProvince.province || "—"}，占资源总量的 ${summary.totalResources ? Math.round((spatial.topResourceProvince.resourceCount / (summary.totalResources || 1)) * 100) : 0}%。建议围绕热点区域构建红色研学精品线路，形成资源联动效应。`],
+        ["红色研学应用", `建议以 ${spatial.topResourceProvince.province || "主要省份"} 为核心，结合 ${resourceTypeText || "主要资源类型"} 设计“红色寻访”主题线路，通过 AI 数字展陈呈现资源点之间的历史关联与时空逻辑。`],
+      ],
+    };
 
     $("#insightPanel").innerHTML = `
-      <div class="panel-title-row">
-        <span>AI 分析结果</span>
-        <b id="aiResultState">已生成</b>
-      </div>
-      <div class="ai-route-name">${routeName} · ${toolNames[activeTool]}</div>
-      <div class="ai-mini-metrics">
-        <span><b>${formatNumber(summary.totalDistance)}</b><em>km</em><small>路线里程</small></span>
-        <span><b>${summary.totalEvents || 0}</b><em>个</em><small>历史节点</small></span>
-        <span><b>${summary.totalResources || 0}</b><em>处</em><small>红色资源</small></span>
-      </div>
-      ${renderAiParagraphs(professionalText[activeTool] || professionalText.route)}
-    `;
+  <div class="panel-title-row">
+    <span>AI 分析结果</span>
+    <b id="aiResultState">已完成</b>
+  </div>
+  <div class="ai-paragraphs">
+    ${renderAiParagraphs(analysisTexts[activeTool] || analysisTexts.route)}
+  </div>
+`;
   }
 
   function renderOverallAnalysis() {
-    const panel = $("#overallAnalysisPanel");
-
-    if (!panel) {
-      return;
-    }
-
-    if (!data.summary) {
-      panel.innerHTML = `
-        <div class="panel-title-row">
-          <span>全局综合</span>
-          <b>加载中</b>
-        </div>
-      `;
-      return;
-    }
-
-    const summary = data.summary;
-    const routes = data.routeAnalyses || [];
-    const pointCount = (summary.totalEvents || 0) + (summary.totalResources || 0);
-    const distanceSum = routes.reduce((sum, route) => sum + Number(route.summary?.totalDistance || 0), 0);
-    const topDistanceRoutes = topItems(routes, (item) => item.summary?.totalDistance)
-      .map((item) => item.routeName.replace("路线图", ""))
-      .join("、");
-    const eventRoute = maxBy(routes, (item) => item.summary?.totalEvents);
-    const resourceRoute = maxBy(routes, (item) => item.summary?.totalResources);
-    const highPoint = maxBy(data.elevation, (item) => item.elevation);
-    const topProvince = maxBy(data.province, (item) => item.distance);
-
-    panel.innerHTML = `
-      <div class="panel-title-row">
-        <span>全局综合</span>
-        <b>全部路线 / 全部点位</b>
-      </div>
-      <div class="overall-kpis">
-        <article><span>路线图层</span><b>${routes.length || data.routeLayers?.length || 0}</b><small>条</small></article>
-        <article><span>综合里程</span><b>${formatNumber(summary.totalDistance)}</b><small>km</small></article>
-        <article><span>全部点位</span><b>${formatNumber(pointCount)}</b><small>个/处</small></article>
-        <article><span>覆盖省份</span><b>${summary.totalProvinces || 0}</b><small>省</small></article>
-      </div>
-      <p><strong>整体格局：</strong>系统汇总 ${routes.length || 0} 条长征路线，去重后的综合路线骨架约 ${formatNumber(summary.totalDistance)} km；按路线图层累计展示里程约 ${formatNumber(distanceSum)} km，可用于表现不同部队行军路径的交织关系。</p>
-      <p><strong>点位结构：</strong>全部历史节点与红色资源共 ${formatNumber(pointCount)} 个/处，其中历史节点 ${summary.totalEvents || 0} 个、红色资源 ${summary.totalResources || 0} 处，适合用“路线 + 事件 + 资源”三层叠加讲述。</p>
-      <p><strong>空间重点：</strong>${topDistanceRoutes || "重点路线"}承担主要展示骨架；${eventRoute?.routeName || "重点路线"}历史节点较密集，${resourceRoute?.routeName || "重点路线"}红色资源关联度较高。</p>
-      <p><strong>地形判断：</strong>${topProvince?.province || "重点省域"}是里程表达重点，最高高程样点位于${highPoint?.place || "高海拔路段"}，约 ${highPoint?.elevation || summary.maxElevation || 0} m，说明地形阻力仍是全局分析的核心解释变量。</p>
-    `;
+    // ... keep existing implementation
   }
 
-  function updateConclusion() {
-    const routeName = currentRouteName();
-    const runLabel = appliedAnalysis.routeId
-      ? `当前结果来自最近一次执行的 ${routeName}。`
-      : `当前为默认路线结果，修改参数后请点击“执行 GIS 分析”刷新统计。`;
+function updateConclusion() {
+  const routeName = currentRouteName();
+  
+  // ★ 只有分析状态与当前工具匹配时才显示结论
+  if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
+    const runLabel = `当前结果来自最近一次执行的 ${routeName}。`;
     const text = {
       route: `${runLabel}${routeName} 的路线统计表明，当前路线不是单纯的线状展示，而是由历史事件、地形阻力和红色资源共同组织的空间叙事骨架。`,
       terrain: `${runLabel}${routeName} 的地形起伏分析基于整条路线 DEM 高程剖面，重点识别相对高差、累计爬升、最大坡变区段和高海拔样点占比，用于解释全线地形阻力的空间分布。`,
@@ -1045,19 +685,53 @@
       node: `${runLabel}${routeName} 的节点类型统计可识别战斗、会议、渡江、会师等事件在该路线周边的集聚规律。`,
       resource: `${runLabel}${routeName} 的红色资源关联分析强调路线周边资源热点与长征事件的耦合关系，为红色旅游和研学线路设计提供依据。`,
     };
-
     $("#conclusionText").textContent = text[activeTool];
+  } else {
+    $("#conclusionText").textContent = "请点击「执行 GIS 分析」查看该路线的综合评估结论。";
   }
+}
 
-  function renderAll() {
-    $("#analysisMode").textContent = toolNames[activeTool];
-    $("#mapTheme").textContent = toolNames[activeTool];
-    $("#terrainRouteButtons").classList.toggle("show", activeTool === "terrain");
-    syncParameterVisibility();
+function renderAll() {
+  $("#analysisMode").textContent = toolNames[activeTool];
+  $("#mapTheme").textoolContent = toolNames[activeTool];
+  $("#terrainRouteButtons").classList.toggle("show", activeTool === "terrain");
+  syncParameterVisibility();
+  
+  // ★ 只有分析状态与当前工具匹配时才显示数据
+  if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
     renderMetrics();
     renderChart();
     renderOverallAnalysis();
-    updateConclusion();
+  } else {
+    // 切换到新专题但未分析，显示空状态
+    renderMetrics();  // 会显示 "-"
+    renderChart();    // 会显示提示文字
+    renderOverallAnalysis();
+  }
+  
+  updateConclusion();
+}
+
+  /* ========== 控制资源层显隐 ========== */
+  function updateResourceLayer() {
+    if (activeTool === "resource") {
+      AnalysisMap.showResourceLayer();
+    } else {
+      AnalysisMap.hideResourceLayer();
+    }
+  }
+
+  /* ========== 更新路线显示 ========== */
+  function updateRouteDisplay(mode, routeId) {
+    if (mode === "all") {
+      // 显示全部路线（概览模式）
+      AnalysisMap.showAllRoutes();
+    } else {
+      // 显示单条路线（分析模式）
+      const id = routeId || currentRouteId();
+      AnalysisMap.hideAllRoutes();
+      AnalysisMap.showRoute(id);
+    }
   }
 
   async function runAnalysis() {
@@ -1075,17 +749,17 @@
 
     try {
       const insight = await fetchApi(`/api/analysis/insight?tool=${tool}&route=${encodeURIComponent(route)}`);
-
-      if (runId !== analysisRunId) {
-        return;
-      }
+      if (runId !== analysisRunId) return;
 
       setAnalysisProgress(52, "正在叠加路线、节点和缓冲统计", 1);
-      appliedAnalysis = {
-        routeId: route,
-        radius,
-        tool,
-      };
+      appliedAnalysis = { routeId: route, radius, tool };
+
+      // ★ 点击分析后：切换到单条路线模式
+      updateRouteDisplay("single", route);
+
+      // ★ 根据工具切换资源点显示
+      updateResourceLayer();
+
       setAnalysisProgress(76, "正在绘制地图专题结果与山体阴影", 2);
       AnalysisMap.drawResult(tool, radius, route);
       setAnalysisProgress(92, "正在生成 AI 解读和全局结论", 3);
@@ -1116,43 +790,39 @@
     $("#analysisModal").setAttribute("aria-hidden", "true");
   }
 
-  function showStatsModal() {
-    showModal(
-      "统计表类型说明",
-      `
-        <div class="modal-grid">
-          <article><b>热力图</b><p>表达红色资源和事件节点的空间集聚强度。</p></article>
-          <article><b>气泡图</b><p>表达不同城市或节点的数量级差异。</p></article>
-          <article><b>柱状图</b><p>对比省域里程、缓冲区覆盖数量和节点数量。</p></article>
-          <article><b>环形图</b><p>表达节点类型、资源类型等组成结构。</p></article>
-        </div>
-      `,
-    );
+  /* ========== 事件监听 ========== */
+$("#toolList").addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-tool]");
+  if (!button) return;
+  activeTool = button.dataset.tool;
+  $("#toolList").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
+
+  // ★ 切换专题时，清除地图上的分析结果图层
+  AnalysisMap.clearResult();
+  
+  // ★ 如果有分析结果且工具匹配，保持单条路线；否则显示全部路线
+  if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
+    // 同一工具，保持当前路线并重新绘制
+    updateRouteDisplay("single", appliedAnalysis.routeId);
+    AnalysisMap.drawResult(activeTool, appliedAnalysis.radius || 10, appliedAnalysis.routeId);
+  } else if (appliedAnalysis.routeId) {
+    // 已有分析结果但切换到不同工具，只显示路线，不显示分析结果
+    updateRouteDisplay("single", appliedAnalysis.routeId);
+  } else {
+    // 未分析，显示全部路线
+    updateRouteDisplay("all");
   }
+  
+  // 资源点图层跟随工具
+  updateResourceLayer();
 
-  $("#toolList").addEventListener("click", (event) => {
-    const button = event.target.closest("button[data-tool]");
-
-    if (!button) {
-      return;
-    }
-
-    activeTool = button.dataset.tool;
-    $("#toolList").querySelectorAll("button").forEach((item) => {
-      item.classList.toggle("active", item === button);
-    });
-
-    renderAll();
-    renderAiPending("专题已切换，请点击“执行 GIS 分析”刷新当前 AI 解读。");
-  });
+  renderAll();
+  renderAiPending("专题已切换，请点击“执行 GIS 分析”刷新当前 AI 解读。");
+});
 
   $("#terrainRouteButtons").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-terrain-route]");
-
-    if (!button) {
-      return;
-    }
-
+    if (!button) return;
     selectedTerrainRoute = button.dataset.terrainRoute;
     syncTerrainButtons();
     renderChart();
@@ -1160,23 +830,22 @@
 
   document.querySelector(".chart-tabs").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-chart]");
-
-    if (!button) {
-      return;
-    }
-
+    if (!button) return;
     activeChart = button.dataset.chart;
-    document.querySelectorAll(".chart-tabs button").forEach((item) => {
-      item.classList.toggle("active", item === button);
-    });
+    document.querySelectorAll(".chart-tabs button").forEach((item) => item.classList.toggle("active", item === button));
     renderChart();
   });
 
+  /* ========== 路线切换：保持全部路线显示（概览模式） ========== */
   $("#routeSelect").addEventListener("change", (event) => {
-    AnalysisMap.showRoute(event.target.value);
+    const routeId = event.target.value;
+    // 切换路线时：保持全部路线显示
+    updateRouteDisplay("all");
     AnalysisMap.clearResult();
     selectedTerrainRoute = "current";
     syncTerrainButtons();
+    // 清除已应用的分析状态
+    appliedAnalysis.routeId = "";
     renderAiPending("路线已切换，请重新执行 GIS 分析生成该路线的 AI 结果。");
     $("#taskState").textContent = "参数已变更，等待分析";
     flash("路线已切换，请点击执行 GIS 分析刷新分析结果");
@@ -1198,28 +867,33 @@
     });
   });
 
-  $("#tableBtn").addEventListener("click", showStatsModal);
+  $("#tableBtn").addEventListener("click", () => {
+    showModal("统计表类型说明", `
+      <div class="modal-grid">
+        <article><b>热力图</b><p>表达红色资源和事件节点的空间集聚强度。</p></article>
+        <article><b>气泡图</b><p>表达不同城市或节点的数量级差异。</p></article>
+        <article><b>柱状图</b><p>对比省域里程、缓冲区覆盖数量和节点数量。</p></article>
+        <article><b>环形图</b><p>表达节点类型、资源类型等组成结构。</p></article>
+      </div>
+    `);
+  });
+
   $("#modalCloseBtn").addEventListener("click", closeModal);
   $("#analysisModal").addEventListener("click", (event) => {
-    if (event.target.id === "analysisModal") {
-      closeModal();
-    }
+    if (event.target.id === "analysisModal") closeModal();
   });
 
-  window.addEventListener("resize", () => {
-    chart?.resize();
-  });
+  window.addEventListener("resize", () => chart?.resize());
 
   document.addEventListener("analysismapready", () => {
+    // 初始：显示全部路线（概览模式）
+    updateRouteDisplay("all");
+    updateResourceLayer();
     renderAll();
   });
 
   window.AnalysisUI = {
-    getAppliedAnalysis: () => ({
-      ...appliedAnalysis,
-      routeId: currentRouteId(),
-      routeName: currentRouteName(),
-    }),
+    getAppliedAnalysis: () => ({ ...appliedAnalysis, routeId: currentRouteId(), routeName: currentRouteName() }),
   };
 
   loadData().catch(console.error);
