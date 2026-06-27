@@ -176,14 +176,17 @@
     }));
   }
 
-  function renderTerrainButtons() {
-    $("#terrainRouteButtons").innerHTML = [
-      `<button class="active" type="button" data-terrain-route="current">当前路线</button>`,
-      `<button type="button" data-terrain-route="all">全部路线</button>`,
-      ...data.terrainSeries.map((series) => `<button type="button" data-terrain-route="${series.id}">${series.name}</button>`),
-    ].join("");
-    syncTerrainButtons();
-  }
+function renderTerrainButtons() {
+  // ★ 默认选中 "current"
+  selectedTerrainRoute = "current";
+  
+  $("#terrainRouteButtons").innerHTML = [
+    `<button class="active" type="button" data-terrain-route="current">当前路线</button>`,
+    `<button type="button" data-terrain-route="all">全部路线</button>`,
+    ...data.terrainSeries.map((series) => `<button type="button" data-terrain-route="${series.id}">${series.name}</button>`),
+  ].join("");
+  syncTerrainButtons();
+}
 
   function syncTerrainButtons() {
     $("#terrainRouteButtons")?.querySelectorAll("button").forEach((item) => {
@@ -479,15 +482,32 @@ function renderMetrics() {
     return option;
   }
 
-  function terrainLineOption() {
-    const option = baseOption();
-    const currentSeries = data.terrainSeries.find((item) => item.id === currentRouteId()) || data.terrainSeries[0];
+function terrainLineOption() {
+  const option = baseOption();
+  const currentSeries = data.terrainSeries.find((item) => item.id === currentRouteId()) || data.terrainSeries[0];
+  
+  let series;
+  if (selectedTerrainRoute === "current") {
+    // ★ 当前路线：只显示当前选中的路线
+    series = [currentSeries].filter(Boolean);
+  } else if (selectedTerrainRoute === "all") {
+    series = data.terrainSeries;
+  } else {
     const pickedSeries = data.terrainSeries.find((item) => item.id === selectedTerrainRoute);
-    const series = selectedTerrainRoute === "all" ? data.terrainSeries : [pickedSeries || currentSeries].filter(Boolean);
-    option.xAxis.data = series[0]?.places || data.elevation.map((item) => item.place);
-    option.series = series.map((item) => ({ name: item.name, type: "line", smooth: true, showSymbol: false, data: item.values, areaStyle: { opacity: 0.08 } }));
-    return option;
+    series = [pickedSeries || currentSeries].filter(Boolean);
   }
+  
+  option.xAxis.data = series[0]?.places || data.elevation.map((item) => item.place);
+  option.series = series.map((item) => ({ 
+    name: item.name, 
+    type: "line", 
+    smooth: true, 
+    showSymbol: false, 
+    data: item.values, 
+    areaStyle: { opacity: 0.08 } 
+  }));
+  return option;
+}
 
   function terrainCompareOption() {
     const option = baseOption();
