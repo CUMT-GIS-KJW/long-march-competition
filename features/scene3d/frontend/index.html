@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>遵义会议三维场景 - 红图绘长征</title>
+  <title>长征三维地形 - 红图绘长征</title>
   <link
     rel="stylesheet"
     href="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css"
@@ -17,8 +17,8 @@
       <div class="brand">
         <div class="seal">维</div>
         <div>
-          <h1>遵义会议三维测绘场景</h1>
-          <small>核心历史节点 / 空间定位 / 三维表达</small>
+          <h1>长征三维地形</h1>
+          <small>DEM 地形 / 路线叠加 / 节点定位 / 地表采样</small>
         </div>
       </div>
 
@@ -36,64 +36,89 @@
 
     <main class="scene-layout">
       <aside class="scene-archive">
-        <span class="panel-kicker">SPATIAL ARCHIVE</span>
-        <h2 id="focusName">遵义会议会址</h2>
-        <p class="archive-subtitle" id="focusTitle"></p>
+        <section class="archive-card selected-card">
+          <span class="panel-kicker">TERRAIN PICK</span>
+          <h3 id="selectedName">尚未选择要素</h3>
+          <p id="selectedMeta">点击路线、节点或地形表面查看详情。</p>
+          <small id="selectedDescription">在三维地形中点击要素或地表，可读取位置、高程与关联信息。</small>
+        </section>
 
-        <img id="focusCover" class="archive-cover" alt="遵义会议会址">
+        <section class="archive-card terrain-summary">
+          <span class="panel-kicker">TERRAIN SUMMARY</span>
+          <dl class="archive-grid">
+            <div>
+              <dt>核心经度</dt>
+              <dd id="focusLng">-</dd>
+            </div>
+            <div>
+              <dt>核心纬度</dt>
+              <dd id="focusLat">-</dd>
+            </div>
+            <div>
+              <dt>参考高程</dt>
+              <dd id="focusHeight">-</dd>
+            </div>
+            <div>
+              <dt>数据图层</dt>
+              <dd id="terrainLayerCount">-</dd>
+            </div>
+          </dl>
+        </section>
 
-        <dl class="archive-grid">
-          <div>
-            <dt>经度</dt>
-            <dd id="focusLng">-</dd>
+        <section class="archive-card scene-controls">
+          <span class="panel-kicker">SCENE CONTROL</span>
+          <div class="preset-grid" aria-label="三维视角预设">
+            <button type="button" data-view-preset="overview" title="回到完整长征地形视角">全域</button>
+            <button type="button" data-view-preset="zunyi" title="定位遵义会议会址核心点">遵义</button>
+            <button type="button" data-view-preset="luding" title="定位泸定桥与大渡河地形">泸定</button>
+            <button type="button" data-view-preset="snow" title="定位雪山草地区域">雪山</button>
           </div>
-          <div>
-            <dt>纬度</dt>
-            <dd id="focusLat">-</dd>
-          </div>
-          <div>
-            <dt>参考高程</dt>
-            <dd id="focusHeight">-</dd>
-          </div>
-          <div>
-            <dt>坐标系统</dt>
-            <dd id="focusCrs">-</dd>
-          </div>
-          <div>
-            <dt>所属阶段</dt>
-            <dd id="focusStage">-</dd>
-          </div>
-          <div>
-            <dt>重建方式</dt>
-            <dd id="focusModel">-</dd>
-          </div>
-        </dl>
 
-        <div class="archive-description">
-          <b>场景说明</b>
-          <p id="focusDescription"></p>
-        </div>
+          <div class="layer-toggles" aria-label="三维图层开关">
+            <label><input type="checkbox" data-layer-toggle="routes" checked>路线</label>
+            <label><input type="checkbox" data-layer-toggle="nodes" checked>节点</label>
+            <label><input type="checkbox" data-layer-toggle="core" checked>核心</label>
+            <label><input type="checkbox" data-layer-toggle="rivers" checked>水系</label>
+            <label><input type="checkbox" data-layer-toggle="labels" checked>标注</label>
+            <label><input type="checkbox" id="measureToggle">量测</label>
+          </div>
 
-        <div class="model-status">
-          <span>实景模型接口</span>
-          <b>3DGS / RESERVED</b>
-          <small>当前使用空间光柱与纪念标志占位。</small>
-        </div>
+          <label class="range-control" for="terrainExaggeration">
+            <span>地形起伏</span>
+            <input id="terrainExaggeration" type="range" min="1" max="5" step="0.1" value="2.6">
+            <b id="terrainExaggerationValue">2.6x</b>
+          </label>
+        </section>
+
+        <section class="archive-card measure-card">
+          <span class="panel-kicker">TERRAIN MEASURE</span>
+          <p id="measureSummary">开启量测后，在地形上依次点击两个位置，读取距离、高差与坡度。</p>
+          <button type="button" id="clearMeasureBtn">清除量测</button>
+        </section>
       </aside>
 
       <section class="scene-stage">
         <div id="cesiumContainer"></div>
 
-        <div class="scene-guide">
-          <b>三维操作</b>
-          <span>左键旋转</span>
-          <span>右键缩放</span>
-          <span>滚轮改变高度</span>
+        <div class="scene-hud">
+          <div class="scene-guide">
+            <b>三维操作</b>
+            <span>左键旋转</span>
+            <span>右键平移</span>
+            <span>滚轮缩放</span>
+          </div>
+          <div class="scene-metrics">
+            <span>路线 <b id="routeCount">-</b></span>
+            <span>节点 <b id="nodeCount">-</b></span>
+            <span>镜头 <b id="cameraReadout">-</b></span>
+            <span>选中 <b id="pointerCoordinate">-</b></span>
+            <span>高程 <b id="pointerElevation">-</b></span>
+          </div>
         </div>
 
         <div class="scene-legend">
           <b>三维图例</b>
-          <span><i class="core"></i>遵义会议核心点</span>
+          <span><i class="core"></i>遵义核心点</span>
           <span><i class="battle"></i>战役节点</span>
           <span><i class="meeting"></i>会议节点</span>
           <span><i class="crossing"></i>渡江节点</span>
@@ -101,18 +126,6 @@
         </div>
       </section>
     </main>
-
-    <footer class="scene-controls">
-      <button id="flyToFocus" type="button">飞到核心点</button>
-      <button id="toggleRoute" class="active" type="button">显示路线</button>
-      <button id="toggleNodes" class="active" type="button">显示辅助节点</button>
-      <button id="orbitScene" type="button">自动环绕</button>
-      <button id="resetScene" type="button">重置视角</button>
-      <div class="scene-coordinate">
-        <span>核心坐标</span>
-        <b>106.928 E / 27.725 N / 850 m</b>
-      </div>
-    </footer>
   </div>
 
   <div class="toast" id="toast"></div>
