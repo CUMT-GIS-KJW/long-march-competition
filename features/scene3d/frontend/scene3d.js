@@ -19,11 +19,15 @@
     routeEntities: [],
     nodeEntities: [],
     coreEntities: [],
-    routesVisible: true,
-    nodesVisible: true,
-    orbiting: false,
-    orbitFrame: 0,
+    riverEntities: [],
+    measureEntities: [],
+    activePreset: "overview",
+    measurement: {
+      enabled: false,
+      points: [],
+    },
     terrainSource: "\u771f\u5b9e DEM",
+    terrainExaggeration: window.APP_CONFIG?.terrain?.exaggeration || 2.6,
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -175,6 +179,122 @@
     setTimeout(() => {
       toast.classList.remove("show");
     }, 1700);
+  }
+
+  function updateSceneMetrics() {
+    $("#routeCount").textContent = state.routeConfigs.length;
+    $("#nodeCount").textContent = state.nodeEntities.length;
+  }
+
+  function formatDistance(meters) {
+    if (!Number.isFinite(meters)) {
+      return "-";
+    }
+
+    if (meters >= 1000) {
+      return (meters / 1000).toFixed(2) + " km";
+    }
+
+    return Math.round(meters) + " m";
+  }
+
+  function updateMeasureSummary(text) {
+    const summary = $("#measureSummary");
+
+    if (summary) {
+      summary.textContent = text;
+    }
+  }
+
+  function updateSelectedFeature(title, meta, description) {
+    $("#selectedName").textContent = title;
+    $("#selectedMeta").textContent = meta;
+    $("#selectedDescription").textContent = description;
+  }
+
+  function describeRoute(entity) {
+    const properties = entity.routeProperties || {};
+    const corps = properties.corps_name || entity.name || "长征路线";
+    const stage = properties.stage_name || properties.KML_FOLDER || "路线段";
+    const date = [properties.start_date, properties.end_date]
+      .filter(Boolean)
+      .join(" 至 ");
+    const detail = properties.descript || properties.descriptio || "路线段已贴合三维地形展示。";
+
+    updateSelectedFeature(
+      corps,
+      date ? `${stage} · ${date}` : stage,
+      detail,
+    );
+  }
+
+  function describeEvent(event) {
+    updateSelectedFeature(
+      event.name,
+      [event.stage, event.date, event.unit].filter(Boolean).join(" · "),
+      event.description || "重要历史节点。",
+    );
+  }
+
+  function formatLngLat(cartographic) {
+    const lng = Cesium.Math.toDegrees(cartographic.longitude);
+    const lat = Cesium.Math.toDegrees(cartographic.latitude);
+
+    return `${lng.toFixed(3)} E / ${lat.toFixed(3)} N`;
+  }
+
+  function formatElevation(height) {
+    if (!Number.isFinite(height)) {
+      return "-";
+    }
+
+    return `${Math.round(height)} m`;
+  }
+
+  function pickTerrainCartographic(screenPosition) {
+    const scene = state.viewer.scene;
+    const ray = state.viewer.camera.getPickRay(screenPosition);
+
+    if (!ray) {
+      return null;
+    }
+
+    const cartesian = scene.globe.pick(ray, scene);
+
+    if (!Cesium.defined(cartesian)) {
+      return null;
+    }
+
+    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+    const sampledHeight = scene.globe.getHeight(cartographic);
+
+    cartographic.height = Number.isFinite(sampledHeight)
+      ? sampledHeight
+      : cartographic.height;
+
+    return cartographic;
+  }
+
+  function updatePointerReadout(cartographic) {
+    if (!cartographic) {
+      $("#pointerCoordinate").textContent = "-";
+      $("#pointerElevation").textContent = "-";
+      return;
+    }
+
+    $("#pointerCoordinate").textContent = formatLngLat(cartographic);
+    $("#pointerElevation").textContent = formatElevation(cartographic.height);
+  }
+
+  function describeTerrainSample(cartographic) {
+    const coordinate = formatLngLat(cartographic);
+    const elevation = formatElevation(cartographic.height);
+
+    updateSelectedFeature(
+      "\u5730\u8868\u91c7\u6837\u70b9",
+      `${coordinate} \u00b7 \u4f30\u7b97\u9ad8\u7a0b ${elevation}`,
+      "\u57fa\u4e8e\u5f53\u524d DEM \u5730\u5f62\u4e0e Cesium Globe \u8868\u9762\u62fe\u53d6\u7684\u4e34\u573a\u91c7\u6837\u7ed3\u679c\uff0c\u53ef\u7528\u4e8e\u5feb\u901f\u5224\u65ad\u8def\u7ebf\u7ecf\u8fc7\u533a\u57df\u7684\u5730\u5f62\u9ad8\u5dee\u3002",
+    );
   }
 
   function readValue(properties, key, fallback = "") {
@@ -562,7 +682,8 @@
     const viewer = new Cesium.Viewer("cesiumContainer", {
       ...imageryOptions,
       ...terrainOptions,
-      terrainExaggeration: window.APP_CONFIG?.terrain?.exaggeration || 1.35,
+      terrainExaggeration: state.terrainExaggeration,
+      verticalExaggeration: state.terrainExaggeration,
       animation: false,
       timeline: false,
       baseLayerPicker: false,
@@ -574,6 +695,7 @@
       navigationHelpButton: false,
       fullscreenButton: false,
       shouldAnimate: true,
+      requestRenderMode: false,
     });
 
     viewer.scene.globe.depthTestAgainstTerrain = true;
@@ -587,6 +709,11 @@
     viewer.scene.backgroundColor = Cesium.Color.fromCssColorString("#2f1711");
     viewer.scene.fog.enabled = false;
     viewer.scene.screenSpaceCameraController.enableCollisionDetection = true;
+    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 90000;
+    viewer.scene.screenSpaceCameraController.maximumZoomDistance = 7200000;
+    viewer.scene.screenSpaceCameraController.inertiaSpin = 0.35;
+    viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.28;
+    viewer.scene.screenSpaceCameraController.inertiaZoom = 0.22;
     const terrainImageryAlpha = window.APP_CONFIG?.terrainImagery?.alpha;
     const baseImageryLayer = viewer.imageryLayers.get(0);
 
@@ -651,7 +778,7 @@
       },
     });
 
-    state.coreEntities.push(shadow, river);
+    state.riverEntities.push(shadow, river);
   }
 
   function addDemContextOverlays() {
@@ -686,16 +813,11 @@
   }
 
   function updateArchive(focus) {
-    $("#focusName").textContent = focus.name;
-    $("#focusTitle").textContent = focus.title;
-    $("#focusCover").src = focus.coverImage;
     $("#focusLng").textContent = `${focus.lng.toFixed(3)}\u00b0 E`;
     $("#focusLat").textContent = `${focus.lat.toFixed(3)}\u00b0 N`;
     $("#focusHeight").textContent = `\u7ea6 ${focus.height} m`;
-    $("#focusCrs").textContent = focus.coordinateSystem;
-    $("#focusStage").textContent = focus.stage;
-    $("#focusModel").textContent = `${focus.modelType} \u9884\u7559`;
-    $("#focusDescription").textContent = focus.description;
+    $("#terrainLayerCount").textContent =
+      `${state.routeConfigs.length} \u6761\u8def\u7ebf / ${state.nodeEntities.length} \u4e2a\u8282\u70b9`;
   }
 
   function addCorePoint() {
@@ -840,7 +962,11 @@
             polyline: {
               positions: Cesium.Cartesian3.fromDegreesArrayHeights(coordinates),
               width: Number(config.line_width || 3) + 5,
-              material: Cesium.Color.fromCssColorString(config.color).withAlpha(0.98),
+              material: new Cesium.PolylineOutlineMaterialProperty({
+                color: Cesium.Color.fromCssColorString(config.color).withAlpha(0.98),
+                outlineColor: Cesium.Color.fromCssColorString("#f3d06f").withAlpha(0.42),
+                outlineWidth: 1,
+              }),
               clampToGround: true,
             },
           });
@@ -903,39 +1029,79 @@
       });
   }
 
-  function flyToFocus() {
-    const focus = state.focus;
-    const focusPoint = projectCoordinate(focus.lng, focus.lat);
+  const VIEW_PRESETS = {
+    overview: {
+      label: "长征全域三维地形",
+      lng: SCENE_CENTER.lng - 0.35,
+      lat: SCENE_CENTER.lat - 0.15,
+      height: 3600000,
+      heading: -10,
+      pitch: -74,
+      description: "完整查看长征路线、重要节点与地形起伏。",
+    },
+    zunyi: {
+      label: "遵义会议会址",
+      lng: 106.928,
+      lat: 27.725,
+      height: 260000,
+      heading: -24,
+      pitch: -56,
+      description: "聚焦长征转折点与周边山地环境。",
+    },
+    luding: {
+      label: "泸定桥与大渡河",
+      lng: 102.26,
+      lat: 29.92,
+      height: 430000,
+      heading: 28,
+      pitch: -58,
+      description: "观察大渡河峡谷与桥位通道关系。",
+    },
+    snow: {
+      label: "雪山草地区域",
+      lng: 101.6,
+      lat: 32.2,
+      height: 1050000,
+      heading: -35,
+      pitch: -60,
+      description: "查看高海拔地形对行军线路的影响。",
+    },
+  };
 
-    state.viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(
-        focusPoint.lng,
-        focusPoint.lat - 0.15,
-        760000,
-      ),
-      orientation: {
-        heading: Cesium.Math.toRadians(4),
-        pitch: Cesium.Math.toRadians(-58),
-        roll: 0,
-      },
-      duration: 1.8,
+  function setActivePreset(name) {
+    state.activePreset = name;
+    document.querySelectorAll("[data-view-preset]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.viewPreset === name);
     });
   }
 
-  function flyToOverview(duration = 1.8) {
+  function flyToPreset(name, duration = 1.5) {
+    const preset = VIEW_PRESETS[name] || VIEW_PRESETS.overview;
+
+    setActivePreset(name);
     state.viewer.camera.flyTo({
       destination: Cesium.Cartesian3.fromDegrees(
-        SCENE_CENTER.lng,
-        SCENE_CENTER.lat - 0.35,
-        4700000,
+        preset.lng,
+        preset.lat,
+        preset.height,
       ),
       orientation: {
-        heading: Cesium.Math.toRadians(0),
-        pitch: Cesium.Math.toRadians(-82),
+        heading: Cesium.Math.toRadians(preset.heading),
+        pitch: Cesium.Math.toRadians(preset.pitch),
         roll: 0,
       },
       duration,
     });
+    updateSelectedFeature(
+      preset.label,
+      "三维视角预设",
+      preset.description,
+    );
+    $("#sceneState").textContent = preset.label;
+  }
+
+  function flyToOverview(duration = 1.8) {
+    flyToPreset("overview", duration);
   }
 
   function addBridge(name, start, end) {
@@ -1044,45 +1210,278 @@
     });
   }
 
-  function toggleEntities(entities, show) {
+  function setEntitiesVisible(entities, visible) {
     entities.forEach((entity) => {
-      entity.show = show;
+      entity.show = visible;
     });
   }
 
-  function orbit() {
-    if (!state.orbiting) {
-      return;
-    }
-
-    state.viewer.camera.rotateRight(0.0015);
-    state.orbitFrame = requestAnimationFrame(orbit);
+  function setLabelsVisible(visible) {
+    state.viewer.entities.values.forEach((entity) => {
+      if (entity.label) {
+        entity.label.show = visible;
+      }
+    });
   }
 
-  function toggleOrbit() {
-    state.orbiting = !state.orbiting;
-    $("#orbitScene").classList.toggle("active", state.orbiting);
-    $("#orbitScene").textContent = state.orbiting
-      ? "\u505c\u6b62\u73af\u7ed5"
-      : "\u81ea\u52a8\u73af\u7ed5";
+  function setTerrainExaggeration(value) {
+    const exaggeration = clampNumber(Number(value) || 1, 1, 5);
 
-    if (state.orbiting) {
-      orbit();
+    state.terrainExaggeration = exaggeration;
+    if ("verticalExaggeration" in state.viewer.scene) {
+      state.viewer.scene.verticalExaggeration = exaggeration;
+    }
+    if ("terrainExaggeration" in state.viewer.scene.globe) {
+      state.viewer.scene.globe.terrainExaggeration = exaggeration;
+    }
+
+    const valueNode = $("#terrainExaggerationValue");
+    if (valueNode) {
+      valueNode.textContent = exaggeration.toFixed(1) + "x";
+    }
+    $("#sceneState").textContent = "地形起伏 " + exaggeration.toFixed(1) + "x";
+    state.viewer.scene.requestRender();
+  }
+
+  function clearMeasure() {
+    state.measureEntities.forEach((entity) => state.viewer.entities.remove(entity));
+    state.measureEntities = [];
+    state.measurement.points = [];
+    updateMeasureSummary(
+      state.measurement.enabled
+        ? "量测已开启：请在地形上点击第一个位置。"
+        : "开启量测后，在地形上依次点击两个位置，读取距离、高差与坡度。",
+    );
+  }
+
+  function drawMeasurePoint(cartographic, label) {
+    const lng = Cesium.Math.toDegrees(cartographic.longitude);
+    const lat = Cesium.Math.toDegrees(cartographic.latitude);
+    const entity = state.viewer.entities.add({
+      name: "量测点 " + label,
+      position: Cesium.Cartesian3.fromDegrees(lng, lat, (cartographic.height || 0) + 2400),
+      point: {
+        pixelSize: 12,
+        color: Cesium.Color.fromCssColorString("#68a5ac"),
+        outlineColor: Cesium.Color.fromCssColorString("#fff1bf"),
+        outlineWidth: 2,
+        heightReference: Cesium.HeightReference.RELATIVE_TO_GROUND,
+      },
+      label: {
+        text: label,
+        font: "bold 12px Microsoft YaHei",
+        fillColor: Cesium.Color.fromCssColorString("#d8fbff"),
+        outlineColor: Cesium.Color.fromCssColorString("#1b3d40"),
+        outlineWidth: 3,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        pixelOffset: new Cesium.Cartesian2(0, -22),
+      },
+    });
+
+    state.measureEntities.push(entity);
+  }
+
+  function drawMeasureLine(start, end, summaryText) {
+    const midpoint = new Cesium.Cartographic(
+      (start.longitude + end.longitude) / 2,
+      (start.latitude + end.latitude) / 2,
+      ((start.height || 0) + (end.height || 0)) / 2 + 7000,
+    );
+    const line = state.viewer.entities.add({
+      name: "地形量测线",
+      position: Cesium.Cartesian3.fromRadians(
+        midpoint.longitude,
+        midpoint.latitude,
+        midpoint.height,
+      ),
+      polyline: {
+        positions: Cesium.Cartesian3.fromRadiansArrayHeights([
+          start.longitude,
+          start.latitude,
+          (start.height || 0) + 3000,
+          end.longitude,
+          end.latitude,
+          (end.height || 0) + 3000,
+        ]),
+        width: 5,
+        material: new Cesium.PolylineOutlineMaterialProperty({
+          color: Cesium.Color.fromCssColorString("#68a5ac"),
+          outlineColor: Cesium.Color.fromCssColorString("#fff1bf"),
+          outlineWidth: 1,
+        }),
+      },
+      label: {
+        text: summaryText,
+        font: "bold 12px Microsoft YaHei",
+        fillColor: Cesium.Color.fromCssColorString("#d8fbff"),
+        outlineColor: Cesium.Color.fromCssColorString("#1b3d40"),
+        outlineWidth: 3,
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+      },
+    });
+
+    state.measureEntities.push(line);
+  }
+
+  function handleMeasureClick(cartographic) {
+    if (!state.measurement.enabled || !cartographic) {
+      return false;
+    }
+
+    if (state.measurement.points.length >= 2) {
+      clearMeasure();
+    }
+
+    const point = Cesium.Cartographic.clone(cartographic);
+    state.measurement.points.push(point);
+    drawMeasurePoint(point, state.measurement.points.length === 1 ? "A" : "B");
+
+    if (state.measurement.points.length === 1) {
+      updateMeasureSummary("已记录 A 点，请继续点击 B 点。");
+      describeTerrainSample(point);
+      return true;
+    }
+
+    const start = state.measurement.points[0];
+    const end = state.measurement.points[1];
+    const geodesic = new Cesium.EllipsoidGeodesic(start, end);
+    const distance = geodesic.surfaceDistance;
+    const heightDelta = (end.height || 0) - (start.height || 0);
+    const slope = distance > 0 ? Math.abs(heightDelta / distance) * 100 : 0;
+    const summaryText = formatDistance(distance) + " / 高差 " + Math.round(heightDelta) + " m";
+    const detail = summaryText + " / 坡度 " + slope.toFixed(1) + "%";
+
+    drawMeasureLine(start, end, summaryText);
+    updateMeasureSummary(detail);
+    updateSelectedFeature(
+      "地形剖面量测",
+      detail,
+      "根据两点经纬度与当前 DEM 表面高程估算距离、高差和平均坡度。",
+    );
+    $("#sceneState").textContent = "地形剖面量测完成";
+    return true;
+  }
+
+  function setMeasureEnabled(enabled) {
+    state.measurement.enabled = enabled;
+    document.body.classList.toggle("measure-active", enabled);
+
+    if (enabled) {
+      clearMeasure();
+      flash("地形量测已开启");
+      $("#sceneState").textContent = "地形量测模式";
       return;
     }
 
-    cancelAnimationFrame(state.orbitFrame);
+    updateMeasureSummary("开启量测后，在地形上依次点击两个位置，读取距离、高差与坡度。");
+  }
+
+  function bindSceneControls() {
+    document.querySelectorAll("[data-view-preset]").forEach((button) => {
+      button.addEventListener("click", () => {
+        flyToPreset(button.dataset.viewPreset);
+      });
+    });
+
+    document.querySelectorAll("[data-layer-toggle]").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const visible = checkbox.checked;
+        const layer = checkbox.dataset.layerToggle;
+
+        if (layer === "routes") setEntitiesVisible(state.routeEntities, visible);
+        if (layer === "nodes") setEntitiesVisible(state.nodeEntities, visible);
+        if (layer === "core") setEntitiesVisible(state.coreEntities, visible);
+        if (layer === "rivers") setEntitiesVisible(state.riverEntities, visible);
+        if (layer === "labels") setLabelsVisible(visible);
+
+        $("#sceneState").textContent = checkbox.parentElement.textContent.trim() + "图层" + (visible ? "显示" : "隐藏");
+      });
+    });
+
+    const exaggerationInput = $("#terrainExaggeration");
+    if (exaggerationInput) {
+      exaggerationInput.value = String(state.terrainExaggeration);
+      setTerrainExaggeration(exaggerationInput.value);
+      exaggerationInput.addEventListener("input", () => {
+        setTerrainExaggeration(exaggerationInput.value);
+      });
+    }
+
+    const measureToggle = $("#measureToggle");
+    if (measureToggle) {
+      measureToggle.addEventListener("change", () => {
+        setMeasureEnabled(measureToggle.checked);
+      });
+    }
+
+    const clearMeasureBtn = $("#clearMeasureBtn");
+    if (clearMeasureBtn) {
+      clearMeasureBtn.addEventListener("click", clearMeasure);
+    }
+
+    setActivePreset(state.activePreset);
+  }
+
+  function bindCameraReadout() {
+    let lastUpdate = 0;
+
+    state.viewer.scene.postRender.addEventListener(() => {
+      const now = performance.now();
+      if (now - lastUpdate < 260) {
+        return;
+      }
+      lastUpdate = now;
+
+      const camera = state.viewer.camera;
+      const height = camera.positionCartographic.height;
+      const pitch = Cesium.Math.toDegrees(camera.pitch);
+      const readout = $("#cameraReadout");
+
+      if (readout) {
+        readout.textContent = formatDistance(height) + " / " + Math.round(Math.abs(pitch)) + "°";
+      }
+    });
   }
 
   function bindPicking() {
     const handler = new Cesium.ScreenSpaceEventHandler(
       state.viewer.scene.canvas,
     );
+    let probeFrame = 0;
 
     handler.setInputAction((movement) => {
+      cancelAnimationFrame(probeFrame);
+      probeFrame = requestAnimationFrame(() => {
+        updatePointerReadout(pickTerrainCartographic(movement.endPosition));
+      });
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+    handler.setInputAction((movement) => {
+      if (state.measurement.enabled) {
+        const cartographic = pickTerrainCartographic(movement.position);
+
+        if (cartographic) {
+          updatePointerReadout(cartographic);
+          handleMeasureClick(cartographic);
+        }
+
+        return;
+      }
+
       const picked = state.viewer.scene.pick(movement.position);
 
       if (!Cesium.defined(picked) || !picked.id) {
+        const cartographic = pickTerrainCartographic(movement.position);
+
+        if (cartographic) {
+          updatePointerReadout(cartographic);
+          if (handleMeasureClick(cartographic)) {
+            return;
+          }
+          describeTerrainSample(cartographic);
+          $("#sceneState").textContent = "\u5730\u8868 DEM \u91c7\u6837";
+        }
+
         return;
       }
 
@@ -1090,36 +1489,29 @@
       flash(entity.name || "\u957f\u5f81\u7a7a\u95f4\u8282\u70b9");
 
       if (entity.eventData) {
+        updatePointerReadout({
+          longitude: Cesium.Math.toRadians(entity.eventData.lng),
+          latitude: Cesium.Math.toRadians(entity.eventData.lat),
+          height: 0,
+        });
+        describeEvent(entity.eventData);
         $("#sceneState").textContent =
           `${entity.eventData.name} \u00b7 ${entity.eventData.date}`;
+        return;
       }
+
+      if (entity.routeProperties) {
+        describeRoute(entity);
+        $("#sceneState").textContent = entity.name || "\u957f\u5f81\u8def\u7ebf";
+        return;
+      }
+
+      updateSelectedFeature(
+        entity.name || "\u957f\u5f81\u4e09\u7ef4\u5730\u5f62",
+        `\u9075\u4e49\u6838\u5fc3\u70b9 \u00b7 \u7ea6 ${state.focus.height} m`,
+        "\u57fa\u4e8e DEM \u5730\u5f62\u7684\u957f\u5f81\u8def\u7ebf\u4e0e\u5173\u952e\u8282\u70b9\u4e09\u7ef4\u5b9a\u4f4d\u3002",
+      );
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-  }
-
-  function bindControls() {
-    $("#flyToFocus").addEventListener("click", flyToFocus);
-
-    $("#toggleRoute").addEventListener("click", () => {
-      state.routesVisible = !state.routesVisible;
-      toggleEntities(state.routeEntities, state.routesVisible);
-      $("#toggleRoute").classList.toggle("active", state.routesVisible);
-    });
-
-    $("#toggleNodes").addEventListener("click", () => {
-      state.nodesVisible = !state.nodesVisible;
-      toggleEntities(state.nodeEntities, state.nodesVisible);
-      $("#toggleNodes").classList.toggle("active", state.nodesVisible);
-    });
-
-    $("#orbitScene").addEventListener("click", toggleOrbit);
-
-    $("#resetScene").addEventListener("click", () => {
-      state.orbiting = false;
-      cancelAnimationFrame(state.orbitFrame);
-      $("#orbitScene").classList.remove("active");
-      $("#orbitScene").textContent = "\u81ea\u52a8\u73af\u7ed5";
-      flyToOverview();
-    });
   }
 
   async function loadRouteCollections(configs) {
@@ -1149,14 +1541,21 @@
     state.routeCollections = await loadRouteCollections(routeConfigs);
     state.viewer = await createViewer();
 
-    updateArchive(focus);
+    updateSelectedFeature(
+      "\u957f\u5f81\u4e09\u7ef4\u5730\u5f62",
+      "\u8def\u7ebf\u53e0\u52a0 \u00b7 \u8282\u70b9\u5b9a\u4f4d \u00b7 DEM \u91c7\u6837",
+      "\u7528\u4e09\u7ef4 DEM \u5730\u5f62\u627f\u8f7d\u957f\u5f81\u8def\u7ebf\u3001\u5173\u952e\u8282\u70b9\u548c\u5730\u8868\u9ad8\u7a0b\u4fe1\u606f\uff0c\u652f\u6301\u573a\u666f\u6d4f\u89c8\u3001\u8981\u7d20\u70b9\u9009\u548c\u5730\u5f62\u91c7\u6837\u3002",
+    );
     addDemContextOverlays();
     addSceneDetails();
     addRoutes();
     addAuxiliaryNodes();
     addCorePoint();
+    updateArchive(focus);
+    updateSceneMetrics();
+    bindSceneControls();
+    bindCameraReadout();
     bindPicking();
-    bindControls();
     flyToOverview(2.1);
 
     const imageryName =
