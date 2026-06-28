@@ -3,30 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>红色旅游研学专题｜红图绘长征</title>
+  <title>红色研学之旅｜红图绘长征</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/tourism/frontend/tourism.css">
 </head>
 <body>
-  <div class="tourism-app">
-    <header class="tourism-topbar">
-      <div class="tourism-brand">
-        <strong>红色旅游研学专题</strong>
-        <span>红色资源 · 多城市研学方案 · 长征事件关联表达</span>
+  <div class="tourism-app tourism-cartoon-shell">
+    <header class="tourism-topbar tourism-cartoon-topbar">
+      <div class="tourism-brand cartoon-brand">
+        <div class="brand-star">★</div>
+        <div>
+          <strong>红色研学之旅</strong>
+          <span>重走长征路 · 传承红色精神</span>
+        </div>
       </div>
 
-      <nav class="tourism-nav site-nav">
-        <button class="site-nav-btn" type="button" onclick="location.href='/index.html'">二维主地图</button>
+      <nav class="tourism-nav site-nav cartoon-nav">
+        <button class="site-nav-btn" type="button" onclick="location.href='/index.html'">首页</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/analysis.html'">综合分析</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/scene3d.html'">3D地形</button>
-        <button class="site-nav-btn site-nav-active" type="button">红色旅游</button>
+        <button class="site-nav-btn site-nav-active active" type="button">红色旅游</button>
       </nav>
     </header>
 
-    <main class="tourism-layout">
-      <aside class="tourism-left">
-        <section class="panel-card">
+    <main class="tourism-layout tourism-cartoon-layout">
+      <aside class="tourism-left cartoon-left-panel">
+        <section class="panel-card compact-filter-card">
           <span class="panel-kicker">RESOURCE FILTER</span>
           <h2>资源筛选</h2>
           <label>
@@ -44,32 +47,37 @@
           <button class="primary-action" id="applyFilterBtn" type="button">刷新资源点</button>
         </section>
 
-        <section class="panel-card">
+
+        <section class="panel-card route-generate-card">
           <span class="panel-kicker">STUDY ROUTE</span>
           <h2>研学方案生成</h2>
+
           <label>
-            <span>固定出发地</span>
+            <span><i>1</i> 固定出发地</span>
             <input id="startInput" type="text" value="中国矿业大学（南湖校区）" readonly>
           </label>
+
           <label>
-            <span>研学主题</span>
+            <span><i>2</i> 研学主题</span>
             <select id="themeSelect"></select>
           </label>
+
           <label>
-            <span>研学天数</span>
+            <span><i>3</i> 研学天数</span>
             <select id="daysSelect">
               <option value="1">1 天精华路线</option>
               <option value="2">2 天拓展路线</option>
               <option value="3" selected>3 天深度路线</option>
             </select>
           </label>
+
           <button class="primary-action glow" id="generateRouteBtn" type="button">
-            一键生成研学方案
+            生成具体研学路线
           </button>
-          <p class="hint">系统会按天数自动匹配近距离、不绕路的城市：1 天 1 城，2 天 2-3 城，3 天 3-5 城。</p>
+          <p class="hint">保留原有路线生成逻辑：同省聚合点位，跨天以上一天终点作为下一天起点，并在地图中显示分日路线。</p>
         </section>
 
-        <section class="panel-card stats-card">
+        <section class="panel-card cartoon-legend-card stats-card">
           <span class="panel-kicker">OVERVIEW</span>
           <h2>资源概览</h2>
           <div class="stat-grid">
@@ -85,43 +93,48 @@
         </section>
       </aside>
 
-      <section class="tourism-map-wrap">
+      <section class="tourism-map-wrap cartoon-map-card">
         <div id="tourismMap"></div>
-        <div class="map-badge">
-          <span>RED TOURISM GIS</span>
+        <div class="map-badge cartoon-map-title">
+          <span>RED STUDY MAP</span>
           <b>红色资源与研学路线动态分析</b>
         </div>
-        <div class="tourism-legend">
+        <div class="tourism-legend cartoon-floating-legend">
           <b>图例</b>
           <span><i class="site"></i>革命旧址 / 遗址</span>
           <span><i class="museum"></i>纪念馆 / 博物馆</span>
           <span><i class="scenic"></i>红色景区</span>
-          <span><i class="other"></i>其他资源</span>
           <span><em class="day1"></em>第一天路线</span>
           <span><em class="day2"></em>第二天路线</span>
           <span><em class="day3"></em>第三天路线</span>
         </div>
         <div class="analysis-overlay" id="analysisOverlay">
-          <div class="scan-ring"></div>
-          <b>正在生成研学方案</b>
-          <span>多城市资源筛选 · 天气餐饮建议 · 长征事件关联 · 路线空间变化</span>
+          <div class="travel-loader">
+            <div class="travel-sky">☁️ ☀️ ☁️</div>
+            <div class="travel-road">
+              <i></i><i></i><i></i><i></i>
+              <span class="travel-bus">🚌</span>
+            </div>
+            <b>正在规划红色研学路线</b>
+            <span>同省聚合点位 · 避免路线重叠 · 按距离生成时间表</span>
+          </div>
         </div>
       </section>
 
-      <aside class="tourism-right">
+      <aside class="tourism-right cartoon-right-panel">
         <section class="detail-panel" id="detailPanel">
           <span class="panel-kicker">DETAIL</span>
           <h2>点击红色资源点查看详情</h2>
-          <p>地图默认展示筛选后的红色资源点。点击点位可查看它所在的省、市、地址和资源类型。</p>
+          <p>地图默认展示筛选后的红色资源点。点击点位可查看它所在的省、市、地址、资源类型和游客评价。</p>
         </section>
 
         <section class="route-panel" id="routePanel">
           <span class="panel-kicker">ROUTE PLAN</span>
           <h2>重点研学方案</h2>
-          <p>请选择主题和天数后生成方案。三天路线会比一天覆盖更多周边点位，并按每天“从哪里到哪里”分段展示。</p>
+          <p>请选择主题和天数后生成方案。路线会在中间地图中按天分色显示，并在这里展示每天“从哪里到哪里”的分段安排。</p>
         </section>
 
-        <section class="chart-panel">
+        <section class="chart-panel cartoon-chart-panel">
           <span class="panel-kicker">EVENT LINK</span>
           <h2>长征事件关联表达</h2>
           <div class="chart-block">
@@ -142,9 +155,52 @@
           </div>
         </section>
       </aside>
+
+      <section class="route-recommend-strip" id="routeRecommendStrip" aria-label="重点研学方案推荐">
+        <article class="recommend-card red" data-preset-province="四川省" data-preset-theme="meeting" data-preset-days="3">
+          <header>
+            <b>川西红色经典线</b>
+            <span>长征转折会议主题</span>
+          </header>
+          <div class="recommend-flow"><i>D1</i><em></em><i>D2</i><em></em><i>D3</i></div>
+          <p>泸定桥、纪念馆、磨西会议相关点位组合。</p>
+          <button type="button" data-route-preset>选择此路线</button>
+        </article>
+
+        <article class="recommend-card orange" data-preset-province="贵州省" data-preset-theme="meeting" data-preset-days="3">
+          <header>
+            <b>遵义会议研学线</b>
+            <span>会议转折主题</span>
+          </header>
+          <div class="recommend-flow"><i>D1</i><em></em><i>D2</i><em></em><i>D3</i></div>
+          <p>围绕遵义会议旧址、纪念馆及周边资源展开。</p>
+          <button type="button" data-route-preset>选择此路线</button>
+        </article>
+
+        <article class="recommend-card blue" data-preset-province="四川省" data-preset-theme="mountain" data-preset-days="3">
+          <header>
+            <b>雪山草地体验线</b>
+            <span>自然环境与行军主题</span>
+          </header>
+          <div class="recommend-flow"><i>D1</i><em></em><i>D2</i><em></em><i>D3</i></div>
+          <p>结合夹金山、大渡河、泸定桥等地形节点。</p>
+          <button type="button" data-route-preset>选择此路线</button>
+        </article>
+
+        <article class="recommend-card green" data-preset-province="江西省" data-preset-theme="museum" data-preset-days="3">
+          <header>
+            <b>纪念馆研学线</b>
+            <span>展陈学习与任务卡主题</span>
+          </header>
+          <div class="recommend-flow"><i>D1</i><em></em><i>D2</i><em></em><i>D3</i></div>
+          <p>适合场馆讲解、人物时间线和研学记录任务。</p>
+          <button type="button" data-route-preset>选择此路线</button>
+        </article>
+      </section>
     </main>
   </div>
 
+  <div class="review-modal" id="reviewModal" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

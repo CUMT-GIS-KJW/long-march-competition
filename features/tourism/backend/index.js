@@ -46,14 +46,14 @@ const themes = [
 ];
 
 const palette = [
-  "#E63946",
-  "#1D3557",
-  "#2A9D8F",
-  "#F4A261",
-  "#7B2CBF",
-  "#457B9D",
-  "#B56576",
-  "#6D6875",
+  "#F25F5C",
+  "#FFB347",
+  "#4DB6AC",
+  "#7AC77B",
+  "#5DADEC",
+  "#B58BD5",
+  "#F49AC2",
+  "#F4D35E",
 ];
 
 function getQuery(request) {
@@ -86,16 +86,22 @@ function categoryOf(resource) {
 }
 
 function loadResources() {
+  const seenIds = new Map();
+
   return readDataFile("resources.json")
     .map((resource, index) => {
       const cleanName = normalize(resource.name)
         .replace(/[（(]\s*暂停开放\s*[）)]/g, "")
         .replace(/暂停开放/g, "")
         .trim();
+      const sourceId = resource.id || `tourism_${index + 1}`;
+      const idCount = (seenIds.get(sourceId) || 0) + 1;
+      seenIds.set(sourceId, idCount);
 
       return {
         ...resource,
-        id: resource.id || `tourism_${index + 1}`,
+        id: idCount === 1 ? sourceId : `${sourceId}_${idCount}`,
+        sourceId,
         name: cleanName,
         lng: Number(resource.lng),
         lat: Number(resource.lat),
@@ -213,18 +219,90 @@ function uniqueByName(resources) {
   return result;
 }
 
+function chooseRouteProvince(resources, theme, requestedProvince) {
+  if (requestedProvince) {
+    return requestedProvince;
+  }
+
+  const preferredProvinceScore = {
+    四川省: theme.value === "meeting" || theme.value === "mountain" ? 320 : 180,
+    贵州省: theme.value === "meeting" ? 180 : 120,
+    江西省: 120,
+    陕西省: 90,
+    甘肃省: 80,
+  };
+  const grouped = new Map();
+
+  resources.forEach((resource) => {
+    if (!resource.province) {
+      return;
+    }
+
+    if (!grouped.has(resource.province)) {
+      grouped.set(resource.province, []);
+    }
+
+    grouped.get(resource.province).push(resource);
+  });
+
+  const candidates = [...grouped.entries()].map(([province, items]) => {
+    let score = preferredProvinceScore[province] || 0;
+
+    items.forEach((resource) => {
+      const text = `${resource.name || ""} ${resource.city || ""} ${resource.type || ""} ${resource.address || ""}`;
+
+      score += 1 + (resource.featured ? 10 : 0);
+
+      theme.keywords.forEach((keyword) => {
+        if (text.includes(keyword)) {
+          score += 4;
+        }
+      });
+
+      if (/甘孜|雅安|阿坝|泸定|夹金山|大渡河|海螺沟/.test(text)) {
+        score += theme.value === "meeting" || theme.value === "mountain" ? 30 : 12;
+      }
+
+      if (/泸定桥|飞夺泸定桥|红军飞夺泸定桥纪念馆/.test(text)) {
+        score += 80;
+      }
+    });
+
+    return { province, score };
+  });
+
+  return candidates.sort((left, right) => right.score - left.score)[0]?.province || "";
+}
+
+function distanceToCitySet(resource, citySet, centroids) {
+  const targetCities = centroids.filter((city) => citySet.has(city.city));
+
+  if (!targetCities.length) {
+    return 0;
+  }
+
+  return Math.min(...targetCities.map((city) => distanceKm(resource, city)));
+}
+
 function chooseResources(resources, query) {
   const theme = themeByValue(query.get("theme"));
   const days = Math.max(1, Math.min(3, Number(query.get("days") || 3)));
-  const province = normalize(query.get("province"));
-  const selectedCities = chooseCities(resources, theme, days, province);
+  const requestedProvince = normalize(query.get("province"));
+  const routeProvince = chooseRouteProvince(resources, theme, requestedProvince);
+  const routePool = routeProvince
+    ? resources.filter((resource) => resource.province === routeProvince)
+    : resources;
+  const selectedCities = chooseCities(routePool, theme, days, routeProvince);
   const citySet = new Set(selectedCities);
-  const targetCount = days === 1 ? 4 : days === 2 ? 7 : 10;
-  const candidates = resources
+  const cityCenters = cityCentroids(routePool);
+  const targetCount = days === 1 ? 4 : days === 2 ? 6 : 8;
+  const candidates = routePool
     .map((resource) => {
+      const score = scoreForTheme(resource, theme, citySet);
+
       return {
         ...resource,
-        score: scoreForTheme(resource, theme, citySet),
+        score: score - distanceToCitySet(resource, citySet, cityCenters) * 0.55,
       };
     })
     .filter((resource) => {
@@ -245,17 +323,27 @@ function chooseResources(resources, query) {
       "飞夺泸定桥炮兵阵地旧址",
     ];
     const must = mustNames
-      .map((name) => resources.find((resource) => resource.name.includes(name)))
+      .map((name) => routePool.find((resource) => resource.name.includes(name)))
       .filter(Boolean);
 
     selected = uniqueByName([...must, ...selected]).slice(0, targetCount);
   }
 
   if (selected.length < targetCount) {
+    const closeFallback = routePool
+      .map((resource) => {
+        return {
+          ...resource,
+          score: scoreForTheme(resource, theme, citySet) -
+            distanceToCitySet(resource, citySet, cityCenters) * 0.7,
+        };
+      })
+      .sort((left, right) => right.score - left.score);
+
     selected = uniqueByName([
       ...selected,
-      ...resources.filter((resource) => citySet.has(resource.city)),
-      ...resources,
+      ...routePool.filter((resource) => citySet.has(resource.city)),
+      ...closeFallback,
     ]).slice(0, targetCount);
   }
 
@@ -264,6 +352,7 @@ function chooseResources(resources, query) {
   return {
     days,
     theme,
+    province: routeProvince,
     selectedCities,
     resources: selected,
   };
@@ -337,7 +426,7 @@ function cityCentroids(resources) {
 }
 
 function chooseCities(resources, theme, days, province) {
-  const needed = days === 1 ? 1 : days === 2 ? 3 : 5;
+  const needed = days === 1 ? 1 : days === 2 ? 1 : 2;
   const centroids = cityCentroids(
     province
       ? resources.filter((resource) => resource.province === province)
@@ -365,9 +454,11 @@ function chooseCities(resources, theme, days, province) {
 
       return {
         ...city,
-        score: preferredScore + themeScore + city.count * 2 - distance * 0.45,
+        distance,
+        score: preferredScore + themeScore + city.count * 2 - distance * 0.72,
       };
     })
+    .filter((city, index) => index === 0 || city.distance <= 180 || needed === 1)
     .sort((left, right) => right.score - left.score)
     .slice(0, needed)
     .map((item) => item.city);
@@ -390,10 +481,21 @@ function splitByDays(resources, days) {
   const result = [];
   const total = resources.length;
 
+  if (!total) {
+    return result;
+  }
+
+  const segmentCount = Math.max(1, total - 1);
+
   for (let day = 1; day <= days; day += 1) {
-    const start = Math.floor(((day - 1) * total) / days);
-    const end = Math.floor((day * total) / days);
-    const items = resources.slice(start, Math.max(end, start + 1));
+    let start = Math.floor(((day - 1) * segmentCount) / days);
+    let end = Math.floor((day * segmentCount) / days);
+
+    if (end <= start && end < total - 1) {
+      end = start + 1;
+    }
+
+    const items = resources.slice(start, Math.min(total, end + 1));
 
     result.push({
       day,
@@ -401,16 +503,71 @@ function splitByDays(resources, days) {
       color: palette[day - 1],
       height: [0.42, 0.66, 0.9][day - 1] || 0.58,
       resources: items,
+      sharedStart: day > 1,
     });
   }
 
   return result;
 }
 
+function minutesToClock(minutes) {
+  const normalized = Math.max(0, Math.round(minutes));
+  const hour = Math.floor(normalized / 60);
+  const minute = normalized % 60;
+
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function visitMinutes(resource, isFirstActual) {
+  const text = `${resource.name || ""}${resource.type || ""}`;
+
+  if (isFirstActual) {
+    return 45;
+  }
+
+  if (/纪念馆|博物馆|展览馆|陈列馆/.test(text)) {
+    return 70;
+  }
+
+  if (/会址|旧址|遗址|故居|战役|指挥部/.test(text)) {
+    return 58;
+  }
+
+  if (/桥|渡|江|河|山|景区|公园|广场/.test(text)) {
+    return 48;
+  }
+
+  return 52;
+}
+
+function travelMinutesByDistance(distance) {
+  if (!Number.isFinite(distance)) {
+    return 20;
+  }
+
+  // 近距离点位按步行/短驳处理，长距离点位按大巴移动处理。
+  if (distance < 1.2) {
+    return clamp(Math.round(distance * 18) + 8, 8, 25);
+  }
+
+  if (distance < 8) {
+    return clamp(Math.round(distance * 6) + 10, 15, 55);
+  }
+
+  return clamp(Math.round(distance * 1.45) + 20, 35, 120);
+}
+
 function buildSchedule(dayGroups) {
   return dayGroups.map((group) => {
     const first = group.resources[0];
     const last = group.resources[group.resources.length - 1] || first;
+    let currentMinute = 9 * 60;
+    let actualIndex = 0;
+    let previousActual = null;
 
     return {
       day: group.day,
@@ -419,15 +576,48 @@ function buildSchedule(dayGroups) {
       to: last?.name || "总结点",
       color: group.color,
       height: group.height,
+      sharedStart: group.sharedStart,
       items: group.resources.map((resource, index) => {
-        const times = ["09:00", "10:30", "12:00", "14:00", "15:30"];
+        const isSharedStart = group.sharedStart && index === 0;
+
+        if (isSharedStart) {
+          previousActual = resource;
+
+          return {
+            time: "承接",
+            place: resource.name,
+            city: resource.city,
+            province: resource.province,
+            sharedStart: true,
+            activity: `从上一日终点 ${resource.name} 集合出发，不再单独安排参观时间，直接进入当日下一站。`,
+          };
+        }
+
+        let travelDistance = 0;
+        let travelMinutes = 0;
+
+        if (previousActual) {
+          travelDistance = distanceKm(previousActual, resource);
+          travelMinutes = travelMinutesByDistance(travelDistance);
+          currentMinute += travelMinutes;
+        }
+
+        const time = minutesToClock(currentMinute);
+        const isFirstActual = actualIndex === 0 && !group.sharedStart;
+        const stayMinutes = visitMinutes(resource, isFirstActual);
+        currentMinute += stayMinutes;
+        previousActual = resource;
+        actualIndex += 1;
 
         return {
-          time: times[index] || "16:30",
+          time,
           place: resource.name,
           city: resource.city,
           province: resource.province,
-          activity: buildActivity(resource, index),
+          sharedStart: false,
+          travelDistanceKm: Math.round(travelDistance * 10) / 10,
+          travelMinutes,
+          activity: `${travelMinutes ? `上一站约 ${Math.round(travelDistance * 10) / 10} km，预计 ${travelMinutes} 分钟衔接；` : ""}${buildActivity(resource, index)}建议停留约 ${stayMinutes} 分钟。`,
         };
       }),
     };
@@ -550,10 +740,11 @@ function buildStudyRoute(resources, events, query) {
   const related = relatedEvents(choice.resources, events);
 
   return {
-    title: `${choice.selectedCities.join("、")} ${choice.days} 天${choice.theme.label}研学方案`,
+    title: `${choice.province || "单省"} · ${choice.selectedCities.join("、")} ${choice.days} 天${choice.theme.label}研学方案`,
     school: SCHOOL,
     days: choice.days,
     theme: choice.theme,
+    province: choice.province,
     selectedCities: choice.selectedCities,
     showRoute: true,
     transport: "徐州出发：高铁/飞机抵达成都或康定，再乘大巴进入研学点位，市内以步行和短驳车衔接。",
