@@ -22,7 +22,7 @@
     hillshadeLayer: null,
     layerVisibility: {
       route: true,
-      event: true,
+      event: false,
       resource: false,
       hillshade: true,
     },
