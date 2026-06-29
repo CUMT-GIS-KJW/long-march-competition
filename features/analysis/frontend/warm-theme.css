@@ -215,7 +215,7 @@ body {
 
 .tools-panel {
         display: grid;
-        grid-template-rows: auto auto auto minmax(180px, 1fr);
+        grid-template-rows: auto auto auto auto;
         align-content: start;
 }
 
