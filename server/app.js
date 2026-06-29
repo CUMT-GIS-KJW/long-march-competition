@@ -3,6 +3,7 @@ const { URL } = require("url");
 const { handleApi: handleAgentApi } = require("../features/agent/backend");
 const { handleApi: handleAnalysisApi } = require("../features/analysis/backend");
 const { handleApi: handleHomeApi } = require("../features/home/backend");
+const { handleApi: handlePoetryApi } = require("../features/poetry/backend");
 const { handleApi: handleScene3dApi } = require("../features/scene3d/backend");
 const { handleApi: handleTourismApi } = require("../features/tourism/backend");
 const { loadEnvFile } = require("../features/shared/backend/env");
@@ -14,6 +15,7 @@ const PORT = Number(process.env.PORT || 8096);
 const apiHandlers = [
   handleAgentApi,
   handleHomeApi,
+  handlePoetryApi,
   handleTourismApi,
   handleAnalysisApi,
   handleScene3dApi,
