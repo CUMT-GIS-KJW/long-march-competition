@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const EVENT_FIELD = {
     id: "\u4e8b\u4ef6\u7f16",
     name: "\u5730\u540d",
@@ -14,11 +14,18 @@
     routeConfigs: [],
     resources: [],
     events: [],
-    routeLayer: null,         // 单条路线图层
-    allRoutesLayer: null,     // 全部路线图层
+    routeLayer: null,
+    allRoutesLayer: null,
     resultLayer: null,
     resourceLayer: null,
+    eventLayer: null,
     hillshadeLayer: null,
+    layerVisibility: {
+      route: true,
+      event: true,
+      resource: false,
+      hillshade: true,
+    },
   };
 
   function normalizeEvent(feature) {
@@ -39,18 +46,10 @@
   }
 
   function normalizeEventType(eventClass) {
-    if (eventClass.includes("\u6218") || eventClass.includes("\u7a81\u7834")) {
-      return "battle";
-    }
-    if (eventClass.includes("\u4f1a")) {
-      return "meeting";
-    }
-    if (eventClass.includes("\u6e21") || eventClass.includes("\u6c5f")) {
-      return "crossing";
-    }
-    if (eventClass.includes("\u5c71") || eventClass.includes("\u8349")) {
-      return "mountain";
-    }
+    if (eventClass.includes("战") || eventClass.includes("突破")) return "battle";
+    if (eventClass.includes("会")) return "meeting";
+    if (eventClass.includes("渡") || eventClass.includes("江")) return "crossing";
+    if (eventClass.includes("山") || eventClass.includes("草")) return "mountain";
     return "event";
   }
 
@@ -62,34 +61,21 @@
     return 1;
   }
 
-  /* ---------- 将 MultiLineString 拆分成多条独立的坐标数组 ---------- */
   function toLatLngsList(geometry) {
     if (!geometry) return [];
-
-    if (geometry.type === "LineString") {
-      return [geometry.coordinates.map(c => [c[1], c[0]])];
-    }
-
-    if (geometry.type === "MultiLineString") {
-      return geometry.coordinates.map(line =>
-        line.map(c => [c[1], c[0]])
-      );
-    }
-
+    if (geometry.type === "LineString") return [geometry.coordinates.map((c) => [c[1], c[0]])];
+    if (geometry.type === "MultiLineString") return geometry.coordinates.map((line) => line.map((c) => [c[1], c[0]]));
     return [];
   }
 
-  /* ---------- 构建路线对象：parts（独立线段） + points（合并点集） ---------- */
   function buildRoute(config, collection) {
     const parts = [];
     const points = [];
-
-    collection.features.forEach(feature => {
-      toLatLngsList(feature.geometry).forEach(latLngs => {
-        if (latLngs.length) {
-          parts.push(latLngs);
-          latLngs.forEach(p => points.push(p));
-        }
+    (collection.features || []).forEach((feature) => {
+      toLatLngsList(feature.geometry).forEach((latLngs) => {
+        if (!latLngs.length) return;
+        parts.push(latLngs);
+        latLngs.forEach((point) => points.push(point));
       });
     });
 
@@ -99,24 +85,24 @@
       color: config.color,
       parts,
       points,
-      features: collection.features,
+      features: collection.features || [],
     };
   }
 
   function renderRouteSelect() {
     const routeSelect = document.getElementById("routeSelect");
     routeSelect.innerHTML = state.routeConfigs
-      .map(config => `<option value="${config.layer_key}">${config.layer_name}</option>`)
+      .map((config) => `<option value="${config.layer_key}">${config.layer_name}</option>`)
       .join("");
   }
 
   async function loadRoutes() {
     const configs = await DataService.getRouteLayers();
     const entries = await Promise.all(
-      configs.map(async config => {
+      configs.map(async (config) => {
         const collection = await DataService.getRouteLayerFeatures(config.layer_key);
         return [config.layer_key, buildRoute(config, collection)];
-      })
+      }),
     );
 
     state.routeConfigs = configs;
@@ -127,17 +113,13 @@
   async function init() {
     state.map = L.map("analysisMap", {
       center: APP_CONFIG.map.center,
-      zoom: APP_CONFIG.map.zoom=8,
+      zoom: 8,
       minZoom: APP_CONFIG.map.minZoom,
       preferCanvas: true,
       zoomControl: true,
     });
 
-    L.tileLayer(
-      APP_CONFIG.basemaps.ancient.url,
-      APP_CONFIG.basemaps.ancient.options,
-    ).addTo(state.map);
-
+    L.tileLayer(APP_CONFIG.basemaps.ancient.url, APP_CONFIG.basemaps.ancient.options).addTo(state.map);
     addHillshadeLayer();
 
     const [resources, eventCollection] = await Promise.all([
@@ -146,33 +128,17 @@
     ]);
 
     state.resources = resources;
-    state.events = eventCollection.features.map(normalizeEvent);
-
+    state.events = (eventCollection.features || []).map(normalizeEvent);
     await loadRoutes();
-
-    // ✅ 修改：默认显示第一条路线（只显示该路线）
-    if (state.routeConfigs.length > 0) {
-      showRoute(state.routeConfigs[0].layer_key);
-    }
-
-    state.resourceLayer = L.layerGroup(
-      state.resources.map(resource => {
-        const eventLike = { ...resource, type: "resource", date: resource.level, importance: 4 };
-        return L.marker([resource.lat, resource.lng], {
-          icon: MapUtils.eventIcon(eventLike),
-        }).bindPopup(MapUtils.eventPopup(eventLike));
-      })
-    );
-    // ✅ 默认不显示资源层，让用户通过 AI 分析按钮控制
-    // state.resourceLayer.addTo(state.map);
-
+    buildPointLayers();
+    showAllRoutes();
+    applyLayerVisibility();
     document.dispatchEvent(new Event("analysismapready"));
   }
 
   function addHillshadeLayer() {
     const hillshade = APP_CONFIG.basemaps?.hillshade;
     if (!hillshade?.url) return;
-
     state.map.createPane("hillshadePane");
     const pane = state.map.getPane("hillshadePane");
     if (pane) {
@@ -180,7 +146,6 @@
       pane.style.pointerEvents = "none";
       pane.classList.add("hillshade-pane");
     }
-
     state.hillshadeLayer = L.tileLayer(hillshade.url, {
       ...hillshade.options,
       pane: "hillshadePane",
@@ -188,80 +153,106 @@
     }).addTo(state.map);
   }
 
-  /* ---------- 显示全部路线（备用，AI分析时可能需要） ---------- */
+  function buildPointLayers() {
+    state.resourceLayer = L.layerGroup(
+      state.resources.map((resource) => {
+        const eventLike = { ...resource, type: "resource", date: resource.level, importance: 4 };
+        return L.marker([resource.lat, resource.lng], { icon: MapUtils.eventIcon(eventLike) })
+          .bindPopup(MapUtils.eventPopup(eventLike));
+      }),
+    );
+
+    state.eventLayer = L.layerGroup(
+      state.events.map((event) => L.circleMarker([event.lat, event.lng], {
+        radius: 3 + event.importance,
+        color: "#fff0b5",
+        weight: 1,
+        fillColor: event.type === "battle" ? "#a72b22" : event.type === "crossing" ? "#457b9d" : "#c09242",
+        fillOpacity: 0.78,
+      }).bindPopup(`<b>${event.name || "历史节点"}</b><br>${event.date || ""}<br>${event.stage || ""}`)),
+    );
+  }
+
+  function addIfVisible(layer, key) {
+    if (layer && state.layerVisibility[key] && !state.map.hasLayer(layer)) layer.addTo(state.map);
+  }
+
+  function removeIfHidden(layer, key) {
+    if (layer && !state.layerVisibility[key] && state.map.hasLayer(layer)) state.map.removeLayer(layer);
+  }
+
+  function applyLayerVisibility() {
+    [state.routeLayer, state.allRoutesLayer].forEach((layer) => {
+      if (!layer) return;
+      if (state.layerVisibility.route && !state.map.hasLayer(layer)) layer.addTo(state.map);
+      if (!state.layerVisibility.route && state.map.hasLayer(layer)) state.map.removeLayer(layer);
+    });
+    addIfVisible(state.eventLayer, "event");
+    removeIfHidden(state.eventLayer, "event");
+    addIfVisible(state.resourceLayer, "resource");
+    removeIfHidden(state.resourceLayer, "resource");
+    addIfVisible(state.hillshadeLayer, "hillshade");
+    removeIfHidden(state.hillshadeLayer, "hillshade");
+  }
+
+  function setLayerVisibility(layer, visible) {
+    if (!(layer in state.layerVisibility)) return;
+    state.layerVisibility[layer] = visible;
+    applyLayerVisibility();
+  }
+
+  function fitLayer(layer) {
+    if (layer?.getBounds?.().isValid()) state.map.fitBounds(layer.getBounds(), { padding: [35, 35] });
+  }
+
   function showAllRoutes() {
     if (state.allRoutesLayer) state.map.removeLayer(state.allRoutesLayer);
     if (state.routeLayer) state.map.removeLayer(state.routeLayer);
 
     const fg = L.featureGroup();
-    Object.values(state.routes).forEach(route => {
-      if (!route.parts) return;
-      route.parts.forEach(part => {
+    Object.values(state.routes).forEach((route) => {
+      route.parts.forEach((part) => {
         L.polyline(part, {
           color: route.color || "#a72b22",
           weight: 3,
-          opacity: 0.85,
+          opacity: 0.82,
           lineCap: "round",
           lineJoin: "round",
-        }).addTo(fg);
+        }).bindTooltip(route.name).addTo(fg);
       });
     });
 
-    state.allRoutesLayer = fg.addTo(state.map);
+    state.allRoutesLayer = fg;
     state.routeLayer = null;
-
-    if (fg.getBounds().isValid()) {
-      state.map.fitBounds(fg.getBounds(), { padding: [35, 35] });
-    }
+    if (state.layerVisibility.route) fg.addTo(state.map);
+    fitLayer(fg);
   }
 
-  /* ---------- 隐藏全部路线 ---------- */
   function hideAllRoutes() {
-    if (state.allRoutesLayer) {
-      state.map.removeLayer(state.allRoutesLayer);
-      state.allRoutesLayer = null;
-    }
+    if (!state.allRoutesLayer) return;
+    state.map.removeLayer(state.allRoutesLayer);
+    state.allRoutesLayer = null;
   }
 
-  /* ---------- 显示单条路线（核心功能） ---------- */
   function showRoute(routeId) {
-    // 清除全部路线
     hideAllRoutes();
-    // 清除之前的单条路线
     if (state.routeLayer) state.map.removeLayer(state.routeLayer);
-    // 清除分析结果
     clearResult();
 
     const route = state.routes[routeId] || Object.values(state.routes)[0];
     if (!route) return;
 
     const fg = L.featureGroup();
-    route.parts.forEach(part => {
-      // 发光效果
-      L.polyline(part, {
-        color: "#f0cf7a",
-        weight: 10,
-        opacity: 0.32,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(fg);
-      // 主线
-      L.polyline(part, {
-        color: route.color || "#a72b22",
-        weight: 4,
-        opacity: 0.96,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(fg);
+    route.parts.forEach((part) => {
+      L.polyline(part, { color: "#f0cf7a", weight: 10, opacity: 0.32, lineCap: "round", lineJoin: "round" }).addTo(fg);
+      L.polyline(part, { color: route.color || "#a72b22", weight: 4, opacity: 0.96, lineCap: "round", lineJoin: "round" }).bindTooltip(route.name).addTo(fg);
     });
 
-    state.routeLayer = fg.addTo(state.map);
-    if (fg.getBounds().isValid()) {
-      state.map.fitBounds(fg.getBounds(), { padding: [35, 35] });
-    }
+    state.routeLayer = fg;
+    if (state.layerVisibility.route) fg.addTo(state.map);
+    fitLayer(fg);
   }
 
-  /* ---------- 清除分析结果图层 ---------- */
   function clearResult() {
     if (!state.resultLayer) return;
     state.map.removeLayer(state.resultLayer);
@@ -269,69 +260,36 @@
   }
 
   function showResourceLayer() {
-    if (state.resourceLayer && !state.map.hasLayer(state.resourceLayer)) {
-      state.resourceLayer.addTo(state.map);
-    }
+    state.layerVisibility.resource = true;
+    applyLayerVisibility();
   }
 
   function hideResourceLayer() {
-    if (state.resourceLayer && state.map.hasLayer(state.resourceLayer)) {
-      state.map.removeLayer(state.resourceLayer);
-    }
+    state.layerVisibility.resource = false;
+    applyLayerVisibility();
   }
 
-  /* ---------- 缓冲区分析（基于 parts 避免直线） ---------- */
   function drawBuffer(route, radius) {
-    const multiLine = turf.multiLineString(
-      route.parts.map(part => part.map(p => [p[1], p[0]]))
-    );
+    const multiLine = turf.multiLineString(route.parts.map((part) => part.map((p) => [p[1], p[0]])));
     let polygon;
     try {
       polygon = turf.buffer(multiLine, Number(radius), { units: "kilometers" });
-    } catch (e) {
-      const buffers = route.parts.map(part => {
-        const line = turf.lineString(part.map(p => [p[1], p[0]]));
-        return turf.buffer(line, Number(radius), { units: "kilometers" });
-      });
-      polygon = buffers.reduce((acc, cur) => {
-        if (!acc) return cur;
-        return turf.union(acc, cur);
-      }, null);
+    } catch (error) {
+      const buffers = route.parts.map((part) => turf.buffer(turf.lineString(part.map((p) => [p[1], p[0]])), Number(radius), { units: "kilometers" }));
+      polygon = buffers.reduce((acc, cur) => (acc ? turf.union(acc, cur) : cur), null);
     }
-
     state.resultLayer = L.geoJSON(polygon, {
-      style: {
-        color: "#a72b22",
-        weight: 2,
-        fillColor: "#d28b4c",
-        fillOpacity: 0.28,
-      },
+      style: { color: "#a72b22", weight: 2, fillColor: "#d28b4c", fillOpacity: 0.28 },
     }).addTo(state.map);
-
-    state.map.fitBounds(state.resultLayer.getBounds());
+    fitLayer(state.resultLayer);
   }
 
-  /* ---------- 其他绘制函数 ---------- */
   function drawResourceRelation() {
     const layers = [];
-    state.resources.forEach(resource => {
+    state.resources.forEach((resource) => {
       layers.push(
-        L.circle([resource.lat, resource.lng], {
-          radius: 52000,
-          color: "#d8a84f",
-          weight: 1,
-          opacity: 0.35,
-          fillColor: "#a8261d",
-          fillOpacity: 0.1,
-        }),
-        L.circle([resource.lat, resource.lng], {
-          radius: 18000,
-          color: "#f2d799",
-          weight: 1,
-          opacity: 0.45,
-          fillColor: "#d34a35",
-          fillOpacity: 0.28,
-        })
+        L.circle([resource.lat, resource.lng], { radius: 52000, color: "#d8a84f", weight: 1, opacity: 0.35, fillColor: "#a8261d", fillOpacity: 0.1 }),
+        L.circle([resource.lat, resource.lng], { radius: 18000, color: "#f2d799", weight: 1, opacity: 0.45, fillColor: "#d34a35", fillOpacity: 0.28 }),
       );
     });
     state.resultLayer = L.layerGroup(layers).addTo(state.map);
@@ -339,87 +297,101 @@
 
   function drawNodes() {
     state.resultLayer = L.layerGroup(
-      state.events.map(event => {
-        return L.circleMarker([event.lat, event.lng], {
-          radius: 4 + event.importance,
-          color: "#f2d799",
-          weight: 1,
-          fillColor: event.type === "battle" ? "#a72b22" : "#b98327",
-          fillOpacity: 0.8,
-        });
-      }),
+      state.events.map((event) => L.circleMarker([event.lat, event.lng], {
+        radius: 4 + event.importance,
+        color: "#f2d799",
+        weight: 1,
+        fillColor: event.type === "battle" ? "#a72b22" : "#b98327",
+        fillOpacity: 0.8,
+      })),
     ).addTo(state.map);
   }
 
   function drawTerrainSamples(route) {
     const samples = route.points.filter((_, index) => index % 180 === 0);
     const colors = ["#6c8b6d", "#c09242", "#9e3528"];
-    state.resultLayer = L.layerGroup(
-      samples.map((point, index) => {
-        return L.circleMarker(point, {
-          radius: 9,
-          color: "#f1d899",
-          weight: 2,
-          fillColor: colors[index % colors.length],
-          fillOpacity: 0.65,
-        });
-      }),
-    ).addTo(state.map);
+    state.resultLayer = L.layerGroup(samples.map((point, index) => L.circleMarker(point, {
+      radius: 9,
+      color: "#f1d899",
+      weight: 2,
+      fillColor: colors[index % colors.length],
+      fillOpacity: 0.65,
+    }))).addTo(state.map);
   }
 
   function drawRouteHighlight(route) {
     const layers = [];
-    route.parts.forEach(part => {
+    route.parts.forEach((part) => {
       layers.push(
-        L.polyline(part, {
-          color: "#f6d56f",
-          weight: 12,
-          opacity: 0.34,
-          lineCap: "round",
-          lineJoin: "round",
-        }),
-        L.polyline(part, {
-          color: "#ffffff",
-          weight: 3,
-          opacity: 0.36,
-          dashArray: "8 10",
-          lineCap: "round",
-          lineJoin: "round",
-        })
+        L.polyline(part, { color: "#f6d56f", weight: 12, opacity: 0.34, lineCap: "round", lineJoin: "round" }),
+        L.polyline(part, { color: "#ffffff", weight: 3, opacity: 0.36, dashArray: "8 10", lineCap: "round", lineJoin: "round" }),
       );
     });
     state.resultLayer = L.layerGroup(layers).addTo(state.map);
   }
 
-  /* ---------- 统一调度分析绘制（AI 分析入口） ---------- */
-  function drawResult(tool, radius = 10, routeId = null) {
-    clearResult();
+  function drawCompareRoutes(rows = []) {
+    hideAllRoutes();
+    if (state.routeLayer) state.map.removeLayer(state.routeLayer);
+    const maxDifficulty = Math.max(1, ...rows.map((item) => Number(item.maxDifficulty || 0)));
+    const fg = L.featureGroup();
+    rows.forEach((row) => {
+      const route = state.routes[row.routeKey];
+      if (!route) return;
+      const ratio = Number(row.maxDifficulty || 0) / maxDifficulty;
+      route.parts.forEach((part) => {
+        L.polyline(part, {
+          color: ratio > 0.75 ? "#b3261e" : ratio > 0.5 ? "#d46a35" : route.color || "#a72b22",
+          weight: 3 + ratio * 4,
+          opacity: 0.88,
+          lineCap: "round",
+          lineJoin: "round",
+        }).bindPopup(`<b>${row.routeName}</b><br>里程：${row.totalDistance} km<br>最高难度：${row.maxDifficulty}<br>资源密度：${row.resourceDensity} 处/百km`).addTo(fg);
+      });
+    });
+    state.resultLayer = fg.addTo(state.map);
+    fitLayer(fg);
+  }
 
+  function drawDifficulty(difficultyRows = [], routeId) {
+    hideAllRoutes();
+    if (state.routeLayer) state.map.removeLayer(state.routeLayer);
+    const analysis = difficultyRows.find((item) => item.routeKey === routeId) || difficultyRows[0];
+    if (!analysis) return;
+    const fg = L.featureGroup();
+    (analysis.segments || []).forEach((segment) => {
+      const latLngs = (segment.coordinates || []).map((point) => [point[1], point[0]]);
+      if (latLngs.length < 2) return;
+      const line = L.polyline(latLngs, {
+        color: segment.color || "#d8a84f",
+        weight: 7,
+        opacity: 0.92,
+        lineCap: "round",
+        lineJoin: "round",
+      }).bindPopup(`<b>${segment.from} 至 ${segment.to}</b><br>难度：${segment.level} / ${segment.score}<br>平均海拔：${segment.avgElevation} m<br>坡度：${segment.avgSlope} m/km`);
+      line.on("click", () => {
+        document.dispatchEvent(new CustomEvent("analysissegmentselect", { detail: segment }));
+      });
+      line.addTo(fg);
+    });
+    state.resultLayer = fg.addTo(state.map);
+    fitLayer(fg);
+  }
+
+  function drawResult(tool, radius = 10, routeId = null, payload = {}) {
+    clearResult();
     const selectedRouteId = routeId || document.getElementById("routeSelect").value;
     const route = state.routes[selectedRouteId] || Object.values(state.routes)[0];
+    if (tool === "compare") return drawCompareRoutes(payload.routeCompare || []);
+    if (tool === "difficulty") return drawDifficulty(payload.difficulty || [], selectedRouteId);
     if (!route) return;
-
-    if (tool === "buffer" && window.turf) {
-      drawBuffer(route, radius);
-      return;
-    }
-    if (tool === "resource") {
-      drawResourceRelation();
-      return;
-    }
-    if (tool === "node") {
-      drawNodes();
-      return;
-    }
-    if (tool === "terrain") {
-      drawTerrainSamples(route);
-      return;
-    }
-    // 默认：路线高亮
+    if (tool === "buffer" && window.turf) return drawBuffer(route, radius);
+    if (tool === "resource") return drawResourceRelation();
+    if (tool === "node") return drawNodes();
+    if (tool === "terrain") return drawTerrainSamples(route);
     drawRouteHighlight(route);
   }
 
-  /* ---------- 暴露全局 API ---------- */
   window.AnalysisMap = {
     state,
     showRoute,
@@ -429,6 +401,7 @@
     clearResult,
     showResourceLayer,
     hideResourceLayer,
+    setLayerVisibility,
   };
 
   document.addEventListener("DOMContentLoaded", () => {

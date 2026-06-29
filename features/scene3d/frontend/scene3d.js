@@ -27,20 +27,20 @@
       points: [],
     },
     terrainSource: "\u771f\u5b9e DEM",
-    terrainExaggeration: window.APP_CONFIG?.terrain?.exaggeration || 2.6,
+    terrainExaggeration: window.APP_CONFIG?.terrain?.exaggeration || 1.8,
   };
 
   const $ = (selector) => document.querySelector(selector);
 
-  const GEO_BOUNDS = {
-    west: 97.8,
-    south: 24.0,
-    east: 120.7,
-    north: 38.4,
+  const CHINA_BOUNDS = {
+    west: 73.4,
+    south: 18.0,
+    east: 135.1,
+    north: 53.6,
   };
 
   const SCENE_BOUNDS = {
-    ...GEO_BOUNDS,
+    ...CHINA_BOUNDS,
   };
 
   const SCENE_CENTER = {
@@ -72,13 +72,13 @@
 
   function terrainPalette(height, localT) {
     const stops = [
-      { height: -200, color: [182, 158, 99] },
-      { height: 450, color: [223, 199, 135] },
-      { height: 1000, color: [197, 178, 115] },
-      { height: 1800, color: [146, 153, 118] },
-      { height: 2800, color: [121, 143, 146] },
-      { height: 3800, color: [196, 202, 190] },
-      { height: 5400, color: [250, 245, 222] },
+      { height: -200, color: [121, 145, 107] },
+      { height: 250, color: [156, 171, 111] },
+      { height: 700, color: [191, 179, 122] },
+      { height: 1400, color: [171, 151, 112] },
+      { height: 2400, color: [126, 134, 126] },
+      { height: 3600, color: [174, 179, 174] },
+      { height: 5200, color: [242, 239, 226] },
     ];
 
     for (let index = 1; index < stops.length; index += 1) {
@@ -131,8 +131,8 @@
     outputCanvas.height = tileSize;
     const outputContext = outputCanvas.getContext("2d");
     const imageData = outputContext.createImageData(tileSize, tileSize);
-    const lightAzimuth = -0.82;
-    const lightAltitude = 0.82;
+    const lightAzimuth = -0.72;
+    const lightAltitude = 0.96;
 
     for (let y = 0; y < tileSize; y += 1) {
       for (let x = 0; x < tileSize; x += 1) {
@@ -146,18 +146,20 @@
         const dy = heights[sampleY1 * tileSize + x] - heights[sampleY0 * tileSize + x];
         const localT = (height - minHeight) / range;
         const base = terrainPalette(height, localT);
+        const slope = clampNumber(Math.hypot(dx, dy) / 1800, 0, 0.34);
         const aspectShade =
-          0.66 +
-          Math.cos(lightAzimuth) * clampNumber(dx / 850, -0.36, 0.36) -
-          Math.sin(lightAzimuth) * clampNumber(dy / 850, -0.36, 0.36);
+          0.78 +
+          Math.cos(lightAzimuth) * clampNumber(dx / 1200, -0.24, 0.24) -
+          Math.sin(lightAzimuth) * clampNumber(dy / 1200, -0.24, 0.24);
         const relief = clampNumber(
-          aspectShade + Math.sin(lightAltitude) * (localT - 0.44) * 0.18,
-          0.42,
-          1.12,
+          aspectShade + Math.sin(lightAltitude) * (localT - 0.42) * 0.12 - slope * 0.22,
+          0.54,
+          1.16,
         );
         const contour =
-          Math.abs((height % 250 + 250) % 250 - 125) > 117 ? 0.84 : 1;
-        const edge = clampNumber(relief * contour, 0.36, 1.08);
+          Math.abs((height % 300 + 300) % 300 - 150) > 146 ? 0.92 : 1;
+        const atmospheric = 0.94 + localT * 0.08;
+        const edge = clampNumber(relief * contour * atmospheric, 0.48, 1.12);
         const outputIndex = index * 4;
 
         imageData.data[outputIndex] = clampNumber(base[0] * edge, 0, 255);
@@ -699,18 +701,23 @@
     });
 
     viewer.scene.globe.depthTestAgainstTerrain = true;
-    viewer.scene.globe.enableLighting = false;
-    viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString("#d8c48d");
+    viewer.scene.globe.enableLighting = true;
+    viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString("#9f9a78");
     viewer.scene.globe.show = true;
-    viewer.scene.skyAtmosphere.show = false;
+    viewer.scene.globe.atmosphereLightIntensity = 6.5;
+    viewer.scene.globe.dynamicAtmosphereLighting = true;
+    viewer.scene.globe.dynamicAtmosphereLightingFromSun = false;
+    viewer.scene.skyAtmosphere.show = true;
     viewer.scene.skyBox.show = false;
-    viewer.scene.sun.show = false;
+    viewer.scene.sun.show = true;
     viewer.scene.moon.show = false;
-    viewer.scene.backgroundColor = Cesium.Color.fromCssColorString("#2f1711");
-    viewer.scene.fog.enabled = false;
+    viewer.scene.backgroundColor = Cesium.Color.fromCssColorString("#263238");
+    viewer.scene.fog.enabled = true;
+    viewer.scene.fog.density = 0.0000018;
+    viewer.scene.fog.minimumBrightness = 0.16;
     viewer.scene.screenSpaceCameraController.enableCollisionDetection = true;
-    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 90000;
-    viewer.scene.screenSpaceCameraController.maximumZoomDistance = 7200000;
+    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 70000;
+    viewer.scene.screenSpaceCameraController.maximumZoomDistance = 6200000;
     viewer.scene.screenSpaceCameraController.inertiaSpin = 0.35;
     viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.28;
     viewer.scene.screenSpaceCameraController.inertiaZoom = 0.22;
@@ -1031,13 +1038,13 @@
 
   const VIEW_PRESETS = {
     overview: {
-      label: "长征全域三维地形",
-      lng: SCENE_CENTER.lng - 0.35,
-      lat: SCENE_CENTER.lat - 0.15,
-      height: 3600000,
+      label: "中国区域 DEM 地形",
+      lng: SCENE_CENTER.lng,
+      lat: SCENE_CENTER.lat - 0.4,
+      height: 5200000,
       heading: -10,
-      pitch: -74,
-      description: "完整查看长征路线、重要节点与地形起伏。",
+      pitch: -76,
+      description: "仅显示中国经纬度范围内的 DEM 地形、长征路线与关键节点。",
     },
     zunyi: {
       label: "遵义会议会址",

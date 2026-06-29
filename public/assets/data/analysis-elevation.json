@@ -2,46 +2,64 @@
   {
     "distance": 0,
     "elevation": 226,
-    "place": "瑞金"
+    "place": "瑞金",
+    "lng": 115.900835,
+    "lat": 25.853303
   },
   {
     "distance": 435,
     "elevation": 565,
-    "place": "湘江"
+    "place": "湘江",
+    "lng": 112.614519,
+    "lat": 25.389153
   },
   {
     "distance": 869,
     "elevation": 630,
-    "place": "湘江"
+    "place": "湘江",
+    "lng": 109.183107,
+    "lat": 26.173013
   },
   {
     "distance": 1304,
     "elevation": 1178,
-    "place": "赤水"
+    "place": "赤水",
+    "lng": 106.323866,
+    "lat": 28.349703
   },
   {
     "distance": 1739,
     "elevation": 1150,
-    "place": "遵义"
+    "place": "遵义",
+    "lng": 106.307126,
+    "lat": 27.897487
   },
   {
     "distance": 2174,
     "elevation": 897,
-    "place": "遵义"
+    "place": "遵义",
+    "lng": 106.725657,
+    "lat": 27.599161
   },
   {
     "distance": 2608,
     "elevation": 2071,
-    "place": "赤水"
+    "place": "赤水",
+    "lng": 103.549617,
+    "lat": 25.482192
   },
   {
     "distance": 3043,
     "elevation": 1695,
-    "place": "大渡河"
+    "place": "大渡河",
+    "lng": 102.195457,
+    "lat": 28.33638
   },
   {
     "distance": 3478,
     "elevation": 2531,
-    "place": "夹金山"
+    "place": "夹金山",
+    "lng": 102.36585,
+    "lat": 31.004289
   }
 ]

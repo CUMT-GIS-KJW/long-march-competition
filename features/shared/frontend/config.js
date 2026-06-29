@@ -1,4 +1,4 @@
-window.APP_CONFIG = {
+﻿window.APP_CONFIG = {
   dataMode: "api",
   apiBase: "/api",
 
@@ -17,6 +17,8 @@ window.APP_CONFIG = {
     analysisStage: "/assets/data/analysis-stage.json",
     analysisNodeTypes: "/assets/data/analysis-node-types.json",
     analysisRoutes: "/assets/data/analysis-routes.json",
+    analysisDifficulty: "/assets/data/analysis-difficulty.json",
+    analysisRouteCompare: "/assets/data/analysis-route-compare.json",
     scene3dFocus: "/assets/data/scene3d-focus.json",
   },
 
@@ -35,6 +37,8 @@ window.APP_CONFIG = {
     analysisStage: "/analysis/stage",
     analysisNodeTypes: "/analysis/node-types",
     analysisRoutes: "/analysis/routes",
+    analysisDifficulty: "/analysis/difficulty",
+    analysisRouteCompare: "/analysis/route-compare",
     scene3dFocus: "/scene3d/focus",
   },
 
@@ -52,7 +56,7 @@ window.APP_CONFIG = {
     ionToken: "",
     requestVertexNormals: true,
     requestWaterMask: false,
-    exaggeration: 2.6,
+    exaggeration: 1.8,
     useElevationRamp: false,
   },
 
@@ -61,7 +65,7 @@ window.APP_CONFIG = {
     provider: "terrariumShade",
     url: "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
     maximumLevel: 12,
-    alpha: 1,
+    alpha: 0.94,
   },
 
   basemaps: {
@@ -100,3 +104,4 @@ window.APP_CONFIG = {
     },
   },
 };
+

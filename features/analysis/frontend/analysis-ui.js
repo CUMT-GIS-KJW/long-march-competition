@@ -1,6 +1,8 @@
-(function () {
+﻿(function () {
   const toolNames = {
     route: "路线统计分析",
+    compare: "多路线对比分析",
+    difficulty: "地形难度指数",
     terrain: "地形起伏分析",
     buffer: "多尺度缓冲分析",
     node: "节点类型统计",
@@ -16,6 +18,7 @@
   let activeTool = "route";
   let activeChart = "primary";
   let selectedTerrainRoute = "all";
+  let selectedSegment = null;
   let analysisRunId = 0;
   let appliedAnalysis = {
     routeId: "",
@@ -133,7 +136,7 @@
   async function loadData() {
     const [
       summary, province, elevation, buffer,
-      events, resources, routeLayers, routeAnalyses,
+      events, resources, routeLayers, routeAnalyses, difficulty, routeCompare,
     ] = await Promise.all([
       DataService.getAnalysisSummary(),
       DataService.getAnalysisProvince(),
@@ -143,11 +146,15 @@
       DataService.getResources(),
       DataService.getRouteLayers(),
       DataService.getAnalysisRoutes(),
+      DataService.getAnalysisDifficulty(),
+      DataService.getAnalysisRouteCompare(),
     ]);
     data = {
       summary, province, elevation, buffer,
-      events: events.features || [], resources, routeLayers, routeAnalyses,
+      events: events.features || [], resources, routeLayers, routeAnalyses, difficulty, routeCompare,
       routeAnalysisById: Object.fromEntries((routeAnalyses || []).map((item) => [item.routeKey, item])),
+      difficultyById: Object.fromEntries((difficulty || []).map((item) => [item.routeKey, item])),
+      compareById: Object.fromEntries((routeCompare || []).map((item) => [item.routeKey, item])),
       terrainSeries: buildTerrainSeries(routeAnalyses, routeLayers, elevation),
     };
     renderTerrainButtons();
@@ -228,6 +235,15 @@ function renderTerrainButtons() {
         resourceTypes: [],
       }
     );
+  }
+
+  function currentDifficulty() {
+    const routeId = currentRouteId();
+    return data.difficultyById?.[routeId] || data.difficulty?.[0] || {};
+  }
+
+  function compareRows() {
+    return data.routeCompare || [];
   }
 
   function selectedBufferStats() {
@@ -365,7 +381,27 @@ function renderMetrics() {
       ["历史节点", hasData ? `${summary.totalEvents || 0} 个` : "-"],
       ["红色资源", hasData ? `${summary.totalResources || 0} 处` : "-"],
     ],
-    terrain: [
+    compare: (() => {
+      const rows = compareRows();
+      const longest = maxBy(rows, (item) => item.totalDistance) || {};
+      const hardest = maxBy(rows, (item) => item.maxDifficulty) || {};
+      const dense = maxBy(rows, (item) => item.resourceDensity) || {};
+      return [
+        ["对比路线", hasData ? `${rows.length} 条` : "-"],
+        ["最长路线", hasData ? (longest.routeName || "-").replace("路线图", "") : "-"],
+        ["最高难度", hasData ? `${hardest.maxDifficulty || 0} 分` : "-"],
+        ["资源最密", hasData ? `${dense.resourceDensity || 0} 处/百km` : "-"],
+      ];
+    })(),
+    difficulty: (() => {
+      const difficulty = currentDifficulty();
+      return [
+        ["平均难度", hasData ? `${difficulty.averageScore || 0} 分` : "-"],
+        ["最高难度", hasData ? `${difficulty.maxScore || 0} 分` : "-"],
+        ["高难里程", hasData ? `${MapUtils.formatNumber(difficulty.highDifficultyDistance || 0)} km` : "-"],
+        ["分段数量", hasData ? `${difficulty.segments?.length || 0} 段` : "-"],
+      ];
+    })(),    terrain: [
       ["平均高程", hasData ? `${summary.averageElevation || 0} m` : "-"],
       ["最高高程", hasData ? `${summary.maxElevation || 0} m` : "-"],
       ["剖面采样", hasData ? `${analysis.elevation?.length || 0} 点` : "-"],
@@ -454,6 +490,8 @@ function renderMetrics() {
 
   function chartOption() {
     if (activeTool === "route") return activeChart === "primary" ? routeBarOption() : routeStructureOption();
+    if (activeTool === "compare") return activeChart === "primary" ? compareDistanceOption() : compareStructureOption();
+    if (activeTool === "difficulty") return activeChart === "primary" ? difficultyScoreOption() : difficultyPieOption();
     if (activeTool === "terrain") return activeChart === "primary" ? terrainLineOption() : terrainCompareOption();
     if (activeTool === "buffer") return bufferMethodOption();
     if (activeTool === "node") return activeChart === "primary" ? nodeRoseOption() : nodeBarOption();
@@ -518,6 +556,59 @@ function terrainLineOption() {
       { name: "平均高程", type: "bar", data: data.terrainSeries.map((item) => Math.round(item.values.reduce((sum, v) => sum + v, 0) / item.values.length)) },
     ];
     return option;
+  }
+
+  function compareDistanceOption() {
+    const option = baseOption();
+    const rows = compareRows();
+    option.xAxis.data = rows.map((item) => item.routeName.replace("路线图", ""));
+    option.xAxis.axisLabel.rotate = 35;
+    option.series = [{ name: "总里程", type: "bar", data: rows.map((item) => item.totalDistance) }];
+    return option;
+  }
+
+  function compareStructureOption() {
+    const option = baseOption();
+    const rows = compareRows();
+    option.xAxis.data = rows.map((item) => item.routeName.replace("路线图", ""));
+    option.xAxis.axisLabel.rotate = 35;
+    option.series = [
+      { name: "最高难度", type: "bar", data: rows.map((item) => item.maxDifficulty) },
+      { name: "节点密度", type: "bar", data: rows.map((item) => item.eventDensity) },
+      { name: "资源密度", type: "bar", data: rows.map((item) => item.resourceDensity) },
+    ];
+    return option;
+  }
+
+  function difficultyScoreOption() {
+    const option = baseOption();
+    const segments = currentDifficulty().segments || [];
+    option.xAxis.data = segments.map((item) => `${item.from}-${item.to}`);
+    option.xAxis.axisLabel.rotate = 35;
+    option.series = [{
+      name: "难度指数",
+      type: "bar",
+      data: segments.map((item) => ({ value: item.score, itemStyle: { color: item.color } })),
+    }];
+    return option;
+  }
+
+  function difficultyPieOption() {
+    const rows = currentDifficulty().byLevel || [];
+    return {
+      backgroundColor: "transparent",
+      color: rows.map((item) => item.color),
+      tooltip: { trigger: "item" },
+      legend: { bottom: 0, textStyle: { color: "#f4e1ae", fontSize: 10 } },
+      series: [{
+        name: "难度里程",
+        type: "pie",
+        radius: ["38%", "66%"],
+        center: ["50%", "42%"],
+        label: { color: "#f3e1b7", fontSize: 10 },
+        data: rows.map((item) => ({ name: item.level, value: item.distance })),
+      }],
+    };
   }
 
   function bufferMethodOption() {
@@ -616,44 +707,21 @@ function renderChart() {
     const nodeTypeText = topTypeText(eventTypeData());
     const resourceTypeText = topTypeText(resourceTypeData());
 
-    const metricRows = {
-      route: [
-        [`${MapUtils.formatNumber(spatial.totalDistance)} km`, "总里程", "整条路线连续测绘里程"],
-        [`${spatial.totalDistance ? (summary.totalEvents || 0) : 0} 个`, "历史节点", "沿线事件与决策节点"],
-        [`${spatial.totalDistance ? (summary.totalResources || 0) : 0} 处`, "红色资源", "沿线红色资源点"],
-        [`${summary.totalProvinces || 0} 省`, "途经省份", "路线穿行省级行政区"],
-      ],
-      terrain: [
-        [`${terrain.relief} m`, "相对高差", "最高点与最低点差值"],
-        [`${terrain.climb} m`, "累计爬升", "全程上坡累计高度"],
-        [`${terrain.highShare}%`, "高海拔占比", "海拔≥1500m 的采样占比"],
-        [`${terrain.sampleCount} 个`, "剖面点数", "沿路线 DEM 采样数量"],
-      ],
-      buffer: [
-        [`${buffer.buffer || "—"}`, "缓冲半径", "当前 AI 评估使用的半径"],
-        [`${buffer.eventCount || 0} 个`, "覆盖节点", "缓冲区覆盖的历史节点数"],
-        [`${buffer.resourceCount || 0} 处`, "覆盖资源", "缓冲区覆盖的红色资源"],
-        [`${bufferGrowth.density} 处/百km²`, "点密度", "平均每百平方公里覆盖点"],
-      ],
-      node: [
-        [`${summary.totalEvents || 0} 个`, "总节点", "路线事件总计"],
-        [nodeTypeText, "主要类型", "出现频率最高的前两种节点"],
-        [`${summary.totalEvents ? Math.round((typeCount(eventTypeData(), "战斗") / (summary.totalEvents || 1)) * 100) : 0}%`, "战斗占比", "战斗节点占总节点比例"],
-        [`${typeCount(eventTypeData(), "雪山草地")} 个`, "特殊节点", "雪山草地类节点数量"],
-      ],
-      resource: [
-        [`${summary.totalResources || 0} 处`, "总资源", "路线红色资源总量"],
-        [resourceTypeText, "主要类型", "出现频率最高的前两种资源"],
-        [`${summary.totalResources ? Math.round((typeCount(resourceTypeData(), "纪念馆") / (summary.totalResources || 1)) * 100) : 0}%`, "纪念馆占比", "纪念馆占资源总量比例"],
-        [`${spatial.resourceDensity} 处/百km`, "资源密度", "每百公里红色资源数"],
-      ],
-    };
-
     const analysisTexts = {
       route: [
         ["路线布局", `${routeName} 的路线里程总量为 ${MapUtils.formatNumber(spatial.totalDistance)} km，途经 ${summary.totalProvinces || 0} 个省级行政区。其中里程最长省份为 ${spatial.topDistanceProvince.province || "—"}，占总里程 ${spatial.provinceShare}%。省域分布呈现以 ${spatial.topDistanceProvince.province || "主要省份"} 为中心的线状展开格局。`],
         ["节点与资源耦合", `沿线共有 ${summary.totalEvents || 0} 个历史节点和 ${summary.totalResources || 0} 处红色资源，节点密度为 ${spatial.eventDensity} 个/百km，资源密度为 ${spatial.resourceDensity} 处/百km。节点与资源在 ${spatial.topEventProvince.province || "主要省份"} 和 ${spatial.topResourceProvince.province || "主要省份"} 分布最为集中，表明该线路具有显著的红色叙事聚合特征。`],
         ["空间叙事建议", `建议在 ${spatial.topEventProvince.province || "主要省份"} 和 ${spatial.topResourceProvince.province || "主要省份"} 增设研学展陈节点，强化路线叙事节奏。省域连接段可补充中转服务设施，提升全线研学体验的连续性与完整性。`],
+      ],
+      compare: [
+        ["路线差异", `本次纳入 ${compareRows().length} 条路线对比，最长路线为 ${(maxBy(compareRows(), (item) => item.totalDistance) || {}).routeName || "—"}，最高难度路线为 ${(maxBy(compareRows(), (item) => item.maxDifficulty) || {}).routeName || "—"}。`],
+        ["综合判断", "多路线对比把里程、海拔、节点密度、资源密度和难度指数放在同一框架下，适合展示系统的横向 GIS 分析能力。"],
+        ["答辩建议", "可以强调系统不只是展示路线，而是能够比较不同部队路线的空间组织差异和行军阻力差异。"],
+      ],
+      difficulty: [
+        ["难度指数", `${routeName} 平均难度指数为 ${currentDifficulty().averageScore || 0} 分，最高难度 ${currentDifficulty().maxScore || 0} 分，高难及极高难路段 ${MapUtils.formatNumber(currentDifficulty().highDifficultyDistance || 0)} km。`],
+        ["最难路段", `最难路段为 ${currentDifficulty().hardestSegment?.from || "—"} 至 ${currentDifficulty().hardestSegment?.to || "—"}，等级为 ${currentDifficulty().hardestSegment?.level || "—"}。`],
+        ["地图表达", "地图按低、中、高、极高四级对路线分段着色，点击路段可查看平均海拔、高差、坡度和相关历史节点。"],
       ],
       terrain: [
         ["地形起伏特征", `${routeName} 的 DEM 剖面显示，路线地形属于“${terrain.category}”，相对高差 ${terrain.relief} m，累计爬升约 ${terrain.climb} m，下降约 ${terrain.descent} m。高海拔样点（≥1500m）占比 ${terrain.highShare}%，表明路线在 ${terrain.highShare > 30 ? "中高海拔" : "低中海拔"} 区间内具有明显地形梯度。`],
@@ -700,6 +768,8 @@ function updateConclusion() {
     const runLabel = `当前结果来自最近一次执行的 ${routeName}。`;
     const text = {
       route: `${runLabel}${routeName} 的路线统计表明，当前路线不是单纯的线状展示，而是由历史事件、地形阻力和红色资源共同组织的空间叙事骨架。`,
+      compare: `${runLabel}多路线对比已完成，可横向比较各路线的里程、省域跨度、节点密度、资源密度和地形难度。`,
+      difficulty: `${runLabel}${routeName} 的地形难度指数已按路段分级，红色和橙色段可作为讲解行军阻力的重点区域。`,
       terrain: `${runLabel}${routeName} 的地形起伏分析基于整条路线 DEM 高程剖面，重点识别相对高差、累计爬升、最大坡变区段和高海拔样点占比，用于解释全线地形阻力的空间分布。`,
       buffer: `${runLabel}${routeName} 的缓冲分析按照本次执行半径统计沿线节点和资源，可进一步用于研学圈层、交通接驳和县域联动表达。`,
       node: `${runLabel}${routeName} 的节点类型统计可识别战斗、会议、渡江、会师等事件在该路线周边的集聚规律。`,
@@ -781,7 +851,7 @@ function renderAll() {
       updateResourceLayer();
 
       setAnalysisProgress(76, "正在绘制地图专题结果与山体阴影", 2);
-      AnalysisMap.drawResult(tool, radius, route);
+      AnalysisMap.drawResult(tool, radius, route, data);
       setAnalysisProgress(92, "正在生成 AI 解读和全局结论", 3);
       renderAll();
       renderInsight(insight);
@@ -824,7 +894,7 @@ $("#toolList").addEventListener("click", (event) => {
   if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
     // 同一工具，保持当前路线并重新绘制
     updateRouteDisplay("single", appliedAnalysis.routeId);
-    AnalysisMap.drawResult(activeTool, appliedAnalysis.radius || 10, appliedAnalysis.routeId);
+    AnalysisMap.drawResult(activeTool, appliedAnalysis.radius || 10, appliedAnalysis.routeId, data);
   } else if (appliedAnalysis.routeId) {
     // 已有分析结果但切换到不同工具，只显示路线，不显示分析结果
     updateRouteDisplay("single", appliedAnalysis.routeId);
@@ -869,6 +939,18 @@ $("#toolList").addEventListener("click", (event) => {
     renderAiPending("路线已切换，请重新执行 GIS 分析生成该路线的 AI 结果。");
     $("#taskState").textContent = "参数已变更，等待分析";
     flash("路线已切换，请点击执行 GIS 分析刷新分析结果");
+  });
+
+  $("#layerControl")?.addEventListener("change", (event) => {
+    const input = event.target.closest("input[data-layer]");
+    if (!input) return;
+    AnalysisMap.setLayerVisibility(input.dataset.layer, input.checked);
+  });
+
+  document.addEventListener("analysissegmentselect", (event) => {
+    selectedSegment = event.detail;
+    renderOverallAnalysis();
+    flash(`${selectedSegment.from} 至 ${selectedSegment.to}：${selectedSegment.level}`);
   });
 
   $("#bufferSelect").addEventListener("change", () => {
@@ -918,3 +1000,11 @@ $("#toolList").addEventListener("click", (event) => {
 
   loadData().catch(console.error);
 })();
+
+
+
+
+
+
+
+

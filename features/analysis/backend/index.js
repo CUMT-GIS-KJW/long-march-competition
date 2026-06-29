@@ -1,4 +1,4 @@
-const { readDataFile } = require("../../shared/backend/data-store");
+﻿const { readDataFile } = require("../../shared/backend/data-store");
 const { URL } = require("url");
 
 const analysisFiles = {
@@ -9,6 +9,8 @@ const analysisFiles = {
   "/api/analysis/stage": "analysis-stage.json",
   "/api/analysis/node-types": "analysis-node-types.json",
   "/api/analysis/routes": "analysis-routes.json",
+  "/api/analysis/difficulty": "analysis-difficulty.json",
+  "/api/analysis/route-compare": "analysis-route-compare.json",
 };
 
 const bufferLayerInterfaces = {
@@ -68,6 +70,20 @@ function buildInsight(request) {
       difficulty: "难点在于路线跨越省域多、地形差异大、节点密集且历史事件类型复杂，需要同时表达路线、事件和资源三类空间对象。",
       spirit: "重点学习坚定理想信念、顾全大局、严密组织和依靠群众的长征精神。",
       image: "/assets/img/red-army-march.jpg",
+    },
+    compare: {
+      title: "多路线空间对比分析",
+      why: "多路线对比用于识别不同红军路线在里程、节点密度、资源密度和地形阻力上的差异。",
+      difficulty: "难点在于各路线长度和数据密度不同，需要使用密度、占比和综合指标进行横向比较。",
+      spirit: "重点学习统筹全局、协同推进和因地制宜的战略组织能力。",
+      image: "/assets/img/red-army-march.jpg",
+    },
+    difficulty: {
+      title: "地形难度指数分析",
+      why: "地形难度指数把 DEM 高程、坡度、高差和特殊地形节点转化为可视化分段等级。",
+      difficulty: "难点是将连续路线切分为可解释路段，并让每一段同时具备分数、等级和历史语义。",
+      spirit: "重点学习不畏艰险、百折不挠、依靠科学判断突破困难的精神。",
+      image: "/assets/img/xueshan.jpg",
     },
     terrain: {
       title: "地形起伏与行军阻力分析",
@@ -135,3 +151,4 @@ function handleApi({ request, pathname, response, sendSuccess, sendError }) {
 module.exports = {
   handleApi,
 };
+

@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const redTourismResources = [
     {
       id: "zunyi_site",
@@ -98,6 +98,9 @@
     getAnalysisStage: () => fetchJson("analysisStage"),
     getAnalysisNodeTypes: () => fetchJson("analysisNodeTypes"),
     getAnalysisRoutes: () => fetchJson("analysisRoutes"),
+    getAnalysisDifficulty: () => fetchJson("analysisDifficulty"),
+    getAnalysisRouteCompare: () => fetchJson("analysisRouteCompare"),
     getScene3dFocus: () => fetchJson("scene3dFocus"),
   };
 })();
+

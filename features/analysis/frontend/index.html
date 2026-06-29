@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
@@ -42,6 +42,14 @@
             <i>线</i>
             <span><b>路线统计分析</b><small>里程 / 省域 / 选线原因</small></span>
           </button>
+          <button type="button" data-tool="compare">
+            <i>比</i>
+            <span><b>多路线对比分析</b><small>里程 / 密度 / 难度排行</small></span>
+          </button>
+          <button type="button" data-tool="difficulty">
+            <i>险</i>
+            <span><b>地形难度指数</b><small>DEM / 坡度 / 分段着色</small></span>
+          </button>
           <button type="button" data-tool="terrain">
             <i>高</i>
             <span><b>地形起伏分析</b><small>全军团高程 / 结构对比</small></span>
@@ -74,6 +82,13 @@
               <option value="20">20 km：县域联动圈</option>
             </select>
           </label>
+          <div class="layer-control" id="layerControl">
+            <span>图层控制</span>
+            <label><input type="checkbox" data-layer="route" checked>路线</label>
+            <label><input type="checkbox" data-layer="event" checked>节点</label>
+            <label><input type="checkbox" data-layer="resource">资源</label>
+            <label><input type="checkbox" data-layer="hillshade" checked>山体阴影</label>
+          </div>
           <button class="run-analysis" type="button" id="runAnalysis">执行 GIS 分析</button>
         </div>
 
@@ -160,10 +175,15 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-  <script src="/features/shared/frontend/config.js"></script>
-  <script src="/features/shared/frontend/data-service.js"></script>
-  <script src="/features/shared/frontend/map-utils.js"></script>
-  <script src="/features/analysis/frontend/analysis-map.js"></script>
-  <script src="/features/analysis/frontend/analysis-ui.js"></script>
+  <script src="/features/shared/frontend/config.js?v=gis-fix3"></script>
+  <script src="/features/shared/frontend/data-service.js?v=gis-fix3"></script>
+  <script src="/features/shared/frontend/map-utils.js?v=gis-fix3"></script>
+  <script src="/features/analysis/frontend/analysis-map.js?v=gis-fix3"></script>
+  <script src="/features/analysis/frontend/analysis-ui.js?v=gis-fix3"></script>
 </body>
 </html>
+
+
+
+
+

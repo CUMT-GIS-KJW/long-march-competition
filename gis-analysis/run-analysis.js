@@ -1,4 +1,4 @@
-const fs = require("fs");
+﻿const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
 
@@ -715,6 +715,8 @@ async function buildElevation(primaryRoute) {
       distance: point.distance,
       elevation,
       place: estimate.place,
+      lng: round(point.lng, 6),
+      lat: round(point.lat, 6),
     };
   }));
 }
@@ -752,6 +754,131 @@ function buildStageStats(primaryRoute, events) {
   }));
 }
 
+function difficultyLevel(score) {
+  if (score >= 81) return "极高难度";
+  if (score >= 61) return "高难度";
+  if (score >= 31) return "中等难度";
+  return "低难度";
+}
+
+function difficultyColor(level) {
+  return {
+    低难度: "#4f9f68",
+    中等难度: "#d8a84f",
+    高难度: "#d46a35",
+    极高难度: "#b3261e",
+  }[level] || "#d8a84f";
+}
+
+function segmentSpecialScore(events, start, end) {
+  const nearby = events
+    .map((feature) => ({ feature, distance: pointSegmentDistanceKm(featurePoint(feature), start, end) }))
+    .filter((item) => Number.isFinite(item.distance) && item.distance <= 25)
+    .sort((left, right) => left.distance - right.distance)
+    .slice(0, 4);
+  const types = nearby.map((item) => eventType(featureProps(item.feature)));
+  const score = types.reduce((sum, type) => {
+    if (type === "雪山草地") return sum + 12;
+    if (type === "渡江") return sum + 8;
+    if (type === "战斗") return sum + 6;
+    return sum + 3;
+  }, 0);
+
+  return {
+    score: Math.min(20, score),
+    events: nearby.map((item) => {
+      const props = featureProps(item.feature);
+      return {
+        name: props.name || props[EVENT_FIELD.name] || "历史节点",
+        type: eventType(props),
+        distance: round(item.distance, 1),
+      };
+    }),
+  };
+}
+
+function buildDifficulty(route, elevation, routeEvents) {
+  const samples = (elevation || [])
+    .filter((item) => Number.isFinite(Number(item.lat)) && Number.isFinite(Number(item.lng)))
+    .sort((left, right) => Number(left.distance || 0) - Number(right.distance || 0));
+  const segments = [];
+
+  for (let index = 1; index < samples.length; index += 1) {
+    const start = samples[index - 1];
+    const end = samples[index];
+    const distance = Math.max(1, Number(end.distance || 0) - Number(start.distance || 0));
+    const elevationDelta = Number(end.elevation || 0) - Number(start.elevation || 0);
+    const avgElevation = (Number(start.elevation || 0) + Number(end.elevation || 0)) / 2;
+    const maxRelief = Math.abs(elevationDelta);
+    const avgSlope = maxRelief / distance;
+    const special = segmentSpecialScore(routeEvents, start, end);
+    const elevationScore = Math.min(28, avgElevation / 120);
+    const reliefScore = Math.min(24, maxRelief / 18);
+    const slopeScore = Math.min(28, avgSlope * 1.8);
+    const score = Math.max(0, Math.min(100, round(elevationScore + reliefScore + slopeScore + special.score)));
+    const level = difficultyLevel(score);
+
+    segments.push({
+      id: `${route.layer_key}-${index}`,
+      routeKey: route.layer_key,
+      routeName: route.layer_name,
+      from: start.place || `采样点${index}`,
+      to: end.place || `采样点${index + 1}`,
+      distance: round(distance, 1),
+      avgElevation: round(avgElevation),
+      maxRelief: round(maxRelief),
+      avgSlope: round(avgSlope, 1),
+      score,
+      level,
+      color: difficultyColor(level),
+      coordinates: [[Number(start.lng), Number(start.lat)], [Number(end.lng), Number(end.lat)]],
+      relatedEvents: special.events,
+    });
+  }
+
+  const totalDistance = segments.reduce((sum, item) => sum + item.distance, 0) || 1;
+  const byLevel = ["低难度", "中等难度", "高难度", "极高难度"].map((level) => {
+    const distance = round(segments.filter((item) => item.level === level).reduce((sum, item) => sum + item.distance, 0), 1);
+    return { level, distance, share: round((distance / totalDistance) * 100, 1), color: difficultyColor(level) };
+  });
+  const hardest = segments.slice().sort((left, right) => right.score - left.score)[0] || null;
+  const averageScore = segments.length ? round(segments.reduce((sum, item) => sum + item.score, 0) / segments.length, 1) : 0;
+
+  return {
+    routeKey: route.layer_key,
+    routeName: route.layer_name,
+    averageScore,
+    maxScore: hardest?.score || 0,
+    hardestSegment: hardest,
+    highDifficultyDistance: round(byLevel.filter((item) => ["高难度", "极高难度"].includes(item.level)).reduce((sum, item) => sum + item.distance, 0), 1),
+    byLevel,
+    segments,
+  };
+}
+
+function buildRouteCompare(routeAnalyses) {
+  return routeAnalyses.map((analysis) => {
+    const summary = analysis.summary || {};
+    const difficulty = analysis.difficulty || {};
+    const totalDistance = Number(summary.totalDistance || 0);
+    return {
+      routeKey: analysis.routeKey,
+      routeName: analysis.routeName,
+      totalDistance: round(totalDistance),
+      totalProvinces: summary.totalProvinces || 0,
+      totalEvents: summary.totalEvents || 0,
+      totalResources: summary.totalResources || 0,
+      averageElevation: summary.averageElevation || 0,
+      maxElevation: summary.maxElevation || 0,
+      maxDifficulty: difficulty.maxScore || 0,
+      averageDifficulty: difficulty.averageScore || 0,
+      highDifficultyDistance: difficulty.highDifficultyDistance || 0,
+      eventDensity: totalDistance ? round((Number(summary.totalEvents || 0) / totalDistance) * 100, 1) : 0,
+      resourceDensity: totalDistance ? round((Number(summary.totalResources || 0) / totalDistance) * 100, 1) : 0,
+      bufferArea: summary.bufferArea || 0,
+    };
+  }).sort((left, right) => right.totalDistance - left.totalDistance);
+}
 function buildSummary(routes, province, elevation, buffer, events, resources) {
   const visibleRoutes = routes.filter((route) => route.default_visible);
   const totalDistance = visibleRoutes.reduce((sum, route) => sum + route.distance, 0);
@@ -827,6 +954,7 @@ async function buildRouteAnalysis(route, events, resources, provinceIndex, refer
   const stage = buildStageStats(route, routeEvents);
   const nodeTypes = buildNodeTypeStats(routeEvents);
   const resourceTypes = buildResourceTypeStats(routeResources);
+  const difficulty = buildDifficulty(route, elevation, routeEvents);
 
   return {
     routeKey: route.layer_key,
@@ -838,6 +966,7 @@ async function buildRouteAnalysis(route, events, resources, provinceIndex, refer
     stage,
     nodeTypes,
     resourceTypes,
+    difficulty,
   };
 }
 
@@ -860,6 +989,8 @@ async function main() {
       return buildRouteAnalysis(route, events, resources, provinceIndex, referencePoints);
     }),
   );
+  const difficulty = routeAnalyses.map((analysis) => analysis.difficulty);
+  const routeCompare = buildRouteCompare(routeAnalyses);
 
   writeJson("analysis-summary.json", summary);
   writeJson("analysis-province.json", province);
@@ -868,6 +999,8 @@ async function main() {
   writeJson("analysis-stage.json", stage);
   writeJson("analysis-node-types.json", nodeTypes);
   writeJson("analysis-routes.json", routeAnalyses);
+  writeJson("analysis-difficulty.json", difficulty);
+  writeJson("analysis-route-compare.json", routeCompare);
 
   console.log("GIS analysis data generated:");
   console.log(`- routes: ${routes.length}`);
@@ -876,6 +1009,8 @@ async function main() {
   console.log(`- province rows: ${province.length}`);
   console.log(`- province polygons: ${provinceIndex.length}`);
   console.log(`- route analyses: ${routeAnalyses.length}`);
+  console.log(`- difficulty analyses: ${difficulty.length}`);
+  console.log(`- compare rows: ${routeCompare.length}`);
   console.log(`- province source: ${PROVINCE_SOURCE_URL}`);
   console.log(`- DEM source: ${TERRARIUM_URL} z${TERRARIUM_ZOOM}`);
   console.log(`- output: ${DATA_DIR}`);
@@ -885,3 +1020,6 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+
+

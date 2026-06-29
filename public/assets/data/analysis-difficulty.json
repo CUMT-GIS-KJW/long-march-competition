@@ -1,0 +1,3991 @@
+[
+  {
+    "routeKey": "route_zhongyang_zongdui",
+    "routeName": "中央纵队路线图",
+    "averageScore": 43.3,
+    "maxScore": 61,
+    "hardestSegment": {
+      "id": "route_zhongyang_zongdui-6",
+      "routeKey": "route_zhongyang_zongdui",
+      "routeName": "中央纵队路线图",
+      "from": "遵义",
+      "to": "赤水",
+      "distance": 434,
+      "avgElevation": 1484,
+      "maxRelief": 1174,
+      "avgSlope": 2.7,
+      "score": 61,
+      "level": "高难度",
+      "color": "#d46a35",
+      "coordinates": [
+        [
+          106.725657,
+          27.599161
+        ],
+        [
+          103.549617,
+          25.482192
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "鸭溪",
+          "type": "战斗",
+          "distance": 2.1
+        },
+        {
+          "name": "苟坝",
+          "type": "会议",
+          "distance": 12.4
+        },
+        {
+          "name": "泮水",
+          "type": "战斗",
+          "distance": 14.9
+        },
+        {
+          "name": "梯子岩",
+          "type": "战斗",
+          "distance": 22
+        }
+      ]
+    },
+    "highDifficultyDistance": 434,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 869,
+        "share": 25,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 2175,
+        "share": 62.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 434,
+        "share": 12.5,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_zhongyang_zongdui-1",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "瑞金",
+        "to": "湘江",
+        "distance": 435,
+        "avgElevation": 396,
+        "maxRelief": 339,
+        "avgSlope": 0.8,
+        "score": 39,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            115.900835,
+            25.853303
+          ],
+          [
+            112.614519,
+            25.389153
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "梅坑",
+            "type": "行军驻扎",
+            "distance": 0
+          },
+          {
+            "name": "密溪",
+            "type": "行军驻扎",
+            "distance": 1.2
+          },
+          {
+            "name": "文英",
+            "type": "行军驻扎",
+            "distance": 3.3
+          },
+          {
+            "name": "宜章",
+            "type": "战斗",
+            "distance": 3.8
+          }
+        ]
+      },
+      {
+        "id": "route_zhongyang_zongdui-2",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "湘江",
+        "to": "湘江",
+        "distance": 434,
+        "avgElevation": 598,
+        "maxRelief": 65,
+        "avgSlope": 0.1,
+        "score": 29,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            112.614519,
+            25.389153
+          ],
+          [
+            109.183107,
+            26.173013
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "老山界",
+            "type": "战斗",
+            "distance": 1.1
+          },
+          {
+            "name": "咸水",
+            "type": "战斗",
+            "distance": 1.2
+          },
+          {
+            "name": "蒋家岭",
+            "type": "行军驻扎",
+            "distance": 2.7
+          },
+          {
+            "name": "洞尾",
+            "type": "战斗",
+            "distance": 4.2
+          }
+        ]
+      },
+      {
+        "id": "route_zhongyang_zongdui-3",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "湘江",
+        "to": "赤水",
+        "distance": 435,
+        "avgElevation": 904,
+        "maxRelief": 548,
+        "avgSlope": 1.3,
+        "score": 52,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.183107,
+            26.173013
+          ],
+          [
+            106.323866,
+            28.349703
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "黎平",
+            "type": "会议",
+            "distance": 1.7
+          },
+          {
+            "name": "梅溪",
+            "type": "战斗",
+            "distance": 5.5
+          },
+          {
+            "name": "台江",
+            "type": "战斗",
+            "distance": 13.7
+          },
+          {
+            "name": "桐梓",
+            "type": "行军驻扎",
+            "distance": 13.9
+          }
+        ]
+      },
+      {
+        "id": "route_zhongyang_zongdui-4",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "赤水",
+        "to": "遵义",
+        "distance": 435,
+        "avgElevation": 1164,
+        "maxRelief": 28,
+        "avgSlope": 0.1,
+        "score": 29,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            106.323866,
+            28.349703
+          ],
+          [
+            106.307126,
+            27.897487
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "梅溪",
+            "type": "战斗",
+            "distance": 5.9
+          },
+          {
+            "name": "茅台",
+            "type": "战斗",
+            "distance": 7.5
+          },
+          {
+            "name": "仁怀",
+            "type": "战斗",
+            "distance": 14
+          }
+        ]
+      },
+      {
+        "id": "route_zhongyang_zongdui-5",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 435,
+        "avgElevation": 1024,
+        "maxRelief": 253,
+        "avgSlope": 0.6,
+        "score": 44,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.307126,
+            27.897487
+          ],
+          [
+            106.725657,
+            27.599161
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "仁怀",
+            "type": "战斗",
+            "distance": 0.3
+          },
+          {
+            "name": "茅台",
+            "type": "战斗",
+            "distance": 0.9
+          },
+          {
+            "name": "鸭溪",
+            "type": "战斗",
+            "distance": 5.4
+          },
+          {
+            "name": "苟坝",
+            "type": "会议",
+            "distance": 7
+          }
+        ]
+      },
+      {
+        "id": "route_zhongyang_zongdui-6",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "遵义",
+        "to": "赤水",
+        "distance": 434,
+        "avgElevation": 1484,
+        "maxRelief": 1174,
+        "avgSlope": 2.7,
+        "score": 61,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            106.725657,
+            27.599161
+          ],
+          [
+            103.549617,
+            25.482192
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "鸭溪",
+            "type": "战斗",
+            "distance": 2.1
+          },
+          {
+            "name": "苟坝",
+            "type": "会议",
+            "distance": 12.4
+          },
+          {
+            "name": "泮水",
+            "type": "战斗",
+            "distance": 14.9
+          },
+          {
+            "name": "梯子岩",
+            "type": "战斗",
+            "distance": 22
+          }
+        ]
+      },
+      {
+        "id": "route_zhongyang_zongdui-7",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "赤水",
+        "to": "大渡河",
+        "distance": 435,
+        "avgElevation": 1883,
+        "maxRelief": 376,
+        "avgSlope": 0.9,
+        "score": 38,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            103.549617,
+            25.482192
+          ],
+          [
+            102.195457,
+            28.33638
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_zhongyang_zongdui-8",
+        "routeKey": "route_zhongyang_zongdui",
+        "routeName": "中央纵队路线图",
+        "from": "大渡河",
+        "to": "夹金山",
+        "distance": 435,
+        "avgElevation": 2113,
+        "maxRelief": 836,
+        "avgSlope": 1.9,
+        "score": 54,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.195457,
+            28.33638
+          ],
+          [
+            102.36585,
+            31.004289
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "安顺场",
+            "type": "行军驻扎",
+            "distance": 2.8
+          },
+          {
+            "name": "泸定",
+            "type": "战斗",
+            "distance": 6.4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongyi_juntuan",
+    "routeName": "红一军团路线图",
+    "averageScore": 42.9,
+    "maxScore": 70,
+    "hardestSegment": {
+      "id": "route_hongyi_juntuan-7",
+      "routeKey": "route_hongyi_juntuan",
+      "routeName": "红一军团路线图",
+      "from": "大渡河",
+      "to": "腊子口",
+      "distance": 658,
+      "avgElevation": 2642,
+      "maxRelief": 1423,
+      "avgSlope": 2.2,
+      "score": 70,
+      "level": "高难度",
+      "color": "#d46a35",
+      "coordinates": [
+        [
+          102.417039,
+          29.676009
+        ],
+        [
+          103.416771,
+          33.944936
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "木城沟",
+          "type": "会师",
+          "distance": 5
+        },
+        {
+          "name": "夹金山垭口",
+          "type": "雪山草地",
+          "distance": 7.5
+        },
+        {
+          "name": "泸定",
+          "type": "战斗",
+          "distance": 22.9
+        }
+      ]
+    },
+    "highDifficultyDistance": 1315,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 1973,
+        "share": 37.5,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 1972,
+        "share": 37.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 1315,
+        "share": 25,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongyi_juntuan-1",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "瑞金",
+        "to": "湘江",
+        "distance": 658,
+        "avgElevation": 206,
+        "maxRelief": 103,
+        "avgSlope": 0.2,
+        "score": 28,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            115.367872,
+            26.300695
+          ],
+          [
+            111.020713,
+            25.725382
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "蒋家岭",
+            "type": "行军驻扎",
+            "distance": 12.4
+          },
+          {
+            "name": "新圩",
+            "type": "战斗",
+            "distance": 14.4
+          },
+          {
+            "name": "洞尾",
+            "type": "战斗",
+            "distance": 16.2
+          },
+          {
+            "name": "脚山铺",
+            "type": "战斗",
+            "distance": 21.5
+          }
+        ]
+      },
+      {
+        "id": "route_hongyi_juntuan-2",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "湘江",
+        "to": "遵义",
+        "distance": 657,
+        "avgElevation": 715,
+        "maxRelief": 915,
+        "avgSlope": 1.4,
+        "score": 52,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            111.020713,
+            25.725382
+          ],
+          [
+            106.873162,
+            28.475287
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "咸水",
+            "type": "战斗",
+            "distance": 5.4
+          },
+          {
+            "name": "油榨坪",
+            "type": "行军驻扎",
+            "distance": 10.1
+          },
+          {
+            "name": "脚山铺",
+            "type": "战斗",
+            "distance": 10.7
+          },
+          {
+            "name": "新圩",
+            "type": "战斗",
+            "distance": 16.4
+          }
+        ]
+      },
+      {
+        "id": "route_hongyi_juntuan-3",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "遵义",
+        "to": "赤水",
+        "distance": 658,
+        "avgElevation": 1220,
+        "maxRelief": 96,
+        "avgSlope": 0.1,
+        "score": 22,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            106.873162,
+            28.475287
+          ],
+          [
+            105.830667,
+            27.87512
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "梅溪",
+            "type": "战斗",
+            "distance": 17.1
+          }
+        ]
+      },
+      {
+        "id": "route_hongyi_juntuan-4",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "赤水",
+        "to": "遵义",
+        "distance": 657,
+        "avgElevation": 1089,
+        "maxRelief": 358,
+        "avgSlope": 0.5,
+        "score": 30,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            105.830667,
+            27.87512
+          ],
+          [
+            105.622837,
+            25.333493
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongyi_juntuan-5",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "遵义",
+        "to": "大渡河",
+        "distance": 658,
+        "avgElevation": 1222,
+        "maxRelief": 624,
+        "avgSlope": 0.9,
+        "score": 36,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            105.622837,
+            25.333493
+          ],
+          [
+            102.209169,
+            27.722801
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongyi_juntuan-6",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "大渡河",
+        "to": "大渡河",
+        "distance": 657,
+        "avgElevation": 1732,
+        "maxRelief": 396,
+        "avgSlope": 0.6,
+        "score": 41,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.209169,
+            27.722801
+          ],
+          [
+            102.417039,
+            29.676009
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "安顺场",
+            "type": "行军驻扎",
+            "distance": 8.7
+          }
+        ]
+      },
+      {
+        "id": "route_hongyi_juntuan-7",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "大渡河",
+        "to": "腊子口",
+        "distance": 658,
+        "avgElevation": 2642,
+        "maxRelief": 1423,
+        "avgSlope": 2.2,
+        "score": 70,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            102.417039,
+            29.676009
+          ],
+          [
+            103.416771,
+            33.944936
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "木城沟",
+            "type": "会师",
+            "distance": 5
+          },
+          {
+            "name": "夹金山垭口",
+            "type": "雪山草地",
+            "distance": 7.5
+          },
+          {
+            "name": "泸定",
+            "type": "战斗",
+            "distance": 22.9
+          }
+        ]
+      },
+      {
+        "id": "route_hongyi_juntuan-8",
+        "routeKey": "route_hongyi_juntuan",
+        "routeName": "红一军团路线图",
+        "from": "腊子口",
+        "to": "会宁",
+        "distance": 657,
+        "avgElevation": 2333,
+        "maxRelief": 2041,
+        "avgSlope": 3.1,
+        "score": 64,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            103.416771,
+            33.944936
+          ],
+          [
+            108.182348,
+            36.916103
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "吴起街",
+            "type": "行军驻扎",
+            "distance": 0
+          },
+          {
+            "name": "榜罗镇",
+            "type": "会议",
+            "distance": 13
+          },
+          {
+            "name": "腊子口镇",
+            "type": "战斗",
+            "distance": 15.9
+          },
+          {
+            "name": "哈达铺镇",
+            "type": "会师",
+            "distance": 19.4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongqi_juntuan",
+    "routeName": "红七军团路线图",
+    "averageScore": 18.8,
+    "maxScore": 32,
+    "hardestSegment": {
+      "id": "route_hongqi_juntuan-5",
+      "routeKey": "route_hongqi_juntuan",
+      "routeName": "红七军团路线图",
+      "from": "瑞金",
+      "to": "瑞金",
+      "distance": 227,
+      "avgElevation": 549,
+      "maxRelief": 463,
+      "avgSlope": 2,
+      "score": 32,
+      "level": "中等难度",
+      "color": "#d8a84f",
+      "coordinates": [
+        [
+          117.932521,
+          28.903828
+        ],
+        [
+          118.811695,
+          29.406738
+        ]
+      ],
+      "relatedEvents": []
+    },
+    "highDifficultyDistance": 0,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 1589,
+        "share": 87.5,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 227,
+        "share": 12.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongqi_juntuan-1",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 256,
+        "maxRelief": 116,
+        "avgSlope": 0.5,
+        "score": 21,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            116.018579,
+            25.879765
+          ],
+          [
+            118.044891,
+            25.968059
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "瑞金",
+            "type": "行军驻扎",
+            "distance": 0
+          },
+          {
+            "name": "长汀",
+            "type": "行军驻扎",
+            "distance": 6.6
+          },
+          {
+            "name": "梅坑",
+            "type": "行军驻扎",
+            "distance": 12.2
+          },
+          {
+            "name": "武阳",
+            "type": "行军驻扎",
+            "distance": 15.9
+          }
+        ]
+      },
+      {
+        "id": "route_hongqi_juntuan-2",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 462,
+        "maxRelief": 295,
+        "avgSlope": 1.3,
+        "score": 23,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            118.044891,
+            25.968059
+          ],
+          [
+            119.563507,
+            26.56985
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongqi_juntuan-3",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 530,
+        "maxRelief": 159,
+        "avgSlope": 0.7,
+        "score": 15,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            119.563507,
+            26.56985
+          ],
+          [
+            118.352468,
+            28.067704
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongqi_juntuan-4",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 615,
+        "maxRelief": 330,
+        "avgSlope": 1.5,
+        "score": 26,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            118.352468,
+            28.067704
+          ],
+          [
+            117.932521,
+            28.903828
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongqi_juntuan-5",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 549,
+        "maxRelief": 463,
+        "avgSlope": 2,
+        "score": 32,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            117.932521,
+            28.903828
+          ],
+          [
+            118.811695,
+            29.406738
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongqi_juntuan-6",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 275,
+        "maxRelief": 84,
+        "avgSlope": 0.4,
+        "score": 8,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            118.811695,
+            29.406738
+          ],
+          [
+            117.086934,
+            29.46641
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongqi_juntuan-7",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 315,
+        "maxRelief": 163,
+        "avgSlope": 0.7,
+        "score": 13,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            117.086934,
+            29.46641
+          ],
+          [
+            118.773716,
+            30.015391
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongqi_juntuan-8",
+        "routeKey": "route_hongqi_juntuan",
+        "routeName": "红七军团路线图",
+        "from": "瑞金",
+        "to": "瑞金",
+        "distance": 227,
+        "avgElevation": 322,
+        "maxRelief": 149,
+        "avgSlope": 0.7,
+        "score": 12,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            118.773716,
+            30.015391
+          ],
+          [
+            119.409438,
+            30.200256
+          ]
+        ],
+        "relatedEvents": []
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongsan_juntuan",
+    "routeName": "红三军团路线图",
+    "averageScore": 37.9,
+    "maxScore": 64,
+    "hardestSegment": {
+      "id": "route_hongsan_juntuan-6",
+      "routeKey": "route_hongsan_juntuan",
+      "routeName": "红三军团路线图",
+      "from": "赤水",
+      "to": "赤水",
+      "distance": 434,
+      "avgElevation": 1541,
+      "maxRelief": 2288,
+      "avgSlope": 5.3,
+      "score": 64,
+      "level": "高难度",
+      "color": "#d46a35",
+      "coordinates": [
+        [
+          106.025593,
+          28.288342
+        ],
+        [
+          103.021986,
+          25.571462
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "土城",
+          "type": "行军驻扎",
+          "distance": 1.5
+        },
+        {
+          "name": "香楠坝",
+          "type": "行军驻扎",
+          "distance": 7.1
+        },
+        {
+          "name": "元厚场",
+          "type": "战斗",
+          "distance": 9
+        },
+        {
+          "name": "天堂坝",
+          "type": "战斗",
+          "distance": 17.1
+        }
+      ]
+    },
+    "highDifficultyDistance": 434,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 868,
+        "share": 25,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 2171,
+        "share": 62.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 434,
+        "share": 12.5,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongsan_juntuan-1",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "瑞金",
+        "to": "湘江",
+        "distance": 434,
+        "avgElevation": 273,
+        "maxRelief": 184,
+        "avgSlope": 0.4,
+        "score": 33,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            116.014202,
+            26.276866
+          ],
+          [
+            112.839158,
+            25.356851
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "长胜",
+            "type": "行军驻扎",
+            "distance": 0
+          },
+          {
+            "name": "白石渡",
+            "type": "战斗",
+            "distance": 0.5
+          },
+          {
+            "name": "宜章",
+            "type": "战斗",
+            "distance": 1.4
+          },
+          {
+            "name": "土桥",
+            "type": "战斗",
+            "distance": 3.2
+          }
+        ]
+      },
+      {
+        "id": "route_hongsan_juntuan-2",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "湘江",
+        "to": "湘江",
+        "distance": 434,
+        "avgElevation": 465,
+        "maxRelief": 199,
+        "avgSlope": 0.5,
+        "score": 34,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            112.839158,
+            25.356851
+          ],
+          [
+            109.100831,
+            26.252991
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "黎平",
+            "type": "会议",
+            "distance": 1.5
+          },
+          {
+            "name": "龙坪",
+            "type": "行军驻扎",
+            "distance": 2.4
+          },
+          {
+            "name": "咸水",
+            "type": "战斗",
+            "distance": 3.3
+          },
+          {
+            "name": "老山界",
+            "type": "战斗",
+            "distance": 3.8
+          }
+        ]
+      },
+      {
+        "id": "route_hongsan_juntuan-3",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "湘江",
+        "to": "遵义",
+        "distance": 435,
+        "avgElevation": 710,
+        "maxRelief": 291,
+        "avgSlope": 0.7,
+        "score": 43,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.100831,
+            26.252991
+          ],
+          [
+            106.450735,
+            27.510712
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "黎平",
+            "type": "会议",
+            "distance": 4.1
+          },
+          {
+            "name": "台江",
+            "type": "战斗",
+            "distance": 4.5
+          },
+          {
+            "name": "茶山关",
+            "type": "战斗",
+            "distance": 6.3
+          },
+          {
+            "name": "泮水",
+            "type": "战斗",
+            "distance": 8.7
+          }
+        ]
+      },
+      {
+        "id": "route_hongsan_juntuan-4",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "遵义",
+        "to": "赤水",
+        "distance": 434,
+        "avgElevation": 734,
+        "maxRelief": 243,
+        "avgSlope": 0.6,
+        "score": 41,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.450735,
+            27.510712
+          ],
+          [
+            106.050573,
+            28.174915
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "泮水",
+            "type": "战斗",
+            "distance": 6.7
+          },
+          {
+            "name": "茅台",
+            "type": "战斗",
+            "distance": 11.5
+          },
+          {
+            "name": "土城",
+            "type": "行军驻扎",
+            "distance": 13
+          },
+          {
+            "name": "仁怀",
+            "type": "战斗",
+            "distance": 13
+          }
+        ]
+      },
+      {
+        "id": "route_hongsan_juntuan-5",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "赤水",
+        "to": "赤水",
+        "distance": 434,
+        "avgElevation": 505,
+        "maxRelief": 215,
+        "avgSlope": 0.5,
+        "score": 26,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            106.050573,
+            28.174915
+          ],
+          [
+            106.025593,
+            28.288342
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "土城",
+            "type": "行军驻扎",
+            "distance": 2.8
+          },
+          {
+            "name": "元厚场",
+            "type": "战斗",
+            "distance": 9
+          }
+        ]
+      },
+      {
+        "id": "route_hongsan_juntuan-6",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "赤水",
+        "to": "赤水",
+        "distance": 434,
+        "avgElevation": 1541,
+        "maxRelief": 2288,
+        "avgSlope": 5.3,
+        "score": 64,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            106.025593,
+            28.288342
+          ],
+          [
+            103.021986,
+            25.571462
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "土城",
+            "type": "行军驻扎",
+            "distance": 1.5
+          },
+          {
+            "name": "香楠坝",
+            "type": "行军驻扎",
+            "distance": 7.1
+          },
+          {
+            "name": "元厚场",
+            "type": "战斗",
+            "distance": 9
+          },
+          {
+            "name": "天堂坝",
+            "type": "战斗",
+            "distance": 17.1
+          }
+        ]
+      },
+      {
+        "id": "route_hongsan_juntuan-7",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "赤水",
+        "to": "大渡河",
+        "distance": 434,
+        "avgElevation": 2652,
+        "maxRelief": 67,
+        "avgSlope": 0.2,
+        "score": 26,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            103.021986,
+            25.571462
+          ],
+          [
+            102.562869,
+            28.95116
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsan_juntuan-8",
+        "routeKey": "route_hongsan_juntuan",
+        "routeName": "红三军团路线图",
+        "from": "大渡河",
+        "to": "夹金山",
+        "distance": 434,
+        "avgElevation": 2575,
+        "maxRelief": 87,
+        "avgSlope": 0.2,
+        "score": 36,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.562869,
+            28.95116
+          ],
+          [
+            102.36585,
+            31.004289
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "泸定",
+            "type": "战斗",
+            "distance": 23.1
+          },
+          {
+            "name": "安顺场",
+            "type": "行军驻扎",
+            "distance": 24
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongsanshi_jun",
+    "routeName": "红三十军路线图",
+    "averageScore": 47.3,
+    "maxScore": 85,
+    "hardestSegment": {
+      "id": "route_hongsanshi_jun-8",
+      "routeKey": "route_hongsanshi_jun",
+      "routeName": "红三十军路线图",
+      "from": "夹金山",
+      "to": "夹金山",
+      "distance": 64,
+      "avgElevation": 3081,
+      "maxRelief": 709,
+      "avgSlope": 11.1,
+      "score": 85,
+      "level": "极高难度",
+      "color": "#b3261e",
+      "coordinates": [
+        [
+          102.586852,
+          31.21453
+        ],
+        [
+          102.639414,
+          30.965968
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "夹金山垭口",
+          "type": "雪山草地",
+          "distance": 0
+        },
+        {
+          "name": "木城沟",
+          "type": "会师",
+          "distance": 7.9
+        }
+      ]
+    },
+    "highDifficultyDistance": 192,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 128,
+        "share": 24.9,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 194,
+        "share": 37.7,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 128,
+        "share": 24.9,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 64,
+        "share": 12.5,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongsanshi_jun-1",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "松潘草地",
+        "to": "松潘草地",
+        "distance": 64,
+        "avgElevation": 600,
+        "maxRelief": 368,
+        "avgSlope": 5.8,
+        "score": 42,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            105.870458,
+            31.795743
+          ],
+          [
+            105.518454,
+            32.146329
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "塔子山渡口",
+            "type": "战斗",
+            "distance": 0.4
+          }
+        ]
+      },
+      {
+        "id": "route_hongsanshi_jun-2",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "松潘草地",
+        "to": "松潘草地",
+        "distance": 65,
+        "avgElevation": 930,
+        "maxRelief": 292,
+        "avgSlope": 4.5,
+        "score": 32,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            105.518454,
+            32.146329
+          ],
+          [
+            105.455274,
+            32.565182
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsanshi_jun-3",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "松潘草地",
+        "to": "松潘草地",
+        "distance": 64,
+        "avgElevation": 1046,
+        "maxRelief": 60,
+        "avgSlope": 0.9,
+        "score": 14,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            105.455274,
+            32.565182
+          ],
+          [
+            104.824126,
+            32.476527
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsanshi_jun-4",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "松潘草地",
+        "to": "松潘草地",
+        "distance": 64,
+        "avgElevation": 1597,
+        "maxRelief": 1161,
+        "avgSlope": 18.1,
+        "score": 65,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            104.824126,
+            32.476527
+          ],
+          [
+            104.212238,
+            32.237381
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsanshi_jun-5",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "松潘草地",
+        "to": "松潘草地",
+        "distance": 64,
+        "avgElevation": 2223,
+        "maxRelief": 91,
+        "avgSlope": 1.4,
+        "score": 26,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            104.212238,
+            32.237381
+          ],
+          [
+            103.727809,
+            31.83099
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsanshi_jun-6",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "松潘草地",
+        "to": "夹金山",
+        "distance": 65,
+        "avgElevation": 2384,
+        "maxRelief": 231,
+        "avgSlope": 3.6,
+        "score": 39,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            103.727809,
+            31.83099
+          ],
+          [
+            103.181932,
+            31.489545
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsanshi_jun-7",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "夹金山",
+        "to": "夹金山",
+        "distance": 64,
+        "avgElevation": 2967,
+        "maxRelief": 936,
+        "avgSlope": 14.6,
+        "score": 75,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            103.181932,
+            31.489545
+          ],
+          [
+            102.586852,
+            31.21453
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsanshi_jun-8",
+        "routeKey": "route_hongsanshi_jun",
+        "routeName": "红三十军路线图",
+        "from": "夹金山",
+        "to": "夹金山",
+        "distance": 64,
+        "avgElevation": 3081,
+        "maxRelief": 709,
+        "avgSlope": 11.1,
+        "score": 85,
+        "level": "极高难度",
+        "color": "#b3261e",
+        "coordinates": [
+          [
+            102.586852,
+            31.21453
+          ],
+          [
+            102.639414,
+            30.965968
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "夹金山垭口",
+            "type": "雪山草地",
+            "distance": 0
+          },
+          {
+            "name": "木城沟",
+            "type": "会师",
+            "distance": 7.9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongjiu_juntuan",
+    "routeName": "红九军团路线图",
+    "averageScore": 45.3,
+    "maxScore": 54,
+    "hardestSegment": {
+      "id": "route_hongjiu_juntuan-8",
+      "routeKey": "route_hongjiu_juntuan",
+      "routeName": "红九军团路线图",
+      "from": "大渡河",
+      "to": "夹金山",
+      "distance": 432,
+      "avgElevation": 2065,
+      "maxRelief": 933,
+      "avgSlope": 2.2,
+      "score": 54,
+      "level": "中等难度",
+      "color": "#d8a84f",
+      "coordinates": [
+        [
+          102.165723,
+          28.190096
+        ],
+        [
+          102.36585,
+          31.004289
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "安顺场",
+          "type": "行军驻扎",
+          "distance": 4
+        },
+        {
+          "name": "泸定",
+          "type": "战斗",
+          "distance": 5.6
+        }
+      ]
+    },
+    "highDifficultyDistance": 0,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 433,
+        "share": 12.5,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 3029,
+        "share": 87.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongjiu_juntuan-1",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "湘江",
+        "to": "湘江",
+        "distance": 433,
+        "avgElevation": 549,
+        "maxRelief": 527,
+        "avgSlope": 1.2,
+        "score": 51,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            112.188383,
+            25.370264
+          ],
+          [
+            109.360644,
+            26.492952
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "蓝山",
+            "type": "战斗",
+            "distance": 0
+          },
+          {
+            "name": "脚山铺",
+            "type": "战斗",
+            "distance": 3.5
+          },
+          {
+            "name": "蒋家岭",
+            "type": "行军驻扎",
+            "distance": 5.3
+          },
+          {
+            "name": "洞尾",
+            "type": "战斗",
+            "distance": 5.7
+          }
+        ]
+      },
+      {
+        "id": "route_hongjiu_juntuan-2",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "湘江",
+        "to": "瑞金",
+        "distance": 433,
+        "avgElevation": 498,
+        "maxRelief": 628,
+        "avgSlope": 1.5,
+        "score": 51,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.360644,
+            26.492952
+          ],
+          [
+            114.947242,
+            25.166531
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "文明司",
+            "type": "行军驻扎",
+            "distance": 0.6
+          },
+          {
+            "name": "乌迳",
+            "type": "行军驻扎",
+            "distance": 1.3
+          },
+          {
+            "name": "山田铺",
+            "type": "雪山草地",
+            "distance": 1.3
+          },
+          {
+            "name": "延寿",
+            "type": "行军驻扎",
+            "distance": 6.5
+          }
+        ]
+      },
+      {
+        "id": "route_hongjiu_juntuan-3",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "瑞金",
+        "to": "遵义",
+        "distance": 432,
+        "avgElevation": 524,
+        "maxRelief": 679,
+        "avgSlope": 1.6,
+        "score": 46,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            114.947242,
+            25.166531
+          ],
+          [
+            107.156211,
+            27.961738
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "聂都",
+            "type": "行军驻扎",
+            "distance": 0.7
+          },
+          {
+            "name": "绥阳",
+            "type": "战斗",
+            "distance": 0.9
+          },
+          {
+            "name": "热水",
+            "type": "行军驻扎",
+            "distance": 1
+          },
+          {
+            "name": "乌迳",
+            "type": "行军驻扎",
+            "distance": 3.1
+          }
+        ]
+      },
+      {
+        "id": "route_hongjiu_juntuan-4",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 433,
+        "avgElevation": 1050,
+        "maxRelief": 374,
+        "avgSlope": 0.9,
+        "score": 40,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            107.156211,
+            27.961738
+          ],
+          [
+            106.641009,
+            28.280499
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "绥阳",
+            "type": "战斗",
+            "distance": 2.9
+          },
+          {
+            "name": "桐梓",
+            "type": "行军驻扎",
+            "distance": 2.9
+          }
+        ]
+      },
+      {
+        "id": "route_hongjiu_juntuan-5",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "遵义",
+        "to": "赤水",
+        "distance": 433,
+        "avgElevation": 835,
+        "maxRelief": 804,
+        "avgSlope": 1.9,
+        "score": 52,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.641009,
+            28.280499
+          ],
+          [
+            106.045496,
+            28.196464
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "土城",
+            "type": "行军驻扎",
+            "distance": 10.6
+          },
+          {
+            "name": "梅溪",
+            "type": "战斗",
+            "distance": 14.3
+          },
+          {
+            "name": "元厚场",
+            "type": "战斗",
+            "distance": 18.5
+          },
+          {
+            "name": "桐梓",
+            "type": "行军驻扎",
+            "distance": 23.2
+          }
+        ]
+      },
+      {
+        "id": "route_hongjiu_juntuan-6",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "赤水",
+        "to": "遵义",
+        "distance": 433,
+        "avgElevation": 1052,
+        "maxRelief": 1238,
+        "avgSlope": 2.9,
+        "score": 50,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.045496,
+            28.196464
+          ],
+          [
+            104.545943,
+            25.936514
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "土城",
+            "type": "行军驻扎",
+            "distance": 10.6
+          },
+          {
+            "name": "元厚场",
+            "type": "战斗",
+            "distance": 18.5
+          },
+          {
+            "name": "香楠坝",
+            "type": "行军驻扎",
+            "distance": 21.2
+          }
+        ]
+      },
+      {
+        "id": "route_hongjiu_juntuan-7",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "遵义",
+        "to": "大渡河",
+        "distance": 433,
+        "avgElevation": 1635,
+        "maxRelief": 73,
+        "avgSlope": 0.2,
+        "score": 18,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            104.545943,
+            25.936514
+          ],
+          [
+            102.165723,
+            28.190096
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongjiu_juntuan-8",
+        "routeKey": "route_hongjiu_juntuan",
+        "routeName": "红九军团路线图",
+        "from": "大渡河",
+        "to": "夹金山",
+        "distance": 432,
+        "avgElevation": 2065,
+        "maxRelief": 933,
+        "avgSlope": 2.2,
+        "score": 54,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.165723,
+            28.190096
+          ],
+          [
+            102.36585,
+            31.004289
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "安顺场",
+            "type": "行军驻扎",
+            "distance": 4
+          },
+          {
+            "name": "泸定",
+            "type": "战斗",
+            "distance": 5.6
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_honger_juntuan",
+    "routeName": "红二军团路线图",
+    "averageScore": 45.6,
+    "maxScore": 62,
+    "hardestSegment": {
+      "id": "route_honger_juntuan-5",
+      "routeKey": "route_honger_juntuan",
+      "routeName": "红二军团路线图",
+      "from": "大渡河",
+      "to": "大渡河",
+      "distance": 578,
+      "avgElevation": 3338,
+      "maxRelief": 2445,
+      "avgSlope": 4.2,
+      "score": 62,
+      "level": "高难度",
+      "color": "#d46a35",
+      "coordinates": [
+        [
+          100.18807,
+          26.426542
+        ],
+        [
+          98.819523,
+          30.791587
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "新华社区",
+          "type": "行军驻扎",
+          "distance": 17.7
+        }
+      ]
+    },
+    "highDifficultyDistance": 578,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 4044,
+        "share": 87.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 578,
+        "share": 12.5,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_honger_juntuan-1",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 578,
+        "avgElevation": 1689,
+        "maxRelief": 526,
+        "avgSlope": 0.9,
+        "score": 40,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            105.699089,
+            27.143511
+          ],
+          [
+            104.493921,
+            25.721014
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_honger_juntuan-2",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 578,
+        "avgElevation": 1631,
+        "maxRelief": 643,
+        "avgSlope": 1.1,
+        "score": 40,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            104.493921,
+            25.721014
+          ],
+          [
+            106.642884,
+            26.855677
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_honger_juntuan-3",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "遵义",
+        "to": "湘江",
+        "distance": 577,
+        "avgElevation": 806,
+        "maxRelief": 1007,
+        "avgSlope": 1.7,
+        "score": 34,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.642884,
+            26.855677
+          ],
+          [
+            110.642351,
+            26.946034
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_honger_juntuan-4",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "湘江",
+        "to": "大渡河",
+        "distance": 578,
+        "avgElevation": 1209,
+        "maxRelief": 1813,
+        "avgSlope": 3.1,
+        "score": 40,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            110.642351,
+            26.946034
+          ],
+          [
+            100.18807,
+            26.426542
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_honger_juntuan-5",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "大渡河",
+        "to": "大渡河",
+        "distance": 578,
+        "avgElevation": 3338,
+        "maxRelief": 2445,
+        "avgSlope": 4.2,
+        "score": 62,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            100.18807,
+            26.426542
+          ],
+          [
+            98.819523,
+            30.791587
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "新华社区",
+            "type": "行军驻扎",
+            "distance": 17.7
+          }
+        ]
+      },
+      {
+        "id": "route_honger_juntuan-6",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "大渡河",
+        "to": "松潘草地",
+        "distance": 578,
+        "avgElevation": 3916,
+        "maxRelief": 1289,
+        "avgSlope": 2.2,
+        "score": 59,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            98.819523,
+            30.791587
+          ],
+          [
+            101.705758,
+            32.900437
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "甘孜镇",
+            "type": "会师",
+            "distance": 2
+          }
+        ]
+      },
+      {
+        "id": "route_honger_juntuan-7",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "松潘草地",
+        "to": "腊子口",
+        "distance": 577,
+        "avgElevation": 2165,
+        "maxRelief": 2212,
+        "avgSlope": 3.8,
+        "score": 49,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            101.705758,
+            32.900437
+          ],
+          [
+            106.178347,
+            33.612607
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_honger_juntuan-8",
+        "routeKey": "route_honger_juntuan",
+        "routeName": "红二军团路线图",
+        "from": "腊子口",
+        "to": "会宁",
+        "distance": 578,
+        "avgElevation": 1442,
+        "maxRelief": 766,
+        "avgSlope": 1.3,
+        "score": 41,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.178347,
+            33.612607
+          ],
+          [
+            105.836704,
+            35.820525
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "将台堡镇",
+            "type": "会师",
+            "distance": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongershiwu_jun",
+    "routeName": "红二十五军路线图",
+    "averageScore": 26.6,
+    "maxScore": 44,
+    "hardestSegment": {
+      "id": "route_hongershiwu_jun-7",
+      "routeKey": "route_hongershiwu_jun",
+      "routeName": "红二十五军路线图",
+      "from": "腊子口",
+      "to": "会宁",
+      "distance": 461,
+      "avgElevation": 1407,
+      "maxRelief": 488,
+      "avgSlope": 1.1,
+      "score": 44,
+      "level": "中等难度",
+      "color": "#d8a84f",
+      "coordinates": [
+        [
+          106.810818,
+          33.683349
+        ],
+        [
+          107.033747,
+          35.424564
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "四坡村",
+          "type": "战斗",
+          "distance": 19.3
+        }
+      ]
+    },
+    "highDifficultyDistance": 0,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 2766,
+        "share": 75,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 922,
+        "share": 25,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongershiwu_jun-1",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "瑞金",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 603,
+        "maxRelief": 971,
+        "avgSlope": 2.1,
+        "score": 36,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            114.298935,
+            31.820273
+          ],
+          [
+            109.839703,
+            33.178558
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "何家冲村",
+            "type": "行军驻扎",
+            "distance": 0
+          }
+        ]
+      },
+      {
+        "id": "route_hongershiwu_jun-2",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "会宁",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 1098,
+        "maxRelief": 19,
+        "avgSlope": 0,
+        "score": 10,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            109.839703,
+            33.178558
+          ],
+          [
+            111.301303,
+            33.860072
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongershiwu_jun-3",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "会宁",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 1162,
+        "maxRelief": 109,
+        "avgSlope": 0.2,
+        "score": 22,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            111.301303,
+            33.860072
+          ],
+          [
+            107.546772,
+            33.611544
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "庾家河村",
+            "type": "战斗",
+            "distance": 8.5
+          }
+        ]
+      },
+      {
+        "id": "route_hongershiwu_jun-4",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "会宁",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 1366,
+        "maxRelief": 300,
+        "avgSlope": 0.7,
+        "score": 29,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            107.546772,
+            33.611544
+          ],
+          [
+            109.400988,
+            33.884052
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongershiwu_jun-5",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "会宁",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 1453,
+        "maxRelief": 126,
+        "avgSlope": 0.3,
+        "score": 20,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            109.400988,
+            33.884052
+          ],
+          [
+            109.709344,
+            34.075138
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongershiwu_jun-6",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "会宁",
+        "to": "腊子口",
+        "distance": 461,
+        "avgElevation": 1521,
+        "maxRelief": 261,
+        "avgSlope": 0.6,
+        "score": 28,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            109.709344,
+            34.075138
+          ],
+          [
+            106.810818,
+            33.683349
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongershiwu_jun-7",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "腊子口",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 1407,
+        "maxRelief": 488,
+        "avgSlope": 1.1,
+        "score": 44,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.810818,
+            33.683349
+          ],
+          [
+            107.033747,
+            35.424564
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "四坡村",
+            "type": "战斗",
+            "distance": 19.3
+          }
+        ]
+      },
+      {
+        "id": "route_hongershiwu_jun-8",
+        "routeKey": "route_hongershiwu_jun",
+        "routeName": "红二十五军路线图",
+        "from": "会宁",
+        "to": "会宁",
+        "distance": 461,
+        "avgElevation": 1116,
+        "maxRelief": 94,
+        "avgSlope": 0.2,
+        "score": 24,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            107.033747,
+            35.424564
+          ],
+          [
+            109.817579,
+            37.017253
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "永坪镇",
+            "type": "行军驻扎",
+            "distance": 0
+          },
+          {
+            "name": "四坡村",
+            "type": "战斗",
+            "distance": 17.6
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongwu_juntuan",
+    "routeName": "红五军团路线图",
+    "averageScore": 40.8,
+    "maxScore": 52,
+    "hardestSegment": {
+      "id": "route_hongwu_juntuan-5",
+      "routeKey": "route_hongwu_juntuan",
+      "routeName": "红五军团路线图",
+      "from": "遵义",
+      "to": "遵义",
+      "distance": 459,
+      "avgElevation": 1087,
+      "maxRelief": 425,
+      "avgSlope": 0.9,
+      "score": 52,
+      "level": "中等难度",
+      "color": "#d8a84f",
+      "coordinates": [
+        [
+          106.597618,
+          28.301812
+        ],
+        [
+          106.831014,
+          26.416829
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "鸭溪",
+          "type": "战斗",
+          "distance": 2.3
+        },
+        {
+          "name": "苟坝",
+          "type": "会议",
+          "distance": 11.3
+        },
+        {
+          "name": "梯子岩",
+          "type": "战斗",
+          "distance": 11.8
+        },
+        {
+          "name": "桐梓",
+          "type": "行军驻扎",
+          "distance": 19.4
+        }
+      ]
+    },
+    "highDifficultyDistance": 0,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 459,
+        "share": 12.5,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 3212,
+        "share": 87.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongwu_juntuan-1",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "瑞金",
+        "to": "湘江",
+        "distance": 459,
+        "avgElevation": 278,
+        "maxRelief": 213,
+        "avgSlope": 0.5,
+        "score": 35,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            115.366985,
+            26.164538
+          ],
+          [
+            112.453888,
+            25.363221
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "平和",
+            "type": "行军驻扎",
+            "distance": 0.4
+          },
+          {
+            "name": "山田铺",
+            "type": "雪山草地",
+            "distance": 5.6
+          },
+          {
+            "name": "文明司",
+            "type": "行军驻扎",
+            "distance": 7.2
+          },
+          {
+            "name": "宜章",
+            "type": "战斗",
+            "distance": 10.3
+          }
+        ]
+      },
+      {
+        "id": "route_hongwu_juntuan-2",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "湘江",
+        "to": "湘江",
+        "distance": 459,
+        "avgElevation": 489,
+        "maxRelief": 209,
+        "avgSlope": 0.5,
+        "score": 37,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            112.453888,
+            25.363221
+          ],
+          [
+            109.079617,
+            26.251734
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "蒋家岭",
+            "type": "行军驻扎",
+            "distance": 0.2
+          },
+          {
+            "name": "老山界",
+            "type": "战斗",
+            "distance": 0.3
+          },
+          {
+            "name": "黎平",
+            "type": "会议",
+            "distance": 0.7
+          },
+          {
+            "name": "杨梅山",
+            "type": "雪山草地",
+            "distance": 1.1
+          }
+        ]
+      },
+      {
+        "id": "route_hongwu_juntuan-3",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "湘江",
+        "to": "赤水",
+        "distance": 458,
+        "avgElevation": 805,
+        "maxRelief": 424,
+        "avgSlope": 0.9,
+        "score": 50,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.079617,
+            26.251734
+          ],
+          [
+            105.139743,
+            27.786048
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "梯子岩",
+            "type": "战斗",
+            "distance": 5.7
+          },
+          {
+            "name": "黎平",
+            "type": "会议",
+            "distance": 5.8
+          },
+          {
+            "name": "扎西",
+            "type": "会议",
+            "distance": 11.3
+          },
+          {
+            "name": "台江",
+            "type": "战斗",
+            "distance": 12.5
+          }
+        ]
+      },
+      {
+        "id": "route_hongwu_juntuan-4",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "赤水",
+        "to": "遵义",
+        "distance": 459,
+        "avgElevation": 946,
+        "maxRelief": 143,
+        "avgSlope": 0.3,
+        "score": 34,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            105.139743,
+            27.786048
+          ],
+          [
+            106.597618,
+            28.301812
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "天堂坝",
+            "type": "战斗",
+            "distance": 2
+          },
+          {
+            "name": "扎西",
+            "type": "会议",
+            "distance": 11.3
+          },
+          {
+            "name": "香楠坝",
+            "type": "行军驻扎",
+            "distance": 13.4
+          },
+          {
+            "name": "梅溪",
+            "type": "战斗",
+            "distance": 15.4
+          }
+        ]
+      },
+      {
+        "id": "route_hongwu_juntuan-5",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 459,
+        "avgElevation": 1087,
+        "maxRelief": 425,
+        "avgSlope": 0.9,
+        "score": 52,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.597618,
+            28.301812
+          ],
+          [
+            106.831014,
+            26.416829
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "鸭溪",
+            "type": "战斗",
+            "distance": 2.3
+          },
+          {
+            "name": "苟坝",
+            "type": "会议",
+            "distance": 11.3
+          },
+          {
+            "name": "梯子岩",
+            "type": "战斗",
+            "distance": 11.8
+          },
+          {
+            "name": "桐梓",
+            "type": "行军驻扎",
+            "distance": 19.4
+          }
+        ]
+      },
+      {
+        "id": "route_hongwu_juntuan-6",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "遵义",
+        "to": "赤水",
+        "distance": 459,
+        "avgElevation": 1760,
+        "maxRelief": 921,
+        "avgSlope": 2,
+        "score": 42,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            106.831014,
+            26.416829
+          ],
+          [
+            103.219568,
+            25.512612
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongwu_juntuan-7",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "赤水",
+        "to": "大渡河",
+        "distance": 459,
+        "avgElevation": 2174,
+        "maxRelief": 93,
+        "avgSlope": 0.2,
+        "score": 24,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            103.219568,
+            25.512612
+          ],
+          [
+            102.258551,
+            28.773628
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongwu_juntuan-8",
+        "routeKey": "route_hongwu_juntuan",
+        "routeName": "红五军团路线图",
+        "from": "大渡河",
+        "to": "夹金山",
+        "distance": 459,
+        "avgElevation": 2329,
+        "maxRelief": 404,
+        "avgSlope": 0.9,
+        "score": 52,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.258551,
+            28.773628
+          ],
+          [
+            102.36585,
+            31.004289
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "安顺场",
+            "type": "行军驻扎",
+            "distance": 0.2
+          },
+          {
+            "name": "泸定",
+            "type": "战斗",
+            "distance": 8
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongliu_juntuan",
+    "routeName": "红六军团路线图",
+    "averageScore": 39.9,
+    "maxScore": 65,
+    "hardestSegment": {
+      "id": "route_hongliu_juntuan-8",
+      "routeKey": "route_hongliu_juntuan",
+      "routeName": "红六军团路线图",
+      "from": "松潘草地",
+      "to": "会宁",
+      "distance": 724,
+      "avgElevation": 2634,
+      "maxRelief": 1618,
+      "avgSlope": 2.2,
+      "score": 65,
+      "level": "高难度",
+      "color": "#d46a35",
+      "coordinates": [
+        [
+          102.97381,
+          33.446977
+        ],
+        [
+          105.836704,
+          35.820525
+        ]
+      ],
+      "relatedEvents": [
+        {
+          "name": "将台堡镇",
+          "type": "会师",
+          "distance": 0
+        },
+        {
+          "name": "榜罗镇",
+          "type": "会议",
+          "distance": 2.7
+        },
+        {
+          "name": "腊子口镇",
+          "type": "战斗",
+          "distance": 11.6
+        },
+        {
+          "name": "哈达铺镇",
+          "type": "会师",
+          "distance": 19.9
+        }
+      ]
+    },
+    "highDifficultyDistance": 724,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 1448,
+        "share": 25,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 3619,
+        "share": 62.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 724,
+        "share": 12.5,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongliu_juntuan-1",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "湘江",
+        "to": "瑞金",
+        "distance": 724,
+        "avgElevation": 375,
+        "maxRelief": 152,
+        "avgSlope": 0.2,
+        "score": 12,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            112.095477,
+            25.923884
+          ],
+          [
+            114.233753,
+            26.095561
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongliu_juntuan-2",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "瑞金",
+        "to": "遵义",
+        "distance": 724,
+        "avgElevation": 436,
+        "maxRelief": 273,
+        "avgSlope": 0.4,
+        "score": 19,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            114.233753,
+            26.095561
+          ],
+          [
+            107.903853,
+            27.572849
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongliu_juntuan-3",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "遵义",
+        "to": "赤水",
+        "distance": 724,
+        "avgElevation": 1131,
+        "maxRelief": 1117,
+        "avgSlope": 1.5,
+        "score": 48,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            107.903853,
+            27.572849
+          ],
+          [
+            104.806557,
+            27.377788
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "泮水",
+            "type": "战斗",
+            "distance": 5.6
+          },
+          {
+            "name": "回龙场",
+            "type": "战斗",
+            "distance": 19
+          }
+        ]
+      },
+      {
+        "id": "route_hongliu_juntuan-4",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "赤水",
+        "to": "湘江",
+        "distance": 723,
+        "avgElevation": 865,
+        "maxRelief": 1648,
+        "avgSlope": 2.3,
+        "score": 41,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            104.806557,
+            27.377788
+          ],
+          [
+            110.761537,
+            28.715758
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "泮水",
+            "type": "战斗",
+            "distance": 21.6
+          }
+        ]
+      },
+      {
+        "id": "route_hongliu_juntuan-5",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "湘江",
+        "to": "大渡河",
+        "distance": 724,
+        "avgElevation": 953,
+        "maxRelief": 1823,
+        "avgSlope": 2.5,
+        "score": 42,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            110.761537,
+            28.715758
+          ],
+          [
+            101.740386,
+            25.223327
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "回龙场",
+            "type": "战斗",
+            "distance": 13.9
+          }
+        ]
+      },
+      {
+        "id": "route_hongliu_juntuan-6",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "大渡河",
+        "to": "大渡河",
+        "distance": 724,
+        "avgElevation": 2763,
+        "maxRelief": 1798,
+        "avgSlope": 2.5,
+        "score": 51,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            101.740386,
+            25.223327
+          ],
+          [
+            100.401107,
+            29.681518
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongliu_juntuan-7",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "大渡河",
+        "to": "松潘草地",
+        "distance": 724,
+        "avgElevation": 3553,
+        "maxRelief": 219,
+        "avgSlope": 0.3,
+        "score": 41,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            100.401107,
+            29.681518
+          ],
+          [
+            102.97381,
+            33.446977
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongliu_juntuan-8",
+        "routeKey": "route_hongliu_juntuan",
+        "routeName": "红六军团路线图",
+        "from": "松潘草地",
+        "to": "会宁",
+        "distance": 724,
+        "avgElevation": 2634,
+        "maxRelief": 1618,
+        "avgSlope": 2.2,
+        "score": 65,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            102.97381,
+            33.446977
+          ],
+          [
+            105.836704,
+            35.820525
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "将台堡镇",
+            "type": "会师",
+            "distance": 0
+          },
+          {
+            "name": "榜罗镇",
+            "type": "会议",
+            "distance": 2.7
+          },
+          {
+            "name": "腊子口镇",
+            "type": "战斗",
+            "distance": 11.6
+          },
+          {
+            "name": "哈达铺镇",
+            "type": "会师",
+            "distance": 19.9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongshiba_shi",
+    "routeName": "红十八师路线图",
+    "averageScore": 36.9,
+    "maxScore": 49,
+    "hardestSegment": {
+      "id": "route_hongshiba_shi-6",
+      "routeKey": "route_hongshiba_shi",
+      "routeName": "红十八师路线图",
+      "from": "遵义",
+      "to": "遵义",
+      "distance": 94,
+      "avgElevation": 1107,
+      "maxRelief": 833,
+      "avgSlope": 8.9,
+      "score": 49,
+      "level": "中等难度",
+      "color": "#d8a84f",
+      "coordinates": [
+        [
+          109.751993,
+          29.661759
+        ],
+        [
+          109.173046,
+          29.381136
+        ]
+      ],
+      "relatedEvents": []
+    },
+    "highDifficultyDistance": 0,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 188,
+        "share": 25,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 564,
+        "share": 75,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongshiba_shi-1",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 1122,
+        "maxRelief": 411,
+        "avgSlope": 4.4,
+        "score": 40,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            108.908563,
+            28.951403
+          ],
+          [
+            108.73153,
+            28.2264
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-2",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 1065,
+        "maxRelief": 525,
+        "avgSlope": 5.6,
+        "score": 43,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            108.73153,
+            28.2264
+          ],
+          [
+            108.784734,
+            27.689954
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-3",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 627,
+        "maxRelief": 350,
+        "avgSlope": 3.7,
+        "score": 31,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            108.784734,
+            27.689954
+          ],
+          [
+            109.763962,
+            29.009476
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-4",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 708,
+        "maxRelief": 512,
+        "avgSlope": 5.4,
+        "score": 40,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.763962,
+            29.009476
+          ],
+          [
+            109.642996,
+            29.424087
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-5",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 1244,
+        "maxRelief": 559,
+        "avgSlope": 5.9,
+        "score": 45,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.642996,
+            29.424087
+          ],
+          [
+            109.751993,
+            29.661759
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-6",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 1107,
+        "maxRelief": 833,
+        "avgSlope": 8.9,
+        "score": 49,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            109.751993,
+            29.661759
+          ],
+          [
+            109.173046,
+            29.381136
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-7",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 804,
+        "maxRelief": 227,
+        "avgSlope": 2.4,
+        "score": 24,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            109.173046,
+            29.381136
+          ],
+          [
+            108.840425,
+            29.07643
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongshiba_shi-8",
+        "routeKey": "route_hongshiba_shi",
+        "routeName": "红十八师路线图",
+        "from": "遵义",
+        "to": "遵义",
+        "distance": 94,
+        "avgElevation": 811,
+        "maxRelief": 212,
+        "avgSlope": 2.3,
+        "score": 23,
+        "level": "低难度",
+        "color": "#4f9f68",
+        "coordinates": [
+          [
+            108.840425,
+            29.07643
+          ],
+          [
+            109.744647,
+            29.434435
+          ]
+        ],
+        "relatedEvents": []
+      }
+    ]
+  },
+  {
+    "routeKey": "route_hongsi_juntuan",
+    "routeName": "红四军团路线图",
+    "averageScore": 53.6,
+    "maxScore": 62,
+    "hardestSegment": {
+      "id": "route_hongsi_juntuan-6",
+      "routeKey": "route_hongsi_juntuan",
+      "routeName": "红四军团路线图",
+      "from": "松潘草地",
+      "to": "腊子口",
+      "distance": 294,
+      "avgElevation": 3727,
+      "maxRelief": 1638,
+      "avgSlope": 5.6,
+      "score": 62,
+      "level": "高难度",
+      "color": "#d46a35",
+      "coordinates": [
+        [
+          102.89845,
+          32.377947
+        ],
+        [
+          103.357485,
+          33.542405
+        ]
+      ],
+      "relatedEvents": []
+    },
+    "highDifficultyDistance": 294,
+    "byLevel": [
+      {
+        "level": "低难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#4f9f68"
+      },
+      {
+        "level": "中等难度",
+        "distance": 2064,
+        "share": 87.5,
+        "color": "#d8a84f"
+      },
+      {
+        "level": "高难度",
+        "distance": 294,
+        "share": 12.5,
+        "color": "#d46a35"
+      },
+      {
+        "level": "极高难度",
+        "distance": 0,
+        "share": 0,
+        "color": "#b3261e"
+      }
+    ],
+    "segments": [
+      {
+        "id": "route_hongsi_juntuan-1",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "大渡河",
+        "to": "夹金山",
+        "distance": 295,
+        "avgElevation": 1648,
+        "maxRelief": 1751,
+        "avgSlope": 5.9,
+        "score": 48,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.811374,
+            30.119115
+          ],
+          [
+            101.703496,
+            30.974376
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsi_juntuan-2",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "夹金山",
+        "to": "松潘草地",
+        "distance": 294,
+        "avgElevation": 2936,
+        "maxRelief": 825,
+        "avgSlope": 2.8,
+        "score": 54,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            101.703496,
+            30.974376
+          ],
+          [
+            101.440433,
+            32.610598
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsi_juntuan-3",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "松潘草地",
+        "to": "夹金山",
+        "distance": 295,
+        "avgElevation": 3240,
+        "maxRelief": 216,
+        "avgSlope": 0.7,
+        "score": 43,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            101.440433,
+            32.610598
+          ],
+          [
+            102.310615,
+            31.866059
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "脚木足乡",
+            "type": "会议",
+            "distance": 8.8
+          }
+        ]
+      },
+      {
+        "id": "route_hongsi_juntuan-4",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "夹金山",
+        "to": "松潘草地",
+        "distance": 295,
+        "avgElevation": 3576,
+        "maxRelief": 888,
+        "avgSlope": 3,
+        "score": 57,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.310615,
+            31.866059
+          ],
+          [
+            102.903199,
+            32.335407
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsi_juntuan-5",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "松潘草地",
+        "to": "松潘草地",
+        "distance": 295,
+        "avgElevation": 4283,
+        "maxRelief": 526,
+        "avgSlope": 1.8,
+        "score": 55,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            102.903199,
+            32.335407
+          ],
+          [
+            102.89845,
+            32.377947
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsi_juntuan-6",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "松潘草地",
+        "to": "腊子口",
+        "distance": 294,
+        "avgElevation": 3727,
+        "maxRelief": 1638,
+        "avgSlope": 5.6,
+        "score": 62,
+        "level": "高难度",
+        "color": "#d46a35",
+        "coordinates": [
+          [
+            102.89845,
+            32.377947
+          ],
+          [
+            103.357485,
+            33.542405
+          ]
+        ],
+        "relatedEvents": []
+      },
+      {
+        "id": "route_hongsi_juntuan-7",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "腊子口",
+        "to": "会宁",
+        "distance": 295,
+        "avgElevation": 2505,
+        "maxRelief": 807,
+        "avgSlope": 2.7,
+        "score": 53,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            103.357485,
+            33.542405
+          ],
+          [
+            104.978241,
+            35.252959
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "榜罗镇",
+            "type": "会议",
+            "distance": 11.5
+          }
+        ]
+      },
+      {
+        "id": "route_hongsi_juntuan-8",
+        "routeKey": "route_hongsi_juntuan",
+        "routeName": "红四军团路线图",
+        "from": "会宁",
+        "to": "松潘草地",
+        "distance": 295,
+        "avgElevation": 2714,
+        "maxRelief": 1226,
+        "avgSlope": 4.2,
+        "score": 57,
+        "level": "中等难度",
+        "color": "#d8a84f",
+        "coordinates": [
+          [
+            104.978241,
+            35.252959
+          ],
+          [
+            101.905091,
+            32.784054
+          ]
+        ],
+        "relatedEvents": [
+          {
+            "name": "榜罗镇",
+            "type": "会议",
+            "distance": 14.2
+          }
+        ]
+      }
+    ]
+  }
+]
