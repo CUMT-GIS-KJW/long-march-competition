@@ -787,7 +787,7 @@
         terrain: `${runLabel}${routeName} 的地形起伏分析基于整条路线 DEM 高程剖面，重点识别相对高差、累计爬升、最大坡变区段和高海拔样点占比，用于解释全线地形阻力的空间分布。`,
         buffer: `${runLabel}${routeName} 的缓冲分析按照本次执行半径统计沿线节点和资源，可进一步用于研学圈层、交通接驳和县域联动表达。`,
         node: `${runLabel}${routeName} 的节点类型统计可识别战斗、会议、渡江、会师等事件在该路线周边的集聚规律。`,
-        resource: `${runLabel}${routeName} 的红色资源关联分析强调路线周边资源热点与长征事件的耦合关系，为红色旅游和研学线路设计提供依据。`,
+    resource: `${runLabel}${routeName} 的红色资源关联分析强调路线周边资源热点与长征事件的耦合关系，为红色研学线路设计提供依据。`,
       };
       $("#conclusionText").textContent = text[activeTool];
     } else {

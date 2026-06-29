@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="破水壶">
+  <path d="M35 13h27v9H35z" fill="#6f8790"/>
+  <path d="M30 22h38c4 0 7 3 7 7v19c0 5-4 9-9 9H32c-5 0-9-4-9-9V29c0-4 3-7 7-7Z" fill="#829aa3"/>
+  <path d="M30 24c-8 2-13 8-13 17s5 15 13 17M68 24c8 2 13 8 13 17s-5 15-13 17" fill="none" stroke="#4f6870" stroke-width="5" stroke-linecap="round"/>
+  <path d="M35 34c9 6 19 6 29 0M35 45c9 5 19 5 29 0" fill="none" stroke="#d7e2df" stroke-width="4" stroke-linecap="round"/>
+  <path d="M71 18l9-8M76 25l12-2" stroke="#7b1e16" stroke-width="4" stroke-linecap="round"/>
+</svg>

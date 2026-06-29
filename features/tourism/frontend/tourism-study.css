@@ -1,0 +1,398 @@
+/* 红色研学专题覆盖层：只做旅游页增强，不破坏原有 GIS / 3D / AI 主线逻辑 */
+
+:root {
+  --study-red: #9d1d16;
+  --study-red-dark: #6f120d;
+  --study-gold: #d8aa54;
+  --study-paper: rgba(255, 247, 226, 0.94);
+  --study-ink: #38231a;
+  --study-line: rgba(142, 30, 22, 0.18);
+}
+
+.tourism-app {
+  background:
+    radial-gradient(circle at 15% 10%, rgba(216, 170, 84, 0.24), transparent 28%),
+    linear-gradient(135deg, #f5e4bd 0%, #ead1a2 44%, #b33b2d 100%);
+  color: var(--study-ink);
+}
+
+.tourism-topbar {
+  background:
+    linear-gradient(90deg, rgba(255, 248, 228, 0.96), rgba(255, 240, 199, 0.88)),
+    linear-gradient(90deg, rgba(148, 25, 18, 0.08), rgba(148, 25, 18, 0.18));
+  border: 1px solid rgba(120, 32, 18, 0.18);
+  box-shadow: 0 18px 40px rgba(83, 18, 13, 0.16);
+}
+
+.tourism-brand .brand-star {
+  background: var(--study-red);
+  color: #ffe8a6;
+}
+
+.tourism-brand strong {
+  color: var(--study-red-dark);
+  letter-spacing: 0.06em;
+}
+
+.tourism-brand span {
+  color: rgba(84, 42, 22, 0.78);
+}
+
+.tourism-nav .site-nav-btn {
+  border-color: rgba(128, 36, 23, 0.25);
+  background: rgba(255, 247, 226, 0.72);
+  color: #6d2418;
+}
+
+.tourism-nav .site-nav-active,
+.tourism-nav .active {
+  background: linear-gradient(135deg, #f8c85d, #ffe6a6);
+  color: #58170e;
+  box-shadow: 0 10px 24px rgba(137, 41, 26, 0.24);
+}
+
+.panel-card,
+.detail-panel,
+.route-panel,
+.chart-panel,
+.study-service-panel,
+.knowledge-panel,
+.route-reason-panel {
+  border: 1px solid rgba(132, 42, 25, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 250, 235, 0.96), rgba(248, 230, 194, 0.92));
+  box-shadow: 0 14px 34px rgba(80, 28, 17, 0.12);
+}
+
+.tourism-map-wrap {
+  background: #efe0bd;
+  border: 1px solid rgba(126, 45, 27, 0.24);
+  box-shadow: 0 18px 46px rgba(73, 28, 20, 0.18);
+}
+
+#tourismMap .leaflet-tile {
+  filter: sepia(0.12) saturate(0.92) contrast(0.98) brightness(1.03);
+}
+
+.tourism-map-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 420;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 24%, rgba(180, 77, 50, 0.22), transparent 18%),
+    radial-gradient(circle at 41% 56%, rgba(222, 166, 74, 0.20), transparent 20%),
+    radial-gradient(circle at 62% 44%, rgba(142, 125, 190, 0.18), transparent 20%),
+    radial-gradient(circle at 78% 64%, rgba(69, 123, 157, 0.15), transparent 17%);
+  mix-blend-mode: multiply;
+}
+
+.map-illustration,
+.map-illustration-leader,
+.map-illustration-anchor,
+.cartoon-sticker,
+.cartoon-cloud,
+.cartoon-mountain,
+.cartoon-river,
+.cartoon-flag {
+  display: none !important;
+}
+
+.route-reason-panel.is-hidden {
+  display: none;
+}
+
+.kg-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+.kg-toolbar button {
+  border: 1px solid rgba(137, 42, 25, 0.2);
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: rgba(255, 248, 224, 0.82);
+  color: #6b2118;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.kg-toolbar button.active {
+  background: linear-gradient(135deg, #9e2118, #d45b3d);
+  color: #fff4cf;
+}
+
+.kg-model-output {
+  padding: 11px;
+  border-radius: 14px;
+  background: rgba(255, 249, 230, 0.76);
+  border: 1px solid rgba(142, 44, 26, 0.14);
+  color: rgba(57, 35, 24, 0.8);
+  line-height: 1.6;
+}
+
+.kg-model-output b {
+  display: block;
+  margin-bottom: 6px;
+  color: #6d2118;
+}
+
+.kg-model-output p {
+  margin: 0 0 8px;
+}
+
+.kg-edge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kg-edge-list span {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: rgba(142, 30, 22, 0.08);
+  font-size: 12px;
+}
+
+.cartoon-map-title,
+.cartoon-floating-legend {
+  background: rgba(255, 249, 230, 0.92);
+  color: #5b2118;
+  border-color: rgba(130, 42, 25, 0.22);
+}
+
+.cartoon-floating-legend i.site,
+.cartoon-floating-legend i.museum,
+.cartoon-floating-legend i.scenic {
+  border-radius: 8px;
+  background: #8f251b;
+}
+
+.cartoon-floating-legend i.museum {
+  background: #b08943;
+}
+
+.cartoon-floating-legend i.scenic {
+  background: #4f7e6f;
+}
+
+.resource-marker.longmarch-relic-marker {
+  width: auto;
+  min-width: calc(var(--size) + 16px);
+  height: var(--size);
+  display: grid;
+  place-items: center;
+  border-radius: 999px 999px 999px 8px;
+  transform: rotate(-10deg);
+  border: 1px solid rgba(82, 42, 21, 0.32);
+  background:
+    linear-gradient(135deg, rgba(255, 247, 217, 0.96), rgba(190, 145, 91, 0.88));
+  color: #5c2d18;
+  box-shadow:
+    0 10px 22px rgba(72, 33, 18, 0.22),
+    0 0 0 7px rgba(142, 30, 22, 0.08);
+  animation: relicPulse 2.4s ease-in-out infinite;
+}
+
+.resource-marker.longmarch-relic-marker::before,
+.resource-marker.longmarch-relic-marker::after {
+  display: none;
+}
+
+.resource-marker.longmarch-relic-marker .relic-icon {
+  display: block;
+  width: calc(var(--size) + 6px);
+  height: calc(var(--size) - 2px);
+  object-fit: contain;
+  padding: 2px 8px;
+  transform: rotate(10deg);
+  filter: drop-shadow(0 2px 2px rgba(76, 35, 16, 0.25));
+}
+
+.resource-marker.relic-shoe {
+  background: linear-gradient(135deg, #ead4a2, #9d7147);
+}
+
+.resource-marker.relic-hat {
+  background: linear-gradient(135deg, #f1dfa9, #c09a56);
+}
+
+.resource-marker.relic-kettle {
+  background: linear-gradient(135deg, #d9e0d1, #6f8790);
+  color: #24404a;
+}
+
+.resource-marker.longmarch-relic-marker.focus,
+.resource-marker.longmarch-relic-marker.selected {
+  box-shadow:
+    0 12px 28px rgba(126, 22, 18, 0.32),
+    0 0 0 9px rgba(195, 45, 31, 0.14);
+}
+
+.resource-marker.longmarch-relic-marker i {
+  position: absolute;
+  right: -4px;
+  top: -7px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #a51f17;
+  color: #fff5d0;
+  font-size: 10px;
+}
+
+@keyframes relicPulse {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-10deg);
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(-10deg);
+  }
+}
+
+.study-service-panel,
+.knowledge-panel,
+.route-reason-panel {
+  padding: 16px;
+  border-radius: 20px;
+}
+
+.study-service-panel h2,
+.knowledge-panel h2,
+.route-reason-panel h2 {
+  margin: 6px 0 12px;
+  color: var(--study-red-dark);
+}
+
+.travel-service-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.travel-service-grid article {
+  padding: 11px;
+  border-radius: 14px;
+  background: rgba(255, 249, 230, 0.74);
+  border: 1px solid rgba(142, 44, 26, 0.14);
+}
+
+.travel-service-grid b {
+  display: block;
+  color: #6b2118;
+}
+
+.travel-service-grid span {
+  display: inline-block;
+  margin: 5px 0;
+  color: #94703f;
+  font-weight: 800;
+}
+
+.travel-service-grid p,
+.knowledge-panel p,
+.route-reason-card p {
+  margin: 0;
+  color: rgba(57, 35, 24, 0.78);
+  line-height: 1.65;
+}
+
+.kg-board {
+  position: relative;
+  min-height: 160px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  place-items: center;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at center, rgba(158, 33, 24, 0.18), transparent 36%),
+    rgba(255, 250, 231, 0.64);
+}
+
+.kg-board::before,
+.kg-board::after {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  border: 1px dashed rgba(125, 45, 26, 0.22);
+  pointer-events: none;
+}
+
+.kg-board::after {
+  inset: 48px;
+}
+
+.kg-node {
+  position: relative;
+  z-index: 1;
+  min-width: 68px;
+  padding: 9px 10px;
+  border-radius: 999px;
+  text-align: center;
+  color: #5a2118;
+  font-weight: 800;
+  background: rgba(255, 246, 218, 0.96);
+  border: 1px solid rgba(153, 49, 28, 0.18);
+}
+
+.kg-node.core {
+  grid-column: 2;
+  background: linear-gradient(135deg, #a62318, #d85a3e);
+  color: #fff5d2;
+}
+
+.route-reason-card {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.route-reason-card img {
+  width: 92px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(121, 44, 25, 0.18);
+}
+
+.route-reason-card b {
+  display: block;
+  margin-bottom: 6px;
+  color: #6d2118;
+}
+
+.tourism-agent-panel {
+  z-index: 5000;
+}
+
+.tourism-agent-panel .agent-window {
+  border-color: rgba(143, 37, 27, 0.28);
+  background: rgba(255, 248, 228, 0.96);
+}
+
+.tourism-agent-panel .agent-toggle {
+  background: linear-gradient(135deg, #982117, #d35538);
+  color: #fff2c6;
+}
+
+.route-panel .route-summary,
+.day-card,
+.chart-block {
+  background: rgba(255, 249, 230, 0.72);
+  border-color: rgba(134, 42, 25, 0.14);
+}
+
+.primary-action {
+  background: linear-gradient(135deg, #9e2118, #c64b35);
+  color: #fff7d8;
+}

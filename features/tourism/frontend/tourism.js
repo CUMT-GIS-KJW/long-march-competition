@@ -17,6 +17,7 @@
     activePreset: "",
     mapClickMode: "detail",
     currentDetailResource: null,
+    currentRoute: null,
     chinaProvinceGeojson: null,
     chinaGeojsonTried: false,
   };
@@ -819,8 +820,8 @@
     });
 
     L.tileLayer(
-      APP_CONFIG.basemaps.ancient.url,
-      APP_CONFIG.basemaps.ancient.options,
+      APP_CONFIG.basemaps.standard.url,
+      APP_CONFIG.basemaps.standard.options,
     ).addTo(state.map);
 
     state.map.createPane("provincePane");
@@ -1062,20 +1063,53 @@
 
   function createResourceIcon(resource, active = false, selected = false) {
     const meta = categoryMeta[resource.category] || categoryMeta.other;
-    const size = selected ? 31 : active ? 34 : resource.featured ? 25 : 18;
+    const relic = resourceRelicIcon(resource);
+    const size = selected ? 38 : active ? 40 : resource.featured ? 34 : 28;
     const selectedClass = selected ? "selected" : "";
     const activeClass = active ? "focus" : "";
 
     return L.divIcon({
       className: "",
       html: `
-        <div class="resource-marker ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
+        <div class="resource-marker longmarch-relic-marker relic-${relic.key} ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
+          <img class="relic-icon" src="${relic.src}" alt="${relic.label}">
           <i>${selected ? "✓" : ""}</i>
         </div>
       `,
-      iconSize: [size, size],
-      iconAnchor: [size / 2, size],
+      iconSize: [size + 18, size],
+      iconAnchor: [(size + 18) / 2, size],
     });
+  }
+
+  function resourceRelicIcon(resource) {
+    const text = [
+      resource.name,
+      resource.category,
+      resource.type,
+      resource.address,
+    ].join("");
+
+    if (/桥|渡|江|河|水|码头|赤水|乌江|金沙江|大渡河/.test(text)) {
+      return {
+        key: "kettle",
+        label: "水壶",
+        src: "/assets/img/study-relic-kettle.svg",
+      };
+    }
+
+    if (/山|草地|雪|岭|关|口|战斗|战役|遗址/.test(text)) {
+      return {
+        key: "shoe",
+        label: "草鞋",
+        src: "/assets/img/study-relic-shoe.svg",
+      };
+    }
+
+    return {
+      key: "hat",
+      label: "草帽",
+      src: "/assets/img/study-relic-hat.svg",
+    };
   }
 
   function renderResourceMarkers(resources = state.resources, focusIds = new Set()) {
@@ -1128,7 +1162,7 @@
         </div>
       </div>
       <h2>${escapeHtml(resource.name)}</h2>
-      <p>该点位于 <b>${escapeHtml(resource.province || "-")}</b>${resource.city ? ` · ${escapeHtml(resource.city)}` : ""}，是${escapeHtml(meta.label)}类红色旅游资源。</p>
+      <p>该点位于 <b>${escapeHtml(resource.province || "-")}</b>${resource.city ? ` · ${escapeHtml(resource.city)}` : ""}，是${escapeHtml(meta.label)}类红色研学资源。</p>
       <div class="visitor-score-preview">
         <span>游客推荐评分</span>
         <b>${touristScore(review)} / 5</b>
@@ -1402,6 +1436,7 @@
     await new Promise((resolve) => setTimeout(resolve, 1150));
 
     const route = await fetchJson(`/api/tourism/study-route?${params.toString()}`);
+    state.currentRoute = route;
 
     showAnalysis(false);
     renderStudyRoute(route);
@@ -1416,6 +1451,8 @@
     );
     showArcRoute(route);
     focusRouteBounds(route.resources || []);
+    renderTravelServicePlan(route);
+    renderRouteReason(route);
     flash("研学方案和空间路线已生成");
   }
 
@@ -1629,6 +1666,8 @@
 
   function clearRoute() {
     state.routeLayer?.clearLayers();
+    state.currentRoute = null;
+    $("#routeReasonSection")?.classList.add("is-hidden");
     $("#routeDistance").textContent = "--";
   }
 
@@ -1752,6 +1791,147 @@
     });
   }
 
+  function selectedTravelMode() {
+    return $("#travelModeSelect")?.value || "coach";
+  }
+
+  function travelModeInfo(mode = selectedTravelMode()) {
+    const infos = {
+      coach: {
+        name: "研学大巴",
+        traffic: "适合学校统一组织，点到点转场稳定，便于控制集合时间与讲解节奏。",
+        road: "优先选择国省干线与景区接驳道路，避开连续山路夜间行驶。",
+        food: "午餐以纪念馆周边团队餐或当地简餐为主，晚餐安排县城标准餐。",
+        stay: "住宿优先选择县城研学团队酒店，满足安全、集合、停车和早出发需求。",
+      },
+      railCoach: {
+        name: "高铁 + 大巴",
+        traffic: "跨省段使用高铁压缩长距离通勤，落地后以大巴串联纪念点。",
+        road: "适合徐州出发到遵义、成都、延安等城市，再进入周边县域资源点。",
+        food: "高铁段简餐，落地后安排城市餐饮与研学基地团队餐。",
+        stay: "住宿靠近高铁站或核心纪念点，减少第二天早高峰转场压力。",
+      },
+      selfDrive: {
+        name: "自驾调研",
+        traffic: "适合小组调研，路线自由度高，可临时增加周边资源点。",
+        road: "注意山区弯道、雨雪天气和景区停车容量，建议预留更多机动时间。",
+        food: "可选择县城餐馆、服务区补给和景区周边简餐。",
+        stay: "以县城连锁酒店或研学营地为主，晚间不安排长距离山路转场。",
+      },
+      walk: {
+        name: "徒步体验段",
+        traffic: "主转场仍需车辆保障，仅选择安全、短距离、可讲解的体验步道。",
+        road: "徒步段用于理解长征行军艰难，不作为全程交通方式。",
+        food: "徒步前准备饮水与便携补给，正餐回到县城或基地统一安排。",
+        stay: "住宿靠近徒步终点或次日首站，避免体能消耗后继续远距离转场。",
+      },
+    };
+
+    return infos[mode] || infos.coach;
+  }
+
+  function renderTravelServicePlan(route = null) {
+    const panel = $("#travelServicePanel");
+
+    if (!panel) {
+      return;
+    }
+
+    const mode = travelModeInfo();
+    const resources = route?.resources || [];
+    const start = resources[0]?.name || "中国矿业大学（南湖校区）";
+    const end = resources[resources.length - 1]?.name || "重点红色资源点";
+    const distance = route?.totalDistanceKm ? `${route.totalDistanceKm} 公里` : "待生成后计算";
+
+    panel.innerHTML = `
+      <article>
+        <b>出行方式</b>
+        <span>${mode.name}</span>
+        <p>${mode.traffic}</p>
+      </article>
+      <article>
+        <b>道路数据</b>
+        <span>${distance}</span>
+        <p>${mode.road}</p>
+      </article>
+      <article>
+        <b>餐饮规划</b>
+        <span>${start} → ${end}</span>
+        <p>${mode.food}</p>
+      </article>
+      <article>
+        <b>住宿规划</b>
+        <span>县城 / 研学基地优先</span>
+        <p>${mode.stay}</p>
+      </article>
+    `;
+  }
+
+  function renderRouteReason(route = null) {
+    const panel = $("#routeReasonPanel");
+    const section = $("#routeReasonSection");
+
+    if (!panel || !section || !route) {
+      section?.classList.add("is-hidden");
+      return;
+    }
+
+    section.classList.remove("is-hidden");
+
+    const mode = travelModeInfo();
+    const resources = route?.resources || [];
+    const cities = [...new Set(resources.map((item) => item.city).filter(Boolean))];
+    const places = resources.slice(0, 5).map((item) => item.name).join("、") || "核心纪念点";
+    const theme = route?.theme?.label || "长征精神研学";
+
+    panel.innerHTML = `
+      <img src="/assets/img/longmarch-route-corner.png" alt="长征研学路线分析示意">
+      <div>
+        <b>${theme}路线研判</b>
+        <p><strong>选择依据：</strong>围绕${places}组织学习，兼顾事件代表性、空间连续性和学生集体出行安全。</p>
+        <p><strong>道路难点：</strong>${mode.road}</p>
+        <p><strong>学习重点：</strong>理解理想信念、组织纪律、艰苦奋斗和团结协作在真实地理环境中的形成。</p>
+        <p><strong>覆盖区域：</strong>${cities.length ? cities.join("、") : "生成路线后自动汇总城市"}。</p>
+      </div>
+    `;
+  }
+
+  async function loadKnowledgeGraph(topic = "spirit") {
+    const data = await fetchJson(`/api/tourism/knowledge-graph?topic=${encodeURIComponent(topic)}`);
+
+    renderKnowledgeGraph(data);
+  }
+
+  function renderKnowledgeGraph(data) {
+    const board = $("#knowledgeGraphBoard");
+    const output = $("#knowledgeGraphOutput");
+
+    if (!board || !output) {
+      return;
+    }
+
+    const nodes = data.nodes || [];
+    const edges = data.edges || [];
+
+    board.innerHTML = nodes
+      .map((node, index) => {
+        const cls = node.level === "core" || index === 0 ? "kg-node core" : "kg-node";
+
+        return `<span class="${cls}">${escapeHtml(node.name)}</span>`;
+      })
+      .join("");
+
+    output.innerHTML = `
+      <b>${escapeHtml(data.modelName)} · ${escapeHtml(data.version)}</b>
+      <p>${escapeHtml(data.summary || data.description || "")}</p>
+      <div class="kg-edge-list">
+        ${edges.slice(0, 5).map((edge) => {
+          return `<span>${escapeHtml(edge[0])} ${escapeHtml(edge[1])} ${escapeHtml(edge[2])}</span>`;
+        }).join("")}
+      </div>
+    `;
+  }
+
   function bindEvents() {
     $("#applyFilterBtn").addEventListener("click", () => {
       loadResources().catch((error) => {
@@ -1777,9 +1957,27 @@
       clearRoute();
     });
 
+    $("#travelModeSelect")?.addEventListener("change", () => {
+      renderTravelServicePlan(state.currentRoute);
+      renderRouteReason(state.currentRoute);
+    });
+
     document.querySelectorAll("[data-map-click-mode]").forEach((button) => {
       button.addEventListener("click", () => {
         updateMapClickMode(button.dataset.mapClickMode);
+      });
+    });
+
+    document.querySelectorAll("[data-kg-topic]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-kg-topic]").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+
+        loadKnowledgeGraph(button.dataset.kgTopic || "spirit").catch((error) => {
+          console.error(error);
+          flash("知识图谱模型加载失败");
+        });
       });
     });
 
@@ -1803,6 +2001,11 @@
     });
 
     bindRoutePresetCards();
+    renderTravelServicePlan();
+    loadKnowledgeGraph("spirit").catch((error) => {
+      console.error(error);
+      flash("知识图谱模型加载失败");
+    });
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -1814,7 +2017,7 @@
       updateMapClickMode("detail");
     } catch (error) {
       console.error(error);
-      flash("红色旅游模块加载失败");
+      flash("红色研学模块加载失败");
     }
   });
 })();

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="破草帽">
+  <path d="M48 8 16 42h64L48 8Z" fill="#d6b062"/>
+  <path d="M48 8 38 42M48 8l10 34M26 42c14-7 29-8 44 0" fill="none" stroke="#8c5b24" stroke-width="4" stroke-linecap="round"/>
+  <path d="M9 42c15 12 63 12 78 0-14-6-64-6-78 0Z" fill="#b78946"/>
+  <path d="M29 48c12 4 26 4 38 0" fill="none" stroke="#f4dfa7" stroke-width="4" stroke-linecap="round"/>
+  <path d="M69 18l8-9M75 25l12-2" stroke="#7b1e16" stroke-width="4" stroke-linecap="round"/>
+</svg>

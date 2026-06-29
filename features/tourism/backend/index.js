@@ -136,6 +136,38 @@ const presetRoutes = {
   },
 };
 
+const knowledgeGraphModel = {
+  modelName: "LongChange 红色研学知识图谱模型",
+  version: "competition-1.0",
+  description: "面向测绘技能大赛的内置知识图谱：连接长征路线、重要事件、红色资源、精神谱系与研学任务。",
+  topics: {
+    spirit: {
+      title: "精神谱系",
+      summary: "从坚定信念、实事求是、艰苦奋斗、团结协作四个方向解释红色研学价值。",
+      focus: ["长征精神", "坚定信念", "实事求是", "艰苦奋斗", "团结协作", "人民立场"],
+    },
+    route: {
+      title: "路线关联",
+      summary: "把路线节点、交通条件、地形阻力和事件转折连成可解释的研学链路。",
+      focus: ["中国矿业大学", "长征路线", "会议转折", "渡江战斗", "雪山草地", "会师节点"],
+    },
+    study: {
+      title: "研学任务",
+      summary: "根据资源点自动生成讲解、记录、访谈、路线复盘和精神总结任务。",
+      focus: ["现场讲解", "地图标注", "事件复盘", "人物学习", "安全组织", "成果汇报"],
+    },
+  },
+  edges: [
+    ["长征路线", "连接", "重要事件"],
+    ["重要事件", "发生于", "红色资源"],
+    ["红色资源", "支撑", "研学任务"],
+    ["研学任务", "提炼", "长征精神"],
+    ["交通条件", "约束", "路线方案"],
+    ["地形环境", "解释", "行军困难"],
+    ["AI智能体", "调用", "知识图谱模型"],
+  ],
+};
+
 function getQuery(request) {
   return new URL(
     request.url,
@@ -587,7 +619,7 @@ function chooseResources(resources, query) {
     ]).slice(0, targetCount);
   }
 
-  selected = orderByNearest(selected);
+  selected = orderByRouteContinuity(selected);
 
   const finalCities = [...new Set(selected.map((resource) => resource.city).filter(Boolean))];
   const finalProvince = hasCustomSelection
@@ -647,6 +679,56 @@ function orderByNearest(resources) {
   }
 
   return ordered;
+}
+
+function orderByRouteContinuity(resources) {
+  if (resources.length <= 2) {
+    return resources;
+  }
+
+  const cityGroups = new Map();
+
+  resources.forEach((resource) => {
+    const key = resource.city || resource.province || "未分组";
+
+    if (!cityGroups.has(key)) {
+      cityGroups.set(key, []);
+    }
+
+    cityGroups.get(key).push(resource);
+  });
+
+  const cityClusters = [...cityGroups.values()].map((items) => {
+    const center = {
+      lat: items.reduce((sum, item) => sum + item.lat, 0) / items.length,
+      lng: items.reduce((sum, item) => sum + item.lng, 0) / items.length,
+    };
+
+    return {
+      center,
+      items: orderByNearest(items),
+    };
+  });
+
+  const orderedClusters = [];
+  const remaining = [...cityClusters];
+  let current = SCHOOL;
+
+  while (remaining.length) {
+    const nextIndex = remaining.reduce((bestIndex, cluster, index) => {
+      const best = remaining[bestIndex];
+
+      return distanceKm(current, cluster.center) < distanceKm(current, best.center)
+        ? index
+        : bestIndex;
+    }, 0);
+    const next = remaining.splice(nextIndex, 1)[0];
+
+    orderedClusters.push(next);
+    current = next.center;
+  }
+
+  return orderedClusters.flatMap((cluster) => cluster.items);
 }
 
 function cityCentroids(resources) {
@@ -1067,6 +1149,26 @@ function handleStudyRoute({ request, response, sendSuccess }) {
   return true;
 }
 
+function handleKnowledgeGraph({ request, response, sendSuccess }) {
+  const topic = normalize(getQuery(request).get("topic")) || "spirit";
+  const currentTopic = knowledgeGraphModel.topics[topic] || knowledgeGraphModel.topics.spirit;
+
+  sendSuccess(response, {
+    ...knowledgeGraphModel,
+    currentTopic: topic,
+    nodes: currentTopic.focus.map((name, index) => {
+      return {
+        id: `${topic}_${index + 1}`,
+        name,
+        level: index === 0 ? "core" : "normal",
+      };
+    }),
+    summary: currentTopic.summary,
+  });
+
+  return true;
+}
+
 function handleApi(context) {
   if (context.pathname === "/api/tourism/resources") {
     return handleResources(context);
@@ -1078,6 +1180,10 @@ function handleApi(context) {
 
   if (context.pathname === "/api/tourism/study-route") {
     return handleStudyRoute(context);
+  }
+
+  if (context.pathname === "/api/tourism/knowledge-graph") {
+    return handleKnowledgeGraph(context);
   }
 
   return false;

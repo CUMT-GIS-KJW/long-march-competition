@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/tourism/frontend/tourism.css">
   <link rel="stylesheet" href="/features/shared/frontend/home-layout-theme.css">
+  <link rel="stylesheet" href="/features/agent/frontend/agent.css">
+  <link rel="stylesheet" href="/features/tourism/frontend/tourism-study.css">
 </head>
 <body>
   <div class="tourism-app tourism-cartoon-shell">
@@ -24,7 +26,7 @@
         <button class="site-nav-btn" type="button" onclick="location.href='/index.html'">首页</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/analysis.html'">综合分析</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/scene3d.html'">3D地形</button>
-        <button class="site-nav-btn site-nav-active active" type="button">红色旅游</button>
+        <button class="site-nav-btn site-nav-active active" type="button">红色研学</button>
       </nav>
     </header>
 
@@ -78,6 +80,16 @@
               <option value="3" selected>3 天深度路线</option>
               <option value="5">5 天主题路线</option>
               <option value="7">7 天完整研学</option>
+            </select>
+          </label>
+
+          <label>
+            <span><i>3</i> 出行方式</span>
+            <select id="travelModeSelect">
+              <option value="coach" selected>研学大巴</option>
+              <option value="railCoach">高铁 + 大巴</option>
+              <option value="selfDrive">自驾调研</option>
+              <option value="walk">徒步体验段</option>
             </select>
           </label>
 
@@ -138,6 +150,37 @@
           <span class="panel-kicker">ROUTE PLAN</span>
           <h2>重点研学方案</h2>
           <p>请选择主题和天数后生成方案。路线会在中间地图中按天分色显示，并在这里展示每天“从哪里到哪里”的分段安排。</p>
+        </section>
+
+        <section class="study-service-panel">
+          <span class="panel-kicker">TRAFFIC · FOOD · STAY</span>
+          <h2>交通食宿与道路研判</h2>
+          <div id="travelServicePanel" class="travel-service-grid"></div>
+        </section>
+
+        <section class="knowledge-panel">
+          <span class="panel-kicker">KNOWLEDGE GRAPH · LONGCHANGE</span>
+          <h2>内置研学知识图谱模型</h2>
+          <div class="kg-toolbar">
+            <button class="active" type="button" data-kg-topic="spirit">精神谱系</button>
+            <button type="button" data-kg-topic="route">路线关联</button>
+            <button type="button" data-kg-topic="study">研学任务</button>
+          </div>
+          <div class="kg-board" id="knowledgeGraphBoard" aria-label="长征研学知识图谱模型">
+            <span class="kg-node core">模型加载中</span>
+          </div>
+          <div class="kg-model-output" id="knowledgeGraphOutput">
+            系统内置“长征资源—事件—精神—研学任务”知识图谱模型，可直接支撑 AI 问答、路线解释和比赛答辩。
+          </div>
+        </section>
+
+        <section class="route-reason-panel is-hidden" id="routeReasonSection">
+          <span class="panel-kicker">ROUTE ANALYSIS</span>
+          <h2>为什么选择这条线</h2>
+          <div id="routeReasonPanel" class="route-reason-card">
+            <img src="/assets/img/longmarch-route-corner.png" alt="长征研学路线分析示意">
+            <p>生成方案后，这里会说明路线选择依据、道路条件、学习重点与风险提示。</p>
+          </div>
         </section>
 
         <section class="chart-panel cartoon-chart-panel">
@@ -208,9 +251,24 @@
 
   <div class="review-modal" id="reviewModal" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
+  <div class="agent-panel tourism-agent-panel" id="agentPanel">
+    <button class="agent-toggle" id="agentToggle" type="button">AI</button>
+    <section class="agent-window">
+      <header class="agent-head">
+        <span>RED STUDY AI AGENT</span>
+        <b>红色研学智能体</b>
+      </header>
+      <div class="agent-messages" id="agentMessages"></div>
+      <form class="agent-form" id="agentForm">
+        <input id="agentInput" type="text" placeholder="询问路线、交通、食宿、知识图谱与 longchange">
+        <button type="submit">发送</button>
+      </form>
+    </section>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/features/shared/frontend/config.js"></script>
   <script src="/features/tourism/frontend/tourism.js"></script>
+  <script src="/features/agent/frontend/agent-ui.js"></script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 64" role="img" aria-label="破草鞋">
+  <path d="M13 40c12-9 24-13 38-13 14 0 25 6 33 17 2 3 1 7-3 8-19 6-39 5-61-2-7-2-10-6-7-10Z" fill="#9a6a36"/>
+  <path d="M20 39c16 6 33 8 53 6M28 32c-2 7-1 13 5 20M43 28c-2 7-1 16 4 26M60 31c-2 7 0 14 5 21" fill="none" stroke="#f1d89d" stroke-width="4" stroke-linecap="round"/>
+  <path d="M16 44c13-9 28-13 45-12" fill="none" stroke="#5f351b" stroke-width="5" stroke-linecap="round"/>
+  <path d="M73 39l8-10M80 45l10-4M12 38l-7-7" stroke="#7b1e16" stroke-width="4" stroke-linecap="round"/>
+</svg>

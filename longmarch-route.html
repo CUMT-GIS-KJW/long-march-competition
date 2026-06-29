@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>长征分析路线展示｜红图绘长征</title>
+  <link rel="stylesheet" href="/features/shared/frontend/base.css">
+  <link rel="stylesheet" href="/features/longmarch-route/frontend/longmarch-route.css">
+</head>
+<body>
+  <main class="lm-app" aria-label="长征分析路线展示">
+    <div class="lm-bg-mark lm-bg-mark-left"></div>
+    <div class="lm-bg-mark lm-bg-mark-right"></div>
+
+    <section class="lm-stage">
+      <button class="lm-arrow lm-prev" id="prevRouteBtn" type="button" aria-label="上一条路线">‹</button>
+      <button class="lm-arrow lm-next" id="nextRouteBtn" type="button" aria-label="下一条路线">›</button>
+
+      <aside class="lm-intro-card">
+        <span>LONG MARCH ROUTE</span>
+        <h1>红图绘长征<br>分析路线展示</h1>
+        <p>以长征阶段、重要节点、行军路线与事件关联为主线，展示路线空间变化、重点事件与研学解读。</p>
+        <div class="lm-intro-tags">
+          <em>路线分析</em>
+          <em>事件联动</em>
+          <em>阶段切换</em>
+        </div>
+      </aside>
+
+      <section class="lm-route-board">
+        <header class="lm-board-head">
+          <div>
+            <span>ROUTE ANALYSIS</span>
+            <h2 id="routeTitle">长征路线总览</h2>
+          </div>
+          <button class="lm-ghost-btn" id="reloadBtn" type="button">刷新数据</button>
+        </header>
+
+        <div class="lm-route-canvas" id="routeCanvas" aria-label="路线示意图">
+          <svg id="routeSvg" viewBox="0 0 720 390" preserveAspectRatio="xMidYMid meet" role="img" aria-label="长征路线分析图"></svg>
+          <div class="lm-map-watermark">红色路线 · 空间分析</div>
+        </div>
+
+        <div class="lm-metrics" id="routeMetrics">
+          <article><b>--</b><span>阶段</span></article>
+          <article><b>--</b><span>节点</span></article>
+          <article><b>--</b><span>里程</span></article>
+          <article><b>--</b><span>事件</span></article>
+        </div>
+      </section>
+
+      <aside class="lm-control-panel">
+        <div class="lm-vertical-title">
+          <i>长征</i>
+          <b>分析路线</b>
+        </div>
+
+        <section class="lm-form-card">
+          <h3>路线筛选</h3>
+          <label>
+            <span>路线类型</span>
+            <select id="routeSelect"></select>
+          </label>
+          <label>
+            <span>阶段筛选</span>
+            <select id="stageSelect"></select>
+          </label>
+          <label>
+            <span>关键词</span>
+            <input id="keywordInput" type="search" placeholder="遵义、泸定桥、雪山草地……">
+          </label>
+          <button class="lm-primary" id="applyBtn" type="button">生成分析路线</button>
+        </section>
+
+        <section class="lm-detail-card" id="detailCard">
+          <span>DETAIL</span>
+          <h3>点击路线节点查看详情</h3>
+          <p>节点详情会显示事件、时间、地点和分析说明。</p>
+        </section>
+      </aside>
+    </section>
+
+    <section class="lm-bottom-routes" id="routeCards" aria-label="推荐分析路线"></section>
+  </main>
+
+  <script src="/features/shared/frontend/config.js"></script>
+  <script src="/features/longmarch-route/frontend/longmarch-route.js"></script>
+</body>
+</html>
