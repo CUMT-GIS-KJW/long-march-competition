@@ -40,9 +40,25 @@
 }
 
 .brand-block {
-  width: 410px;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  width: 440px;
+  column-gap: 12px;
   gap: 4px;
   text-align: left;
+}
+
+.brand-logo {
+  grid-row: 1 / 3;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(255, 231, 169, 0.78);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3px rgba(128, 23, 15, 0.16),
+    0 8px 18px rgba(77, 20, 10, 0.18);
 }
 
 .brand-block strong {
@@ -431,7 +447,7 @@
 
 .brand-block strong {
   display: block !important;
-  width: min(390px, 24vw) !important;
+  width: min(330px, 21vw) !important;
   height: 58px !important;
   overflow: hidden !important;
   color: transparent !important;
@@ -632,8 +648,19 @@
 }
 
 @media (max-width: 1280px) {
+  .brand-block {
+    grid-template-columns: 60px minmax(0, 1fr);
+    width: 390px;
+    column-gap: 10px;
+  }
+
+  .brand-logo {
+    width: 60px;
+    height: 60px;
+  }
+
   .brand-block strong {
-    width: 320px !important;
+    width: 300px !important;
   }
 
   .topbar-main::after {

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { PROJECT_ROOT, PUBLIC_ROOT } = require("./data-store");
 
@@ -29,6 +30,10 @@ const pageAliases = {
   "/red-tourism.html": "/features/tourism/frontend/index.html",
   "/scene3d.html": "/features/scene3d/frontend/index.html",
   "/sanwei-changjing.html": "/features/scene3d/frontend/index.html",
+};
+
+const externalAssetFallbacks = {
+  "/assets/img/home-poster/logal.png": path.join(os.homedir(), "Downloads", "logal.png"),
 };
 
 function resolveStaticPath(pathname) {
@@ -63,6 +68,22 @@ function serveStatic(response, pathname, send) {
 
   fs.readFile(filePath, (error, data) => {
     if (error) {
+      const fallbackPath = externalAssetFallbacks[pathname];
+
+      if (fallbackPath) {
+        fs.readFile(fallbackPath, (fallbackError, fallbackData) => {
+          if (fallbackError) {
+            send(response, 404, "Page or resource not found", "text/plain; charset=utf-8");
+            return;
+          }
+
+          const fallbackExtension = path.extname(fallbackPath).toLowerCase();
+          const fallbackContentType = mimeTypes[fallbackExtension] || "application/octet-stream";
+          send(response, 200, fallbackData, fallbackContentType);
+        });
+        return;
+      }
+
       send(response, 404, "Page or resource not found", "text/plain; charset=utf-8");
       return;
     }
