@@ -232,6 +232,27 @@ input {
     radial-gradient(circle at center, transparent 58%, rgba(82, 34, 10, 0.2));
 }
 
+.map-wrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 452;
+  width: min(980px, 78%);
+  height: 210px;
+  pointer-events: none;
+  background:
+    url("/assets/img/home/top-doves.png") right 12% top 34px / 190px auto no-repeat,
+    linear-gradient(180deg, rgba(255, 244, 219, 0.74), rgba(255, 244, 219, 0)),
+    url("/assets/img/poetry/source-bg.jpg") center top / cover no-repeat;
+  filter: sepia(0.28) saturate(1.05) contrast(0.98);
+  mix-blend-mode: multiply;
+  opacity: 0.62;
+  transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.86) 54%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.86) 54%, transparent 100%);
+}
+
 .map-title {
   position: absolute;
   z-index: 500;
@@ -1575,29 +1596,4 @@ body.poetry-cursor-active * {
   .poetry-lines {
     font-size: 16px;
   }
-}
-
-/* 诗词卷轴最终覆盖：避免旧版弹窗样式影响沉浸页 */
-.poetry-modal {
-  padding: 0 !important;
-}
-
-.poetry-modal.show {
-  display: block !important;
-}
-
-.poetry-modal .poetry-window {
-  width: 100vw !important;
-  height: 100vh !important;
-  border-radius: 0 !important;
-}
-
-.poetry-modal .poetry-close {
-  top: 18px !important;
-  right: 26px !important;
-}
-
-.poetry-modal .poetry-window::before,
-.poetry-modal .poetry-window::after {
-  display: none !important;
 }

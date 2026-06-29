@@ -1,0 +1,341 @@
+/* 比赛版主页外观覆盖：只改外壳，不改 Leaflet 地图和业务逻辑 */
+:root {
+  --competition-red: #9d1f15;
+  --competition-red-dark: #5f120c;
+  --competition-gold: #e6c06a;
+  --competition-paper: #f5dfb8;
+  --competition-ink: #3d1c11;
+}
+
+.app-shell {
+  grid-template-rows: 92px 1fr 76px;
+  background:
+    radial-gradient(circle at 42% 16%, rgba(180, 54, 33, 0.12), transparent 24%),
+    linear-gradient(rgba(255, 239, 205, 0.92), rgba(232, 190, 127, 0.74)),
+    url("/assets/img/poetry/source-bg.jpg") center / cover no-repeat;
+}
+
+.topbar-main {
+  height: 92px;
+  padding: 12px 26px 10px;
+  align-items: flex-start;
+  background:
+    linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),
+    url("/assets/img/poetry/source-bg.jpg") center top / cover no-repeat;
+  border-bottom: 0;
+  color: var(--competition-ink);
+}
+
+.topbar-main::after {
+  content: "重温峥嵘岁月\A传承长征精神";
+  position: absolute;
+  left: 34%;
+  top: 18px;
+  white-space: pre;
+  color: #9a2016;
+  font: 900 18px/1.25 "STXingkai", "KaiTi", "STKaiti", serif;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-shadow: 0 2px 0 rgba(255, 239, 203, 0.9);
+}
+
+.brand-block {
+  width: 410px;
+  gap: 4px;
+  text-align: left;
+}
+
+.brand-block strong {
+  color: #80170f;
+  font-family: "STXingkai", "KaiTi", "STKaiti", serif;
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-shadow:
+    1px 1px 0 rgba(255, 232, 180, 0.85),
+    0 5px 12px rgba(77, 20, 10, 0.18);
+}
+
+.brand-block strong::after {
+  content: "";
+  display: block;
+  width: 300px;
+  height: 8px;
+  margin: 2px 0 0 6px;
+  background: linear-gradient(90deg, rgba(126, 25, 16, 0), #7e1910 12%, #7e1910 72%, rgba(126, 25, 16, 0));
+  border-radius: 999px;
+  opacity: 0.78;
+}
+
+.brand-block span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 38px;
+  color: #3f2015;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.brand-block span::before,
+.brand-block span::after {
+  content: "★";
+  color: #9d1f15;
+}
+
+.topbar-main .site-nav {
+  left: auto;
+  right: 28px;
+  top: 18px;
+  width: 560px;
+  height: 54px;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 18px 0 54px;
+  background:
+    linear-gradient(90deg, rgba(136, 22, 14, 0), rgba(143, 27, 17, 0.95) 12%, rgba(132, 24, 16, 0.92) 92%, rgba(136, 22, 14, 0)),
+    radial-gradient(circle at 18% 50%, rgba(255, 218, 132, 0.22), transparent 28%);
+  border-radius: 2px;
+  transform: none;
+}
+
+.topbar-main .site-nav::before {
+  content: "";
+  position: absolute;
+  inset: -10px -14px;
+  z-index: -1;
+  background: linear-gradient(90deg, transparent, rgba(130, 20, 12, 0.86), transparent);
+  filter: blur(3px);
+  clip-path: polygon(0 18%, 100% 0, 96% 78%, 6% 100%);
+}
+
+.site-nav .site-nav-btn {
+  min-width: 92px;
+  height: 36px;
+  color: #fff6d6 !important;
+  background: rgba(90, 18, 12, 0.45) !important;
+  border: 1px solid rgba(255, 223, 139, 0.62) !important;
+  border-radius: 999px !important;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.site-nav .site-nav-btn::before {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 5px;
+  border: 1px solid rgba(255, 231, 160, 0.7);
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.site-nav .site-nav-btn:nth-child(1)::before {
+  content: "图";
+}
+
+.site-nav .site-nav-btn:nth-child(2)::before {
+  content: "析";
+}
+
+.site-nav .site-nav-btn:nth-child(3)::before {
+  content: "山";
+}
+
+.site-nav .site-nav-btn:nth-child(4)::before {
+  content: "游";
+}
+
+.site-nav .site-nav-active {
+  color: #62130c !important;
+  background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+}
+
+.topbar-actions {
+  position: absolute;
+  right: 30px;
+  bottom: 6px;
+}
+
+.topbar-actions button {
+  height: 30px;
+  color: #7d1d13;
+  background: rgba(255, 232, 180, 0.74);
+  border-color: rgba(141, 35, 22, 0.28);
+}
+
+.main-layout {
+  grid-template-columns: 320px 1fr 350px;
+  gap: 14px;
+  padding: 0 22px 0;
+  min-height: 0;
+}
+
+.left-panel,
+.right-detail {
+  margin-bottom: 14px;
+  background:
+    linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),
+    url("/assets/map-scroll.svg") center / cover no-repeat;
+  border: 1px solid rgba(122, 54, 21, 0.25);
+  border-radius: 8px;
+  box-shadow:
+    0 12px 30px rgba(87, 31, 12, 0.18),
+    inset 0 0 0 1px rgba(255, 246, 220, 0.48);
+}
+
+.left-panel {
+  padding: 18px 18px 14px;
+}
+
+.right-detail {
+  padding: 22px;
+}
+
+.control-card {
+  background: rgba(255, 248, 230, 0.68);
+  border-color: rgba(120, 47, 20, 0.22);
+  border-radius: 12px;
+}
+
+.fold-title {
+  justify-content: center;
+  min-height: 42px;
+  color: #fff5d1;
+  background:
+    linear-gradient(90deg, rgba(132, 25, 16, 0), #9d2016 18%, #9d2016 82%, rgba(132, 25, 16, 0));
+  border-radius: 999px;
+  font: 800 22px "KaiTi", "STKaiti", serif;
+  letter-spacing: 0.14em;
+}
+
+.fold-title b {
+  position: absolute;
+  right: 26px;
+}
+
+.route-list label {
+  min-height: 31px;
+  color: #462013;
+  font-size: 15px;
+  border-bottom: 1px solid rgba(122, 54, 21, 0.12);
+}
+
+.route-list label::before {
+  content: "";
+  width: 34px;
+  height: 4px;
+  margin-right: 4px;
+  background: #a6251a;
+  border-radius: 999px;
+}
+
+.event-type-buttons {
+  justify-content: center;
+  gap: 12px;
+}
+
+.event-type-buttons button {
+  min-width: 52px;
+  height: 52px;
+  color: #7d1d13;
+  background: #fff1c8;
+  border: 2px solid rgba(145, 35, 22, 0.2);
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.event-type-buttons button.active {
+  background: #9d2016;
+  border-color: #9d2016;
+}
+
+.map-wrap {
+  margin-bottom: 14px;
+  border: 1px solid rgba(125, 56, 25, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16);
+}
+
+.map-title {
+  top: 38px;
+  min-width: 420px;
+  color: #8a1b12;
+  background: rgba(255, 238, 199, 0.64);
+  border: 0;
+  box-shadow: none;
+}
+
+.map-title span {
+  display: block;
+  margin: 0;
+  font: 900 32px "Georgia", serif;
+  color: #8a1b12;
+  letter-spacing: 0.04em;
+}
+
+.map-title b {
+  display: block;
+  margin-top: 4px;
+  font: 800 22px "KaiTi", "STKaiti", serif;
+}
+
+.right-detail .detail-card {
+  min-height: 100%;
+  justify-content: start;
+}
+
+.right-detail .detail-card h2 {
+  color: #4b170f;
+  font-family: "KaiTi", "STKaiti", serif;
+  font-size: 34px;
+  text-align: center;
+}
+
+.bottom-playbar {
+  height: 76px;
+  padding: 0 28px;
+  background:
+    linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),
+    radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%);
+  border-top: 2px solid rgba(232, 192, 101, 0.5);
+}
+
+.bottom-playbar button,
+.bottom-playbar select {
+  color: #ffecc0;
+  background: rgba(101, 20, 12, 0.72);
+  border-color: rgba(255, 222, 147, 0.46);
+  border-radius: 9px;
+}
+
+#progressRange {
+  accent-color: #f0cd76;
+}
+
+.poetry-scroll-entry {
+  top: 18px !important;
+  right: 22px !important;
+}
+
+@media (max-width: 1200px) {
+  .brand-block strong {
+    font-size: 50px;
+  }
+
+  .topbar-main .site-nav {
+    width: 600px;
+    gap: 8px;
+  }
+
+  .site-nav .site-nav-btn {
+    min-width: 100px;
+    font-size: 14px;
+  }
+
+  .main-layout {
+    grid-template-columns: 280px 1fr 300px;
+  }
+}
