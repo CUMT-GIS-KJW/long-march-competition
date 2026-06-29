@@ -147,6 +147,21 @@
     return Math.sqrt(latGap * latGap + lngGap * lngGap);
   }
 
+  function latLngDistance(left, right) {
+    if (!left || !right) return Number.POSITIVE_INFINITY;
+    return L.latLng(left).distanceTo(L.latLng(right));
+  }
+
+  function eventTimeMatchesPart(eventTime, part) {
+    if (!eventTime || !part) return false;
+    const startTime = getSegmentStartTime(part);
+    const endTime = getSegmentEndTime(part);
+    if (!startTime && !endTime) return false;
+    if (startTime && eventTime < startTime) return false;
+    if (endTime && eventTime > endTime) return false;
+    return true;
+  }
+
   function buildNearbyEventCaches() {
     state.routeNearbyEventIds = {};
     Object.keys(state.routeLayers).forEach(layerKey => {
@@ -179,19 +194,24 @@
 
   function buildRouteEventIndexes(layerKey, routeData) {
     const eventIndexes = new Map();
-    const routePoints = routeData.points || [];
-    if (!routePoints.length) return eventIndexes;
+    const routeParts = routeData.parts || [];
+    if (!routeParts.length) return eventIndexes;
     state.eventFeatures.forEach(feature => {
       if (!eventMatchesRoute(feature, layerKey)) return;
       const eventPoint = featureLatLng(feature);
+      const eventTime = getEventTime(feature);
+      const matchingParts = eventTime ? routeParts.filter(part => eventTimeMatchesPart(eventTime, part)) : [];
+      const candidateParts = matchingParts.length ? matchingParts : routeParts;
       let nearestIndex = 0;
       let nearestDistance = Number.POSITIVE_INFINITY;
-      routePoints.forEach((routePoint, index) => {
-        const distance = coordinateDistance(eventPoint, routePoint);
-        if (distance < nearestDistance) {
-          nearestDistance = distance;
-          nearestIndex = index;
-        }
+      candidateParts.forEach(part => {
+        part.points.forEach((routePoint, localIndex) => {
+          const distance = latLngDistance(eventPoint, routePoint);
+          if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestIndex = part.startIndex + localIndex;
+          }
+        });
       });
       eventIndexes.set(featureId(feature), nearestIndex);
     });
@@ -577,40 +597,104 @@
     if (events[state.activeEventIndex]) activateEvent(events[state.activeEventIndex], true);
   }
 
-  function buildRoutePoints(collection) {
-    const sorted = [...collection.features]
-      .map((feature, index) => ({ feature, index }))
+  function getRouteFeatureOrder(feature) {
+    const order = Number(feature.properties?._order ?? 999999);
+    return Number.isFinite(order) ? order : 999999;
+  }
+
+  function routePartDistanceToAnchor(part, anchor) {
+    const start = part.points[0];
+    const end = part.points[part.points.length - 1];
+    const startDistance = latLngDistance(anchor, start);
+    const endDistance = latLngDistance(anchor, end);
+    return {
+      distance: Math.min(startDistance, endDistance),
+      reverse: endDistance < startDistance,
+    };
+  }
+
+  function buildOrderedRouteParts(collection) {
+    const groups = [];
+    [...collection.features]
+      .map((feature, index) => ({ feature, index, order: getRouteFeatureOrder(feature) }))
       .sort((a, b) => {
-        const orderGap =
-          Number(a.feature.properties?._order ?? 999999) -
-          Number(b.feature.properties?._order ?? 999999);
+        const orderGap = a.order - b.order;
         if (orderGap !== 0) return orderGap;
         return a.index - b.index;
       })
-      .map(item => item.feature);
+      .forEach(item => {
+        const routeParts = getRouteLatLngParts(item.feature.geometry)
+          .filter(latLngs => latLngs.length)
+          .map((latLngs, partIndex) => ({
+            feature: item.feature,
+            featureIndex: item.index,
+            order: item.order,
+            partIndex,
+            points: latLngs,
+          }));
+        if (!routeParts.length) return;
+        const lastGroup = groups[groups.length - 1];
+        if (!lastGroup || lastGroup.order !== item.order) {
+          groups.push({ order: item.order, parts: [] });
+        }
+        groups[groups.length - 1].parts.push(...routeParts);
+      });
 
+    const orderedParts = [];
+    let anchor = null;
+    groups.forEach(group => {
+      const remaining = group.parts.map(part => ({ ...part, points: [...part.points] }));
+      while (remaining.length) {
+        let bestIndex = 0;
+        let shouldReverse = false;
+        if (anchor) {
+          let bestDistance = Number.POSITIVE_INFINITY;
+          remaining.forEach((part, index) => {
+            const candidate = routePartDistanceToAnchor(part, anchor);
+            if (candidate.distance < bestDistance) {
+              bestDistance = candidate.distance;
+              bestIndex = index;
+              shouldReverse = candidate.reverse;
+            }
+          });
+        }
+
+        const selected = remaining.splice(bestIndex, 1)[0];
+        const selectedPoints = shouldReverse ? [...selected.points].reverse() : selected.points;
+        const orderedPart = { ...selected, points: selectedPoints };
+        orderedParts.push(orderedPart);
+        anchor = selectedPoints[selectedPoints.length - 1];
+      }
+    });
+
+    return orderedParts;
+  }
+
+  function buildRoutePoints(collection) {
+    const orderedRouteParts = buildOrderedRouteParts(collection);
     const points = [];
     const cumulativeDistances = [];
     const segments = [];
     const parts = [];
     let totalDistance = 0;
 
-    sorted.forEach(feature => {
-      getRouteLatLngParts(feature.geometry).forEach(latLngs => {
-        const startIndex = points.length;
-        latLngs.forEach((pt, localIndex) => {
-          if (localIndex > 0) {
-            totalDistance += L.latLng(latLngs[localIndex - 1]).distanceTo(L.latLng(pt));
-          }
-          points.push(pt);
-          cumulativeDistances.push(totalDistance);
-        });
-        if (latLngs.length) {
-          const part = { feature, points: latLngs, startIndex, endIndex: points.length - 1 };
-          parts.push(part);
-          segments.push(part);
+    orderedRouteParts.forEach(routePart => {
+      const startIndex = points.length;
+      routePart.points.forEach((pt, localIndex) => {
+        if (localIndex > 0) {
+          totalDistance += L.latLng(routePart.points[localIndex - 1]).distanceTo(L.latLng(pt));
         }
+        points.push(pt);
+        cumulativeDistances.push(totalDistance);
       });
+      const part = {
+        feature: routePart.feature,
+        points: routePart.points,
+        startIndex,
+        endIndex: points.length - 1,
+      };
+      parts.push(part);
+      segments.push(part);
     });
 
     return { points, cumulativeDistances, totalDistance, segments, parts };
