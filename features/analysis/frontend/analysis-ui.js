@@ -183,17 +183,16 @@
     }));
   }
 
-function renderTerrainButtons() {
-  // ★ 默认选中 "current"
-  selectedTerrainRoute = "current";
-  
-  $("#terrainRouteButtons").innerHTML = [
-    `<button class="active" type="button" data-terrain-route="current">当前路线</button>`,
-    `<button type="button" data-terrain-route="all">全部路线</button>`,
-    ...data.terrainSeries.map((series) => `<button type="button" data-terrain-route="${series.id}">${series.name}</button>`),
-  ].join("");
-  syncTerrainButtons();
-}
+  function renderTerrainButtons() {
+    selectedTerrainRoute = "current";
+    
+    $("#terrainRouteButtons").innerHTML = [
+      `<button class="active" type="button" data-terrain-route="current">当前路线</button>`,
+      `<button type="button" data-terrain-route="all">全部路线</button>`,
+      ...data.terrainSeries.map((series) => `<button type="button" data-terrain-route="${series.id}">${series.name}</button>`),
+    ].join("");
+    syncTerrainButtons();
+  }
 
   function syncTerrainButtons() {
     $("#terrainRouteButtons")?.querySelectorAll("button").forEach((item) => {
@@ -364,73 +363,73 @@ function renderTerrainButtons() {
            rows.find((item) => item.name === name || item.type === name)?.count || 0;
   }
 
-function renderMetrics() {
-  const analysis = currentAnalysis();
-  const summary = analysis.summary || data.summary || {};
-  const selectedBuffer = selectedBufferStats();
-  const nodeRows = eventTypeData();
-  const resourceRows = resourceTypeData();
-  
-  // ★ 只有分析状态与当前工具匹配时才显示数据
-  const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool;
-  
-  const metricsByTool = {
-    route: [
-      ["总里程", hasData ? `${MapUtils.formatNumber(summary.totalDistance || 0)} km` : "-"],
-      ["途经省份", hasData ? `${summary.totalProvinces || 0} 省` : "-"],
-      ["历史节点", hasData ? `${summary.totalEvents || 0} 个` : "-"],
-      ["红色资源", hasData ? `${summary.totalResources || 0} 处` : "-"],
-    ],
-    compare: (() => {
-      const rows = compareRows();
-      const longest = maxBy(rows, (item) => item.totalDistance) || {};
-      const hardest = maxBy(rows, (item) => item.maxDifficulty) || {};
-      const dense = maxBy(rows, (item) => item.resourceDensity) || {};
-      return [
-        ["对比路线", hasData ? `${rows.length} 条` : "-"],
-        ["最长路线", hasData ? (longest.routeName || "-").replace("路线图", "") : "-"],
-        ["最高难度", hasData ? `${hardest.maxDifficulty || 0} 分` : "-"],
-        ["资源最密", hasData ? `${dense.resourceDensity || 0} 处/百km` : "-"],
-      ];
-    })(),
-    difficulty: (() => {
-      const difficulty = currentDifficulty();
-      return [
-        ["平均难度", hasData ? `${difficulty.averageScore || 0} 分` : "-"],
-        ["最高难度", hasData ? `${difficulty.maxScore || 0} 分` : "-"],
-        ["高难里程", hasData ? `${MapUtils.formatNumber(difficulty.highDifficultyDistance || 0)} km` : "-"],
-        ["分段数量", hasData ? `${difficulty.segments?.length || 0} 段` : "-"],
-      ];
-    })(),    terrain: [
-      ["平均高程", hasData ? `${summary.averageElevation || 0} m` : "-"],
-      ["最高高程", hasData ? `${summary.maxElevation || 0} m` : "-"],
-      ["剖面采样", hasData ? `${analysis.elevation?.length || 0} 点` : "-"],
-      ["当前路线", hasData ? currentRouteName().replace("路线图", "") : "-"],
-    ],
-    buffer: [
-      ["当前半径", hasData ? (selectedBuffer.buffer || "20km") : "-"],
-      ["覆盖节点", hasData ? `${selectedBuffer.eventCount || 0} 个` : "-"],
-      ["覆盖资源", hasData ? `${selectedBuffer.resourceCount || 0} 处` : "-"],
-      ["缓冲面积", hasData ? `${MapUtils.formatNumber(selectedBuffer.area || 0)} km²` : "-"],
-    ],
-    node: [
-      ["事件总数", hasData ? `${summary.totalEvents || 0} 个` : "-"],
-      ["战斗节点", hasData ? `${typeCount(nodeRows, "战斗")} 个` : "-"],
-      ["会议节点", hasData ? `${typeCount(nodeRows, "会议")} 个` : "-"],
-      ["渡江节点", hasData ? `${typeCount(nodeRows, "渡江")} 个` : "-"],
-    ],
-    resource: [
-      ["资源总数", hasData ? `${summary.totalResources || 0} 处` : "-"],
-      ["纪念馆", hasData ? `${typeCount(resourceRows, "纪念馆")} 处` : "-"],
-      ["革命旧址", hasData ? `${typeCount(resourceRows, "革命旧址")} 处` : "-"],
-      ["红色景区", hasData ? `${typeCount(resourceRows, "红色景区")} 处` : "-"],
-    ],
-  };
-  
-  $("#metrics").innerHTML = metricsByTool[activeTool]
-    .map(([label, value]) => `<article><span>${label}</span><b>${value}</b></article>`)
-    .join("");
-}
+  function renderMetrics() {
+    const analysis = currentAnalysis();
+    const summary = analysis.summary || data.summary || {};
+    const selectedBuffer = selectedBufferStats();
+    const nodeRows = eventTypeData();
+    const resourceRows = resourceTypeData();
+    
+    const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool;
+    
+    const metricsByTool = {
+      route: [
+        ["总里程", hasData ? `${MapUtils.formatNumber(summary.totalDistance || 0)} km` : "-"],
+        ["途经省份", hasData ? `${summary.totalProvinces || 0} 省` : "-"],
+        ["历史节点", hasData ? `${summary.totalEvents || 0} 个` : "-"],
+        ["红色资源", hasData ? `${summary.totalResources || 0} 处` : "-"],
+      ],
+      compare: (() => {
+        const rows = compareRows();
+        const longest = maxBy(rows, (item) => item.totalDistance) || {};
+        const hardest = maxBy(rows, (item) => item.maxDifficulty) || {};
+        const dense = maxBy(rows, (item) => item.resourceDensity) || {};
+        return [
+          ["对比路线", hasData ? `${rows.length} 条` : "-"],
+          ["最长路线", hasData ? (longest.routeName || "-").replace("路线图", "") : "-"],
+          ["最高难度", hasData ? `${hardest.maxDifficulty || 0} 分` : "-"],
+          ["资源最密", hasData ? `${dense.resourceDensity || 0} 处/百km` : "-"],
+        ];
+      })(),
+      difficulty: (() => {
+        const difficulty = currentDifficulty();
+        return [
+          ["平均难度", hasData ? `${difficulty.averageScore || 0} 分` : "-"],
+          ["最高难度", hasData ? `${difficulty.maxScore || 0} 分` : "-"],
+          ["高难里程", hasData ? `${MapUtils.formatNumber(difficulty.highDifficultyDistance || 0)} km` : "-"],
+          ["分段数量", hasData ? `${difficulty.segments?.length || 0} 段` : "-"],
+        ];
+      })(),
+      terrain: [
+        ["平均高程", hasData ? `${summary.averageElevation || 0} m` : "-"],
+        ["最高高程", hasData ? `${summary.maxElevation || 0} m` : "-"],
+        ["剖面采样", hasData ? `${analysis.elevation?.length || 0} 点` : "-"],
+        ["当前路线", hasData ? currentRouteName().replace("路线图", "") : "-"],
+      ],
+      buffer: [
+        ["当前半径", hasData ? (selectedBuffer.buffer || "20km") : "-"],
+        ["覆盖节点", hasData ? `${selectedBuffer.eventCount || 0} 个` : "-"],
+        ["覆盖资源", hasData ? `${selectedBuffer.resourceCount || 0} 处` : "-"],
+        ["缓冲面积", hasData ? `${MapUtils.formatNumber(selectedBuffer.area || 0)} km²` : "-"],
+      ],
+      node: [
+        ["事件总数", hasData ? `${summary.totalEvents || 0} 个` : "-"],
+        ["战斗节点", hasData ? `${typeCount(nodeRows, "战斗")} 个` : "-"],
+        ["会议节点", hasData ? `${typeCount(nodeRows, "会议")} 个` : "-"],
+        ["渡江节点", hasData ? `${typeCount(nodeRows, "渡江")} 个` : "-"],
+      ],
+      resource: [
+        ["资源总数", hasData ? `${summary.totalResources || 0} 处` : "-"],
+        ["纪念馆", hasData ? `${typeCount(resourceRows, "纪念馆")} 处` : "-"],
+        ["革命旧址", hasData ? `${typeCount(resourceRows, "革命旧址")} 处` : "-"],
+        ["红色景区", hasData ? `${typeCount(resourceRows, "红色景区")} 处` : "-"],
+      ],
+    };
+    
+    $("#metrics").innerHTML = metricsByTool[activeTool]
+      .map(([label, value]) => `<article><span>${label}</span><b>${value}</b></article>`)
+      .join("");
+  }
 
   function countEvents() {
     return data.events?.length || 0;
@@ -520,32 +519,31 @@ function renderMetrics() {
     return option;
   }
 
-function terrainLineOption() {
-  const option = baseOption();
-  const currentSeries = data.terrainSeries.find((item) => item.id === currentRouteId()) || data.terrainSeries[0];
-  
-  let series;
-  if (selectedTerrainRoute === "current") {
-    // ★ 当前路线：只显示当前选中的路线
-    series = [currentSeries].filter(Boolean);
-  } else if (selectedTerrainRoute === "all") {
-    series = data.terrainSeries;
-  } else {
-    const pickedSeries = data.terrainSeries.find((item) => item.id === selectedTerrainRoute);
-    series = [pickedSeries || currentSeries].filter(Boolean);
+  function terrainLineOption() {
+    const option = baseOption();
+    const currentSeries = data.terrainSeries.find((item) => item.id === currentRouteId()) || data.terrainSeries[0];
+    
+    let series;
+    if (selectedTerrainRoute === "current") {
+      series = [currentSeries].filter(Boolean);
+    } else if (selectedTerrainRoute === "all") {
+      series = data.terrainSeries;
+    } else {
+      const pickedSeries = data.terrainSeries.find((item) => item.id === selectedTerrainRoute);
+      series = [pickedSeries || currentSeries].filter(Boolean);
+    }
+    
+    option.xAxis.data = series[0]?.places || data.elevation.map((item) => item.place);
+    option.series = series.map((item) => ({ 
+      name: item.name, 
+      type: "line", 
+      smooth: true, 
+      showSymbol: false, 
+      data: item.values, 
+      areaStyle: { opacity: 0.08 } 
+    }));
+    return option;
   }
-  
-  option.xAxis.data = series[0]?.places || data.elevation.map((item) => item.place);
-  option.series = series.map((item) => ({ 
-    name: item.name, 
-    type: "line", 
-    smooth: true, 
-    showSymbol: false, 
-    data: item.values, 
-    areaStyle: { opacity: 0.08 } 
-  }));
-  return option;
-}
 
   function terrainCompareOption() {
     const option = baseOption();
@@ -668,35 +666,35 @@ function terrainLineOption() {
     };
   }
 
-function renderChart() {
-  const chartContainer = $("#analysisChart");
-  
-  // ★ 只有分析状态与当前工具匹配时才渲染图表
-  const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool && data.summary;
-  
-  if (!hasData || !window.echarts) {
-    chartContainer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#d9c99c;font-size:14px;">此处可查看 GIS 分析结果</div>`;
-    if (chart) {
-      chart.dispose();
-      chart = null;
+  function renderChart() {
+    const chartContainer = $("#analysisChart");
+    
+    const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool && data.summary;
+    
+    if (!hasData || !window.echarts) {
+      chartContainer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#d9c99c;font-size:14px;">此处可查看 GIS 分析结果</div>`;
+      if (chart) {
+        chart.dispose();
+        chart = null;
+      }
+      return;
     }
-    return;
+    
+    chart = chart || echarts.init(chartContainer);
+    chart.setOption(chartOption(), true);
+    chart.off("click");
+    chart.on("click", (params) => {
+      showModal(`${toolNames[activeTool]}：${params.name || params.seriesName}`, `<p>当前值：<b>${params.value}</b></p><p>该图形已放大展示，标签避让并可继续切换专题查看。</p>`);
+    });
   }
-  
-  chart = chart || echarts.init(chartContainer);
-  chart.setOption(chartOption(), true);
-  chart.off("click");
-  chart.on("click", (params) => {
-    showModal(`${toolNames[activeTool]}：${params.name || params.seriesName}`, `<p>当前值：<b>${params.value}</b></p><p>该图形已放大展示，标签避让并可继续切换专题查看。</p>`);
-  });
-}
 
   function renderAiPending(message = "参数已变更，请重新执行 GIS 分析生成 AI 解读。") {
     const state = $("#aiResultState"); if (state) state.textContent = "待生成";
     $("#insightPanel").innerHTML = `<div class="panel-title-row"><span>AI 分析结果</span><b id="aiResultState">待生成</b></div><p class="ai-result-empty">${message}</p>`;
   }
 
-  function renderInsight(content) {
+  // ★ 渲染 AI 结果到右侧面板（图表下方）
+  function renderInsightToRight(content) {
     const analysis = currentAnalysis();
     const summary = analysis.summary || data.summary || {};
     const buffer = selectedBufferStats();
@@ -745,62 +743,87 @@ function renderChart() {
       ],
     };
 
-    $("#insightPanel").innerHTML = `
-  <div class="panel-title-row">
-    <span>AI 分析结果</span>
-    <b id="aiResultState">已完成</b>
-  </div>
-  <div class="ai-paragraphs">
-    ${renderAiParagraphs(analysisTexts[activeTool] || analysisTexts.route)}
-  </div>
-`;
+    const panel = document.getElementById('overallAnalysisPanel');
+    if (panel) {
+      panel.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="color:#e0b755;font-weight:700;font-size:11px;letter-spacing:0.08em;">AI 分析结果</span>
+          <b style="flex:0 0 auto;color:#5c1b13;background:#f2d58d;border:1px solid rgba(255,236,177,.55);border-radius:999px;padding:4px 8px;font:700 8px var(--serif);">已完成</b>
+        </div>
+        <div class="ai-paragraphs">
+          ${renderAiParagraphs(analysisTexts[activeTool] || analysisTexts.route)}
+        </div>
+      `;
+    }
   }
 
   function renderOverallAnalysis() {
-    // ... keep existing implementation
+    const panel = document.getElementById('overallAnalysisPanel');
+    if (!panel) return;
+    
+    // 如果 panel 已经有 AI 结果内容，不覆盖
+    if (panel.innerHTML.trim() && panel.innerHTML.includes('AI 分析结果')) {
+      return;
+    }
+    
+    // 显示默认内容
+    panel.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="color:#e0b755;font-weight:700;font-size:11px;letter-spacing:0.08em;">综合分析</span>
+      </div>
+      <p style="margin:0;color:#c8bea7;font:9px/1.75 var(--serif);">请执行 GIS 分析查看详细结果。</p>
+    `;
   }
 
-function updateConclusion() {
-  const routeName = currentRouteName();
-  
-  // ★ 只有分析状态与当前工具匹配时才显示结论
-  if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
-    const runLabel = `当前结果来自最近一次执行的 ${routeName}。`;
-    const text = {
-      route: `${runLabel}${routeName} 的路线统计表明，当前路线不是单纯的线状展示，而是由历史事件、地形阻力和红色资源共同组织的空间叙事骨架。`,
-      compare: `${runLabel}多路线对比已完成，可横向比较各路线的里程、省域跨度、节点密度、资源密度和地形难度。`,
-      difficulty: `${runLabel}${routeName} 的地形难度指数已按路段分级，红色和橙色段可作为讲解行军阻力的重点区域。`,
-      terrain: `${runLabel}${routeName} 的地形起伏分析基于整条路线 DEM 高程剖面，重点识别相对高差、累计爬升、最大坡变区段和高海拔样点占比，用于解释全线地形阻力的空间分布。`,
-      buffer: `${runLabel}${routeName} 的缓冲分析按照本次执行半径统计沿线节点和资源，可进一步用于研学圈层、交通接驳和县域联动表达。`,
-      node: `${runLabel}${routeName} 的节点类型统计可识别战斗、会议、渡江、会师等事件在该路线周边的集聚规律。`,
-      resource: `${runLabel}${routeName} 的红色资源关联分析强调路线周边资源热点与长征事件的耦合关系，为红色旅游和研学线路设计提供依据。`,
-    };
-    $("#conclusionText").textContent = text[activeTool];
-  } else {
-    $("#conclusionText").textContent = "请点击「执行 GIS 分析」查看该路线的综合评估结论。";
+  function updateConclusion() {
+    const routeName = currentRouteName();
+    
+    if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
+      const runLabel = `当前结果来自最近一次执行的 ${routeName}。`;
+      const text = {
+        route: `${runLabel}${routeName} 的路线统计表明，当前路线不是单纯的线状展示，而是由历史事件、地形阻力和红色资源共同组织的空间叙事骨架。`,
+        compare: `${runLabel}多路线对比已完成，可横向比较各路线的里程、省域跨度、节点密度、资源密度和地形难度。`,
+        difficulty: `${runLabel}${routeName} 的地形难度指数已按路段分级，红色和橙色段可作为讲解行军阻力的重点区域。`,
+        terrain: `${runLabel}${routeName} 的地形起伏分析基于整条路线 DEM 高程剖面，重点识别相对高差、累计爬升、最大坡变区段和高海拔样点占比，用于解释全线地形阻力的空间分布。`,
+        buffer: `${runLabel}${routeName} 的缓冲分析按照本次执行半径统计沿线节点和资源，可进一步用于研学圈层、交通接驳和县域联动表达。`,
+        node: `${runLabel}${routeName} 的节点类型统计可识别战斗、会议、渡江、会师等事件在该路线周边的集聚规律。`,
+        resource: `${runLabel}${routeName} 的红色资源关联分析强调路线周边资源热点与长征事件的耦合关系，为红色旅游和研学线路设计提供依据。`,
+      };
+      $("#conclusionText").textContent = text[activeTool];
+    } else {
+      $("#conclusionText").textContent = "请点击「执行 GIS 分析」查看该路线的综合评估结论。";
+    }
   }
-}
 
-function renderAll() {
-  $("#analysisMode").textContent = toolNames[activeTool];
-  $("#mapTheme").textoolContent = toolNames[activeTool];
-  $("#terrainRouteButtons").classList.toggle("show", activeTool === "terrain");
-  syncParameterVisibility();
-  
-  // ★ 只有分析状态与当前工具匹配时才显示数据
-  if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
-    renderMetrics();
-    renderChart();
-    renderOverallAnalysis();
-  } else {
-    // 切换到新专题但未分析，显示空状态
-    renderMetrics();  // 会显示 "-"
-    renderChart();    // 会显示提示文字
-    renderOverallAnalysis();
+  function renderAll() {
+    $("#analysisMode").textContent = toolNames[activeTool];
+    $("#mapTheme").textContent = toolNames[activeTool];
+    $("#terrainRouteButtons").classList.toggle("show", activeTool === "terrain");
+    syncParameterVisibility();
+    
+    // ★ 切换到新专题但未分析时，清空 AI 结果区域
+    if (!(appliedAnalysis.routeId && appliedAnalysis.tool === activeTool)) {
+      const panel = document.getElementById('overallAnalysisPanel');
+      if (panel) {
+        panel.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="color:#e0b755;font-weight:700;font-size:11px;letter-spacing:0.08em;">综合分析</span>
+          </div>
+          <p style="margin:0;color:#c8bea7;font:9px/1.75 var(--serif);">请执行 GIS 分析查看详细结果。</p>
+        `;
+      }
+    }
+    
+    if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
+      renderMetrics();
+      renderChart();
+    } else {
+      renderMetrics();
+      renderChart();
+    }
+    
+    updateConclusion();
   }
-  
-  updateConclusion();
-}
 
   /* ========== 控制资源层显隐 ========== */
   function updateResourceLayer() {
@@ -814,10 +837,8 @@ function renderAll() {
   /* ========== 更新路线显示 ========== */
   function updateRouteDisplay(mode, routeId) {
     if (mode === "all") {
-      // 显示全部路线（概览模式）
       AnalysisMap.showAllRoutes();
     } else {
-      // 显示单条路线（分析模式）
       const id = routeId || currentRouteId();
       AnalysisMap.hideAllRoutes();
       AnalysisMap.showRoute(id);
@@ -844,21 +865,33 @@ function renderAll() {
       setAnalysisProgress(52, "正在叠加路线、节点和缓冲统计", 1);
       appliedAnalysis = { routeId: route, radius, tool };
 
-      // ★ 点击分析后：切换到单条路线模式
       updateRouteDisplay("single", route);
-
-      // ★ 根据工具切换资源点显示
       updateResourceLayer();
 
       setAnalysisProgress(76, "正在绘制地图专题结果与山体阴影", 2);
       AnalysisMap.drawResult(tool, radius, route, data);
       setAnalysisProgress(92, "正在生成 AI 解读和全局结论", 3);
       renderAll();
-      renderInsight(insight);
+      
+      // ★ AI 结果直接渲染到右侧 overallAnalysisPanel（左侧不再显示）
+      renderInsightToRight(insight);
+      
+      // ★ 清空左侧 AI 卡片内容，避免重复
+      const leftPanel = document.getElementById('insightPanel');
+      if (leftPanel) {
+        leftPanel.innerHTML = `
+          <div class="panel-title-row">
+            <span>AI 分析结果</span>
+            <b id="aiResultState">已移至右侧</b>
+          </div>
+          <p class="ai-result-empty">AI 分析结果已移至右侧「综合分析」面板，请查看右侧图表下方区域。</p>
+        `;
+      }
+      
       await wait(Math.max(0, 720 - (Date.now() - startedAt)));
       finishAnalysisProgress(true);
       $("#taskState").textContent = "分析成功";
-      flash("分析结果已加载至左侧 AI、右侧全局面板和地图");
+      flash("分析结果已加载至地图和右侧面板");
     } catch (error) {
       finishAnalysisProgress(false);
       throw error;
@@ -881,34 +914,28 @@ function renderAll() {
   }
 
   /* ========== 事件监听 ========== */
-$("#toolList").addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-tool]");
-  if (!button) return;
-  activeTool = button.dataset.tool;
-  $("#toolList").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
+  $("#toolList").addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-tool]");
+    if (!button) return;
+    activeTool = button.dataset.tool;
+    $("#toolList").querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
 
-  // ★ 切换专题时，清除地图上的分析结果图层
-  AnalysisMap.clearResult();
-  
-  // ★ 如果有分析结果且工具匹配，保持单条路线；否则显示全部路线
-  if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
-    // 同一工具，保持当前路线并重新绘制
-    updateRouteDisplay("single", appliedAnalysis.routeId);
-    AnalysisMap.drawResult(activeTool, appliedAnalysis.radius || 10, appliedAnalysis.routeId, data);
-  } else if (appliedAnalysis.routeId) {
-    // 已有分析结果但切换到不同工具，只显示路线，不显示分析结果
-    updateRouteDisplay("single", appliedAnalysis.routeId);
-  } else {
-    // 未分析，显示全部路线
-    updateRouteDisplay("all");
-  }
-  
-  // 资源点图层跟随工具
-  updateResourceLayer();
+    AnalysisMap.clearResult();
+    
+    if (appliedAnalysis.routeId && appliedAnalysis.tool === activeTool) {
+      updateRouteDisplay("single", appliedAnalysis.routeId);
+      AnalysisMap.drawResult(activeTool, appliedAnalysis.radius || 10, appliedAnalysis.routeId, data);
+    } else if (appliedAnalysis.routeId) {
+      updateRouteDisplay("single", appliedAnalysis.routeId);
+    } else {
+      updateRouteDisplay("all");
+    }
+    
+    updateResourceLayer();
 
-  renderAll();
-  renderAiPending("专题已切换，请点击“执行 GIS 分析”刷新当前 AI 解读。");
-});
+    renderAll();
+    renderAiPending("专题已切换，请点击“执行 GIS 分析”刷新当前 AI 解读。");
+  });
 
   $("#terrainRouteButtons").addEventListener("click", (event) => {
     const button = event.target.closest("button[data-terrain-route]");
@@ -926,15 +953,12 @@ $("#toolList").addEventListener("click", (event) => {
     renderChart();
   });
 
-  /* ========== 路线切换：保持全部路线显示（概览模式） ========== */
   $("#routeSelect").addEventListener("change", (event) => {
     const routeId = event.target.value;
-    // 切换路线时：保持全部路线显示
     updateRouteDisplay("all");
     AnalysisMap.clearResult();
     selectedTerrainRoute = "current";
     syncTerrainButtons();
-    // 清除已应用的分析状态
     appliedAnalysis.routeId = "";
     renderAiPending("路线已切换，请重新执行 GIS 分析生成该路线的 AI 结果。");
     $("#taskState").textContent = "参数已变更，等待分析";
@@ -988,7 +1012,6 @@ $("#toolList").addEventListener("click", (event) => {
   window.addEventListener("resize", () => chart?.resize());
 
   document.addEventListener("analysismapready", () => {
-    // 初始：显示全部路线（概览模式）
     updateRouteDisplay("all");
     updateResourceLayer();
     renderAll();
@@ -1000,11 +1023,3 @@ $("#toolList").addEventListener("click", (event) => {
 
   loadData().catch(console.error);
 })();
-
-
-
-
-
-
-
-

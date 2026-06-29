@@ -85,23 +85,12 @@
           <div class="layer-control" id="layerControl">
             <span>图层控制</span>
             <label><input type="checkbox" data-layer="route" checked>路线</label>
-            <label><input type="checkbox" data-layer="event" checked>节点</label>
+            <label><input type="checkbox" data-layer="event" >节点</label>
             <label><input type="checkbox" data-layer="resource">资源</label>
             <label><input type="checkbox" data-layer="hillshade" checked>山体阴影</label>
           </div>
           <button class="run-analysis" type="button" id="runAnalysis">执行 GIS 分析</button>
         </div>
-
-        <section class="ai-result-card" id="insightPanel">
-          <div class="panel-title-row">
-            <span>AI 分析结果</span>
-            <b id="aiResultState">待生成</b>
-          </div>
-          <p class="ai-result-empty">
-            选择专题与路线后点击“执行 GIS 分析”，这里会展示当前路线的智能解读、空间难点和答辩表述。
-          </p>
-        </section>
-
       </aside>
 
       <section class="analysis-map">
