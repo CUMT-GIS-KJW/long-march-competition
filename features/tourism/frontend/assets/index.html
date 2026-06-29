@@ -59,13 +59,9 @@
                 <button id="clearRoutePointsBtn" type="button">清空</button>
               </div>
             </div>
-            <div class="map-click-mode" role="group" aria-label="地图点击模式">
-              <button id="mapDetailModeBtn" class="active" type="button" data-map-click-mode="detail">查看介绍</button>
-              <button id="mapSelectModeBtn" type="button" data-map-click-mode="select">加入路线</button>
-            </div>
-            <p id="routePointHint" class="route-point-hint">当前为查看模式：点击地图资源点只查看右侧介绍；切换到“加入路线”后，点击资源点才会加入/移出研学方案。</p>
+            <p id="routePointHint" class="route-point-hint">在中间地图上点击红色资源点加入路线；不选则系统自动推荐。</p>
             <div id="selectedRoutePointList" class="selected-route-point-list">
-              <p class="route-point-empty">暂无自选纪念点，请切换到“加入路线”后在地图上点击资源点。</p>
+              <p class="route-point-empty">暂无自选纪念点，请在地图上点击资源点。</p>
             </div>
           </div>
 
@@ -116,12 +112,21 @@
           <span><i class="scenic"></i>红色景区</span>
         </div>
         <div class="analysis-overlay" id="analysisOverlay">
-          <div class="route-progress-loader ring-only" role="status" aria-live="polite">
-            <div class="route-progress-ring" id="routeProgressRing" style="--route-progress: 0">
-              <div class="route-ring-core">
-                <b id="routeProgressText">0%</b>
+          <div class="route-progress-loader" role="status" aria-live="polite">
+            <div class="route-progress-halo">
+              <div class="route-progress-ring" id="routeProgressRing" style="--route-progress: 0">
+                <div class="route-ring-core">
+                  <b id="routeProgressText">0%</b>
+                  <span>智能规划中</span>
+                </div>
               </div>
+              <i class="route-orbit route-orbit-a"></i>
+              <i class="route-orbit route-orbit-b"></i>
+              <i class="route-orbit route-orbit-c"></i>
             </div>
+            <strong>正在生成红色研学路线</strong>
+            <p>地图点选纪念点 · 分日时间表 · 路线自动缩放</p>
+            <div class="route-progress-track"><i id="routeProgressBar"></i></div>
           </div>
         </div>
       </section>
@@ -162,7 +167,7 @@
       </aside>
 
       <section class="route-recommend-strip bottom-route-recommend" id="routeRecommendStrip" aria-label="重点研学方案推荐">
-        <article class="recommend-card red" data-preset-id="west-sichuan-2" data-preset-province="四川省" data-preset-theme="meeting" data-preset-days="2">
+        <article class="recommend-card red" data-preset-province="四川省" data-preset-theme="meeting" data-preset-days="2">
           <header>
             <b>川西红色经典线</b>
             <span>2天 · 长征转折主题</span>
@@ -172,7 +177,7 @@
           <button type="button" data-route-preset>选择此路线</button>
         </article>
 
-        <article class="recommend-card orange" data-preset-id="zunyi-3" data-preset-province="贵州省" data-preset-theme="meeting" data-preset-days="3">
+        <article class="recommend-card orange" data-preset-province="贵州省" data-preset-theme="meeting" data-preset-days="3">
           <header>
             <b>遵义会议研学线</b>
             <span>3天 · 会议转折主题</span>
@@ -182,7 +187,7 @@
           <button type="button" data-route-preset>选择此路线</button>
         </article>
 
-        <article class="recommend-card blue" data-preset-id="snow-grass-5" data-preset-province="四川省" data-preset-theme="mountain" data-preset-days="5">
+        <article class="recommend-card blue" data-preset-province="四川省" data-preset-theme="mountain" data-preset-days="5">
           <header>
             <b>雪山草地体验线</b>
             <span>5天 · 自然环境与行军主题</span>
@@ -192,7 +197,7 @@
           <button type="button" data-route-preset>选择此路线</button>
         </article>
 
-        <article class="recommend-card green" data-preset-id="museum-jiangxi-7" data-preset-province="江西省" data-preset-theme="museum" data-preset-days="7">
+        <article class="recommend-card green" data-preset-province="江西省" data-preset-theme="museum" data-preset-days="7">
           <header>
             <b>纪念馆研学线</b>
             <span>7天 · 展陈学习与任务卡主题</span>

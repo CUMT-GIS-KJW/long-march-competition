@@ -58,84 +58,6 @@ const palette = [
   "#F28482",
 ];
 
-const presetRoutes = {
-  "west-sichuan-2": {
-    title: "川西红色经典线",
-    province: "四川省",
-    theme: "meeting",
-    days: 2,
-    keywords: [
-      "海螺沟",
-      "磨西",
-      "泸定县纪念碑公园",
-      "泸定桥",
-      "红军飞夺泸定桥纪念馆",
-      "飞夺泸定桥炮兵阵地",
-      "大渡河",
-    ],
-  },
-  "zunyi-3": {
-    title: "遵义会议研学线",
-    province: "贵州省",
-    theme: "meeting",
-    days: 3,
-    keywords: [
-      "遵义会议会址",
-      "遵义会议纪念馆",
-      "红军总政治部旧址",
-      "苟坝会议",
-      "娄山关",
-      "四渡赤水",
-      "茅台",
-      "赤水",
-      "红军山",
-    ],
-  },
-  "snow-grass-5": {
-    title: "雪山草地体验线",
-    province: "四川省",
-    theme: "mountain",
-    days: 5,
-    keywords: [
-      "夹金山",
-      "红军长征翻越夹金山",
-      "达维",
-      "懋功",
-      "两河口",
-      "毛儿盖",
-      "若尔盖",
-      "松潘",
-      "草地",
-      "雪山",
-      "泸定桥",
-      "大渡河",
-      "海螺沟",
-    ],
-  },
-  "museum-jiangxi-7": {
-    title: "纪念馆研学线",
-    province: "江西省",
-    theme: "museum",
-    days: 7,
-    keywords: [
-      "中央革命根据地历史博物馆",
-      "瑞金",
-      "叶坪",
-      "红井",
-      "沙洲坝",
-      "二苏大",
-      "中华苏维埃",
-      "于都",
-      "长征出发",
-      "兴国",
-      "宁都",
-      "会昌",
-      "寻乌",
-      "纪念馆",
-    ],
-  },
-};
-
 function getQuery(request) {
   return new URL(
     request.url,
@@ -365,71 +287,6 @@ function distanceToCitySet(resource, citySet, centroids) {
 }
 
 
-
-function presetByValue(value) {
-  return presetRoutes[normalize(value)] || null;
-}
-
-function resourceSearchText(resource) {
-  return `${resource.name || ""} ${resource.type || ""} ${resource.address || ""} ${resource.city || ""} ${resource.province || ""}`;
-}
-
-function keywordHitScore(resource, keyword, orderIndex = 0) {
-  const text = resourceSearchText(resource);
-  const key = normalize(keyword);
-
-  if (!key || !text.includes(key)) {
-    return 0;
-  }
-
-  let score = 160 - orderIndex * 2;
-
-  if ((resource.name || "") === key) {
-    score += 140;
-  } else if ((resource.name || "").includes(key)) {
-    score += 90;
-  }
-
-  if ((resource.type || "").includes(key)) {
-    score += 20;
-  }
-
-  if (resource.featured) {
-    score += 25;
-  }
-
-  return score;
-}
-
-function findPresetResources(resources, preset) {
-  if (!preset) {
-    return [];
-  }
-
-  const preferredPool = preset.province
-    ? resources.filter((resource) => resource.province === preset.province)
-    : resources;
-  const pool = preferredPool.length ? preferredPool : resources;
-  const chosen = [];
-
-  preset.keywords.forEach((keyword, orderIndex) => {
-    const hit = pool
-      .filter((resource) => !chosen.some((item) => item.name === resource.name))
-      .map((resource) => ({
-        resource,
-        score: keywordHitScore(resource, keyword, orderIndex),
-      }))
-      .filter((item) => item.score > 0)
-      .sort((left, right) => right.score - left.score)[0];
-
-    if (hit) {
-      chosen.push(hit.resource);
-    }
-  });
-
-  return uniqueByName(chosen);
-}
-
 function parseSelectedResourceIds(query) {
   return normalize(query.get("points") || query.get("resourceIds"))
     .split(",")
@@ -496,10 +353,9 @@ function dominantProvince(resources) {
 }
 
 function chooseResources(resources, query) {
-  const preset = presetByValue(query.get("preset") || query.get("presetId"));
-  const theme = themeByValue(preset?.theme || query.get("theme"));
-  const days = normalizedRouteDays(preset?.days || query.get("days"));
-  const requestedProvince = normalize(query.get("province")) || preset?.province || "";
+  const theme = themeByValue(query.get("theme"));
+  const days = normalizedRouteDays(query.get("days"));
+  const requestedProvince = normalize(query.get("province"));
   const selectedIds = parseSelectedResourceIds(query);
   const selectedById = uniqueByName(
     selectedIds
@@ -543,14 +399,11 @@ function chooseResources(resources, query) {
     })
     .sort((left, right) => right.score - left.score);
 
-  const presetSelected = !hasCustomSelection ? findPresetResources(routePool.length ? routePool : resources, preset) : [];
   let selected = hasCustomSelection
     ? uniqueByName(selectedById)
-    : presetSelected.length
-      ? uniqueByName(presetSelected)
-      : uniqueByName(candidates).slice(0, targetCount);
+    : uniqueByName(candidates).slice(0, targetCount);
 
-  if (!hasCustomSelection && !presetSelected.length && theme.value === "meeting") {
+  if (!hasCustomSelection && theme.value === "meeting") {
     const mustNames = [
       "海螺沟冰川森林公园",
       "泸定县纪念碑公园",
@@ -592,13 +445,11 @@ function chooseResources(resources, query) {
   const finalCities = [...new Set(selected.map((resource) => resource.city).filter(Boolean))];
   const finalProvince = hasCustomSelection
     ? provinceSummary(selected, requestedProvince || autoProvince)
-    : provinceSummary(selected, autoProvince);
+    : autoProvince;
 
   return {
     days,
     theme,
-    presetId: preset ? normalize(query.get("preset") || query.get("presetId")) : "",
-    presetTitle: preset?.title || "",
     province: finalProvince,
     selectedCities: finalCities.length ? finalCities.slice(0, Math.max(1, Math.min(6, days))) : autoCities,
     resources: selected,
@@ -1009,14 +860,10 @@ function buildStudyRoute(resources, events, query) {
   const related = relatedEvents(choice.resources, events);
 
   return {
-    title: choice.presetTitle
-      ? `${choice.presetTitle} · ${choice.days} 天研学方案`
-      : `${choice.province || "单省"} · ${choice.selectedCities.join("、")} ${choice.days} 天${choice.theme.label}${choice.customSelected ? "（自选纪念点）" : ""}研学方案`,
+    title: `${choice.province || "单省"} · ${choice.selectedCities.join("、")} ${choice.days} 天${choice.theme.label}${choice.customSelected ? "（自选纪念点）" : ""}研学方案`,
     school: SCHOOL,
     days: choice.days,
     theme: choice.theme,
-    presetId: choice.presetId || "",
-    presetTitle: choice.presetTitle || "",
     province: choice.province,
     selectedCities: choice.selectedCities,
     selectedPointCount: choice.selectedPointCount || 0,

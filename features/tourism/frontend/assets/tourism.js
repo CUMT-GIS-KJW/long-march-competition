@@ -14,9 +14,6 @@
     currentMarkerResources: [],
     currentFocusIds: new Set(),
     activeTheme: "meeting",
-    activePreset: "",
-    mapClickMode: "detail",
-    currentDetailResource: null,
     chinaProvinceGeojson: null,
     chinaGeojsonTried: false,
   };
@@ -1093,11 +1090,7 @@
       });
 
       marker.on("click", () => {
-        if (state.mapClickMode === "select") {
-          toggleRoutePointFromMap(resource);
-          return;
-        }
-
+        toggleRoutePointFromMap(resource);
         showResourceDetail(resource);
       });
 
@@ -1116,8 +1109,6 @@
   function showResourceDetail(resource) {
     const meta = categoryMeta[resource.category] || categoryMeta.other;
     const review = loadReview(resource);
-    const isSelectedForRoute = state.selectedRoutePointIds.has(resource.id);
-    state.currentDetailResource = resource;
 
     $("#detailPanel").innerHTML = `
       <div class="detail-heading">
@@ -1141,25 +1132,10 @@
         <div class="detail-row"><span>类型</span><b>${escapeHtml(resource.type || meta.label)}</b></div>
         <div class="detail-row"><span>坐标</span><b>${escapeHtml(resource.lng)}, ${escapeHtml(resource.lat)}</b></div>
       </div>
-      <div class="detail-route-actions">
-        <button class="detail-route-action ${isSelectedForRoute ? "remove" : ""}" id="detailRouteActionBtn" type="button">
-          ${isSelectedForRoute ? "从研学方案移除" : "加入研学方案"}
-        </button>
-        <button class="detail-route-mode" id="detailSelectModeBtn" type="button">切换到地图点选</button>
-      </div>
     `;
 
     $("#myReviewBtn")?.addEventListener("click", () => {
       openReviewModal(resource, false);
-    });
-
-    $("#detailRouteActionBtn")?.addEventListener("click", () => {
-      toggleRoutePointFromMap(resource, { keepDetail: true });
-    });
-
-    $("#detailSelectModeBtn")?.addEventListener("click", () => {
-      updateMapClickMode("select");
-      flash("已切换为加入路线模式");
     });
   }
 
@@ -1179,18 +1155,6 @@
     return [...state.selectedRoutePointIds];
   }
 
-  function updateMapClickMode(mode = state.mapClickMode) {
-    state.mapClickMode = mode === "select" ? "select" : "detail";
-
-    document.querySelectorAll("[data-map-click-mode]").forEach((button) => {
-      button.classList.toggle("active", button.dataset.mapClickMode === state.mapClickMode);
-    });
-
-    const mapWrap = document.querySelector(".tourism-map-wrap");
-    mapWrap?.classList.toggle("select-mode", state.mapClickMode === "select");
-    updateRoutePointHint();
-  }
-
   function updateRoutePointHint() {
     const count = getSelectedRoutePointIds().length;
     const hint = $("#routePointHint");
@@ -1199,16 +1163,9 @@
       return;
     }
 
-    if (state.mapClickMode === "select") {
-      hint.textContent = count
-        ? `当前为加入路线模式：已选择 ${count} 个纪念点，继续点击地图资源点可增删；生成时会按天数智能补充和排序。`
-        : "当前为加入路线模式：点击地图上的真实资源点加入研学方案，再次点击可取消。";
-      return;
-    }
-
     hint.textContent = count
-      ? `当前为查看模式：点击地图资源点只查看介绍；已选择 ${count} 个纪念点，需要增删请切换到“加入路线”。`
-      : "当前为查看模式：点击地图资源点只查看右侧介绍；需要加入路线时请切换到“加入路线”。";
+      ? `已在地图中选择 ${count} 个纪念点，可继续点击资源点增删；生成时会按天数智能补充和排序。`
+      : "在中间地图上点击红色资源点加入路线；不选则按推荐经典逻辑自动规划。";
   }
 
   function renderSelectedRoutePoints() {
@@ -1245,12 +1202,10 @@
     updateRoutePointHint();
   }
 
-  function toggleRoutePointFromMap(resource, options = {}) {
+  function toggleRoutePointFromMap(resource) {
     if (!resource?.id) {
       return;
     }
-
-    state.activePreset = "";
 
     if (state.selectedRoutePointIds.has(resource.id)) {
       state.selectedRoutePointIds.delete(resource.id);
@@ -1262,23 +1217,15 @@
 
     renderSelectedRoutePoints();
     rerenderCurrentMarkers();
-
-    if (options.keepDetail || state.currentDetailResource?.id === resource.id) {
-      showResourceDetail(resource);
-    }
   }
 
   function removeSelectedRoutePoint(id) {
-    state.activePreset = "";
     state.selectedRoutePointIds.delete(id);
     renderSelectedRoutePoints();
     rerenderCurrentMarkers();
   }
 
-  function clearSelectedRoutePoints(options = {}) {
-    if (!options.keepPreset) {
-      state.activePreset = "";
-    }
+  function clearSelectedRoutePoints() {
     state.selectedRoutePointIds.clear();
     renderSelectedRoutePoints();
     rerenderCurrentMarkers();
@@ -1384,14 +1331,9 @@
     params.set("theme", theme);
     params.set("days", days);
 
-    if (state.activePreset) {
-      params.set("preset", state.activePreset);
-    }
-
     const selectedPointIds = getSelectedRoutePointIds();
 
     if (selectedPointIds.length) {
-      params.delete("preset");
       params.set("points", selectedPointIds.join(","));
     }
 
@@ -1723,11 +1665,8 @@
         const province = source.dataset.presetProvince || "";
         const theme = source.dataset.presetTheme || "meeting";
         const days = source.dataset.presetDays || "3";
-        const preset = source.dataset.presetId || "";
 
         state.activeTheme = theme;
-        state.activePreset = preset;
-        updateMapClickMode("detail");
 
         if ($("#provinceSelect") && province) {
           $("#provinceSelect").value = province;
@@ -1741,7 +1680,7 @@
           $("#daysSelect").value = days;
         }
 
-        clearSelectedRoutePoints({ keepPreset: true });
+        clearSelectedRoutePoints();
 
         generateRoute().catch((error) => {
           console.error(error);
@@ -1766,21 +1705,13 @@
         return;
       }
       control.addEventListener("change", () => {
-        state.activePreset = "";
         clearRoute();
       });
     });
 
     $("#themeSelect")?.addEventListener("change", () => {
       state.activeTheme = $("#themeSelect").value || "meeting";
-      state.activePreset = "";
       clearRoute();
-    });
-
-    document.querySelectorAll("[data-map-click-mode]").forEach((button) => {
-      button.addEventListener("click", () => {
-        updateMapClickMode(button.dataset.mapClickMode);
-      });
     });
 
     $("#selectedRoutePointList")?.addEventListener("click", (event) => {
@@ -1794,7 +1725,6 @@
     $("#clearRoutePointsBtn")?.addEventListener("click", clearSelectedRoutePoints);
 
     $("#generateRouteBtn").addEventListener("click", () => {
-      state.activePreset = "";
       generateRoute().catch((error) => {
         console.error(error);
         showAnalysis(false);
@@ -1811,7 +1741,6 @@
       bindEvents();
       await loadOptions();
       await loadResources();
-      updateMapClickMode("detail");
     } catch (error) {
       console.error(error);
       flash("红色旅游模块加载失败");
