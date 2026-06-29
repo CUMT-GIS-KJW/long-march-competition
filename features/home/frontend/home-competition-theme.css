@@ -339,3 +339,78 @@
     grid-template-columns: 280px 1fr 300px;
   }
 }
+.main-layout {
+  grid-template-columns: 320px minmax(0, 1fr) clamp(360px, 22vw, 430px);
+}
+
+.right-detail-shell {
+  min-height: 0;
+  margin-bottom: 14px;
+  padding: 18px;
+  display: grid;
+  grid-template-rows: 138px minmax(0, 1fr);
+  gap: 14px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),
+    url("/assets/map-scroll.svg") center / cover no-repeat;
+  border: 1px solid rgba(122, 54, 21, 0.25);
+  border-radius: 8px;
+  box-shadow:
+    0 12px 30px rgba(87, 31, 12, 0.18),
+    inset 0 0 0 1px rgba(255, 246, 220, 0.48);
+}
+
+.right-map-title {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #8a1b12;
+  background: rgba(255, 238, 199, 0.68);
+  border: 2px solid rgba(157, 31, 21, 0.45);
+  border-radius: 6px;
+}
+
+.right-map-title span {
+  display: block;
+  font: 900 32px "Georgia", serif;
+  letter-spacing: 0.04em;
+}
+
+.right-map-title b {
+  display: block;
+  margin-top: 4px;
+  font: 800 22px "KaiTi", "STKaiti", serif;
+}
+
+.right-detail {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.map-title {
+  display: none;
+}
+/* 删除顶部导航按钮里的小圆图标 */
+.site-nav .site-nav-btn::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* 小图标删掉后，按钮文字居中 */
+.site-nav .site-nav-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+/* Hide reset view and legend buttons in the top bar. */
+.topbar-actions {
+  display: none !important;
+}

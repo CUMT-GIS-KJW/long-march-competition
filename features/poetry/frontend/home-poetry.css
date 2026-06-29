@@ -122,7 +122,7 @@ body.poetry-cursor-active * {
 
 .poetry-wall-list {
   position: absolute !important;
-  inset: 22px 64px 84px 64px !important;
+  inset: 18px 28px 76px 28px !important;
   z-index: 4 !important;
   display: grid !important;
   grid-template-columns: repeat(7, minmax(86px, 1fr)) !important;
@@ -497,4 +497,338 @@ body.poetry-cursor-active * {
   .poetry-place-card {
     width: 38vw;
   }
+}
+.poetry-modal.show {
+  display: grid !important;
+  place-items: center !important;
+}
+
+.poetry-window {
+  left: 50% !important;
+  top: 50% !important;
+  width: min(1040px, 84vw) !important;
+  height: min(660px, 76vh) !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background:
+    url("/assets/img/poetry/scroll-open.png") center / 100% 100% no-repeat,
+    linear-gradient(90deg, #e0b96e, #fff1c8 12%, #fff6dc 50%, #fff1c8 88%, #e0b96e) !important;
+  box-shadow: 0 28px 90px rgba(38, 9, 4, 0.58);
+  transform-origin: center center !important;
+  animation: poetryScrollOpen 0.46s ease both;
+}
+
+.poetry-window::before,
+.poetry-window::after {
+  content: "";
+  display: block !important;
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  z-index: 1;
+  width: 34px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8f4d1f, #e4b45a, #7d3b19);
+  box-shadow: inset 0 0 8px rgba(70, 24, 8, 0.45);
+}
+
+.poetry-window::before {
+  left: -14px;
+}
+
+.poetry-window::after {
+  right: -14px;
+}
+
+@keyframes poetryScrollOpen {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scaleX(0.12);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scaleX(1);
+  }
+}
+/* 诗词卷轴：居中弹出 + 展开动画 + 字体自适应 */
+.poetry-modal.show {
+  display: grid !important;
+  place-items: center !important;
+}
+
+.poetry-window {
+  left: 50% !important;
+  top: 50% !important;
+  width: min(1080px, 84vw) !important;
+  height: min(680px, 76vh) !important;
+  min-width: 720px;
+  min-height: 460px;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  transform-origin: center center !important;
+  animation: poetryScrollUnfold 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+}
+
+/* 卷轴两侧轴杆 */
+.poetry-window::before,
+.poetry-window::after {
+  content: "";
+  display: block !important;
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  z-index: 20;
+  width: 34px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #7e3b17, #e7b85d 46%, #7e3b17);
+  box-shadow:
+    inset 0 0 8px rgba(68, 25, 8, 0.5),
+    0 8px 18px rgba(68, 25, 8, 0.22);
+  pointer-events: none;
+}
+
+.poetry-window::before {
+  left: -12px;
+}
+
+.poetry-window::after {
+  right: -12px;
+}
+
+@keyframes poetryScrollUnfold {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scaleX(0.08);
+    filter: blur(2px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scaleX(1.04);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scaleX(1);
+    filter: blur(0);
+  }
+}
+
+/* 诗词列表页：字体跟随界面缩放 */
+.poetry-wall-list {
+  inset: clamp(18px, 3vh, 34px) clamp(42px, 5vw, 76px) clamp(76px, 10vh, 96px) !important;
+  align-items: stretch !important;
+}
+
+.poetry-wall-item {
+  height: 100% !important;
+  min-width: 0 !important;
+}
+
+.poetry-wall-item span {
+  max-height: 100% !important;
+  font-size: clamp(20px, 2.1vmin, 40px) !important;
+  line-height: 1.22 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.poetry-wall-item small {
+  font-size: clamp(13px, 1.35vmin, 19px) !important;
+}
+
+/* 诗词详情页：标题、正文、地点卡片都按弹窗比例收放 */
+.poetry-detail-main {
+  left: clamp(42px, 5vw, 70px) !important;
+  top: clamp(30px, 5vh, 54px) !important;
+  width: min(58%, 650px) !important;
+  max-height: calc(100% - 80px) !important;
+  overflow: auto !important;
+}
+
+.poetry-detail-main h2 {
+  font-size: clamp(28px, 3.2vmin, 52px) !important;
+  line-height: 1.12 !important;
+}
+
+.poetry-detail-subtitle {
+  font-size: clamp(18px, 2.2vmin, 34px) !important;
+}
+
+.poetry-detail-text {
+  font-size: clamp(22px, 2.65vmin, 42px) !important;
+  line-height: 1.45 !important;
+}
+
+.poetry-place-card {
+  width: min(420px, 32vw) !important;
+  max-height: 42vh !important;
+  padding: clamp(14px, 2vmin, 22px) !important;
+}
+
+.poetry-place-title strong {
+  font-size: clamp(22px, 2.5vmin, 34px) !important;
+}
+
+.poetry-place-position,
+.poetry-place-story {
+  font-size: clamp(13px, 1.45vmin, 17px) !important;
+}
+
+/* 小屏时避免文字和右侧卡片重叠 */
+@media (max-width: 900px) {
+  .poetry-window {
+    width: 92vw !important;
+    height: 78vh !important;
+    min-width: 0;
+  }
+
+  .poetry-detail-main {
+    width: calc(100% - 90px) !important;
+  }
+
+  .poetry-place-card {
+    display: none !important;
+  }
+
+  .poetry-wall-list {
+    grid-template-columns: repeat(7, minmax(38px, 1fr)) !important;
+    inset-inline: 26px !important;
+  }
+
+  .poetry-wall-item span {
+    font-size: clamp(18px, 3.4vmin, 30px) !important;
+  }
+}
+/* 诗词卷轴：缩小左右间隔，完整展示全部诗词 */
+.poetry-window {
+  width: min(1160px, 88vw) !important;
+  height: min(680px, 76vh) !important;
+  min-width: 0 !important;
+  animation: poetryScrollReveal 0.72s ease-out both !important;
+  transform: translate(-50%, -50%) !important;
+  transform-origin: center center !important;
+}
+
+/* 不用 scaleX，避免被 transform: !important 覆盖 */
+@keyframes poetryScrollReveal {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 50% 0 50% round 14px);
+    filter: blur(2px);
+  }
+
+  65% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 14px);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 14px);
+    filter: blur(0);
+  }
+}
+
+/* 诗词列表：左右留白和列间距改小 */
+.poetry-wall-list {
+  inset: 18px 38px 76px 38px !important;
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  column-gap: clamp(4px, 0.8vw, 14px) !important;
+  justify-items: center !important;
+  align-items: stretch !important;
+  padding: 8px 0 0 !important;
+}
+
+/* 每首诗占用固定列宽，避免挤出右侧 */
+.poetry-wall-item {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 100% !important;
+  justify-items: center !important;
+}
+
+/* 字体随界面缩放，确保七首都能完整显示 */
+.poetry-wall-item span {
+  max-height: calc(100% - 42px) !important;
+  font-size: clamp(17px, 1.72vmin, 30px) !important;
+  line-height: 1.18 !important;
+  letter-spacing: 0.04em !important;
+  white-space: normal !important;
+}
+
+.poetry-wall-item small {
+  margin-top: 8px !important;
+  font-size: clamp(12px, 1.15vmin, 16px) !important;
+}
+
+/* 关闭按钮不要压住最右侧诗词 */
+.poetry-close {
+  top: 12px !important;
+  right: 14px !important;
+  width: 42px !important;
+  height: 42px !important;
+  z-index: 9800 !important;
+}
+
+/* 卷轴两侧轴杆保留，但别占用内容区域 */
+.poetry-window::before,
+.poetry-window::after {
+  width: 28px !important;
+  top: 26px !important;
+  bottom: 26px !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+}
+
+.poetry-window::before {
+  left: -10px !important;
+}
+
+.poetry-window::after {
+  right: -10px !important;
+}
+
+/* 小屏继续压缩间距和字体 */
+@media (max-width: 1000px) {
+  .poetry-window {
+    width: 94vw !important;
+    height: 78vh !important;
+  }
+
+  .poetry-wall-list {
+    inset: 18px 26px 72px 26px !important;
+    column-gap: 4px !important;
+  }
+
+  .poetry-wall-item span {
+    font-size: clamp(15px, 2.45vmin, 24px) !important;
+    line-height: 1.14 !important;
+  }
+
+  .poetry-wall-item small {
+    font-size: 12px !important;
+  }
+}
+/* 缩小诗句正文和诗名之间的间隔 */
+.poetry-wall-item {
+  grid-template-rows: 1fr auto !important;
+  row-gap: 0 !important;
+}
+
+.poetry-wall-item span {
+  margin-bottom: 0 !important;
+}
+
+.poetry-wall-item small {
+  margin-top: 2px !important;
+  transform: translateX(38px) !important;
+}
+/* 诗词列表整体向左移动 */
+.poetry-wall-list {
+  transform: translateX(-42px) !important;
 }
