@@ -62,6 +62,10 @@
 
       <section class="map-wrap">
         <div id="map"></div>
+        <button class="poetry-scroll-entry" id="poetryScrollEntry" type="button" title="长征诗词卷轴">
+          <img src="/assets/img/poetry/scroll-closed.webp" alt="长征诗词卷轴">
+          <span>诗词</span>
+        </button>
         <div class="map-title">
           <span>1934-1936</span>
           <b>长征路线与重要事件时空展示</b>
@@ -111,6 +115,72 @@
     </footer>
   </div>
 
+  <section class="poetry-modal" id="poetryModal" aria-hidden="true">
+    <div class="poetry-brush-cursor" id="poetryBrushCursor">
+      <img src="/assets/img/poetry/brush.png" alt="">
+    </div>
+    <div class="poetry-window" id="poetryWindow">
+      <button class="poetry-close" id="poetryCloseBtn" type="button">×</button>
+
+      <section class="poetry-wall-page" id="poetryWallPage">
+        <div class="poetry-wall-bg">
+          <img src="/assets/img/poetry/scroll-open.png" alt="">
+        </div>
+        <div class="poetry-wall-list" id="poetryList"></div>
+        <button class="poetry-wall-close" id="poetryWallCloseBtn" type="button">
+          点击关闭卷轴
+        </button>
+      </section>
+
+      <section class="poetry-detail-page" id="poetryDetailPage">
+        <div class="poetry-image-layer">
+          <img class="poetry-ancient-img" id="poetryAncientImg" src="/assets/map-scroll.svg" alt="">
+          <img class="poetry-modern-img" id="poetryModernImg" src="/assets/img/xueshan.jpg" alt="">
+        </div>
+
+        <button class="poetry-detail-back" id="poetryBackBtn" type="button">
+          <img src="/assets/img/poetry/text-button-bg.png" alt="">
+          <span>返回</span>
+        </button>
+
+        <button class="poetry-switch" id="poetrySwitchBtn" type="button">
+          <img src="/assets/img/poetry/past-now.png" alt="">
+          <span id="poetrySwitchText">今</span>
+        </button>
+
+        <button class="poetry-page-btn poetry-prev" id="poetryPrevBtn" type="button">
+          <img src="/assets/img/poetry/arrow-left.png" alt="上一首">
+        </button>
+
+        <button class="poetry-page-btn poetry-next" id="poetryNextBtn" type="button">
+          <img src="/assets/img/poetry/arrow-right.png" alt="下一首">
+        </button>
+
+        <section class="poetry-detail-main">
+          <h2 id="poetryDetailTitle"></h2>
+          <button class="poetry-voice-btn" id="poetryVoiceBtn" type="button">
+            <img class="voice-off" src="/assets/img/poetry/voice-off.png" alt="">
+            <img class="voice-on" src="/assets/img/poetry/voice-on.png" alt="">
+          </button>
+          <div class="poetry-detail-subtitle" id="poetryDetailMeta"></div>
+          <pre class="poetry-detail-text" id="poetryDetailText"></pre>
+        </section>
+
+        <img class="poetry-ink" src="/assets/img/poetry/ink.gif" alt="">
+
+        <aside class="poetry-place-card">
+          <div class="poetry-place-title">
+            <img src="/assets/img/poetry/location.png" alt="">
+            <strong id="poetryPlaceName"></strong>
+          </div>
+          <div class="poetry-place-position" id="poetryPlacePosition"></div>
+          <hr>
+          <div class="poetry-place-story" id="poetryPlaceStory"></div>
+        </aside>
+      </section>
+    </div>
+  </section>
+
   <div class="agent-panel" id="agentPanel">
     <button class="agent-toggle" id="agentToggle" type="button">AI</button>
     <section class="agent-window">
@@ -133,6 +203,7 @@
   <script src="/features/shared/frontend/data-service.js"></script>
   <script src="/features/home/frontend/home-map.js"></script>
   <script src="/features/home/frontend/home-ui.js"></script>
+  <script src="/features/home/frontend/home-poetry.js"></script>
   <script src="/features/agent/frontend/agent-ui.js"></script>
 </body>
 </html>
