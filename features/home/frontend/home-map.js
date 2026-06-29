@@ -274,7 +274,8 @@
     $("#routeLayerList").innerHTML = state.routeConfigs
       .map(config => {
         return `
-          <label>
+          <label style="--route-color: ${config.color || "#b42318"}">
+            <i class="route-color-line" aria-hidden="true"></i>
             <input type="checkbox" data-route-layer="${config.layer_key}">
             <span>${config.layer_name}</span>
           </label>
