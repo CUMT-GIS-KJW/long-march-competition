@@ -154,7 +154,7 @@
 
   async function loadChinaProvinceGeoJson() {
     const sources = [
-      "/assets/china-provinces.geojson",
+      "/data/geojson/china-provinces.geojson",
       "https://cdn.jsdelivr.net/gh/longwosion/geojson-map-china@master/china.json",
       "https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json",
     ];
@@ -188,7 +188,7 @@
 
     // 没有真实省界文件时不报错：地图继续使用真实瓦片与真实资源坐标。
     document.querySelector(".tourism-map-wrap")?.classList.add("no-real-china-map");
-    console.info("省界 GeoJSON 未加载：建议将标准中国省界文件放到 /assets/china-provinces.geojson");
+    console.info("省界 GeoJSON 未加载：建议将标准中国省界文件放到 /data/geojson/china-provinces.geojson");
   }
 
   function renderRealProvinceBoundaries(provinceNames, selectedProvince) {
@@ -1858,7 +1858,7 @@
     const theme = route?.theme?.label || "长征精神研学";
 
     panel.innerHTML = `
-      <img src="/assets/img/longmarch-route-corner.png" alt="长征研学路线分析示意">
+      <img src="/assets/images/longmarch-route-corner.png" alt="长征研学路线分析示意">
       <div>
         <b>${theme}路线研判</b>
         <p><strong>选择依据：</strong>围绕${places}组织学习，兼顾事件代表性、空间连续性和学生集体出行安全。</p>

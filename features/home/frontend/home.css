@@ -112,7 +112,7 @@ input {
   overflow: auto;
   background:
     linear-gradient(rgba(255, 248, 226, 0.94), rgba(244, 225, 184, 0.92)),
-    url("/assets/map-scroll.svg") center / cover;
+    url("/assets/icons/map-scroll.svg") center / cover;
 }
 
 .left-panel {
@@ -242,9 +242,9 @@ input {
   height: 210px;
   pointer-events: none;
   background:
-    url("/assets/img/home/top-doves.png") right 12% top 34px / 190px auto no-repeat,
+    url("/assets/images/home/top-doves.png") right 12% top 34px / 190px auto no-repeat,
     linear-gradient(180deg, rgba(255, 244, 219, 0.74), rgba(255, 244, 219, 0)),
-    url("/assets/img/poetry/source-bg.jpg") center top / cover no-repeat;
+    url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat;
   filter: sepia(0.28) saturate(1.05) contrast(0.98);
   mix-blend-mode: multiply;
   opacity: 0.62;
@@ -447,7 +447,7 @@ body.poetry-cursor-active * {
   width: 260px;
   height: 64px;
   color: #8b7355;
-  background: url("/assets/img/poetry/text-button-bg.png") center / 100% 100% no-repeat;
+  background: url("/assets/images/poetry/text-button-bg.png") center / 100% 100% no-repeat;
   border: 0;
   font-family: "KaiTi", "STKaiti", serif;
   font-size: 24px;
@@ -843,7 +843,7 @@ body.poetry-cursor-active * {
   color: #3d2015;
   background:
     linear-gradient(rgba(255, 247, 224, 0.94), rgba(236, 209, 150, 0.9)),
-    url("/assets/map-scroll.svg") center / cover;
+    url("/assets/icons/map-scroll.svg") center / cover;
   border: 1px solid rgba(247, 214, 139, 0.62);
   border-radius: 22px;
   box-shadow:

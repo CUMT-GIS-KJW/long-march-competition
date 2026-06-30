@@ -132,7 +132,7 @@ button {
 .map-canvas {
         position:absolute;
         inset:0;
-        background:#c7c0a5 url('/assets/map-scroll.svg') center/cover no-repeat;
+        background:#c7c0a5 url('/assets/icons/map-scroll.svg') center/cover no-repeat;
         filter:saturate(.82) contrast(1.02)
 }
 
@@ -570,7 +570,7 @@ button {
 .workspace {
         position:relative;
         overflow:hidden;
-        background:#bdbaa3 url('/assets/map-scroll.svg') center/cover no-repeat
+        background:#bdbaa3 url('/assets/icons/map-scroll.svg') center/cover no-repeat
 }
 
 .workspace:after {

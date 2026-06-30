@@ -1,7 +1,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { PROJECT_ROOT, PUBLIC_ROOT } = require("./data-store");
+const { PROJECT_ROOT, PUBLIC_ROOT, ASSETS_ROOT, DATA_ROOT } = require("./data-store");
 
 const FEATURES_ROOT = path.join(PROJECT_ROOT, "features");
 
@@ -10,11 +10,15 @@ const mimeTypes = {
   ".css": "text/css; charset=utf-8",
   ".js": "application/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
+  ".geojson": "application/geo+json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
   ".webp": "image/webp",
+  ".gif": "image/gif",
   ".svg": "image/svg+xml",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
   ".glb": "model/gltf-binary",
   ".splat": "application/octet-stream",
   ".ksplat": "application/octet-stream",
@@ -34,23 +38,34 @@ const pageAliases = {
 };
 
 const externalAssetFallbacks = {
-  "/assets/img/home-poster/logal.png": path.join(os.homedir(), "Downloads", "logal.png"),
+  "/assets/images/home-poster/logal.png": path.join(os.homedir(), "Downloads", "logal.png"),
 };
+
+function resolveMountedPath(root, requestedPath, prefix) {
+  const relativePath = requestedPath.slice(prefix.length);
+
+  return {
+    root,
+    filePath: path.normalize(path.join(root, relativePath)),
+  };
+}
 
 function resolveStaticPath(pathname) {
   const requestedPath = pageAliases[pathname] || decodeURIComponent(pathname);
 
   if (requestedPath.startsWith("/features/")) {
-    return {
-      root: FEATURES_ROOT,
-      filePath: path.normalize(path.join(PROJECT_ROOT, requestedPath)),
-    };
+    return resolveMountedPath(FEATURES_ROOT, requestedPath, "/features/");
   }
 
-  return {
-    root: PUBLIC_ROOT,
-    filePath: path.normalize(path.join(PUBLIC_ROOT, requestedPath)),
-  };
+  if (requestedPath.startsWith("/assets/")) {
+    return resolveMountedPath(ASSETS_ROOT, requestedPath, "/assets/");
+  }
+
+  if (requestedPath.startsWith("/data/")) {
+    return resolveMountedPath(DATA_ROOT, requestedPath, "/data/");
+  }
+
+  return resolveMountedPath(PUBLIC_ROOT, requestedPath, "/");
 }
 
 function isInside(root, filePath) {

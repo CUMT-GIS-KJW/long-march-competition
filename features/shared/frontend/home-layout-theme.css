@@ -16,7 +16,7 @@
   background:
     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),
     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),
-    url("/assets/img/poetry/source-bg.jpg") center / cover no-repeat !important;
+    url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
 }
 
 .analysis-app { grid-template-rows: 92px minmax(0, 1fr) 76px !important; }
@@ -33,7 +33,7 @@
   color: var(--home-ink) !important;
   background:
     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),
-    url("/assets/img/poetry/source-bg.jpg") center top / cover no-repeat !important;
+    url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
   border-bottom: 0 !important;
   box-shadow: none !important;
 }
@@ -47,7 +47,7 @@
   width: 190px;
   height: 58px;
   pointer-events: none;
-  background: url("/assets/img/home-poster/slogan.png") center / contain no-repeat;
+  background: url("/assets/images/home-poster/slogan.png") center / contain no-repeat;
 }
 
 .brand,
@@ -91,7 +91,7 @@
   line-height: 0 !important;
   letter-spacing: 0 !important;
   text-shadow: none !important;
-  background: url("/assets/img/home-poster/title-art.png") left center / contain no-repeat !important;
+  background: url("/assets/images/home-poster/title-art.png") left center / contain no-repeat !important;
 }
 
 .brand h1::after,
@@ -218,7 +218,7 @@
   color: var(--home-ink) !important;
   background:
     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),
-    url("/assets/map-scroll.svg") center / cover no-repeat !important;
+    url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
   border: 1px solid var(--home-line) !important;
   border-radius: 8px !important;
   box-shadow: 0 12px 30px rgba(87, 31, 12, 0.18), inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
@@ -422,7 +422,7 @@
   color: #3d1c11 !important;
   background:
     linear-gradient(rgba(255, 246, 222, 0.97), rgba(239, 207, 152, 0.94)),
-    url("/assets/map-scroll.svg") center / cover no-repeat !important;
+    url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
   border: 1px solid rgba(122, 54, 21, 0.25) !important;
   border-radius: 8px !important;
 }
@@ -498,7 +498,7 @@
   background:
     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),
     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),
-    url("/assets/img/poetry/source-bg.jpg") center / cover no-repeat !important;
+    url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
 }
 
 .tourism-topbar.tourism-cartoon-topbar {
@@ -509,7 +509,7 @@
   padding: 12px 26px 10px !important;
   background:
     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),
-    url("/assets/img/poetry/source-bg.jpg") center top / cover no-repeat !important;
+    url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
@@ -553,7 +553,7 @@
   padding: 18px !important;
   background:
     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),
-    url("/assets/map-scroll.svg") center / cover no-repeat !important;
+    url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
   border: 1px solid var(--home-line) !important;
   border-radius: 8px !important;
   box-shadow:

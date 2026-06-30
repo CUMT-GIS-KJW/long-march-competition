@@ -1,13 +1,13 @@
 const cornerImages = {
-  shiliuzi: "/assets/img/poetry/VCG211611345420.jpg",
-  loushanguan: "/assets/img/poetry/VCG211620090490.png",
-  changzheng: "/assets/img/poetry/VCG211634570806.jpg",
-  kunlun: "/assets/img/poetry/VCG211643672387.jpg",
-  liupanshan: "/assets/img/poetry/OIP.webp",
-  pengdehuai: "/assets/img/poetry/O1CN01a4fN2C1f43yrCr9ya_!!533673952.jpg_q90.webp",
-  xue: "/assets/img/poetry/VCG211444428325.jpg",
+  shiliuzi: "/assets/images/poetry/VCG211611345420.jpg",
+  loushanguan: "/assets/images/poetry/VCG211620090490.png",
+  changzheng: "/assets/images/poetry/VCG211634570806.jpg",
+  kunlun: "/assets/images/poetry/VCG211643672387.jpg",
+  liupanshan: "/assets/images/poetry/OIP.webp",
+  pengdehuai: "/assets/images/poetry/O1CN01a4fN2C1f43yrCr9ya_!!533673952.jpg_q90.webp",
+  xue: "/assets/images/poetry/VCG211444428325.jpg",
 };
-const defaultBackground = "/assets/img/poetry/source-bg.jpg";
+const defaultBackground = "/assets/images/poetry/source-bg.jpg";
 
 const poems = [
   {

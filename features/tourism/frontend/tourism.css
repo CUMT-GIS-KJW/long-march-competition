@@ -101,7 +101,7 @@ input {
   padding: 14px;
   background:
     linear-gradient(rgba(255, 248, 228, 0.96), rgba(241, 220, 174, 0.92)),
-    url("/assets/map-scroll.svg") center / cover;
+    url("/assets/icons/map-scroll.svg") center / cover;
 }
 
 .tourism-left {
@@ -2231,7 +2231,7 @@ input {
   font-weight: 900;
 }
 
-/* 真实 GeoJSON 省界样式：有 /assets/china-provinces.geojson 时自动使用 */
+/* 真实 GeoJSON 省界样式：有 /data/geojson/china-provinces.geojson 时自动使用 */
 .china-province-real {
   stroke-linejoin: round;
   filter: drop-shadow(5px 7px 0 rgba(90, 63, 48, .18)) drop-shadow(0 12px 18px rgba(0, 70, 85, .10));

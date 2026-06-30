@@ -8,7 +8,7 @@
 - `features/agent/`：GIS 智能助手前端面板与后端对话接口。
 - `features/shared/`：共享前端配置、数据服务、地图工具与后端公共工具。
 
-数据文件保持在 `public/assets/data`，未随功能目录移动。
+数据文件统一整理在 `data/json`、`data/routes` 和 `data/geojson`，静态资源整理在 `assets/images` 与 `assets/icons`。
 
 ## 文档
 

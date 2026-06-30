@@ -2,10 +2,13 @@
 const path = require("path");
 const zlib = require("zlib");
 
-const DATA_DIR = path.resolve(__dirname, "..", "public", "assets", "data");
-const ROUTE_LAYER_DIR = path.join(DATA_DIR, "route-layers");
+const DATA_ROOT = path.resolve(__dirname, "..", "data");
+const JSON_DATA_DIR = path.join(DATA_ROOT, "json");
+const ROUTE_DATA_DIR = path.join(DATA_ROOT, "routes");
+const GEOJSON_DATA_DIR = path.join(DATA_ROOT, "geojson");
+const ROUTE_LAYER_DIR = path.join(ROUTE_DATA_DIR, "route-layers");
 const CACHE_DIR = path.join(__dirname, "cache");
-const PROVINCE_CACHE = path.join(CACHE_DIR, "china-provinces.geojson");
+const PROVINCE_CACHE = path.join(GEOJSON_DATA_DIR, "china-provinces.geojson");
 const PROVINCE_SOURCE_URL = "https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json";
 const TERRARIUM_URL = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
 const TERRARIUM_ZOOM = 8;
@@ -37,13 +40,25 @@ function ensureCacheDir() {
   fs.mkdirSync(CACHE_DIR, { recursive: true });
 }
 
+function resolveDataPath(relativePath) {
+  const normalized = String(relativePath).replace(/\\/g, "/");
+  const root = normalized === "route-layer-config.json" ||
+    normalized === "routes.json" ||
+    normalized.startsWith("route-layers/")
+    ? ROUTE_DATA_DIR
+    : JSON_DATA_DIR;
+
+  return path.join(root, ...normalized.split("/"));
+}
+
 function readJson(relativePath) {
-  return JSON.parse(fs.readFileSync(path.join(DATA_DIR, relativePath), "utf8"));
+  return JSON.parse(fs.readFileSync(resolveDataPath(relativePath), "utf8"));
 }
 
 function writeJson(relativePath, value) {
-  const outputPath = path.join(DATA_DIR, relativePath);
-  fs.writeFileSync(outputPath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  const outputPath = resolveDataPath(relativePath);
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, JSON.stringify(value, null, 2) + "\n", "utf8");
 }
 
 async function fetchBuffer(url) {
@@ -283,6 +298,7 @@ function nearestReference(point, referencePoints) {
 
 async function loadProvinceBoundaries() {
   ensureCacheDir();
+  fs.mkdirSync(path.dirname(PROVINCE_CACHE), { recursive: true });
 
   if (fs.existsSync(PROVINCE_CACHE)) {
     try {
@@ -1013,7 +1029,8 @@ async function main() {
   console.log(`- compare rows: ${routeCompare.length}`);
   console.log(`- province source: ${PROVINCE_SOURCE_URL}`);
   console.log(`- DEM source: ${TERRARIUM_URL} z${TERRARIUM_ZOOM}`);
-  console.log(`- output: ${DATA_DIR}`);
+  console.log(`- output json: ${JSON_DATA_DIR}`);
+  console.log(`- output routes: ${ROUTE_DATA_DIR}`);
 }
 
 main().catch((error) => {

@@ -155,7 +155,7 @@
         }
       }
 
-      return fallbackFetch("/assets/data/analysis-node-types.json");
+      return fallbackFetch("/data/json/analysis-node-types.json");
     };
 
     const [

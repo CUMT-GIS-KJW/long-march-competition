@@ -12,20 +12,20 @@ npm run gis:analysis
 
 脚本会读取：
 
-- `public/assets/data/route-layer-config.json`
-- `public/assets/data/route-layers/*.json`
-- `public/assets/data/events-important.json`
-- `public/assets/data/resources.json`
+- `data/routes/route-layer-config.json`
+- `data/routes/route-layers/*.json`
+- `data/json/events-important.json`
+- `data/json/resources.json`
 
 并重新生成：
 
-- `public/assets/data/analysis-summary.json`
-- `public/assets/data/analysis-province.json`
-- `public/assets/data/analysis-elevation.json`
-- `public/assets/data/analysis-buffer.json`
-- `public/assets/data/analysis-stage.json`
-- `public/assets/data/analysis-node-types.json`
-- `public/assets/data/analysis-routes.json`
+- `data/json/analysis-summary.json`
+- `data/json/analysis-province.json`
+- `data/json/analysis-elevation.json`
+- `data/json/analysis-buffer.json`
+- `data/json/analysis-stage.json`
+- `data/json/analysis-node-types.json`
+- `data/json/analysis-routes.json`
 
 ## 当前实现
 

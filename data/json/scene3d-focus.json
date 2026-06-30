@@ -9,7 +9,7 @@
   "modelType": "3DGS",
   "modelUrl": "./assets/models/zunyi.ksplat",
   "fallbackModel": "./assets/models/monument.glb",
-  "coverImage": "./assets/img/zunyi.jpg",
+  "coverImage": "./assets/images/zunyi.jpg",
   "province": "贵州省",
   "city": "遵义市",
   "stage": "遵义转折阶段",

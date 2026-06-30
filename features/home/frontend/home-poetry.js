@@ -7,8 +7,8 @@
       wallLine: "山，刺破青天锷未残，天欲堕，赖以拄其间。",
       place: "长征群山",
       position: "位置：赣南、湘桂、黔北等长征初期山地行军区域",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/red-army-march.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/red-army-march.jpg",
       story:
         "这三首小令写于长征初期，通过对险峻群山的描绘，展现红军快马加鞭、勇往直前的行军气势。山不只是自然阻隔，也是革命队伍必须穿越的考验。",
       text:
@@ -21,8 +21,8 @@
       wallLine: "雄关漫道真如铁，而今迈步从头越。",
       place: "娄山关",
       position: "位置：贵州省遵义市桐梓县与汇川区交界",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/zunyi.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/zunyi.jpg",
       story:
         "遵义会议后，红军取得娄山关大捷。这首词以霜晨、马蹄、喇叭、雄关与残阳构成悲壮画面，也写出革命重新出发的豪情。",
       text:
@@ -35,8 +35,8 @@
       wallLine: "红军不怕远征难，万水千山只等闲。",
       place: "长征路线",
       position: "位置：从江西瑞金到陕北吴起镇的战略转移路线",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/red-army-march.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/red-army-march.jpg",
       story:
         "中央红军胜利到达陕北后，这首诗高度概括长征中的万水千山、金沙江、大渡河、岷山雪等关键空间意象，是长征精神最凝练的诗意表达。",
       text:
@@ -49,8 +49,8 @@
       wallLine: "安得倚天抽宝剑，把汝裁为三截？",
       place: "昆仑山",
       position: "位置：青藏高原北缘，横亘中国西部的重要山系",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/xueshan.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/xueshan.jpg",
       story:
         "诗人以昆仑山为宏大对象，把自然高寒与世界理想联系起来，表达改造旧世界、追求天下均衡与人民解放的胸怀。",
       text:
@@ -63,8 +63,8 @@
       wallLine: "不到长城非好汉，屈指行程二万。",
       place: "六盘山",
       position: "位置：宁夏回族自治区固原市隆德县、泾源县一带",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/xueshan.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/xueshan.jpg",
       story:
         "六盘山是长征后期的重要山地节点。诗中‘不到长城非好汉’写出红军跨越最后大山、奔向胜利的坚定意志。",
       text:
@@ -77,8 +77,8 @@
       wallLine: "谁敢横刀立马？唯我彭大将军！",
       place: "吴起镇",
       position: "位置：陕西省延安市吴起县",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/red-army-march.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/red-army-march.jpg",
       story:
         "红军到达陕北吴起镇后，彭德怀率部击退追敌。诗句简洁有力，表现革命战争中将领的胆识与队伍的战斗精神。",
       text:
@@ -91,8 +91,8 @@
       wallLine: "俱往矣，数风流人物，还看今朝。",
       place: "陕北雪原",
       position: "位置：陕西北部黄土高原及红军东征相关区域",
-      ancientImage: "/assets/map-scroll.svg",
-      modernImage: "/assets/img/xueshan.jpg",
+      ancientImage: "/assets/icons/map-scroll.svg",
+      modernImage: "/assets/images/xueshan.jpg",
       story:
         "这首词作于红军东征时期，虽在长征胜利之后，却常被视作长征精神与诗人胸怀的延伸。雪景、江山、英雄共同构成宏阔历史视野。",
       text:

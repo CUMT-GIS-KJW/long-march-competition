@@ -45,7 +45,7 @@ body.poetry-cursor-active * {
   overflow: hidden !important;
   background:
     linear-gradient(rgba(255, 235, 196, 0.9), rgba(241, 198, 132, 0.82)),
-    url("/assets/img/poetry/source-bg.jpg") center / cover no-repeat !important;
+    url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
   border: 1px solid rgba(255, 220, 143, 0.48) !important;
   border-radius: 18px !important;
   box-shadow: 0 28px 90px rgba(38, 9, 4, 0.58) !important;
@@ -187,7 +187,7 @@ body.poetry-cursor-active * {
   width: 280px !important;
   height: 66px !important;
   color: #8b7355 !important;
-  background: url("/assets/img/poetry/text-button-bg.png") center / 100% 100% no-repeat !important;
+  background: url("/assets/images/poetry/text-button-bg.png") center / 100% 100% no-repeat !important;
   border: 0 !important;
   font-family: "KaiTi", "STKaiti", serif !important;
   font-size: 25px !important;
@@ -511,7 +511,7 @@ body.poetry-cursor-active * {
   border: 0 !important;
   border-radius: 10px !important;
   background:
-    url("/assets/img/poetry/scroll-open.png") center / 100% 100% no-repeat,
+    url("/assets/images/poetry/scroll-open.png") center / 100% 100% no-repeat,
     linear-gradient(90deg, #e0b96e, #fff1c8 12%, #fff6dc 50%, #fff1c8 88%, #e0b96e) !important;
   box-shadow: 0 28px 90px rgba(38, 9, 4, 0.58);
   transform-origin: center center !important;

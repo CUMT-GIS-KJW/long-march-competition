@@ -12,7 +12,7 @@
   background:
     radial-gradient(circle at 42% 16%, rgba(180, 54, 33, 0.12), transparent 24%),
     linear-gradient(rgba(255, 239, 205, 0.92), rgba(232, 190, 127, 0.74)),
-    url("/assets/img/poetry/source-bg.jpg") center / cover no-repeat;
+    url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat;
 }
 
 .topbar-main {
@@ -21,7 +21,7 @@
   align-items: flex-start;
   background:
     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),
-    url("/assets/img/poetry/source-bg.jpg") center top / cover no-repeat;
+    url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat;
   border-bottom: 0;
   color: var(--competition-ink);
 }
@@ -194,7 +194,7 @@
   margin-bottom: 14px;
   background:
     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),
-    url("/assets/map-scroll.svg") center / cover no-repeat;
+    url("/assets/icons/map-scroll.svg") center / cover no-repeat;
   border: 1px solid rgba(122, 54, 21, 0.25);
   border-radius: 8px;
   box-shadow:
@@ -369,7 +369,7 @@
   overflow: hidden;
   background:
     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),
-    url("/assets/map-scroll.svg") center / cover no-repeat;
+    url("/assets/icons/map-scroll.svg") center / cover no-repeat;
   border: 1px solid rgba(122, 54, 21, 0.25);
   border-radius: 8px;
   box-shadow:
@@ -442,7 +442,7 @@
   background:
     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),
     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),
-    url("/assets/img/poetry/source-bg.jpg") center / cover no-repeat !important;
+    url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
 }
 
 .brand-block strong {
@@ -453,7 +453,7 @@
   color: transparent !important;
   font-size: 0 !important;
   line-height: 0 !important;
-  background: url("/assets/img/home-poster/title-art.png") left center / contain no-repeat !important;
+  background: url("/assets/images/home-poster/title-art.png") left center / contain no-repeat !important;
   text-shadow: none !important;
 }
 
@@ -467,7 +467,7 @@
   top: 14px !important;
   width: 190px !important;
   height: 58px !important;
-  background: url("/assets/img/home-poster/slogan.png") center / contain no-repeat !important;
+  background: url("/assets/images/home-poster/slogan.png") center / contain no-repeat !important;
   text-shadow: none !important;
 }
 
@@ -490,7 +490,7 @@
   z-index: 452 !important;
   height: 58% !important;
   pointer-events: none !important;
-  background: url("/assets/img/home-poster/map-mountains.png") center bottom / 100% auto no-repeat !important;
+  background: url("/assets/images/home-poster/map-mountains.png") center bottom / 100% auto no-repeat !important;
   opacity: 0.46 !important;
   mix-blend-mode: multiply !important;
   filter: sepia(0.18) saturate(0.9) contrast(0.95) !important;
@@ -518,7 +518,7 @@
   z-index: 4;
   height: 82px;
   pointer-events: none;
-  background: url("/assets/img/home-poster/bottom-left.png") left bottom / contain no-repeat;
+  background: url("/assets/images/home-poster/bottom-left.png") left bottom / contain no-repeat;
   opacity: 0.58;
 }
 
@@ -536,7 +536,7 @@
   z-index: 0;
   height: 35%;
   pointer-events: none;
-  background: url("/assets/img/home-poster/right-flag.png") center bottom / contain no-repeat;
+  background: url("/assets/images/home-poster/right-flag.png") center bottom / contain no-repeat;
   opacity: 0.78;
 }
 
@@ -586,27 +586,27 @@
 }
 
 .event-type-buttons button[data-event-type="all"] {
-  --event-icon: url("/assets/img/home-poster/event-all.png");
+  --event-icon: url("/assets/images/home-poster/event-all.png");
 }
 
 .event-type-buttons button[data-event-type="battle"] {
-  --event-icon: url("/assets/img/home-poster/event-battle.png");
+  --event-icon: url("/assets/images/home-poster/event-battle.png");
 }
 
 .event-type-buttons button[data-event-type="meeting"] {
-  --event-icon: url("/assets/img/home-poster/event-meeting.png");
+  --event-icon: url("/assets/images/home-poster/event-meeting.png");
 }
 
 .event-type-buttons button[data-event-type="river"] {
-  --event-icon: url("/assets/img/home-poster/event-river.png");
+  --event-icon: url("/assets/images/home-poster/event-river.png");
 }
 
 .event-type-buttons button[data-event-type="mountain"] {
-  --event-icon: url("/assets/img/home-poster/event-mountain.png");
+  --event-icon: url("/assets/images/home-poster/event-mountain.png");
 }
 
 .event-type-buttons button[data-event-type="join"] {
-  --event-icon: url("/assets/img/home-poster/event-join.png");
+  --event-icon: url("/assets/images/home-poster/event-join.png");
 }
 
 .event-type-buttons button[data-event-type].active {

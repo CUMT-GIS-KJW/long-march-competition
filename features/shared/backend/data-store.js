@@ -3,8 +3,34 @@ const path = require("path");
 
 const PROJECT_ROOT = path.join(__dirname, "..", "..", "..");
 const PUBLIC_ROOT = path.join(PROJECT_ROOT, "public");
-const DATA_ROOT = path.join(PUBLIC_ROOT, "assets", "data");
-const ROUTE_LAYER_ROOT = path.join(DATA_ROOT, "route-layers");
+const ASSETS_ROOT = path.join(PROJECT_ROOT, "assets");
+const DATA_ROOT = path.join(PROJECT_ROOT, "data");
+const DATA_JSON_ROOT = path.join(DATA_ROOT, "json");
+const DATA_ROUTE_ROOT = path.join(DATA_ROOT, "routes");
+const DATA_GEOJSON_ROOT = path.join(DATA_ROOT, "geojson");
+const ROUTE_LAYER_ROOT = path.join(DATA_ROUTE_ROOT, "route-layers");
+const routeDataFiles = new Set(["route-layer-config.json", "routes.json"]);
+
+function assertInside(root, filePath) {
+  const relativePath = path.relative(root, filePath);
+
+  if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
+    throw new Error(`Invalid data path: ${filePath}`);
+  }
+
+  return filePath;
+}
+
+function resolveDataFile(filename) {
+  const normalized = String(filename).replace(/\\/g, "/");
+  const root = routeDataFiles.has(normalized) || normalized.startsWith("route-layers/")
+    ? DATA_ROUTE_ROOT
+    : normalized.endsWith(".geojson")
+      ? DATA_GEOJSON_ROOT
+      : DATA_JSON_ROOT;
+
+  return assertInside(root, path.join(root, ...normalized.split("/")));
+}
 
 function readJsonFile(filePath) {
   const text = fs.readFileSync(filePath, "utf8");
@@ -13,7 +39,7 @@ function readJsonFile(filePath) {
 }
 
 function readDataFile(filename) {
-  return readJsonFile(path.join(DATA_ROOT, filename));
+  return readJsonFile(resolveDataFile(filename));
 }
 
 function getRouteLayerConfigs() {
@@ -88,7 +114,11 @@ function sortEventTimeline(collection) {
 module.exports = {
   PROJECT_ROOT,
   PUBLIC_ROOT,
+  ASSETS_ROOT,
   DATA_ROOT,
+  DATA_JSON_ROOT,
+  DATA_ROUTE_ROOT,
+  DATA_GEOJSON_ROOT,
   readDataFile,
   readJsonFile,
   getRouteLayerConfigs,

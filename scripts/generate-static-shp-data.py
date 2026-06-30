@@ -5,10 +5,12 @@ import struct
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-DATA_DIR = os.path.join(PROJECT_DIR, "public", "assets", "data")
+DATA_ROOT = os.path.join(PROJECT_DIR, "data")
+JSON_DATA_DIR = os.path.join(DATA_ROOT, "json")
+ROUTE_DATA_DIR = os.path.join(DATA_ROOT, "routes")
 ROUTE_SOURCE_DIR = os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e")
 EVENT_SOURCE_DIR = os.path.join(ROOT_DIR, "\u91cd\u8981\u4e8b\u4ef6\u70b9")
-ROUTE_OUTPUT_DIR = os.path.join(DATA_DIR, "route-layers")
+ROUTE_OUTPUT_DIR = os.path.join(ROUTE_DATA_DIR, "route-layers")
 
 
 ROUTE_COLORS = [
@@ -287,6 +289,7 @@ def sort_event_features(features):
 
 def generate_routes():
     os.makedirs(ROUTE_OUTPUT_DIR, exist_ok=True)
+    os.makedirs(JSON_DATA_DIR, exist_ok=True)
     layer_configs = []
 
     shp_names = [
@@ -327,7 +330,7 @@ def generate_routes():
 
     layer_configs.sort(key=lambda item: item["display_order"])
 
-    with open(os.path.join(DATA_DIR, "route-layer-config.json"), "w", encoding="utf-8") as file:
+    with open(os.path.join(ROUTE_DATA_DIR, "route-layer-config.json"), "w", encoding="utf-8") as file:
         json.dump(layer_configs, file, ensure_ascii=False, indent=2)
 
 
@@ -339,7 +342,7 @@ def generate_events():
     collection = make_feature_collection(dbf_data["records"], shp_data["geometries"])
     collection["features"] = sort_event_features(collection["features"])
 
-    with open(os.path.join(DATA_DIR, "events-important.json"), "w", encoding="utf-8") as file:
+    with open(os.path.join(JSON_DATA_DIR, "events-important.json"), "w", encoding="utf-8") as file:
         json.dump(collection, file, ensure_ascii=False, indent=2)
 
 
