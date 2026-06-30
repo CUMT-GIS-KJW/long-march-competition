@@ -641,7 +641,7 @@
 }
 
 .route-switch button {
-        border:1px solid rgba(246,211,122,.18);
+        border:1px solid rgba(38, 8, 0, 0.209);;
         background:rgba(255,255,255,.035);
         color:#cfc2a0;
         padding:6px 8px;
@@ -652,8 +652,8 @@
 
 .route-switch button.active,
 .route-switch button:hover {
-        border-color:rgba(246,211,122,.55);
-        background:rgba(197,164,93,.2);
+        border-color:rgba(38, 8, 0, 0.459);;
+        background:rgba(195, 157, 75, 0.175);
         color:#ffe8a6
 }
 
@@ -904,7 +904,7 @@
 
 .layer-control span {
         grid-column:1/-1;
-        color:#d8bd73;
+        color:rgba(38, 8, 0, 0.72);
         font:600 9px var(--serif)
 }
 
