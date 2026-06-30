@@ -53,6 +53,9 @@
     routeNearbyEventIds: {},
     routePlayback: null,
     routeHeadMarker: null,
+    poetryPoints: [],
+    poetryLayer: null,
+    poetryVisible: false,
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -932,33 +935,169 @@
     if (bounds.isValid()) state.map.fitBounds(bounds, { padding: [30, 30] });
   }
 
-  async function initApp() {
-    initMap();
-    initLayerGroups();
-    renderDefaultDetail();
+async function initApp() {
+  initMap();
+  initLayerGroups();
+  renderDefaultDetail();
 
-    state.routeConfigs = await DataService.getRouteLayers();
-    const firstKey = state.routeConfigs[0]?.layer_key || "";
-    renderRouteControls();
+  state.routeConfigs = await DataService.getRouteLayers();
+  const firstKey = state.routeConfigs[0]?.layer_key || "";
+  renderRouteControls();
 
-    await Promise.all(state.routeConfigs.map(config => renderRouteLayer(config)));
+  await Promise.all(state.routeConfigs.map(config => renderRouteLayer(config)));
 
-    const events = await DataService.getEventTimeline();
-    state.eventTimeline = enrichEvents(events.features || []);
-    state.eventFeatures = state.eventTimeline;
-    buildNearbyEventCaches();
+  const events = await DataService.getEventTimeline();
+  state.eventTimeline = enrichEvents(events.features || []);
+  state.eventFeatures = state.eventTimeline;
+  buildNearbyEventCaches();
 
-    if (firstKey && state.routeLayers[firstKey]) {
-      toggleRouteLayer(firstKey, true);
-      const input = document.querySelector(`#routeLayerList input[data-route-layer="${firstKey}"]`);
-      if (input) input.checked = true;
-    }
+  // ★ 加载诗歌点数据
+  await loadPoetryPoints();
 
-    const routeSelect = $("#routeSelect");
-    if (routeSelect) routeSelect.value = firstKey || "";
-
-    resetView();
+  if (firstKey && state.routeLayers[firstKey]) {
+    toggleRouteLayer(firstKey, true);
+    const input = document.querySelector(`#routeLayerList input[data-route-layer="${firstKey}"]`);
+    if (input) input.checked = true;
   }
+
+  const routeSelect = $("#routeSelect");
+  if (routeSelect) routeSelect.value = firstKey || "";
+
+  resetView();
+}
+
+// ★ 加载诗歌点
+async function loadPoetryPoints() {
+  try {
+    const response = await fetch("/api/poetry-points");
+    const payload = await response.json();
+    const data = payload.code === 200 ? payload.data : payload;
+    state.poetryPoints = data.features || [];
+    createPoetryLayer();
+  } catch (error) {
+    console.warn("加载诗歌点失败:", error);
+    state.poetryPoints = [];
+  }
+}
+
+// ★ 创建诗歌点图层
+function createPoetryLayer() {
+  state.poetryLayer = L.layerGroup();
+
+  state.poetryPoints.forEach(feature => {
+    const props = feature.properties || {};
+    const coords = feature.geometry?.coordinates || [0, 0];
+    const lat = coords[1];
+    const lng = coords[0];
+
+    const icon = L.divIcon({
+      className: 'poetry-point-icon',
+      html: `
+        <div class="poetry-point-marker">
+          <span class="poetry-icon">📜</span>
+          <span class="poetry-tooltip">${props.name}</span>
+        </div>
+      `,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+    });
+
+    const marker = L.marker([lat, lng], {
+      icon: icon,
+      zIndexOffset: 800,
+    });
+
+    marker.on('click', function() {
+      showPoetryPopup(feature);
+    });
+
+    marker.addTo(state.poetryLayer);
+  });
+
+  // 默认隐藏
+  state.poetryLayer.addTo(state.map);
+  state.poetryLayer.setOpacity(0);
+}
+
+// ★ 显示诗歌弹窗
+function showPoetryPopup(feature) {
+  const props = feature.properties || {};
+  const poemId = props.poem_id;
+  
+  fetch("/api/poetry-content")
+    .then(res => res.json())
+    .then(payload => {
+      const data = payload.code === 200 ? payload.data : payload;
+      const poems = data.poems || [];
+      const poem = poems.find(p => p.id === poemId);
+      
+      if (!poem) {
+        flash(`未找到诗歌: ${props.poem_title}`);
+        return;
+      }
+
+      const popupContent = `
+        <div class="poetry-popup-content">
+          <div class="poetry-popup-header">
+            <h3>📜 ${poem.title}</h3>
+            <span class="poetry-author">${poem.author} · ${poem.year}</span>
+          </div>
+          <div class="poetry-popup-body">
+            <pre class="poetry-popup-text">${poem.text}</pre>
+          </div>
+          <div class="poetry-popup-footer">
+            <span class="poetry-place">📍 ${props.name}</span>
+            <span class="poetry-location">${props.province} · ${props.city}</span>
+          </div>
+          <div class="poetry-popup-desc">
+            <p>${props.description || poem.description || ''}</p>
+          </div>
+          <button class="poetry-open-full" data-poem-id="${poemId}" type="button">
+            打开诗词卷轴
+          </button>
+        </div>
+      `;
+
+      const popup = L.popup({
+        maxWidth: 380,
+        className: 'poetry-popup',
+        autoPan: true,
+        autoPanPadding: [20, 20],
+      }).setLatLng([feature.geometry.coordinates[1], feature.geometry.coordinates[0]])
+        .setContent(popupContent);
+
+      state.map.openPopup(popup);
+
+      setTimeout(() => {
+        const btn = document.querySelector('.poetry-open-full');
+        if (btn) {
+          btn.addEventListener('click', function() {
+            const pid = this.dataset.poemId;
+            if (window.Poetry && typeof window.Poetry.openById === 'function') {
+              window.Poetry.openById(pid);
+            }
+          });
+        }
+      }, 100);
+    })
+    .catch(error => {
+      console.error('加载诗歌内容失败:', error);
+      flash('加载诗歌内容失败');
+    });
+}
+
+// ★ 切换诗歌点显示
+function togglePoetryLayer(visible) {
+  state.poetryVisible = visible;
+  if (state.poetryLayer) {
+    if (visible) {
+      state.poetryLayer.setOpacity(1);
+      state.poetryLayer.addTo(state.map);
+    } else {
+      state.poetryLayer.setOpacity(0);
+    }
+  }
+}
 
   window.IndexMap = {
     state,
@@ -975,5 +1114,7 @@
     pauseAnimation,
     seekRouteProgress,
     flash,
+    togglePoetryLayer,
+    loadPoetryPoints,
   };
 })();

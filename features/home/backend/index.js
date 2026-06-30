@@ -14,15 +14,11 @@ function handleRouteApi(pathname, sendSuccess, sendError, response) {
       console.error(error);
       sendError(response, 500, "Route layer config load failed");
     }
-
     return true;
   }
 
   const match = pathname.match(/^\/api\/route-layers\/([^/]+)\/(features|animation)$/);
-
-  if (!match) {
-    return false;
-  }
+  if (!match) return false;
 
   const layerKey = decodeURIComponent(match[1]);
   const mode = match[2];
@@ -49,18 +45,15 @@ function handleEventApi(pathname, sendSuccess, sendError, response) {
 
   try {
     const collection = readDataFile("events-important.json");
-
     if (pathname === "/api/events/timeline") {
       sendSuccess(response, sortEventTimeline(collection));
       return true;
     }
-
     sendSuccess(response, collection);
   } catch (error) {
     console.error(error);
     sendError(response, 500, "Event data load failed");
   }
-
   return true;
 }
 
@@ -71,9 +64,7 @@ function handleResourceApi(pathname, sendSuccess, sendError, response) {
     "/api/red-tourism/resources",
   ]);
 
-  if (!resourceEndpoints.has(pathname)) {
-    return false;
-  }
+  if (!resourceEndpoints.has(pathname)) return false;
 
   const files = {
     "/api/routes": "routes.json",
@@ -87,11 +78,44 @@ function handleResourceApi(pathname, sendSuccess, sendError, response) {
     console.error(error);
     sendError(response, 500, "Resource data load failed");
   }
-
   return true;
 }
 
+// ★ 新增：处理诗歌相关API
+function handlePoetryApi(pathname, sendSuccess, sendError, response) {
+  // 获取诗歌点位数据
+  if (pathname === "/api/poetry-points") {
+    try {
+      const data = readDataFile("poetry-points.json");
+      sendSuccess(response, data);
+    } catch (error) {
+      console.error(error);
+      sendError(response, 500, "Poetry points load failed");
+    }
+    return true;
+  }
+
+  // 获取诗歌内容
+  if (pathname === "/api/poetry-content") {
+    try {
+      const data = readDataFile("poem.json");
+      sendSuccess(response, data);
+    } catch (error) {
+      console.error(error);
+      sendError(response, 500, "Poetry content load failed");
+    }
+    return true;
+  }
+
+  return false;
+}
+
 function handleApi({ pathname, response, sendSuccess, sendError }) {
+  // ★ 优先处理诗歌API
+  if (handlePoetryApi(pathname, sendSuccess, sendError, response)) {
+    return true;
+  }
+
   return (
     handleRouteApi(pathname, sendSuccess, sendError, response) ||
     handleEventApi(pathname, sendSuccess, sendError, response) ||

@@ -245,6 +245,48 @@
     cursor.style.top = `${event.clientY + 6}px`;
   }
 
+// ★ 新增：根据诗歌ID打开卷轴
+function openPoetryById(poemId) {
+  if (!state.poems.length) {
+    // 如果数据未加载，先加载
+    fetchPoetryData().then(data => {
+      state.poems = data.poems || [];
+      state.wallLines = data.wallLines || [];
+      renderWall();
+      openPoetryByIdDirect(poemId);
+    }).catch(console.error);
+    return;
+  }
+  openPoetryByIdDirect(poemId);
+}
+
+function openPoetryByIdDirect(poemId) {
+  const index = state.poems.findIndex(p => p.id === poemId);
+  if (index === -1) {
+    if (window.IndexMap && typeof window.IndexMap.flash === 'function') {
+      window.IndexMap.flash('未找到该诗歌');
+    }
+    return;
+  }
+  
+  // 如果弹窗未打开，先打开
+  if (!$("#poetryModal").classList.contains("show")) {
+    openModal().then(() => {
+      showDetail(index);
+    });
+  } else {
+    showDetail(index);
+  }
+}
+
+// ★ 暴露 API
+window.Poetry = {
+  openById: openPoetryById,
+  getPoems: () => state.poems,
+  isOpen: () => $("#poetryModal").classList.contains("show"),
+  close: closeModal,
+};
+
   function bindPoetry() {
     $("#poetryScrollEntry").addEventListener("click", openModal);
     $("#poetryCloseBtn").addEventListener("click", closeModal);
