@@ -739,21 +739,19 @@
     return Math.min(26000, Math.max(11000, pointDriven, segmentDriven));
   }
 
-  function createRouteHeadIcon() {
-    return L.divIcon({
-      className: "march-head-icon",
-      html: `<div class="march-head"><i></i><span></span></div>`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-    });
-  }
+  const cpcPartyFlagIcon = L.icon({
+    iconUrl: "/assets/images/cpc-party-flag.png",
+    iconSize: [72, 54],
+    iconAnchor: [36, 27],
+    popupAnchor: [0, -27],
+  });
 
   function updateRouteHead(playback, index) {
     const point = playback.routeData.points[index];
     if (!point) return;
     if (!state.routeHeadMarker) {
       state.routeHeadMarker = L.marker(point, {
-        icon: createRouteHeadIcon(),
+        icon: cpcPartyFlagIcon,
         zIndexOffset: 720,
         interactive: false,
       }).addTo(state.animatedRouteLayer);
