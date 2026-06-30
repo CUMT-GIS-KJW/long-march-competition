@@ -49,14 +49,28 @@
     return APP_CONFIG.apiBase + fillPath(APP_CONFIG.backendApi[key], params);
   }
 
-  async function fetchJson(key, params = {}) {
-    const response = await fetch(getUrl(key, params));
+  async function fetchUrl(url) {
+    const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`data load failed: ${key}`);
+      throw new Error(`data request failed: ${url}`);
     }
 
-    const payload = await response.json();
+    return response.json();
+  }
+
+  async function fetchJson(key, params = {}) {
+    let payload;
+
+    try {
+      payload = await fetchUrl(getUrl(key, params));
+    } catch (error) {
+      if (APP_CONFIG.dataMode === "static" || !APP_CONFIG.staticApi?.[key]) {
+        throw new Error(`data load failed: ${key}`);
+      }
+
+      payload = await fetchUrl(fillPath(APP_CONFIG.staticApi[key], params));
+    }
 
     if (payload && payload.code === 200) {
       return payload.data;

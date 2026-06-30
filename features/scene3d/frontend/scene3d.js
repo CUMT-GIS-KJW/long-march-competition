@@ -1573,8 +1573,14 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     init().catch((error) => {
+      window.__scene3dInitError = {
+        message: error?.message || String(error),
+        stack: error?.stack || "",
+      };
       console.error(error);
-      $("#sceneState").textContent = "\u4e09\u7ef4\u573a\u666f\u52a0\u8f7d\u5931\u8d25";
+      $("#sceneState").textContent =
+        "\u4e09\u7ef4\u573a\u666f\u52a0\u8f7d\u5931\u8d25\uff1a" +
+        (error?.message || String(error));
       flash("\u8bf7\u68c0\u67e5 Cesium / DEM \u5730\u5f62\u8d44\u6e90");
     });
   });

@@ -685,3 +685,23 @@
 #mapLegend {
   display: grid !important;
 }
+
+
+/* Keep the title art clear of the round logo. */
+.brand-block strong {
+  margin-left: 18px !important;
+}
+
+.brand-block span {
+  margin-left: 56px !important;
+}
+
+@media (max-width: 1280px) {
+  .brand-block strong {
+    margin-left: 18px !important;
+  }
+
+  .brand-block span {
+    margin-left: 50px !important;
+  }
+}
