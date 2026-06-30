@@ -4,7 +4,7 @@
     "layer_key": "route_zhongyang_zongdui",
     "layer_name": "中央纵队路线图",
     "table_name": "route_zhongyang_zongdui",
-    "source_file": "中央纵队路线图.shp",
+    "source_file": "正确路线/中央纵队路线图_01-07.shp",
     "color": "#c81d18",
     "line_width": 5,
     "default_visible": true,
@@ -17,7 +17,10 @@
       "_order",
       "descript",
       "start_date",
-      "end_date"
+      "end_date",
+      "Shape_Le_1",
+      "LAYER",
+      "KML_STYLE"
     ]
   },
   {
@@ -25,7 +28,7 @@
     "layer_key": "route_hongyi_juntuan",
     "layer_name": "红一军团路线图",
     "table_name": "route_hongyi_juntuan",
-    "source_file": "红一军团路线图.shp",
+    "source_file": "正确路线/红一方面军长征路线_01-10.shp",
     "color": "#e86f16",
     "line_width": 4,
     "default_visible": true,
@@ -38,7 +41,8 @@
       "_order",
       "descript",
       "start_date",
-      "end_date"
+      "end_date",
+      "Shape_Le_1"
     ]
   },
   {
@@ -46,20 +50,16 @@
     "layer_key": "route_hongqi_juntuan",
     "layer_name": "红七军团路线图",
     "table_name": "route_hongqi_juntuan",
-    "source_file": "红七军团路线图.shp",
+    "source_file": "正确路线/红七军团路线图01-03.shp",
     "color": "#f4a300",
     "line_width": 4,
     "default_visible": true,
     "display_order": 3,
     "fields": [
+      "LAYER",
+      "KML_STYLE",
       "KML_FOLDER",
-      "Shape_Leng",
-      "corps_name",
-      "stage_name",
-      "_order",
-      "descript",
-      "start_date",
-      "end_date"
+      "Shape_Leng"
     ]
   },
   {
@@ -67,7 +67,7 @@
     "layer_key": "route_hongsan_juntuan",
     "layer_name": "红三军团路线图",
     "table_name": "route_hongsan_juntuan",
-    "source_file": "红三军团路线图.shp",
+    "source_file": "正确路线/红三军团路线图_01-09.shp",
     "color": "#5c9f24",
     "line_width": 4,
     "default_visible": true,
@@ -80,7 +80,8 @@
       "_order",
       "descript",
       "start_date",
-      "end_date"
+      "end_date",
+      "Shape_Le_1"
     ]
   },
   {
@@ -109,7 +110,7 @@
     "layer_key": "route_hongjiu_juntuan",
     "layer_name": "红九军团路线图",
     "table_name": "route_hongjiu_juntuan",
-    "source_file": "红九军团路线图.shp",
+    "source_file": "正确路线/红九军团路线图_01-07.shp",
     "color": "#1487c9",
     "line_width": 4,
     "default_visible": true,
@@ -122,7 +123,8 @@
       "_order",
       "descript",
       "start_date",
-      "end_date"
+      "end_date",
+      "Shape_Le_1"
     ]
   },
   {

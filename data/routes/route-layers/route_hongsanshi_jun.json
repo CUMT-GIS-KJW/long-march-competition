@@ -5,13 +5,17 @@
       "type": "Feature",
       "properties": {
         "KML_FOLDER": "30军",
-        "Shape_Leng": 514.29051,
+        "Shape_Leng": 514.290509888,
         "corps_name": "红三十军",
         "stage_name": "塔子山到达维转战",
         "_order": 1,
         "descript": "红三十军从塔子山强渡嘉陵江，转战川西北，占领达维，迎接中央红军会师",
         "start_date": "1935-03-28",
-        "end_date": "1935-06-12"
+        "end_date": "1935-06-12",
+        "_source_order": 1,
+        "_source_index": 1,
+        "_part_index": 1,
+        "_source_geometry": "LineString"
       },
       "geometry": {
         "type": "LineString",
