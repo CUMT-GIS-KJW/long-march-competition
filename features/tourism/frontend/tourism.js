@@ -1079,8 +1079,8 @@
     return L.divIcon({
       className: "",
       html: `
-        <div class="resource-marker red-resource-marker resource-${resource.category || "other"} ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
-          <i>${selected ? "✓" : escapeHtml(meta.shortLabel || meta.label || "红")}</i>
+        <div class="resource-marker red-resource-marker resource-${resource.category || "other"} ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}" aria-label="${escapeHtml(meta.label || "红色资源")}">
+          <i aria-hidden="true"></i>
         </div>
       `,
       iconSize: [size, size],
@@ -1590,16 +1590,28 @@
     }) || { day: 1, color: palette[0] };
   }
 
+  function routeLabelDimensions(text = "", options = {}) {
+    const label = String(text || "").replace(/\s+/g, "");
+    const hasDay = options.hasDay !== false;
+    const extra = hasDay ? 56 : 44;
+    const width = Math.max(hasDay ? 92 : 76, Math.min(hasDay ? 236 : 210, extra + Math.min(label.length, 13) * 12));
+    const lines = label.length > 12 ? 2 : 1;
+    const height = (hasDay ? 34 : 30) + (lines - 1) * 16;
+
+    return { width, height };
+  }
+
   function addRouteNameLabels(resources, route) {
-    resources.forEach((resource, index) => {
+    resources.forEach((resource) => {
       const group = dayMetaOfResource(route, resource);
+      const size = routeLabelDimensions(resource.name, { hasDay: true });
 
       L.marker([resource.lat, resource.lng], {
         icon: L.divIcon({
-          className: "",
-          html: `<div class="route-name-label day-name-label" style="--day-color:${group.color}"><span>第${group.day || 1}天</span>${escapeHtml(resource.name)}</div>`,
-          iconSize: [248, 46],
-          iconAnchor: [124, 52],
+          className: "route-label-icon-wrap",
+          html: `<div class="route-name-label day-name-label" style="--day-color:${group.color};--label-max:${size.width}px"><span>第${group.day || 1}天</span><em class="route-label-name">${escapeHtml(resource.name)}</em></div>`,
+          iconSize: [size.width, size.height],
+          iconAnchor: [size.width / 2, size.height + 8],
         }),
         interactive: true,
         zIndexOffset: 1300,
@@ -1631,12 +1643,16 @@
         className: "end",
       },
     ].forEach((item) => {
+      const size = routeLabelDimensions(item.resource.name, { hasDay: false });
+      const width = Math.max(size.width + 16, 118);
+      const height = Math.max(size.height + 10, 42);
+
       L.marker([item.resource.lat, item.resource.lng], {
         icon: L.divIcon({
-          className: "",
-          html: `<div class="endpoint-label ${item.className}"><b>${item.text}</b><span>${escapeHtml(item.resource.name)}</span></div>`,
-          iconSize: [188, 44],
-          iconAnchor: [94, 52],
+          className: "route-label-icon-wrap",
+          html: `<div class="endpoint-label ${item.className}" style="--label-max:${width}px"><b>${item.text}</b><span>${escapeHtml(item.resource.name)}</span></div>`,
+          iconSize: [width, height],
+          iconAnchor: [width / 2, height + 10],
         }),
         interactive: true,
         zIndexOffset: 1600,
@@ -1827,61 +1843,115 @@
 
     const mode = travelModeInfo();
     const resources = route?.resources || [];
+    const schedule = route?.schedule || [];
+    const cities = [...new Set(resources.map((item) => item.city || item.province).filter(Boolean))];
     const start = resources[0]?.name || "中国矿业大学（南湖校区）";
     const end = resources[resources.length - 1]?.name || "重点红色资源点";
-    const distance = route?.totalDistanceKm ? `${route.totalDistanceKm} 公里` : "待生成后计算";
+    const days = Number(route?.days || $("#daysSelect")?.value || 3);
+    const distanceNumber = Number(route?.totalDistanceKm || 0);
+    const distance = distanceNumber ? `${distanceNumber} 公里` : "生成后自动估算";
+    const terrainWords = resources.map((item) => `${item.name || ""}${item.address || ""}${item.city || ""}`).join(" ");
+    const mountainRisk = /泸定|大渡河|金沙江|雪山|夹金山|草地|若尔盖|赤水|娄山关|山|桥|渡/.test(terrainWords);
+    const roadLevel = mountainRisk ? "山区/河谷路段较多，按低速安全转场组织" : "城市与县域道路为主，适合团队大巴串联";
+    const weatherRisk = mountainRisk ? "雨雾、塌方、弯道、桥梁通行能力需要提前核验" : "重点关注早晚高峰、停车容量与场馆预约时段";
+    const serviceBase = cities.length ? cities.slice(0, 5).join("、") : "资源点周边县城";
+    const dayRows = schedule.length
+      ? schedule.slice(0, 7).map((day, index) => {
+          const morning = day.items?.[0]?.place || day.from || start;
+          const afternoon = day.items?.[day.items.length - 1]?.place || day.to || end;
+          return `
+            <li>
+              <b>D${index + 1}</b>
+              <span>${escapeHtml(day.from || morning)} → ${escapeHtml(day.to || afternoon)}</span>
+              <em>${escapeHtml(day.title || "分段研学")}；午餐靠近${escapeHtml(morning)}，晚间落脚${escapeHtml(day.to || serviceBase)}。</em>
+            </li>
+          `;
+        }).join("")
+      : `
+        <li><b>D1</b><span>${escapeHtml(start)} → 核心资源点</span><em>生成路线后自动补全每天转场、餐饮、住宿和道路风险。</em></li>
+        <li><b>D2+</b><span>县城/基地 → 周边纪念点</span><em>按研学天数动态匹配团队餐、讲解预约和返程时间。</em></li>
+      `;
 
     panel.innerHTML = `
-      <article>
-        <b>出行方式</b>
-        <span>${mode.name}</span>
-        <p>${mode.traffic}</p>
+      <article class="travel-service-summary wide">
+        <b>动态总览</b>
+        <span>${escapeHtml(start)} → ${escapeHtml(end)} · ${days}天 · ${escapeHtml(mode.name)}</span>
+        <p>系统根据当前路线点位、天数、交通方式和长征地形节点，动态拆分“转场—参观—餐饮—住宿—风险提醒”。当前估算里程：${distance}；覆盖区域：${escapeHtml(serviceBase)}。</p>
       </article>
       <article>
-        <b>道路数据</b>
-        <span>${distance}</span>
-        <p>${mode.road}</p>
+        <b>交通组织</b>
+        <span>${escapeHtml(mode.name)}</span>
+        <p>${escapeHtml(mode.traffic)} 建议每个转场段设置集合点、随车讲解和备用下车点；跨市段优先白天完成。</p>
       </article>
       <article>
-        <b>餐饮规划</b>
-        <span>${start} → ${end}</span>
-        <p>${mode.food}</p>
+        <b>道路研判</b>
+        <span>${escapeHtml(roadLevel)}</span>
+        <p>${escapeHtml(mode.road)} 重点核验：道路限高限宽、景区停车、山区连续弯道、雨雾天气、桥梁/渡口通行条件。</p>
       </article>
       <article>
-        <b>住宿规划</b>
-        <span>县城 / 研学基地优先</span>
-        <p>${mode.stay}</p>
+        <b>餐饮补给</b>
+        <span>${escapeHtml(serviceBase)}团队餐优先</span>
+        <p>${escapeHtml(mode.food)} 每日上午出发前补水，下午保留机动补给点；纪念馆参观日避免压缩讲解时间。</p>
+      </article>
+      <article>
+        <b>住宿落点</b>
+        <span>县城 / 研学基地 / 站点周边</span>
+        <p>${escapeHtml(mode.stay)} 住宿点应满足车辆停靠、夜间点名、应急医疗、次日早餐和发车效率。</p>
+      </article>
+      <article>
+        <b>安全预案</b>
+        <span>${escapeHtml(weatherRisk)}</span>
+        <p>建立“带队教师—司机—讲解员—场馆联系人”四方联络表；山区或雨季路线准备备选点位与室内课程替代方案。</p>
+      </article>
+      <article class="travel-day-plan wide">
+        <b>分日交通食宿建议</b>
+        <ul>${dayRows}</ul>
       </article>
     `;
   }
 
-  function renderRouteReason(route = null) {
-    const panel = $("#routeReasonPanel");
-    const section = $("#routeReasonSection");
-
-    if (!panel || !section || !route) {
-      section?.classList.add("is-hidden");
-      return;
+  function buildRouteReasonHtml(route = state.currentRoute) {
+    if (!route) {
+      return `
+        <p>当前还没有生成研学路线。请先在左侧生成路线，或从底部选择一条经典路线后，再问我“为什么选择这条线”。</p>
+      `;
     }
-
-    section.classList.remove("is-hidden");
 
     const mode = travelModeInfo();
     const resources = route?.resources || [];
-    const cities = [...new Set(resources.map((item) => item.city).filter(Boolean))];
+    const cities = [...new Set(resources.map((item) => item.city || item.province).filter(Boolean))];
     const places = resources.slice(0, 5).map((item) => item.name).join("、") || "核心纪念点";
     const theme = route?.theme?.label || "长征精神研学";
+    const distance = route?.totalDistanceKm ? `${route.totalDistanceKm}公里` : "自动估算里程";
+    const events = (route.relatedEvents || []).slice(0, 4).map((item) => item.name).filter(Boolean);
+    const terrainText = resources.map((item) => `${item.name || ""}${item.address || ""}${item.city || ""}`).join(" ");
+    const hasHardTerrain = /泸定|大渡河|金沙江|雪山|夹金山|草地|若尔盖|山|桥|渡/.test(terrainText);
+    const routeSpan = resources.length
+      ? `${escapeHtml(resources[0]?.name || "起点")} → ${escapeHtml(resources[resources.length - 1]?.name || "终点")}`
+      : "当前路线";
 
-    panel.innerHTML = `
-      <img src="/assets/images/longmarch-route-corner.png" alt="长征研学路线分析示意">
-      <div>
-        <b>${theme}路线研判</b>
-        <p><strong>选择依据：</strong>围绕${places}组织学习，兼顾事件代表性、空间连续性和学生集体出行安全。</p>
-        <p><strong>道路难点：</strong>${mode.road}</p>
-        <p><strong>学习重点：</strong>理解理想信念、组织纪律、艰苦奋斗和团结协作在真实地理环境中的形成。</p>
-        <p><strong>覆盖区域：</strong>${cities.length ? cities.join("、") : "生成路线后自动汇总城市"}。</p>
-      </div>
+    return `
+      <p><b>为什么选择这条线：</b>${routeSpan} 是按“历史阶段连续性、资源点密度、交通可达性、研学任务完整度”综合筛出的路线。</p>
+      <p><b>路线逻辑：</b>${escapeHtml(theme)}以 ${escapeHtml(places)} 为核心，把“资源点—历史事件—地理环境—研学任务”串成连续学习链，减少无效折返。</p>
+      <p><b>空间合理性：</b>当前路线约 ${escapeHtml(distance)}，覆盖 ${escapeHtml(cities.length ? cities.join("、") : "多个长征节点城市")}；按 ${escapeHtml(mode.name)} 组织，便于统一集合、讲解、餐饮住宿和安全管理。</p>
+      <p><b>事件关联：</b>${escapeHtml(events.length ? events.join("、") : "中央苏区出发、战略转折、强渡大河、翻越雪山草地、胜利会师等阶段")} 可以支撑时间线复盘、人物讨论和现场任务卡。</p>
+      <p><b>道路提醒：</b>${escapeHtml(hasHardTerrain ? "路线含山地、河谷或桥渡节点，需要提前核验天气、路况、停车条件和备用点位。" : "路线以城市/县域道路和场馆参访为主，重点控制预约时间、团队流线和返程节奏。")}</p>
     `;
+  }
+
+  function renderRouteReason(route = null) {
+    const oldSection = $("#routeReasonSection");
+    const panel = $("#aiRouteReasonPanel");
+
+    oldSection?.classList.add("is-hidden");
+
+    // v20：不再自动把“为什么选择这条线”的答案展示到页面。
+    // 答案只在用户主动向 AI 研学助手提问时，通过 handleAgentQuestion() 生成。
+    if (panel) {
+      panel.classList.remove("has-route");
+      panel.innerHTML = "";
+      panel.style.display = "none";
+    }
   }
 
   function knowledgeParts(resource = {}) {
@@ -1979,129 +2049,270 @@
     const focusName = pointItems[0]?.name || "红色资源点";
     const parts = knowledgeParts(pointItems[0] || {});
     const routeTitle = state.currentRoute?.title || "当前研学路线";
-    const coreNodes = full
-      ? [
-          { id: "route", label: routeTitle, x: 0.50, y: 0.07, type: "route" },
-          { id: "resource", label: focusName, x: 0.16, y: 0.22, type: "resource" },
-          { id: "event", label: parts.event, x: 0.36, y: 0.22, type: "event" },
-          { id: "process", label: parts.process, x: 0.56, y: 0.22, type: "process" },
-          { id: "army", label: "红一/红二/红四方面军", x: 0.78, y: 0.22, type: "army" },
-          { id: "terrain", label: "山河关隘与交通约束", x: 0.14, y: 0.43, type: "terrain" },
-          { id: "policy", label: "政治路线与政策支持", x: 0.34, y: 0.43, type: "policy" },
-          { id: "people", label: "群众动员与民族政策", x: 0.54, y: 0.43, type: "people" },
-          { id: "spirit", label: parts.spirit, x: 0.74, y: 0.43, type: "spirit" },
-          { id: "supply", label: "后勤补给与安全研判", x: 0.24, y: 0.64, type: "support" },
-          { id: "task", label: parts.task, x: 0.48, y: 0.64, type: "task" },
-          { id: "ai", label: "AI研学助手解释", x: 0.72, y: 0.64, type: "ai" },
-          { id: "outcome", label: "研学成果汇报", x: 0.50, y: 0.84, type: "outcome" },
-        ]
-      : [
-          { id: "route", label: "当前研学路线", x: 0.50, y: 0.10, type: "route" },
-          { id: "resource", label: focusName, x: 0.18, y: 0.28, type: "resource" },
-          { id: "event", label: parts.event, x: 0.50, y: 0.28, type: "event" },
-          { id: "process", label: "军队进程演变", x: 0.82, y: 0.28, type: "process" },
-          { id: "policy", label: "政策支持", x: 0.24, y: 0.55, type: "policy" },
-          { id: "terrain", label: "地形交通", x: 0.50, y: 0.55, type: "terrain" },
-          { id: "spirit", label: parts.spirit, x: 0.76, y: 0.55, type: "spirit" },
-          { id: "task", label: parts.task, x: 0.38, y: 0.80, type: "task" },
-          { id: "ai", label: "AI研学助手", x: 0.68, y: 0.80, type: "ai" },
-        ];
+
+    const previewNodes = [
+      { id: "route", label: "当前研学路线", x: 0.50, y: 0.11, type: "route" },
+      { id: "resource", label: focusName, x: 0.16, y: 0.30, type: "resource" },
+      { id: "event", label: parts.event, x: 0.47, y: 0.26, type: "event" },
+      { id: "process", label: "军队进程演变", x: 0.80, y: 0.33, type: "process" },
+      { id: "policy", label: "政策支持", x: 0.25, y: 0.58, type: "policy" },
+      { id: "terrain", label: "地形交通", x: 0.56, y: 0.56, type: "terrain" },
+      { id: "spirit", label: parts.spirit, x: 0.77, y: 0.70, type: "spirit" },
+      { id: "task", label: parts.task, x: 0.36, y: 0.82, type: "task" },
+      { id: "ai", label: "AI研学助手", x: 0.64, y: 0.88, type: "ai" },
+    ];
+
+    const fullNodes = [
+      { id: "route", label: routeTitle, x: 0.47, y: 0.08, type: "route" },
+      { id: "resource", label: focusName, x: 0.13, y: 0.24, type: "resource" },
+      { id: "event", label: parts.event, x: 0.35, y: 0.19, type: "event" },
+      { id: "process", label: parts.process, x: 0.59, y: 0.22, type: "process" },
+      { id: "army", label: "红一/红二/红四方面军", x: 0.82, y: 0.17, type: "army" },
+      { id: "strategy", label: "北上抗日战略方针", x: 0.74, y: 0.34, type: "policy" },
+      { id: "politics", label: "政治路线与组织领导", x: 0.45, y: 0.38, type: "policy" },
+      { id: "people", label: "群众动员与民族政策", x: 0.19, y: 0.44, type: "people" },
+      { id: "terrain", label: "山河关隘与交通约束", x: 0.63, y: 0.48, type: "terrain" },
+      { id: "battle", label: "战役会议与重大转折", x: 0.30, y: 0.58, type: "event" },
+      { id: "supply", label: "后勤补给与安全研判", x: 0.84, y: 0.55, type: "support" },
+      { id: "discipline", label: "纪律作风与群众路线", x: 0.12, y: 0.66, type: "people" },
+      { id: "spirit", label: parts.spirit, x: 0.53, y: 0.66, type: "spirit" },
+      { id: "task", label: parts.task, x: 0.33, y: 0.80, type: "task" },
+      { id: "ai", label: "AI研学助手解释", x: 0.68, y: 0.80, type: "ai" },
+      { id: "outcome", label: "研学成果汇报", x: 0.50, y: 0.93, type: "outcome" },
+    ];
 
     const stageNodes = full
       ? [
-          { id: "stage_start", label: "中央苏区出发", x: 0.09, y: 0.94, type: "extra" },
-          { id: "stage_xiang", label: "突破湘江", x: 0.20, y: 0.94, type: "extra" },
-          { id: "stage_zunyi", label: "遵义会议", x: 0.31, y: 0.94, type: "extra" },
-          { id: "stage_chishui", label: "四渡赤水", x: 0.42, y: 0.94, type: "extra" },
-          { id: "stage_jinsha", label: "巧渡金沙江", x: 0.53, y: 0.94, type: "extra" },
-          { id: "stage_luding", label: "飞夺泸定桥", x: 0.64, y: 0.94, type: "extra" },
-          { id: "stage_grass", label: "翻雪山过草地", x: 0.76, y: 0.94, type: "extra" },
-          { id: "stage_join", label: "胜利会师", x: 0.88, y: 0.94, type: "extra" },
+          { id: "stage_start", label: "中央苏区出发", x: 0.08, y: 0.88, type: "extra" },
+          { id: "stage_xiang", label: "突破湘江", x: 0.18, y: 0.92, type: "extra" },
+          { id: "stage_zunyi", label: "遵义会议", x: 0.28, y: 0.91, type: "extra" },
+          { id: "stage_chishui", label: "四渡赤水", x: 0.39, y: 0.88, type: "extra" },
+          { id: "stage_jinsha", label: "巧渡金沙江", x: 0.58, y: 0.89, type: "extra" },
+          { id: "stage_luding", label: "飞夺泸定桥", x: 0.70, y: 0.92, type: "extra" },
+          { id: "stage_grass", label: "翻雪山过草地", x: 0.80, y: 0.88, type: "extra" },
+          { id: "stage_join", label: "胜利会师", x: 0.91, y: 0.91, type: "extra" },
         ]
       : [];
 
     const routePointNodes = full
-      ? pointItems.slice(1, 5).map((resource, index) => ({
+      ? pointItems.slice(1, 6).map((resource, index) => ({
           id: `point_${index}`,
           label: resource.name,
-          x: 0.91,
-          y: 0.34 + index * 0.10,
+          x: [0.91, 0.87, 0.94, 0.89, 0.95][index] || 0.90,
+          y: [0.31, 0.42, 0.68, 0.76, 0.25][index] || (0.34 + index * 0.10),
           type: "resource",
         }))
       : [];
 
-    const nodes = [...coreNodes, ...routePointNodes, ...stageNodes];
-    const links = [
-      ["route", "resource", "包含"],
-      ["resource", "event", "关联"],
-      ["event", "process", "推动"],
-      ["process", "army", "对应部队"],
-      ["terrain", "route", "约束路线"],
-      ["policy", "process", "支撑决策"],
-      ["people", "policy", "落实"],
-      ["event", "spirit", "提炼"],
-      ["spirit", "task", "转化"],
-      ["supply", "task", "保障"],
-      ["task", "ai", "生成问答"],
-      ["ai", "event", "解释"],
-      ["ai", "outcome", "输出"],
-      ...routePointNodes.map((node) => ["resource", node.id, "同线点位"]),
-      ...stageNodes.map((node) => ["process", node.id, "阶段"]),
-    ];
+    const nodes = full ? [...fullNodes, ...routePointNodes, ...stageNodes] : previewNodes;
+    const links = full
+      ? [
+          ["route", "resource", "包含"],
+          ["route", "terrain", "受制于"],
+          ["resource", "event", "关联"],
+          ["event", "process", "推动"],
+          ["process", "army", "对应部队"],
+          ["process", "strategy", "形成"],
+          ["strategy", "politics", "支撑"],
+          ["politics", "people", "发动"],
+          ["people", "discipline", "落实"],
+          ["terrain", "supply", "影响"],
+          ["terrain", "battle", "塑造"],
+          ["battle", "event", "印证"],
+          ["event", "spirit", "提炼"],
+          ["discipline", "spirit", "汇入"],
+          ["spirit", "task", "转化"],
+          ["supply", "task", "保障"],
+          ["task", "ai", "生成问答"],
+          ["ai", "event", "解释"],
+          ["ai", "outcome", "输出"],
+          ...routePointNodes.map((node) => ["resource", node.id, "同线点位"]),
+          ...stageNodes.map((node) => ["process", node.id, "阶段"]),
+        ]
+      : [
+          ["route", "resource", "包含"],
+          ["resource", "event", "关联"],
+          ["event", "process", "推动"],
+          ["process", "policy", "需要"],
+          ["policy", "terrain", "落实"],
+          ["terrain", "spirit", "磨炼"],
+          ["spirit", "task", "转化"],
+          ["task", "ai", "生成"],
+          ["ai", "event", "解释"],
+        ];
 
     return { nodes, links };
   }
 
   function renderKnowledgeGraphSvg(resources = [], options = {}) {
     const full = Boolean(options.full);
-    const width = full ? 1280 : 560;
-    const height = full ? 760 : 390;
-    const { nodes, links } = knowledgeGraphData(resources, full);
+    const width = full ? 1360 : 720;
+    const height = full ? 820 : 470;
+    const pointItems = graphResources(resources);
+    const parts = knowledgeParts(pointItems[0] || {});
+    const routeTitle = state.currentRoute?.title || "当前研学路线";
+    const focusName = pointItems[0]?.name || "红色资源点";
+
+    const scale = (value) => Math.round(value * (full ? 1 : 0.74));
+    const addNode = (arr, id, label, x, y, type, r, level = "leaf") => {
+      arr.push({ id, label, x: Math.round(x), y: Math.round(y), type, r: scale(r), level });
+    };
+    const addLink = (arr, from, to, label = "关联") => {
+      arr.push({ from, to, label });
+    };
+    const radial = (arr, links, hubId, items, cx, cy, radius, startDeg, spanDeg, type, r = 28) => {
+      const count = Math.max(items.length, 1);
+      items.forEach((item, index) => {
+        const deg = startDeg + (count === 1 ? 0 : (spanDeg * index) / (count - 1));
+        const rad = (deg * Math.PI) / 180;
+        const jitter = (index % 2 ? 1 : -1) * (full ? 12 : 8);
+        const id = `${hubId}_${index}`;
+        const x = cx + Math.cos(rad) * (radius + jitter);
+        const y = cy + Math.sin(rad) * (radius - jitter * 0.35);
+        addNode(arr, id, item.label || item, x, y, item.type || type, item.r || r);
+        addLink(links, hubId, id, item.edge || "关联");
+      });
+    };
+
+    const nodes = [];
+    const links = [];
+
+    if (!full) {
+      addNode(nodes, "core", "长征", 360, 230, "core", 48, "core");
+      addNode(nodes, "route", "研学路线", 220, 150, "hub", 43, "hub");
+      addNode(nodes, "resource", "资源点", 155, 290, "hub", 42, "hub");
+      addNode(nodes, "process", "军队进程", 455, 155, "hub", 40, "hub");
+      addNode(nodes, "policy", "政策支持", 545, 292, "hub", 41, "hub");
+      addNode(nodes, "task", "研学任务", 350, 355, "hub", 40, "hub");
+      ["route", "resource", "process", "policy", "task"].forEach((id) => addLink(links, "core", id, "支撑"));
+      addLink(links, "resource", "route", "串联");
+      addLink(links, "route", "process", "对应");
+      addLink(links, "process", "policy", "保障");
+      addLink(links, "task", "core", "转化");
+
+      const resourceNames = (pointItems.length ? pointItems : state.resources.slice(0, 5)).slice(0, 5).map((item) => item.name || item.city || "资源点");
+      radial(nodes, links, "resource", resourceNames.map((name) => ({ label: name, type: "resource", edge: "包含" })), 155, 290, 96, 132, 170, "resource", 24);
+      radial(nodes, links, "route", ["中央苏区出发", parts.event, "地形交通", "现场讲解"].map((label, idx) => ({ label, type: idx === 1 ? "event" : idx === 2 ? "terrain" : "process" })), 220, 150, 92, 200, 176, "process", 24);
+      radial(nodes, links, "process", ["红一方面军", "红二方面军", "红四方面军", parts.process].map((label) => ({ label, type: "army" })), 455, 155, 92, -118, 160, "army", 23);
+      radial(nodes, links, "policy", ["北上抗日", "群众路线", "民族政策", "纪律建设"].map((label) => ({ label, type: "policy" })), 545, 292, 90, -72, 178, "policy", 23);
+      radial(nodes, links, "task", [parts.spirit, parts.task, "成果汇报", "AI问答"].map((label, idx) => ({ label, type: idx === 3 ? "ai" : idx === 0 ? "spirit" : "task" })), 350, 355, 88, 32, 156, "task", 23);
+    } else {
+      addNode(nodes, "core", "长征", 680, 410, "core", 58, "core");
+      addNode(nodes, "route", routeTitle, 410, 250, "hub", 54, "hub");
+      addNode(nodes, "resource", "红色资源点", 305, 465, "hub", 52, "hub");
+      addNode(nodes, "process", "军队进程演变", 625, 205, "hub", 52, "hub");
+      addNode(nodes, "policy", "政策支持", 920, 455, "hub", 52, "hub");
+      addNode(nodes, "spirit", "长征精神", 735, 610, "hub", 50, "hub");
+      addNode(nodes, "task", "研学任务", 480, 660, "hub", 50, "hub");
+      addNode(nodes, "ai", "AI研学助手", 1045, 245, "hub", 48, "hub");
+      addNode(nodes, "terrain", "地形交通", 790, 315, "hub", 48, "hub");
+
+      ["route", "resource", "process", "policy", "spirit", "task", "ai", "terrain"].forEach((id) => addLink(links, "core", id, "关联"));
+      addLink(links, "resource", "route", "形成线路");
+      addLink(links, "route", "process", "对应阶段");
+      addLink(links, "process", "terrain", "穿越环境");
+      addLink(links, "terrain", "policy", "影响保障");
+      addLink(links, "policy", "spirit", "凝练精神");
+      addLink(links, "spirit", "task", "转化任务");
+      addLink(links, "task", "ai", "生成问答");
+      addLink(links, "ai", "route", "解释路线");
+
+      const stageItems = [
+        "中央苏区出发", "突破湘江", "遵义会议", "四渡赤水", "巧渡金沙江", "强渡大渡河", "飞夺泸定桥", "翻雪山过草地", "会宁会师", "战略落脚"
+      ].map((label) => ({ label, type: "process", edge: "阶段" }));
+      radial(nodes, links, "process", stageItems, 625, 205, 155, 185, 245, "process", 30);
+
+      const armyItems = [
+        "中央红军", "红一方面军", "红二方面军", "红四方面军", "方面军会师", "军事指挥", "行军纪律"
+      ].map((label) => ({ label, type: "army", edge: "部队" }));
+      radial(nodes, links, "process", armyItems, 625, 205, 170, -125, 120, "army", 28);
+
+      const fallbackResources = ["瑞金", "于都", "遵义", "苟坝", "赤水", "泸定桥", "夹金山", "会宁"];
+      const resourceNames = (pointItems.length ? pointItems.map((item) => item.name) : fallbackResources).filter(Boolean).slice(0, 8);
+      radial(nodes, links, "resource", resourceNames.map((label) => ({ label, type: "resource", edge: "点位" })), 305, 465, 175, 112, 230, "resource", 31);
+
+      const eventItems = [parts.event, "战役会议", "重大转折", "群众支前", "革命旧址", "纪念馆展陈"].map((label, index) => ({ label, type: index < 3 ? "event" : "resource", edge: "关联" }));
+      radial(nodes, links, "route", eventItems, 410, 250, 150, 190, 210, "event", 29);
+
+      const policyItems = [
+        "北上抗日方针", "统一战线", "群众路线", "民族政策", "纪律建设", "组织领导", "后勤补给", "安全研判"
+      ].map((label, index) => ({ label, type: index > 5 ? "support" : "policy", edge: "支撑" }));
+      radial(nodes, links, "policy", policyItems, 920, 455, 165, -70, 230, "policy", 30);
+
+      const terrainItems = ["山地河谷", "关隘桥渡", "雪山草地", "气候风险", "道路组织", "交通集散"].map((label) => ({ label, type: "terrain", edge: "约束" }));
+      radial(nodes, links, "terrain", terrainItems, 790, 315, 135, -88, 154, "terrain", 28);
+
+      const spiritItems = ["坚定信念", "实事求是", "独立自主", "英勇斗争", "艰苦奋斗", "团结协作", parts.spirit].map((label) => ({ label, type: "spirit", edge: "精神" }));
+      radial(nodes, links, "spirit", spiritItems, 735, 610, 140, 18, 190, "spirit", 29);
+
+      const taskItems = ["史料研读", "现场讲解", "路线复盘", "交通研判", parts.task, "任务卡", "成果汇报"].map((label, index) => ({ label, type: index === 6 ? "task" : "task", edge: "任务" }));
+      radial(nodes, links, "task", taskItems, 480, 660, 135, 156, 210, "task", 28);
+
+      const aiItems = ["路线合理性", "事件问答", "知识关联", "研学报告", "风险提醒"].map((label) => ({ label, type: "ai", edge: "生成" }));
+      radial(nodes, links, "ai", aiItems, 1045, 245, 130, -80, 185, "ai", 28);
+    }
+
     const nodeMap = new Map(nodes.map((node) => [node.id, node]));
-    const scaleX = (node) => Math.round(node.x * width);
-    const scaleY = (node) => Math.round(node.y * height);
-    const uid = full ? "full" : "preview";
-    const nodeSize = (node) => {
-      const lines = splitSvgLabel(node.label, full);
-      const longest = Math.max(...lines.map((line) => line.length), 2);
-      const rx = Math.max(full ? 58 : 42, Math.min(full ? 112 : 64, longest * (full ? 8 : 7) + (full ? 28 : 22)));
-      const ry = Math.max(full ? 25 : 21, lines.length * (full ? 9 : 8) + (full ? 14 : 11));
-      return { rx, ry };
+    const uid = full ? "fullNet" : "previewNet";
+    const visibleLinkLabel = (index) => full && index % 3 === 0;
+    const curvePath = (a, b, index) => {
+      const ax = a.x, ay = a.y, bx = b.x, by = b.y;
+      const mx = (ax + bx) / 2;
+      const my = (ay + by) / 2;
+      const dx = bx - ax;
+      const dy = by - ay;
+      const len = Math.sqrt(dx * dx + dy * dy) || 1;
+      const bend = (index % 2 ? -1 : 1) * Math.min(full ? 34 : 20, Math.max(full ? 10 : 6, len * 0.045));
+      const cx = Math.round(mx - (dy / len) * bend);
+      const cy = Math.round(my + (dx / len) * bend);
+      return { d: `M${ax},${ay} Q${cx},${cy} ${bx},${by}`, mx: Math.round((mx + cx) / 2), my: Math.round((my + cy) / 2) };
+    };
+    const circleLabelLines = (label, node) => {
+      const raw = String(label || "节点").replace(/\s+/g, "").trim();
+      const maxPerLine = node.level === "core" ? (full ? 5 : 4) : node.level === "hub" ? (full ? 5 : 4) : (full ? 4 : 3);
+      const maxLines = node.level === "leaf" ? 2 : 3;
+      const chunks = [];
+      for (let index = 0; index < raw.length; index += maxPerLine) chunks.push(raw.slice(index, index + maxPerLine));
+      if (chunks.length > maxLines) {
+        const kept = chunks.slice(0, maxLines);
+        kept[maxLines - 1] = `${kept[maxLines - 1].replace(/…$/g, "")}…`;
+        return kept;
+      }
+      return chunks.length ? chunks : ["节点"];
+    };
+    const textLines = (label, node) => {
+      const lines = circleLabelLines(label, node);
+      const lineHeight = node.level === "leaf" ? (full ? 13 : 11) : (full ? 15 : 13);
+      const startY = -((lines.length - 1) * lineHeight) / 2;
+      return lines.map((line, index) => `<tspan x="0" y="${startY + index * lineHeight}">${escapeHtml(line)}</tspan>`).join("");
     };
 
     return `
       <svg class="kg-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="长征研学知识图谱">
         <defs>
-          <marker id="kgArrow-${uid}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#9e2118"></path>
+          <marker id="kgArrow-${uid}" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="#606a78"></path>
           </marker>
-          <radialGradient id="kgGlow-${uid}" cx="50%" cy="50%" r="70%">
-            <stop offset="0%" stop-color="#fff7d8"></stop>
-            <stop offset="100%" stop-color="#f2c16c"></stop>
-          </radialGradient>
         </defs>
-        <rect x="10" y="10" width="${width - 20}" height="${height - 20}" rx="24" class="kg-bg"></rect>
-        ${links.map(([from, to, label], index) => {
-          const a = nodeMap.get(from);
-          const b = nodeMap.get(to);
+        <rect x="0" y="0" width="${width}" height="${height}" rx="0" class="kg-bg"></rect>
+        ${links.map((link, index) => {
+          const a = nodeMap.get(link.from);
+          const b = nodeMap.get(link.to);
           if (!a || !b) return "";
-          const ax = scaleX(a), ay = scaleY(a), bx = scaleX(b), by = scaleY(b);
-          const mx = Math.round((ax + bx) / 2), my = Math.round((ay + by) / 2) + (index % 2 ? -4 : 8);
+          const path = curvePath(a, b, index);
           return `
-            <line class="kg-link" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" marker-end="url(#kgArrow-${uid})"></line>
-            ${full ? `<text class="kg-link-label" x="${mx}" y="${my}">${escapeHtml(label)}</text>` : ""}
+            <path class="kg-link" d="${path.d}" marker-end="url(#kgArrow-${uid})"></path>
+            ${visibleLinkLabel(index) ? `<text class="kg-link-label" x="${path.mx}" y="${path.my + (index % 2 ? -5 : 10)}">${escapeHtml(link.label || "关联")}</text>` : ""}
           `;
         }).join("")}
-        ${nodes.map((node) => {
-          const x = scaleX(node), y = scaleY(node);
-          const { rx, ry } = nodeSize(node);
-          return `
-            <g class="kg-node-svg kg-node-${node.type}" transform="translate(${x}, ${y})">
-              <ellipse rx="${rx}" ry="${ry}"></ellipse>
-              <text text-anchor="middle" dominant-baseline="middle">${svgTextLines(node.label, full)}</text>
+        ${nodes.map((node, index) => `
+          <g class="kg-node-shell" transform="translate(${node.x}, ${node.y})">
+            <g class="kg-node-svg kg-node-${node.type} kg-node-${node.level}" style="--kg-delay:${(index % 12) * -0.22}s;--kg-x:${(index % 3 - 1) * 2}px">
+              <circle r="${node.r}"></circle>
+              <text text-anchor="middle" dominant-baseline="middle">${textLines(node.label, node)}</text>
             </g>
-          `;
-        }).join("")}
+          </g>
+        `).join("")}
       </svg>
     `;
   }
@@ -2152,6 +2363,110 @@
     const modal = $("#aiStudyModal");
     modal?.classList.remove("show");
     modal?.setAttribute("aria-hidden", "true");
+  }
+
+  function appendAgentMessage(role, html) {
+    const panel = $("#agentMessages");
+
+    if (!panel) {
+      return;
+    }
+
+    const message = document.createElement("div");
+    message.className = `agent-message ${role}`;
+    message.innerHTML = html;
+    panel.appendChild(message);
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  function buildTrafficAnswer(route = state.currentRoute) {
+    if (!route) {
+      return `<p>当前还没有生成路线。生成路线后，我可以结合点位、天数和出行方式分析交通、餐饮、住宿和道路风险。</p>`;
+    }
+
+    const mode = travelModeInfo();
+    const resources = route.resources || [];
+    const cities = [...new Set(resources.map((item) => item.city || item.province).filter(Boolean))];
+    const terrainText = resources.map((item) => `${item.name || ""}${item.address || ""}${item.city || ""}`).join(" ");
+    const hasHardTerrain = /泸定|大渡河|金沙江|雪山|夹金山|草地|若尔盖|赤水|娄山关|山|桥|渡/.test(terrainText);
+
+    return `
+      <p><b>交通组织：</b>当前建议采用 ${escapeHtml(mode.name)}。跨市转场尽量安排在白天，每天保留 30—60 分钟机动时间，避免压缩纪念馆讲解和任务卡填写。</p>
+      <p><b>餐饮住宿：</b>优先选择 ${escapeHtml(cities.slice(0, 4).join("、") || "资源点周边县城")} 等县城或研学基地作为落脚点，便于团队餐、停车、点名和次日发车。</p>
+      <p><b>道路风险：</b>${escapeHtml(hasHardTerrain ? "路线包含山地、河谷、桥渡或高海拔节点，需提前核验雨雾、塌方、连续弯道、停车容量和备用点位。" : "路线以城市/县域道路和场馆参访为主，重点关注早晚高峰、场馆预约、停车容量和步行流线。")}</p>
+    `;
+  }
+
+  function buildKnowledgeAnswer() {
+    const resources = state.currentRoute?.resources?.length
+      ? state.currentRoute.resources
+      : state.currentDetailResource
+        ? [state.currentDetailResource]
+        : state.resources.slice(0, 5);
+    const parts = knowledgeParts(resources[0] || {});
+
+    return `
+      <p><b>知识关联：</b>当前点位可从“${escapeHtml(parts.event)}—${escapeHtml(parts.spirit)}—${escapeHtml(parts.task)}”展开。</p>
+      <p>图谱中会同时连接资源点、长征阶段、军队进程、政策支持、群众动员、地形交通、长征精神和研学任务。你也可以点击右侧“知识关联”的“展开知识图谱”查看完整网络。</p>
+    `;
+  }
+
+  function buildResourceAnswer() {
+    const resource = state.currentDetailResource || state.currentRoute?.resources?.[0];
+
+    if (!resource) {
+      return `<p>请先点击地图上的资源点，或生成一条研学路线，我就能结合当前点位解释它和长征事件、研学任务之间的关系。</p>`;
+    }
+
+    const parts = knowledgeParts(resource);
+
+    return `
+      <p><b>${escapeHtml(resource.name || "当前资源点")}</b> 可以作为 ${escapeHtml(parts.event)} 的现场学习节点。</p>
+      <p><b>研学价值：</b>它适合引导学生理解“${escapeHtml(parts.spirit)}”，并设计“${escapeHtml(parts.task)}”。</p>
+      <p><b>课堂转化：</b>建议用“现场观察—事件复盘—人物讨论—成果汇报”的流程，把参观转化为可评价的研学成果。</p>
+    `;
+  }
+
+  function buildAgentAnswer(question) {
+    const text = question.replace(/\s+/g, "");
+
+    if (/为什么|为何|合理|选择|推荐|路线逻辑|这条线|这条路线/.test(text) && /线|路线|方案|合理|选择|推荐/.test(text)) {
+      return buildRouteReasonHtml(state.currentRoute);
+    }
+
+    if (/交通|食宿|住宿|餐饮|道路|路况|安全|风险|大巴|自驾|高铁/.test(text)) {
+      return buildTrafficAnswer(state.currentRoute);
+    }
+
+    if (/知识|图谱|关联|事件|精神|政策|军队|进程|演变|长征/.test(text)) {
+      return buildKnowledgeAnswer();
+    }
+
+    if (/资源点|介绍|点位|任务|研学价值|关系/.test(text)) {
+      return buildResourceAnswer();
+    }
+
+    return `
+      <p>我可以围绕当前资源点或路线继续分析。常用问法：</p>
+      <p>① 这条路线为什么合理？ ② 交通食宿怎么安排？ ③ 当前点位和长征事件有什么关系？ ④ 适合设计什么研学任务？</p>
+    `;
+  }
+
+  function handleAgentQuestion(event) {
+    event?.preventDefault();
+    const input = $("#agentInput");
+    const question = input?.value.trim();
+
+    if (!question) {
+      return;
+    }
+
+    appendAgentMessage("user", escapeHtml(question));
+    input.value = "";
+
+    setTimeout(() => {
+      appendAgentMessage("assistant", buildAgentAnswer(question));
+    }, 180);
   }
 
   function renderKnowledgeLinks(resources = []) {
@@ -2234,6 +2549,7 @@
 
     $("#bottomAiCircleBtn")?.addEventListener("click", openAiStudyModal);
     $("#closeAiStudyModalBtn")?.addEventListener("click", closeAiStudyModal);
+    $("#agentForm")?.addEventListener("submit", handleAgentQuestion);
     $("#aiStudyModal")?.addEventListener("click", (event) => {
       if (event.target?.id === "aiStudyModal") {
         closeAiStudyModal();

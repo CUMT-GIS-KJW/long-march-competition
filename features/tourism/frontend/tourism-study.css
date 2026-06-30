@@ -1201,3 +1201,741 @@
 .kg-node-ai ellipse {
   fill: #f2c16c !important;
 }
+
+/* =====================================================================
+   v18：修正顶部重叠、底部铺满、AI路线解释、动态交通食宿、弹跳式知识图谱
+   ===================================================================== */
+.tourism-app,
+.tourism-cartoon-shell {
+  grid-template-rows: 64px minmax(0, 1fr) !important;
+  overflow: hidden !important;
+}
+
+.tourism-cartoon-topbar,
+.tourism-topbar.tourism-cartoon-topbar {
+  position: relative !important;
+  z-index: 50 !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  overflow: hidden !important;
+  padding: 3px 20px 3px 16px !important;
+  align-self: stretch !important;
+}
+
+.tourism-layout,
+.tourism-cartoon-layout {
+  min-height: 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.cartoon-brand,
+.tourism-brand.cartoon-brand {
+  min-width: 0 !important;
+  height: 58px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+
+.brand-logo {
+  display: block !important;
+  width: auto !important;
+  max-width: 315px !important;
+  height: 56px !important;
+  max-height: 56px !important;
+  object-fit: contain !important;
+  flex: 0 1 auto !important;
+}
+
+.brand-star {
+  display: none !important;
+}
+
+.cartoon-brand > div {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.cartoon-brand strong {
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+}
+
+.cartoon-brand span {
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+}
+
+/* 地图资源点只显示三类颜色，不在圆点内写“址/馆/景”等字 */
+.resource-marker.red-resource-marker i {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, .96) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  box-shadow: 0 0 0 2px rgba(255, 245, 210, .42) !important;
+}
+
+.resource-marker.red-resource-marker.selected i {
+  width: 8px !important;
+  height: 8px !important;
+  background: #ffe29a !important;
+}
+
+/* 底部经典路线居中铺满，卡片之间空隙更大 */
+.route-recommend-strip.bottom-route-recommend,
+.bottom-route-recommend {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  width: calc(100% - 44px) !important;
+  margin: 0 auto 2px !important;
+  padding: 13px clamp(24px, 3vw, 56px) !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(170px, 1fr)) 104px !important;
+  gap: clamp(22px, 2.4vw, 38px) !important;
+  align-items: stretch !important;
+  justify-items: stretch !important;
+  box-sizing: border-box !important;
+}
+
+.route-recommend-strip.bottom-route-recommend .recommend-card {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.bottom-ai-circle {
+  justify-self: center !important;
+  align-self: center !important;
+}
+
+/* 路线点位标签：按文字自适应宽度，外框只包住字体 */
+.route-label-icon-wrap {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.route-name-label,
+.route-name-label.day-name-label {
+  width: max-content !important;
+  max-width: var(--label-max, 236px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 5px 8px !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  border-radius: 999px !important;
+  line-height: 1.12 !important;
+}
+
+.route-name-label.day-name-label span {
+  flex: 0 0 auto !important;
+  align-self: center !important;
+  padding: 2px 5px !important;
+}
+
+.route-name-label .route-label-name {
+  display: inline-block !important;
+  max-width: calc(var(--label-max, 236px) - 58px) !important;
+  color: inherit !important;
+  font-style: normal !important;
+  line-height: 1.15 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  text-align: center !important;
+}
+
+.endpoint-label {
+  width: max-content !important;
+  max-width: var(--label-max, 210px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 9px !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  border-radius: 999px !important;
+}
+
+.endpoint-label span {
+  max-width: calc(var(--label-max, 210px) - 48px) !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.15 !important;
+}
+
+/* “为什么选择这条线”放到 AI 研学助手，不在重点研学方案里占位 */
+#routeReasonSection {
+  display: none !important;
+}
+
+.ai-route-reason-panel {
+  margin: 10px 12px 8px !important;
+  padding: 11px 12px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 249, 230, .90) !important;
+  border: 1px solid rgba(142, 44, 26, .18) !important;
+  box-shadow: 0 8px 20px rgba(92, 29, 18, .09) !important;
+  color: #5b2118 !important;
+}
+
+.ai-route-reason-panel span {
+  display: block !important;
+  margin-bottom: 4px !important;
+  color: #a8261d !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: .14em !important;
+}
+
+.ai-route-reason-panel b {
+  display: block !important;
+  margin-bottom: 5px !important;
+  font-size: 15px !important;
+}
+
+.ai-route-reason-panel p {
+  margin: 4px 0 !important;
+  color: rgba(57, 35, 24, .80) !important;
+  line-height: 1.58 !important;
+  font-size: 12px !important;
+}
+
+/* 交通食宿与道路研判：卡片更丰富，分日建议更像动态面板 */
+.travel-service-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.travel-service-grid article {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.travel-service-grid article::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  top: -24px;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: rgba(198, 40, 29, .08);
+}
+
+.travel-service-grid article.wide,
+.travel-service-grid .travel-day-plan {
+  grid-column: 1 / -1 !important;
+}
+
+.travel-service-grid .travel-service-summary {
+  background:
+    radial-gradient(circle at 90% 0, rgba(255, 211, 110, .24), transparent 34%),
+    rgba(255, 249, 230, .84) !important;
+}
+
+.travel-day-plan ul {
+  display: grid !important;
+  gap: 8px !important;
+  padding: 0 !important;
+  margin: 8px 0 0 !important;
+  list-style: none !important;
+}
+
+.travel-day-plan li {
+  display: grid !important;
+  grid-template-columns: 36px minmax(0, 1fr) !important;
+  gap: 4px 8px !important;
+  align-items: start !important;
+  padding: 8px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, .55) !important;
+  border: 1px dashed rgba(142, 44, 26, .16) !important;
+}
+
+.travel-day-plan li b {
+  grid-row: span 2 !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: grid !important;
+  place-items: center !important;
+  color: #fff7df !important;
+  background: linear-gradient(135deg, #a8261d, #e06b42) !important;
+  border-radius: 50% !important;
+}
+
+.travel-day-plan li span {
+  margin: 0 !important;
+  color: #79301f !important;
+}
+
+.travel-day-plan li em {
+  color: rgba(57, 35, 24, .76) !important;
+  font-style: normal !important;
+  line-height: 1.5 !important;
+}
+
+/* 知识图谱：改成不规则布局、曲线连接、节点弹跳 */
+.kg-graph-preview {
+  min-height: 390px !important;
+}
+
+.kg-graph-preview .kg-svg {
+  height: 390px !important;
+}
+
+.kg-full-graph .kg-svg {
+  min-height: 680px !important;
+}
+
+.kg-link {
+  fill: none !important;
+  stroke: rgba(158, 33, 24, .50) !important;
+  stroke-width: 2.05 !important;
+  stroke-linecap: round !important;
+  stroke-dasharray: 7 5 !important;
+  animation: kgLineFlow 5.5s linear infinite !important;
+}
+
+.kg-node-svg {
+  transform-box: fill-box !important;
+  transform-origin: center !important;
+  animation: kgNodeJump 3.2s ease-in-out infinite !important;
+  animation-delay: var(--kg-delay, 0s) !important;
+}
+
+.kg-node-svg ellipse {
+  filter:
+    drop-shadow(0 7px 10px rgba(84, 28, 18, .16))
+    drop-shadow(0 0 10px rgba(255, 218, 114, .20)) !important;
+}
+
+.kg-node-svg text {
+  pointer-events: none !important;
+}
+
+@keyframes kgNodeJump {
+  0%, 100% { transform: translateY(0) scale(1); }
+  42% { transform: translateY(-4px) scale(1.018); }
+  58% { transform: translateY(2px) scale(.992); }
+}
+
+@keyframes kgLineFlow {
+  to { stroke-dashoffset: -48; }
+}
+
+@media (max-width: 1300px) {
+  .route-recommend-strip.bottom-route-recommend,
+  .bottom-route-recommend {
+    gap: 18px !important;
+    grid-template-columns: repeat(4, minmax(150px, 1fr)) 94px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  .brand-logo {
+    max-width: 270px !important;
+  }
+}
+
+@media (max-width: 1080px) {
+  .travel-service-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =====================================================================
+   v19：顶部不重叠、红色旅游改为红色研学、知识图谱改为力导向式圆点网络、加载居中无椭圆
+   ===================================================================== */
+.tourism-app.tourism-cartoon-shell,
+.tourism-app {
+  grid-template-rows: 76px minmax(0, 1fr) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.tourism-topbar.tourism-cartoon-topbar,
+.tourism-cartoon-topbar {
+  height: 76px !important;
+  min-height: 76px !important;
+  max-height: 76px !important;
+  display: grid !important;
+  grid-template-columns: minmax(260px, 455px) minmax(430px, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 6px 18px 6px 14px !important;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  background:
+    radial-gradient(circle at 5% 50%, rgba(255,255,255,.76), transparent 10%),
+    linear-gradient(180deg, rgba(255,255,255,.68), rgba(255,244,209,.20)),
+    linear-gradient(90deg, #fff7dc 0%, #ffe7b7 52%, #fff3d4 100%) !important;
+}
+
+.tourism-layout.tourism-cartoon-layout,
+.tourism-cartoon-layout {
+  grid-row: 2 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  min-height: 0 !important;
+  z-index: 1 !important;
+}
+
+.tourism-brand.cartoon-brand,
+.cartoon-brand {
+  width: 100% !important;
+  height: 64px !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  overflow: hidden !important;
+}
+
+.tourism-brand.cartoon-brand .brand-logo,
+.cartoon-brand .brand-logo,
+.brand-logo {
+  width: auto !important;
+  max-width: min(410px, 100%) !important;
+  height: 62px !important;
+  max-height: 62px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+  flex: 0 1 auto !important;
+  transform: none !important;
+}
+
+/* logo 图已经包含主视觉字样，隐藏额外文字，避免与中部面板压叠 */
+.tourism-brand.cartoon-brand > div:last-child,
+.cartoon-brand > div:last-child {
+  display: none !important;
+}
+
+.tourism-nav.site-nav.cartoon-nav,
+.cartoon-nav,
+.tourism-nav {
+  justify-self: end !important;
+  align-self: center !important;
+  width: min(690px, 100%) !important;
+  height: 48px !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  padding: 6px 20px 6px 44px !important;
+  overflow: visible !important;
+  background: linear-gradient(90deg, rgba(139, 20, 13, 0) 0%, rgba(157,29,22,.94) 18%, rgba(111,18,13,.98) 100%) !important;
+  clip-path: polygon(7% 0, 100% 0, 100% 100%, 0 100%) !important;
+  border-radius: 0 0 0 0 !important;
+}
+
+.cartoon-nav button::before,
+.cartoon-nav .site-nav-btn::before {
+  content: none !important;
+  display: none !important;
+}
+
+.tourism-nav .site-nav-btn,
+.cartoon-nav .site-nav-btn,
+.tourism-nav button {
+  flex: 0 0 auto !important;
+  height: 32px !important;
+  min-width: 92px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  white-space: nowrap !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #fff5d1 !important;
+  background: rgba(113, 18, 13, .58) !important;
+  border: 1px solid rgba(255, 231, 166, .45) !important;
+  box-shadow: none !important;
+}
+
+.tourism-nav .site-nav-btn.active,
+.tourism-nav .site-nav-btn.site-nav-active,
+.cartoon-nav .site-nav-btn.active,
+.cartoon-nav .site-nav-btn.site-nav-active {
+  min-width: 104px !important;
+  color: #7a1d13 !important;
+  background: linear-gradient(180deg, #fff0b7, #f4c45d) !important;
+  border-color: rgba(255,255,255,.75) !important;
+  box-shadow: 0 6px 16px rgba(74, 12, 8, .18) !important;
+}
+
+/* 资源图例只保留彩色点，不在点上写字 */
+.tourism-legend i,
+.cartoon-floating-legend i {
+  display: inline-block !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px !important;
+  overflow: hidden !important;
+}
+
+/* 路线分析加载：去掉椭圆/阴影面板，只保留居中圆形加载 */
+.analysis-overlay,
+.analysis-overlay.show {
+  background: rgba(65, 18, 14, .10) !important;
+  backdrop-filter: blur(1.5px) !important;
+}
+
+.analysis-overlay.show {
+  display: block !important;
+}
+
+.analysis-overlay::before,
+.analysis-overlay::after,
+.route-progress-loader::before,
+.route-progress-loader::after {
+  content: none !important;
+  display: none !important;
+}
+
+.route-progress-loader.ring-only,
+.route-progress-loader {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 144px !important;
+  height: 144px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.route-progress-ring {
+  width: 144px !important;
+  height: 144px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 0 6px rgba(255, 245, 220, .95), 0 0 24px rgba(198,40,29,.34) !important;
+}
+
+.route-progress-ring::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: -8px !important;
+  border-radius: 50% !important;
+  border: 3px solid transparent !important;
+  border-top-color: rgba(198,40,29,.86) !important;
+  border-right-color: rgba(244,185,66,.72) !important;
+  animation: routeRingSpin .9s linear infinite !important;
+}
+
+/* 知识图谱：圆形节点 + 多中心力导向视觉，接近参考图的网络效果 */
+.kg-graph-preview {
+  min-height: 430px !important;
+  overflow: auto !important;
+  background: #f6f7f9 !important;
+}
+
+.kg-graph-preview .kg-svg {
+  width: 100% !important;
+  height: 430px !important;
+  min-width: 660px !important;
+}
+
+.kg-full-graph {
+  background: #f5f6f8 !important;
+  overflow: auto !important;
+}
+
+.kg-full-graph .kg-svg {
+  width: 100% !important;
+  min-width: 1360px !important;
+  min-height: 820px !important;
+  background: #f5f6f8 !important;
+}
+
+.kg-bg {
+  fill: #f5f6f8 !important;
+  stroke: rgba(95, 106, 124, .10) !important;
+}
+
+.kg-link {
+  fill: none !important;
+  stroke: rgba(64, 73, 88, .52) !important;
+  stroke-width: 1.45 !important;
+  stroke-linecap: round !important;
+  stroke-dasharray: none !important;
+  animation: kgLinkPulse 4.8s ease-in-out infinite !important;
+}
+
+.kg-link-label {
+  fill: rgba(61, 67, 78, .70) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  paint-order: stroke !important;
+  stroke: #f5f6f8 !important;
+  stroke-width: 4px !important;
+  stroke-linejoin: round !important;
+}
+
+.kg-node-svg {
+  transform-box: fill-box !important;
+  transform-origin: center !important;
+  animation: kgCircleBounce 3.4s ease-in-out infinite !important;
+  animation-delay: var(--kg-delay, 0s) !important;
+}
+
+.kg-node-svg circle {
+  stroke: rgba(255,255,255,.88) !important;
+  stroke-width: 2.2 !important;
+  filter: drop-shadow(0 4px 7px rgba(41, 50, 65, .18)) !important;
+}
+
+.kg-node-svg text {
+  fill: #fff !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+  pointer-events: none !important;
+}
+
+.kg-node-hub text,
+.kg-node-core text {
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.kg-node-core circle { fill: #f4c64f !important; }
+.kg-node-hub circle { fill: #c56be6 !important; }
+.kg-node-resource circle { fill: #48c98b !important; }
+.kg-node-event circle { fill: #ff6b63 !important; }
+.kg-node-process circle { fill: #63b9ea !important; }
+.kg-node-policy circle { fill: #f2c94c !important; }
+.kg-node-army circle { fill: #a8b0bd !important; }
+.kg-node-terrain circle { fill: #47b8d8 !important; }
+.kg-node-spirit circle { fill: #58c783 !important; }
+.kg-node-task circle { fill: #ffbe47 !important; }
+.kg-node-ai circle { fill: #d773ef !important; }
+.kg-node-support circle { fill: #92a0b2 !important; }
+
+@keyframes kgCircleBounce {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  35% { transform: translate(var(--kg-x, 0px), -4px) scale(1.025); }
+  65% { transform: translate(calc(var(--kg-x, 0px) * -0.6), 2px) scale(.99); }
+}
+
+@keyframes kgLinkPulse {
+  50% { stroke-opacity: .34; }
+}
+
+@media (max-width: 1320px) {
+  .tourism-topbar.tourism-cartoon-topbar,
+  .tourism-cartoon-topbar {
+    grid-template-columns: minmax(220px, 355px) minmax(390px, 1fr) !important;
+    gap: 8px !important;
+    padding-left: 8px !important;
+    padding-right: 10px !important;
+  }
+  .tourism-brand.cartoon-brand .brand-logo,
+  .cartoon-brand .brand-logo,
+  .brand-logo {
+    max-width: 330px !important;
+    height: 58px !important;
+  }
+  .tourism-nav.site-nav.cartoon-nav,
+  .cartoon-nav,
+  .tourism-nav {
+    gap: 8px !important;
+    padding-left: 32px !important;
+    padding-right: 12px !important;
+  }
+  .tourism-nav .site-nav-btn,
+  .cartoon-nav .site-nav-btn,
+  .tourism-nav button {
+    min-width: 82px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* v20：AI研学助手改为本页内置问答，不显示 DeepSeek Key 设置；路线理由只在提问后回复 */
+.ai-study-dialog .agent-settings,
+.ai-study-dialog .agent-config,
+.ai-study-dialog .agent-key-panel,
+.ai-study-dialog .api-key-panel,
+.ai-study-dialog .api-key-config,
+.ai-study-dialog .deepseek-key-panel,
+.ai-study-dialog .model-key-panel,
+.ai-study-dialog [data-agent-settings],
+.ai-study-dialog [data-api-key],
+.ai-study-dialog [data-key-panel],
+.ai-study-dialog #agentKeyPanel,
+.ai-study-dialog #apiKeyPanel,
+.ai-study-dialog #deepseekKeyPanel {
+  display: none !important;
+}
+
+.ai-study-dialog .agent-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 14px;
+  min-height: 0;
+}
+
+.ai-study-dialog .agent-message {
+  max-width: 88%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  word-break: break-word;
+}
+
+.ai-study-dialog .agent-message p {
+  margin: 0 0 7px;
+}
+
+.ai-study-dialog .agent-message p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-study-dialog .agent-message.user {
+  align-self: flex-end;
+  border-top-right-radius: 4px;
+}
+
+.ai-study-dialog .agent-message.assistant {
+  align-self: flex-start;
+  border-top-left-radius: 4px;
+}
