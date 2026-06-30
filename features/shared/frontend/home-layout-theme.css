@@ -51,14 +51,34 @@
 }
 
 .brand,
-.tourism-brand { width: 410px; gap: 8px !important; min-width: 0; }
+.tourism-brand {
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  width: 440px;
+  column-gap: 12px !important;
+  gap: 4px !important;
+  min-width: 0;
+}
+.brand-logo {
+  grid-row: 1 / 3;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(255, 231, 169, 0.78);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3px rgba(128, 23, 15, 0.16),
+    0 8px 18px rgba(77, 20, 10, 0.18);
+}
+
 .seal,
 .brand-star { display: none !important; }
 
 .brand h1,
 .tourism-brand strong {
   display: block !important;
-  width: min(390px, 24vw) !important;
+  width: min(330px, 21vw) !important;
   height: 58px !important;
   margin: 0 !important;
   overflow: hidden !important;
@@ -407,8 +427,20 @@
 #modalBody b { color: #4b170f !important; }
 
 @media (max-width: 1280px) {
+  .brand,
+  .tourism-brand {
+    grid-template-columns: 60px minmax(0, 1fr);
+    width: 390px;
+    column-gap: 10px !important;
+  }
+
+  .brand-logo {
+    width: 60px;
+    height: 60px;
+  }
+
   .brand h1,
-  .tourism-brand strong { width: 320px !important; }
+  .tourism-brand strong { width: 300px !important; }
   .topbar::after,
   .tourism-topbar::after { left: 30%; }
   .analysis-grid,
@@ -425,7 +457,8 @@
   .topbar::after,
   .tourism-topbar::after { display: none; }
   .brand,
-  .tourism-brand { width: 100%; }
+  .tourism-brand { width: 100%; grid-template-columns: 56px minmax(0, 1fr); }
+  .brand-logo { width: 56px; height: 56px; }
   .brand h1,
   .tourism-brand strong { width: min(360px, 88vw) !important; }
   .topbar .site-nav,

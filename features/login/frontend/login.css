@@ -49,8 +49,28 @@ body {
   letter-spacing: 0.28em;
 }
 
-.login-title h1 {
+.login-title-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   margin: 12px 0 8px;
+}
+
+.login-title .brand-logo {
+  flex: 0 0 auto;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(255, 231, 169, 0.78);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3px rgba(128, 23, 15, 0.16),
+    0 10px 22px rgba(77, 20, 10, 0.2);
+}
+
+.login-title h1 {
+  margin: 0;
   font-size: clamp(54px, 8vw, 112px);
   line-height: 0.96;
   letter-spacing: 0.04em;
@@ -228,5 +248,14 @@ body {
 
   .login-hero {
     min-height: 360px;
+  }
+
+  .login-title-main {
+    gap: 14px;
+  }
+
+  .login-title .brand-logo {
+    width: 72px;
+    height: 72px;
   }
 }

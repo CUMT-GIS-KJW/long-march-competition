@@ -4089,3 +4089,35 @@ body {
   from { transform: rotate(0deg) translateX(86px); }
   to { transform: rotate(360deg) translateX(86px); }
 }
+
+
+/* Shared title logo alignment for the fallback tourism page. */
+.tourism-brand.cartoon-brand {
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px !important;
+}
+
+.brand-logo {
+  grid-row: 1 / 3;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid rgba(255, 231, 169, 0.78);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 3px rgba(128, 23, 15, 0.16),
+    0 8px 18px rgba(77, 20, 10, 0.18);
+}
+
+@media (max-width: 1280px) {
+  .tourism-brand.cartoon-brand {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
+  .brand-logo {
+    width: 60px;
+    height: 60px;
+  }
+}
