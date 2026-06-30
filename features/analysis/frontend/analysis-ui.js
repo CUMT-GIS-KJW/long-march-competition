@@ -478,11 +478,11 @@
       backgroundColor: "transparent",
       color: ["#d8a84f", "#a8261d", "#457b9d", "#2a9d8f", "#8e7dbe", "#b56576"],
       tooltip: { trigger: "axis", confine: true },
-      legend: { top: 0, type: "scroll", textStyle: { color: "#f4e1ae", fontSize: 10 } },
+      legend: { top: 0, type: "scroll", textStyle: { color: "rgba(38, 8, 0, 0.72)", fontSize: 10 } },
       grid: { left: 42, right: 20, top: 44, bottom: 40 },
       textStyle: { color: "#f0dfb2" },
-      xAxis: { type: "category", axisLabel: { color: "#d9c99c", interval: 0, rotate: 24, fontSize: 10 } },
-      yAxis: { type: "value", axisLabel: { color: "#d9c99c", fontSize: 10 }, splitLine: { lineStyle: { color: "rgba(255,255,255,.08)" } } },
+      xAxis: { type: "category", axisLabel: { color: "rgba(38, 8, 0, 0.72)", interval: 0, rotate: 24, fontSize: 10 } },
+      yAxis: { type: "value", axisLabel: { color: "rgba(38, 8, 0, 0.72)", fontSize: 10 }, splitLine: { lineStyle: { color: "rgba(255,255,255,.08)" } } },
       series: [],
     };
   }
@@ -625,10 +625,10 @@
       backgroundColor: "transparent",
       color: ["#a8261d", "#d8a84f", "#457b9d", "#2a9d8f", "#8e7dbe"],
       tooltip: { trigger: "item" },
-      legend: { bottom: 0, textStyle: { color: "#f4e1ae", fontSize: 10 } },
+      legend: { bottom: 0, textStyle: { color: "rgba(38, 8, 0, 0.72)", fontSize: 10 } },
       series: [{
         name: "节点类型", type: "pie", radius: ["28%", "66%"], center: ["50%", "43%"], roseType: "radius",
-        avoidLabelOverlap: true, label: { color: "#f3e1b7", fontSize: 11 }, labelLine: { length: 10, length2: 8 },
+        avoidLabelOverlap: true, label: { color: "rgba(38, 8, 0, 0.72)", fontSize: 11 }, labelLine: { length: 10, length2: 8 },
         data: eventTypeData(),
       }],
     };
@@ -672,7 +672,7 @@
     const hasData = appliedAnalysis.routeId && appliedAnalysis.tool === activeTool && data.summary;
     
     if (!hasData || !window.echarts) {
-      chartContainer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#d9c99c;font-size:14px;">此处可查看 GIS 分析结果</div>`;
+      chartContainer.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(38, 8, 0, 0.72);font-size:14px;">此处可查看 GIS 分析结果</div>`;
       if (chart) {
         chart.dispose();
         chart = null;

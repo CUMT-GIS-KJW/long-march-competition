@@ -316,7 +316,7 @@ body {
 }
 
 .parameter-panel label {
-        color: rgba(225, 210, 178, 0.72);
+        color: rgba(38, 8, 0, 0.72);
         font-size: 10px;
 }
 
@@ -477,8 +477,8 @@ body {
 
 .metrics-head span {
         color: #9ee0b4;
-        background: rgba(52, 94, 64, 0.16);
-        border: 1px solid rgba(126, 195, 158, 0.18);
+        background: rgba(255, 228, 76, 0.253);
+        border: 1px solid rgba(152, 74, 0, 0.414);
         border-radius: 999px;
         padding: 4px 8px;
 }
@@ -493,7 +493,7 @@ body {
 }
 
 .metrics article span {
-        color: rgba(224, 211, 181, 0.62);
+        color: rgba(38, 8, 0, 0.72);
 }
 
 .metrics article b {
@@ -520,7 +520,7 @@ body {
         margin-top: 8px;
         background:
                 linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(255, 255, 255, 0.006)),
-                rgba(40, 12, 8, 0.2);
+                rgba(255, 254, 245, 0.425);
         border: 1px solid rgba(246, 211, 122, 0.08);
         border-radius: 8px;
 }
