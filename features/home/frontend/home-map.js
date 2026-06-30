@@ -967,6 +967,7 @@ async function initApp() {
 }
 
 // ★ 加载诗歌点
+// ★ 加载诗歌点
 async function loadPoetryPoints() {
   try {
     const response = await fetch("/api/poetry-points");
@@ -974,14 +975,19 @@ async function loadPoetryPoints() {
     const data = payload.code === 200 ? payload.data : payload;
     state.poetryPoints = data.features || [];
     createPoetryLayer();
+    console.log('✅ 诗歌点加载完成，数量:', state.poetryPoints.length);
   } catch (error) {
     console.warn("加载诗歌点失败:", error);
     state.poetryPoints = [];
   }
 }
 
-// ★ 创建诗歌点图层
+// ★ 创建诗歌点图层 - 点击直接打开卷轴
 function createPoetryLayer() {
+  if (state.poetryLayer) {
+    state.map.removeLayer(state.poetryLayer);
+  }
+  
   state.poetryLayer = L.layerGroup();
 
   state.poetryPoints.forEach(feature => {
@@ -1007,95 +1013,51 @@ function createPoetryLayer() {
       zIndexOffset: 800,
     });
 
+    // ★ 点击直接打开卷轴，不再显示弹窗
     marker.on('click', function() {
-      showPoetryPopup(feature);
+      const poemId = props.poem_id;
+      if (window.Poetry && typeof window.Poetry.openById === 'function') {
+        window.Poetry.openById(poemId);
+      }
     });
 
     marker.addTo(state.poetryLayer);
   });
 
-  // 默认隐藏
   state.poetryLayer.addTo(state.map);
-  state.poetryLayer.setOpacity(0);
-}
-
-// ★ 显示诗歌弹窗
-function showPoetryPopup(feature) {
-  const props = feature.properties || {};
-  const poemId = props.poem_id;
+  state.poetryVisible = true;
   
-  fetch("/api/poetry-content")
-    .then(res => res.json())
-    .then(payload => {
-      const data = payload.code === 200 ? payload.data : payload;
-      const poems = data.poems || [];
-      const poem = poems.find(p => p.id === poemId);
-      
-      if (!poem) {
-        flash(`未找到诗歌: ${props.poem_title}`);
-        return;
-      }
-
-      const popupContent = `
-        <div class="poetry-popup-content">
-          <div class="poetry-popup-header">
-            <h3>📜 ${poem.title}</h3>
-            <span class="poetry-author">${poem.author} · ${poem.year}</span>
-          </div>
-          <div class="poetry-popup-body">
-            <pre class="poetry-popup-text">${poem.text}</pre>
-          </div>
-          <div class="poetry-popup-footer">
-            <span class="poetry-place">📍 ${props.name}</span>
-            <span class="poetry-location">${props.province} · ${props.city}</span>
-          </div>
-          <div class="poetry-popup-desc">
-            <p>${props.description || poem.description || ''}</p>
-          </div>
-          <button class="poetry-open-full" data-poem-id="${poemId}" type="button">
-            打开诗词卷轴
-          </button>
-        </div>
-      `;
-
-      const popup = L.popup({
-        maxWidth: 380,
-        className: 'poetry-popup',
-        autoPan: true,
-        autoPanPadding: [20, 20],
-      }).setLatLng([feature.geometry.coordinates[1], feature.geometry.coordinates[0]])
-        .setContent(popupContent);
-
-      state.map.openPopup(popup);
-
-      setTimeout(() => {
-        const btn = document.querySelector('.poetry-open-full');
-        if (btn) {
-          btn.addEventListener('click', function() {
-            const pid = this.dataset.poemId;
-            if (window.Poetry && typeof window.Poetry.openById === 'function') {
-              window.Poetry.openById(pid);
-            }
-          });
-        }
-      }, 100);
-    })
-    .catch(error => {
-      console.error('加载诗歌内容失败:', error);
-      flash('加载诗歌内容失败');
-    });
+  const poetryToggle = document.getElementById('poetryToggle');
+  if (poetryToggle) {
+    poetryToggle.dataset.visible = 'true';
+    poetryToggle.textContent = '隐藏诗词点';
+    poetryToggle.classList.remove('is-off');
+  }
+  
+  console.log('✅ 诗歌点已显示，数量:', state.poetryPoints.length);
 }
 
 // ★ 切换诗歌点显示
 function togglePoetryLayer(visible) {
+  console.log('togglePoetryLayer 调用:', visible);
+  
   state.poetryVisible = visible;
+  
   if (state.poetryLayer) {
     if (visible) {
-      state.poetryLayer.setOpacity(1);
-      state.poetryLayer.addTo(state.map);
+      if (!state.map.hasLayer(state.poetryLayer)) {
+        state.poetryLayer.addTo(state.map);
+      }
+      flash('诗词点已显示');
     } else {
-      state.poetryLayer.setOpacity(0);
+      if (state.map.hasLayer(state.poetryLayer)) {
+        state.map.removeLayer(state.poetryLayer);
+      }
+      flash('诗词点已隐藏');
     }
+  } else {
+    console.warn('poetryLayer 未创建，尝试重新加载');
+    loadPoetryPoints();
   }
 }
 
