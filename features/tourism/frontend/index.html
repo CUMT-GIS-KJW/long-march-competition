@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/features/tourism/frontend/tourism-study.css">
 </head>
 <body>
+  <script src="/features/shared/frontend/auth-check.js"></script>
   <div class="tourism-app tourism-cartoon-shell">
     <header class="tourism-topbar tourism-cartoon-topbar">
       <div class="tourism-brand cartoon-brand">
@@ -26,7 +27,7 @@
         <button class="site-nav-btn" type="button" onclick="location.href='/index.html'">首页</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/analysis.html'">综合分析</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/scene3d.html'">3D地形</button>
-        <button class="site-nav-btn site-nav-active active" type="button">红色研学</button>
+        <button class="site-nav-btn site-nav-active active" type="button">红色旅游</button>
       </nav>
     </header>
 
@@ -86,9 +87,9 @@
           <label>
             <span><i>3</i> 出行方式</span>
             <select id="travelModeSelect">
-              <option value="coach" selected>研学大巴</option>
-              <option value="railCoach">高铁 + 大巴</option>
-              <option value="selfDrive">自驾调研</option>
+              <option value="bus" selected>研学大巴</option>
+              <option value="mixed">高铁 + 大巴</option>
+              <option value="car">自驾调研</option>
               <option value="walk">徒步体验段</option>
             </select>
           </label>
@@ -158,20 +159,30 @@
           <div id="travelServicePanel" class="travel-service-grid"></div>
         </section>
 
-        <section class="knowledge-panel">
-          <span class="panel-kicker">KNOWLEDGE GRAPH · LONGCHANGE</span>
-          <h2>内置研学知识图谱模型</h2>
-          <div class="kg-toolbar">
-            <button class="active" type="button" data-kg-topic="spirit">精神谱系</button>
-            <button type="button" data-kg-topic="route">路线关联</button>
-            <button type="button" data-kg-topic="study">研学任务</button>
+        <section class="tourism-ai-card agent-panel open" id="agentPanel">
+          <button class="agent-toggle" id="agentToggle" type="button" aria-hidden="true">AI</button>
+          <div class="agent-window">
+            <header class="agent-head">
+              <div>
+                <span>AI STUDY ASSISTANT</span>
+                <b>AI研学助手</b>
+              </div>
+            </header>
+            <div class="agent-messages" id="agentMessages"></div>
+            <form class="agent-form" id="agentForm">
+              <input id="agentInput" type="text" placeholder="问问AI：这条路线为什么合理？这个点和长征事件有什么关系？">
+              <button type="submit">发送</button>
+            </form>
           </div>
-          <div class="kg-board" id="knowledgeGraphBoard" aria-label="长征研学知识图谱模型">
-            <span class="kg-node core">模型加载中</span>
+        </section>
+
+        <section class="knowledge-panel compact-knowledge-card">
+          <span class="panel-kicker">KNOWLEDGE LINK</span>
+          <h2>知识关联</h2>
+          <div id="knowledgeLinkList" class="knowledge-link-list">
+            <span>生成路线或点击资源点后显示关联链。</span>
           </div>
-          <div class="kg-model-output" id="knowledgeGraphOutput">
-            系统内置“长征资源—事件—精神—研学任务”知识图谱模型，可直接支撑 AI 问答、路线解释和比赛答辩。
-          </div>
+          <button id="openKnowledgeGraphBtn" class="secondary-action" type="button">展开知识图谱</button>
         </section>
 
         <section class="route-reason-panel is-hidden" id="routeReasonSection">
@@ -251,20 +262,6 @@
 
   <div class="review-modal" id="reviewModal" aria-hidden="true"></div>
   <div class="toast" id="toast"></div>
-  <div class="agent-panel tourism-agent-panel" id="agentPanel">
-    <button class="agent-toggle" id="agentToggle" type="button">AI</button>
-    <section class="agent-window">
-      <header class="agent-head">
-        <span>RED STUDY AI AGENT</span>
-        <b>红色研学智能体</b>
-      </header>
-      <div class="agent-messages" id="agentMessages"></div>
-      <form class="agent-form" id="agentForm">
-        <input id="agentInput" type="text" placeholder="询问路线、交通、食宿、知识图谱与 longchange">
-        <button type="submit">发送</button>
-      </form>
-    </section>
-  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/features/shared/frontend/config.js"></script>

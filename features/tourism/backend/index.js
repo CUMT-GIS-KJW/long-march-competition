@@ -241,6 +241,10 @@ function filterResources(resources, query) {
   const keyword = normalize(query.get("keyword"));
 
   return resources.filter((resource) => {
+    if (!category && resource.category === "other") {
+      return false;
+    }
+
     if (province && resource.province !== province) {
       return false;
     }
@@ -463,7 +467,7 @@ function findPresetResources(resources, preset) {
 }
 
 function parseSelectedResourceIds(query) {
-  return normalize(query.get("points") || query.get("resourceIds"))
+  return normalize(query.get("selectedResourceIds") || query.get("points") || query.get("resourceIds"))
     .split(",")
     .map((item) => decodeURIComponent(item).trim())
     .filter(Boolean);
@@ -533,20 +537,22 @@ function chooseResources(resources, query) {
   const days = normalizedRouteDays(preset?.days || query.get("days"));
   const requestedProvince = normalize(query.get("province")) || preset?.province || "";
   const selectedIds = parseSelectedResourceIds(query);
-  const selectedById = uniqueByName(
+  const rawSelectedById = uniqueByName(
     selectedIds
       .map((id) => resources.find((resource) => resource.id === id || resource.sourceId === id))
       .filter(Boolean),
   );
+  const routeProvince = requestedProvince || dominantProvince(rawSelectedById) || chooseRouteProvince(resources, theme, requestedProvince);
+  const selectedById = routeProvince
+    ? rawSelectedById.filter((resource) => resource.province === routeProvince)
+    : rawSelectedById;
   const hasCustomSelection = selectedById.length > 0;
 
-  // 自选纪念点时允许跨省组合；没有自选点时仍按省份/主题自动推荐。
-  const autoProvince = requestedProvince || chooseRouteProvince(resources, theme, requestedProvince);
-  const routePool = hasCustomSelection
-    ? resources
-    : autoProvince
-      ? resources.filter((resource) => resource.province === autoProvince)
-      : resources;
+  // 研学路线只在一个省内生成，避免跨省乱跳和明显绕路。
+  const autoProvince = routeProvince;
+  const routePool = autoProvince
+    ? resources.filter((resource) => resource.province === autoProvince)
+    : resources;
 
   const anchorPool = hasCustomSelection ? selectedById : routePool;
   const autoCities = chooseCities(routePool, theme, days, hasCustomSelection ? "" : autoProvince);
@@ -563,7 +569,7 @@ function chooseResources(resources, query) {
       const themeScore = scoreForTheme(resource, theme, citySet);
       const cityDistancePenalty = distanceToCitySet(resource, citySet, cityCenters) * 0.45;
       const anchorDistancePenalty = hasCustomSelection ? nearestDistanceToResources(resource, anchorPool) * 0.55 : 0;
-      const sameProvinceBonus = hasCustomSelection && selectedById.some((item) => item.province === resource.province) ? 60 : 0;
+        const sameProvinceBonus = resource.province === autoProvince ? 80 : 0;
 
       return {
         ...resource,
@@ -598,7 +604,7 @@ function chooseResources(resources, query) {
   }
 
   if (selected.length < targetCount) {
-    const fallbackCandidates = resources
+    const fallbackCandidates = routePool
       .filter((resource) => !selected.some((item) => item.name === resource.name))
       .map((resource) => {
         const themeScore = scoreForTheme(resource, theme, citySet);

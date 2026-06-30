@@ -11,7 +11,7 @@
     const pass = password.value.trim() || "123456";
 
     if (user === "admin" && pass === "123456") {
-      sessionStorage.setItem("longMarchLoggedIn", "true");
+      localStorage.setItem("isLoggedIn", "true");
       message.classList.remove("error");
       message.textContent = "登录成功，正在进入二维主地图……";
 

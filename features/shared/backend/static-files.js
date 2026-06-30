@@ -21,7 +21,7 @@ const mimeTypes = {
 };
 
 const pageAliases = {
-  "/": "/features/home/frontend/index.html",
+  "/": "/features/login/frontend/index.html",
   "/login.html": "/features/login/frontend/index.html",
   "/index.html": "/features/home/frontend/index.html",
   "/zhuye.html": "/features/home/frontend/index.html",

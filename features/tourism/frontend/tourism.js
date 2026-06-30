@@ -1063,53 +1063,20 @@
 
   function createResourceIcon(resource, active = false, selected = false) {
     const meta = categoryMeta[resource.category] || categoryMeta.other;
-    const relic = resourceRelicIcon(resource);
-    const size = selected ? 38 : active ? 40 : resource.featured ? 34 : 28;
+    const size = selected ? 28 : active ? 30 : resource.featured ? 24 : 18;
     const selectedClass = selected ? "selected" : "";
     const activeClass = active ? "focus" : "";
 
     return L.divIcon({
       className: "",
       html: `
-        <div class="resource-marker longmarch-relic-marker relic-${relic.key} ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
-          <img class="relic-icon" src="${relic.src}" alt="${relic.label}">
+        <div class="resource-marker ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
           <i>${selected ? "✓" : ""}</i>
         </div>
       `,
-      iconSize: [size + 18, size],
-      iconAnchor: [(size + 18) / 2, size],
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size],
     });
-  }
-
-  function resourceRelicIcon(resource) {
-    const text = [
-      resource.name,
-      resource.category,
-      resource.type,
-      resource.address,
-    ].join("");
-
-    if (/桥|渡|江|河|水|码头|赤水|乌江|金沙江|大渡河/.test(text)) {
-      return {
-        key: "kettle",
-        label: "水壶",
-        src: "/assets/img/study-relic-kettle.svg",
-      };
-    }
-
-    if (/山|草地|雪|岭|关|口|战斗|战役|遗址/.test(text)) {
-      return {
-        key: "shoe",
-        label: "草鞋",
-        src: "/assets/img/study-relic-shoe.svg",
-      };
-    }
-
-    return {
-      key: "hat",
-      label: "草帽",
-      src: "/assets/img/study-relic-hat.svg",
-    };
   }
 
   function renderResourceMarkers(resources = state.resources, focusIds = new Set()) {
@@ -1195,6 +1162,8 @@
       updateMapClickMode("select");
       flash("已切换为加入路线模式");
     });
+
+    renderKnowledgeLinks([resource]);
   }
 
 
@@ -1427,11 +1396,14 @@
     if (selectedPointIds.length) {
       params.delete("preset");
       params.set("points", selectedPointIds.join(","));
+      params.set("selectedResourceIds", selectedPointIds.join(","));
     }
 
     if (province) {
       params.set("province", province);
     }
+
+    params.set("travelMode", selectedTravelMode());
 
     await new Promise((resolve) => setTimeout(resolve, 1150));
 
@@ -1453,6 +1425,7 @@
     focusRouteBounds(route.resources || []);
     renderTravelServicePlan(route);
     renderRouteReason(route);
+    renderKnowledgeLinks(route.resources || []);
     flash("研学方案和空间路线已生成");
   }
 
@@ -1797,21 +1770,21 @@
 
   function travelModeInfo(mode = selectedTravelMode()) {
     const infos = {
-      coach: {
+      bus: {
         name: "研学大巴",
         traffic: "适合学校统一组织，点到点转场稳定，便于控制集合时间与讲解节奏。",
         road: "优先选择国省干线与景区接驳道路，避开连续山路夜间行驶。",
         food: "午餐以纪念馆周边团队餐或当地简餐为主，晚餐安排县城标准餐。",
         stay: "住宿优先选择县城研学团队酒店，满足安全、集合、停车和早出发需求。",
       },
-      railCoach: {
+      mixed: {
         name: "高铁 + 大巴",
         traffic: "跨省段使用高铁压缩长距离通勤，落地后以大巴串联纪念点。",
         road: "适合徐州出发到遵义、成都、延安等城市，再进入周边县域资源点。",
         food: "高铁段简餐，落地后安排城市餐饮与研学基地团队餐。",
         stay: "住宿靠近高铁站或核心纪念点，减少第二天早高峰转场压力。",
       },
-      selfDrive: {
+      car: {
         name: "自驾调研",
         traffic: "适合小组调研，路线自由度高，可临时增加周边资源点。",
         road: "注意山区弯道、雨雪天气和景区停车容量，建议预留更多机动时间。",
@@ -1827,7 +1800,7 @@
       },
     };
 
-    return infos[mode] || infos.coach;
+    return infos[mode] || infos.bus;
   }
 
   function renderTravelServicePlan(route = null) {
@@ -1896,40 +1869,43 @@
     `;
   }
 
-  async function loadKnowledgeGraph(topic = "spirit") {
-    const data = await fetchJson(`/api/tourism/knowledge-graph?topic=${encodeURIComponent(topic)}`);
+  function renderKnowledgeLinks(resources = []) {
+    const panel = $("#knowledgeLinkList");
 
-    renderKnowledgeGraph(data);
-  }
-
-  function renderKnowledgeGraph(data) {
-    const board = $("#knowledgeGraphBoard");
-    const output = $("#knowledgeGraphOutput");
-
-    if (!board || !output) {
+    if (!panel) {
       return;
     }
 
-    const nodes = data.nodes || [];
-    const edges = data.edges || [];
+    const source = resources.length ? resources : state.resources.slice(0, 3);
+    const items = source
+      .slice(0, 5)
+      .map((resource) => {
+        const text = `${resource.name}${resource.type}${resource.address}`;
+        const event = /遵义|会议|会址/.test(text)
+          ? "遵义会议"
+          : /泸定|大渡河|桥/.test(text)
+            ? "飞夺泸定桥"
+            : /雪山|夹金山|草地/.test(text)
+              ? "翻越雪山草地"
+              : "长征重要节点";
+        const spirit = /会议|会址|遵义/.test(text)
+          ? "实事求是"
+          : /桥|战斗|渡/.test(text)
+            ? "英勇斗争"
+            : "艰苦奋斗";
+        const task = /桥|河|渡/.test(text)
+          ? "地形交通观察任务"
+          : /馆|纪念/.test(text)
+            ? "展陈信息提取任务"
+            : "现场复盘讨论任务";
 
-    board.innerHTML = nodes
-      .map((node, index) => {
-        const cls = node.level === "core" || index === 0 ? "kg-node core" : "kg-node";
-
-        return `<span class="${cls}">${escapeHtml(node.name)}</span>`;
+        return `${resource.name} → ${event} → ${spirit} → ${task}`;
       })
-      .join("");
+      .filter(Boolean);
 
-    output.innerHTML = `
-      <b>${escapeHtml(data.modelName)} · ${escapeHtml(data.version)}</b>
-      <p>${escapeHtml(data.summary || data.description || "")}</p>
-      <div class="kg-edge-list">
-        ${edges.slice(0, 5).map((edge) => {
-          return `<span>${escapeHtml(edge[0])} ${escapeHtml(edge[1])} ${escapeHtml(edge[2])}</span>`;
-        }).join("")}
-      </div>
-    `;
+    panel.innerHTML = items.length
+      ? items.map((item) => `<span>${escapeHtml(item)}</span>`).join("")
+      : "<span>生成路线或点击资源点后显示关联链。</span>";
   }
 
   function bindEvents() {
@@ -1968,19 +1944,6 @@
       });
     });
 
-    document.querySelectorAll("[data-kg-topic]").forEach((button) => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll("[data-kg-topic]").forEach((item) => {
-          item.classList.toggle("active", item === button);
-        });
-
-        loadKnowledgeGraph(button.dataset.kgTopic || "spirit").catch((error) => {
-          console.error(error);
-          flash("知识图谱模型加载失败");
-        });
-      });
-    });
-
     $("#selectedRoutePointList")?.addEventListener("click", (event) => {
       const button = event.target.closest("[data-remove-route-point]");
       if (!button) {
@@ -2002,10 +1965,7 @@
 
     bindRoutePresetCards();
     renderTravelServicePlan();
-    loadKnowledgeGraph("spirit").catch((error) => {
-      console.error(error);
-      flash("知识图谱模型加载失败");
-    });
+    renderKnowledgeLinks();
   }
 
   document.addEventListener("DOMContentLoaded", async () => {

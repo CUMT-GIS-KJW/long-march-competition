@@ -375,6 +375,90 @@
   z-index: 5000;
 }
 
+.tourism-ai-card.agent-panel {
+  position: static;
+  z-index: auto;
+  display: block;
+  pointer-events: auto;
+}
+
+.tourism-ai-card .agent-toggle {
+  display: none;
+}
+
+.tourism-ai-card .agent-window {
+  display: grid;
+  width: 100%;
+  height: 320px;
+  grid-template-rows: auto 1fr auto;
+  color: #4b2a1a;
+  background: rgba(255, 249, 230, 0.92);
+  border-color: rgba(132, 42, 25, 0.18);
+  box-shadow: none;
+}
+
+.tourism-ai-card .agent-head {
+  border-bottom-color: rgba(132, 42, 25, 0.14);
+}
+
+.tourism-ai-card .agent-head span {
+  color: #9e2118;
+}
+
+.tourism-ai-card .agent-head b,
+.tourism-ai-card .agent-message.assistant,
+.tourism-ai-card .agent-message.user {
+  color: #5b2118;
+}
+
+.tourism-ai-card .agent-message.assistant {
+  background: rgba(142, 30, 22, 0.06);
+}
+
+.tourism-ai-card .agent-message.user {
+  background: rgba(216, 170, 84, 0.24);
+}
+
+.tourism-ai-card .agent-form {
+  border-top-color: rgba(132, 42, 25, 0.14);
+}
+
+.tourism-ai-card .agent-form input {
+  color: #4b2a1a;
+  background: rgba(255, 253, 244, 0.92);
+  border-color: rgba(132, 42, 25, 0.18);
+}
+
+.tourism-ai-card .agent-form button,
+.secondary-action {
+  color: #fff7d8;
+  background: linear-gradient(135deg, #9e2118, #c64b35);
+  border: 0;
+}
+
+.knowledge-link-list {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.knowledge-link-list span {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(142, 30, 22, 0.07);
+  color: rgba(57, 35, 24, 0.82);
+  line-height: 1.55;
+}
+
+.secondary-action {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .tourism-agent-panel .agent-window {
   border-color: rgba(143, 37, 27, 0.28);
   background: rgba(255, 248, 228, 0.96);
