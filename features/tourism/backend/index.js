@@ -138,33 +138,47 @@ const presetRoutes = {
 
 const knowledgeGraphModel = {
   modelName: "LongChange 红色研学知识图谱模型",
-  version: "competition-1.0",
-  description: "面向测绘技能大赛的内置知识图谱：连接长征路线、重要事件、红色资源、精神谱系与研学任务。",
+  version: "competition-1.1",
+  description: "面向测绘技能大赛的内置知识图谱：连接长征路线、重要事件、红色资源、军队进程演变、政策支持、群众动员、地形交通、精神谱系与研学任务。",
   topics: {
     spirit: {
       title: "精神谱系",
-      summary: "从坚定信念、实事求是、艰苦奋斗、团结协作四个方向解释红色研学价值。",
-      focus: ["长征精神", "坚定信念", "实事求是", "艰苦奋斗", "团结协作", "人民立场"],
+      summary: "从坚定信念、实事求是、艰苦奋斗、团结协作、人民立场等方向解释红色研学价值。",
+      focus: ["长征精神", "坚定信念", "实事求是", "独立自主", "艰苦奋斗", "团结协作", "人民立场"],
     },
     route: {
       title: "路线关联",
-      summary: "把路线节点、交通条件、地形阻力和事件转折连成可解释的研学链路。",
-      focus: ["中国矿业大学", "长征路线", "会议转折", "渡江战斗", "雪山草地", "会师节点"],
+      summary: "把路线节点、交通条件、地形阻力、事件转折、军队进程和会师节点连成可解释的研学链路。",
+      focus: ["中国矿业大学", "长征路线", "中央苏区出发", "突破湘江", "遵义会议", "四渡赤水", "巧渡金沙江", "飞夺泸定桥", "雪山草地", "胜利会师"],
+    },
+    army: {
+      title: "军队进程演变",
+      summary: "解释红一、红二、红四方面军及中央红军在战略转移、机动转折、北上会师中的演变关系。",
+      focus: ["中央红军", "红一方面军", "红二方面军", "红四方面军", "战略转移", "战略机动", "北上抗日", "胜利会师"],
+    },
+    policy: {
+      title: "政策支持",
+      summary: "把政治路线、组织纪律、群众路线、民族政策、宣传动员与路线推进关联起来。",
+      focus: ["政治路线", "组织纪律", "群众路线", "民族政策", "宣传动员", "后勤保障", "统一战线"],
     },
     study: {
       title: "研学任务",
-      summary: "根据资源点自动生成讲解、记录、访谈、路线复盘和精神总结任务。",
-      focus: ["现场讲解", "地图标注", "事件复盘", "人物学习", "安全组织", "成果汇报"],
+      summary: "根据资源点自动生成讲解、记录、访谈、路线复盘、地形研判、安全组织和成果汇报任务。",
+      focus: ["现场讲解", "地图标注", "事件复盘", "人物学习", "地形研判", "安全组织", "成果汇报"],
     },
   },
   edges: [
     ["长征路线", "连接", "重要事件"],
     ["重要事件", "发生于", "红色资源"],
+    ["重要事件", "推动", "军队进程演变"],
+    ["军队进程演变", "对应", "中央红军/方面军"],
+    ["政治路线", "支持", "战略决策"],
+    ["群众路线", "保障", "行军补给"],
+    ["民族政策", "支撑", "群众动员"],
+    ["地形交通", "约束", "路线方案"],
     ["红色资源", "支撑", "研学任务"],
     ["研学任务", "提炼", "长征精神"],
-    ["交通条件", "约束", "路线方案"],
-    ["地形环境", "解释", "行军困难"],
-    ["AI智能体", "调用", "知识图谱模型"],
+    ["AI智能体", "调用", "LongChange知识图谱"],
   ],
 };
 
@@ -276,7 +290,6 @@ function buildOptions(resources) {
       { value: "site", label: "革命旧址/遗址" },
       { value: "museum", label: "纪念馆/博物馆" },
       { value: "scenic", label: "红色景区" },
-      { value: "other", label: "其他资源" },
     ],
     themes,
   };
@@ -1158,17 +1171,35 @@ function handleStudyRoute({ request, response, sendSuccess }) {
 function handleKnowledgeGraph({ request, response, sendSuccess }) {
   const topic = normalize(getQuery(request).get("topic")) || "spirit";
   const currentTopic = knowledgeGraphModel.topics[topic] || knowledgeGraphModel.topics.spirit;
+  const core = `${topic}_1`;
+  const focusNodes = currentTopic.focus.map((name, index) => {
+    return {
+      id: `${topic}_${index + 1}`,
+      name,
+      level: index === 0 ? "core" : "normal",
+      group: currentTopic.title,
+    };
+  });
+  const supportingNodes = [
+    { id: "resource", name: "红色资源点", level: "support", group: "资源" },
+    { id: "event", name: "历史事件", level: "support", group: "事件" },
+    { id: "terrain", name: "地形交通", level: "support", group: "研判" },
+    { id: "task", name: "研学任务", level: "support", group: "任务" },
+    { id: "ai", name: "AI研学助手", level: "support", group: "解释" },
+  ];
 
   sendSuccess(response, {
     ...knowledgeGraphModel,
     currentTopic: topic,
-    nodes: currentTopic.focus.map((name, index) => {
-      return {
-        id: `${topic}_${index + 1}`,
-        name,
-        level: index === 0 ? "core" : "normal",
-      };
-    }),
+    nodes: [...focusNodes, ...supportingNodes],
+    links: [
+      { source: core, target: "resource", relation: "解释资源价值" },
+      { source: "resource", target: "event", relation: "关联历史事件" },
+      { source: "event", target: "task", relation: "转化研学任务" },
+      { source: "terrain", target: "resource", relation: "约束路线组织" },
+      { source: "task", target: "ai", relation: "生成问答提示" },
+      ...focusNodes.slice(1).map((node) => ({ source: core, target: node.id, relation: "主题展开" })),
+    ],
     summary: currentTopic.summary,
   });
 
