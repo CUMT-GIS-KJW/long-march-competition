@@ -126,9 +126,12 @@
         </div>
         <div class="tourism-legend cartoon-floating-legend">
           <b>图例</b>
-          <span><i class="site"></i>革命旧址 / 遗址</span>
-          <span><i class="museum"></i>纪念馆 / 博物馆</span>
-          <span><i class="scenic"></i>红色景区</span>
+          <span><i class="resource-site"></i>革命旧址/遗址</span>
+          <span><i class="resource-museum"></i>纪念馆/博物馆</span>
+          <span><i class="resource-scenic"></i>红色景区</span>
+          <span><i class="selected-resource"></i>已加入研学方案</span>
+          <span><em class="route-main"></em>研学路线</span>
+          <span><i class="province-filter"></i>省份彩色滤镜</span>
         </div>
         <div class="analysis-overlay" id="analysisOverlay">
           <div class="route-progress-loader ring-only" role="status" aria-live="polite">
@@ -142,77 +145,78 @@
       </section>
 
       <aside class="tourism-right cartoon-right-panel">
-        <section class="detail-panel" id="detailPanel">
-          <span class="panel-kicker">DETAIL</span>
-          <h2>点击红色资源点查看详情</h2>
-          <p>地图默认展示筛选后的红色资源点。点击点位可查看它所在的省、市、地址、资源类型和游客评价。</p>
-        </section>
-
-        <section class="route-panel" id="routePanel">
-          <span class="panel-kicker">ROUTE PLAN</span>
-          <h2>重点研学方案</h2>
-          <p>请选择主题和天数后生成方案。路线会在中间地图中按天分色显示，并在这里展示每天“从哪里到哪里”的分段安排。</p>
-        </section>
-
-        <section class="study-service-panel">
-          <span class="panel-kicker">TRAFFIC · FOOD · STAY</span>
-          <h2>交通食宿与道路研判</h2>
-          <div id="travelServicePanel" class="travel-service-grid"></div>
-        </section>
-
-        <section class="tourism-ai-card agent-panel open" id="agentPanel">
-          <button class="agent-toggle" id="agentToggle" type="button" aria-hidden="true">AI</button>
-          <div class="agent-window">
-            <header class="agent-head">
-              <div>
-                <span>AI STUDY ASSISTANT</span>
-                <b>AI研学助手</b>
-              </div>
-            </header>
-            <div class="agent-messages" id="agentMessages"></div>
-            <form class="agent-form" id="agentForm">
-              <input id="agentInput" type="text" placeholder="问问AI：这条路线为什么合理？这个点和长征事件有什么关系？">
-              <button type="submit">发送</button>
-            </form>
+        <section class="right-tab-shell" aria-label="右侧研学信息面板">
+          <div class="right-tab-buttons" role="tablist" aria-label="研学信息切换">
+            <button class="active" type="button" data-right-tab="resource">资源点介绍</button>
+            <button type="button" data-right-tab="route">重点研学方案</button>
+            <button type="button" data-right-tab="traffic">交通食宿与道路研判</button>
+            <button type="button" data-right-tab="knowledge">知识关联</button>
           </div>
-        </section>
 
-        <section class="knowledge-panel compact-knowledge-card">
-          <span class="panel-kicker">KNOWLEDGE LINK</span>
-          <h2>知识关联</h2>
-          <div id="knowledgeLinkList" class="knowledge-link-list">
-            <span>生成路线或点击资源点后显示关联链。</span>
-          </div>
-          <button id="openKnowledgeGraphBtn" class="secondary-action" type="button">展开知识图谱</button>
-        </section>
+          <div class="right-tab-content">
+            <section class="right-tab-panel active" data-right-tab-panel="resource">
+              <section class="detail-panel" id="detailPanel">
+                <span class="panel-kicker">RESOURCE DETAIL</span>
+                <h2>点击红色资源点查看详情</h2>
+                <p>地图默认展示筛选后的红色资源点。点击点位可查看它所在的省、市、地址、资源类型，并自动关联长征事件与研学任务。</p>
+              </section>
 
-        <section class="route-reason-panel is-hidden" id="routeReasonSection">
-          <span class="panel-kicker">ROUTE ANALYSIS</span>
-          <h2>为什么选择这条线</h2>
-          <div id="routeReasonPanel" class="route-reason-card">
-            <img src="/assets/images/longmarch-route-corner.png" alt="长征研学路线分析示意">
-            <p>生成方案后，这里会说明路线选择依据、道路条件、学习重点与风险提示。</p>
-          </div>
-        </section>
+              <section class="chart-panel cartoon-chart-panel">
+                <span class="panel-kicker">EVENT LINK</span>
+                <h2>长征事件关联表达</h2>
+                <div class="chart-block">
+                  <b>资源类型环图</b>
+                  <div id="donutChart" class="donut-chart"></div>
+                </div>
+                <div class="chart-block">
+                  <b>城市资源热度</b>
+                  <div id="cityChart" class="bubble-chart"></div>
+                </div>
+                <div class="chart-block">
+                  <b>研学关键词云</b>
+                  <div id="wordCloud" class="word-cloud"></div>
+                </div>
+                <div class="chart-block">
+                  <b>关联历史事件</b>
+                  <div id="eventList" class="event-list"></div>
+                </div>
+              </section>
+            </section>
 
-        <section class="chart-panel cartoon-chart-panel">
-          <span class="panel-kicker">EVENT LINK</span>
-          <h2>长征事件关联表达</h2>
-          <div class="chart-block">
-            <b>资源类型环图</b>
-            <div id="donutChart" class="donut-chart"></div>
-          </div>
-          <div class="chart-block">
-            <b>城市资源热度</b>
-            <div id="cityChart" class="bubble-chart"></div>
-          </div>
-          <div class="chart-block">
-            <b>研学关键词云</b>
-            <div id="wordCloud" class="word-cloud"></div>
-          </div>
-          <div class="chart-block">
-            <b>关联历史事件</b>
-            <div id="eventList" class="event-list"></div>
+            <section class="right-tab-panel" data-right-tab-panel="route">
+              <section class="route-panel" id="routePanel">
+                <span class="panel-kicker">ROUTE PLAN</span>
+                <h2>重点研学方案</h2>
+                <p>请选择主题和天数后生成方案。路线会在中间地图中按天分色显示，并在这里展示每天“从哪里到哪里”的分段安排。</p>
+              </section>
+
+              <section class="route-reason-panel is-hidden" id="routeReasonSection">
+                <span class="panel-kicker">ROUTE ANALYSIS</span>
+                <h2>为什么选择这条线</h2>
+                <div id="routeReasonPanel" class="route-reason-card">
+                  <img src="/assets/images/longmarch-route-corner.png" alt="长征研学路线分析示意">
+                  <p>生成方案后，这里会说明路线选择依据、道路条件、学习重点与风险提示。</p>
+                </div>
+              </section>
+            </section>
+
+            <section class="right-tab-panel" data-right-tab-panel="traffic">
+              <section class="study-service-panel">
+                <span class="panel-kicker">TRAFFIC · FOOD · STAY</span>
+                <h2>交通食宿与道路研判</h2>
+                <div id="travelServicePanel" class="travel-service-grid"></div>
+              </section>
+            </section>
+
+            <section class="right-tab-panel" data-right-tab-panel="knowledge">
+              <section class="knowledge-panel compact-knowledge-card">
+                <span class="panel-kicker">KNOWLEDGE LINK</span>
+                <h2>知识关联</h2>
+                <div id="knowledgeLinkList" class="knowledge-link-list" aria-hidden="true"></div>
+                <div id="knowledgeGraphPreview" class="kg-graph-preview"></div>
+                <button id="openKnowledgeGraphBtn" class="secondary-action" type="button">展开知识图谱</button>
+              </section>
+            </section>
           </div>
         </section>
       </aside>
@@ -257,11 +261,51 @@
           <p>适合场馆讲解、人物时间线和研学记录任务。</p>
           <button type="button" data-route-preset>选择此路线</button>
         </article>
+
+        <button class="bottom-ai-circle" id="bottomAiCircleBtn" type="button" aria-label="打开AI研学助手">
+          <span>AI</span>
+          <b>研学助手</b>
+        </button>
       </section>
     </main>
   </div>
 
   <div class="review-modal" id="reviewModal" aria-hidden="true"></div>
+
+  <div class="ai-study-modal" id="aiStudyModal" aria-hidden="true">
+    <div class="ai-study-dialog" role="dialog" aria-modal="true" aria-labelledby="aiStudyTitle">
+      <button class="modal-close" id="closeAiStudyModalBtn" type="button" aria-label="关闭AI研学助手">×</button>
+      <section class="tourism-ai-card agent-panel open" id="agentPanel">
+        <button class="agent-toggle" id="agentToggle" type="button" aria-hidden="true">AI</button>
+        <div class="agent-window">
+          <header class="agent-head">
+            <div>
+              <span>AI STUDY ASSISTANT</span>
+              <b id="aiStudyTitle">AI研学助手</b>
+            </div>
+          </header>
+          <div class="agent-messages" id="agentMessages"></div>
+          <form class="agent-form" id="agentForm">
+            <input id="agentInput" type="text" placeholder="问问AI：这条路线为什么合理？这个点和长征事件有什么关系？">
+            <button type="submit">发送</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="knowledge-graph-modal" id="knowledgeGraphModal" aria-hidden="true">
+    <div class="knowledge-graph-dialog" role="dialog" aria-modal="true" aria-labelledby="kgModalTitle">
+      <button class="modal-close" id="closeKnowledgeGraphBtn" type="button" aria-label="关闭知识图谱">×</button>
+      <header>
+        <span>LONGCHANGE GRAPH</span>
+        <h2 id="kgModalTitle">路线相关知识图谱</h2>
+        <p>围绕当前资源点或路线，展示长征事件、军队进程演变、政策支持、群众动员、地形交通、精神谱系与研学任务之间的关系。</p>
+      </header>
+      <div id="knowledgeGraphFull" class="kg-full-graph"></div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
