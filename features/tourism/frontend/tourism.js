@@ -26,10 +26,10 @@
   let routeProgressValue = 0;
 
   const categoryMeta = {
-    site: { label: "旧址", color: "#B58BD5", icon: "" },
-    museum: { label: "馆", color: "#FFB347", icon: "" },
-    scenic: { label: "景", color: "#5DADEC", icon: "" },
-    other: { label: "红", color: "#F49AC2", icon: "" },
+    site: { label: "革命旧址/遗址", shortLabel: "址", color: "#d6281f", icon: "" },
+    museum: { label: "纪念馆/博物馆", shortLabel: "馆", color: "#f2a12b", icon: "" },
+    scenic: { label: "红色景区", shortLabel: "景", color: "#2a9d8f", icon: "" },
+    other: { label: "红色资源", shortLabel: "红", color: "#d6281f", icon: "" },
   };
 
   const palette = [
@@ -116,6 +116,20 @@
     { province: "海南省", kind: "coconut", lat: 17.95, lng: 115.10, leader: { lat: 19.15, lng: 110.00 }, coastLeader: true, size: 96, rotate: -5, shift: "hainan" },
   ];
   const $ = (selector) => document.querySelector(selector);
+
+  function switchRightTab(tab = "resource") {
+    const active = ["resource", "route", "traffic", "knowledge"].includes(tab) ? tab : "resource";
+
+    document.querySelectorAll("[data-right-tab]").forEach((button) => {
+      const selected = button.dataset.rightTab === active;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-selected", selected ? "true" : "false");
+    });
+
+    document.querySelectorAll("[data-right-tab-panel]").forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.rightTabPanel === active);
+    });
+  }
 
 
   function normalizeProvinceName(rawName) {
@@ -1047,31 +1061,26 @@
     state.provinceIconLayer?.clearLayers();
     state.provinceLabelLayer?.clearLayers();
 
-    // 用真实中国省界做卡通填色；地图上的省名文字不显示，只保留每省代表性小图标。
+    // 只保留二维主地图底图 + 省份彩色滤镜，不再绘制任何卡通地标、外置引线或省份贴纸。
     if (state.chinaProvinceGeojson) {
       renderRealProvinceBoundaries(provinceNames, selectedProvince);
-      renderProvinceLandmarks(provinceNames, selectedProvince);
-    } else {
-      renderProvinceLandmarks(provinceNames, selectedProvince);
-
-      if (!state.chinaGeojsonTried) {
-        state.chinaGeojsonTried = true;
-        loadChinaProvinceGeoJson();
-      }
+    } else if (!state.chinaGeojsonTried) {
+      state.chinaGeojsonTried = true;
+      loadChinaProvinceGeoJson();
     }
   }
 
   function createResourceIcon(resource, active = false, selected = false) {
     const meta = categoryMeta[resource.category] || categoryMeta.other;
-    const size = selected ? 28 : active ? 30 : resource.featured ? 24 : 18;
+    const size = selected ? 26 : active ? 24 : resource.featured ? 20 : 16;
     const selectedClass = selected ? "selected" : "";
     const activeClass = active ? "focus" : "";
 
     return L.divIcon({
       className: "",
       html: `
-        <div class="resource-marker ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
-          <i>${selected ? "✓" : ""}</i>
+        <div class="resource-marker red-resource-marker resource-${resource.category || "other"} ${activeClass} ${selectedClass}" style="--size:${size}px;--color:${meta.color}">
+          <i>${selected ? "✓" : escapeHtml(meta.shortLabel || meta.label || "红")}</i>
         </div>
       `,
       iconSize: [size, size],
@@ -1164,6 +1173,7 @@
     });
 
     renderKnowledgeLinks([resource]);
+    switchRightTab("resource");
   }
 
 
@@ -1426,6 +1436,7 @@
     renderTravelServicePlan(route);
     renderRouteReason(route);
     renderKnowledgeLinks(route.resources || []);
+    switchRightTab("route");
     flash("研学方案和空间路线已生成");
   }
 
@@ -1587,8 +1598,8 @@
         icon: L.divIcon({
           className: "",
           html: `<div class="route-name-label day-name-label" style="--day-color:${group.color}"><span>第${group.day || 1}天</span>${escapeHtml(resource.name)}</div>`,
-          iconSize: [176, 28],
-          iconAnchor: [88, 38],
+          iconSize: [248, 46],
+          iconAnchor: [124, 52],
         }),
         interactive: true,
         zIndexOffset: 1300,
@@ -1623,9 +1634,9 @@
       L.marker([item.resource.lat, item.resource.lng], {
         icon: L.divIcon({
           className: "",
-          html: `<div class="endpoint-label ${item.className}"><b>${item.text}</b><span>${item.resource.name}</span></div>`,
-          iconSize: [112, 34],
-          iconAnchor: [56, 42],
+          html: `<div class="endpoint-label ${item.className}"><b>${item.text}</b><span>${escapeHtml(item.resource.name)}</span></div>`,
+          iconSize: [188, 44],
+          iconAnchor: [94, 52],
         }),
         interactive: true,
         zIndexOffset: 1600,
@@ -1666,7 +1677,8 @@
         const end = current + (Number(value) / total) * 100;
 
         current = end;
-        return `${palette[index % palette.length]} ${start}% ${end}%`;
+        const meta = categoryMeta[key] || categoryMeta.other;
+        return `${meta.color || palette[index % palette.length]} ${start}% ${end}%`;
       })
       .join(",");
 
@@ -1676,7 +1688,10 @@
         <span>点位</span>
       </div>
       <div class="donut-legend">
-        ${entries.map(([key, value]) => `<span><i></i>${labels[key] || key} ${value}</span>`).join("")}
+        ${entries.map(([key, value]) => {
+          const meta = categoryMeta[key] || categoryMeta.other;
+          return `<span><i style="background:${meta.color}"></i>${labels[key] || meta.label || key} ${value}</span>`;
+        }).join("")}
       </div>
     `;
   }
@@ -1869,43 +1884,285 @@
     `;
   }
 
-  function renderKnowledgeLinks(resources = []) {
-    const panel = $("#knowledgeLinkList");
+  function knowledgeParts(resource = {}) {
+    const text = `${resource.name || ""}${resource.type || ""}${resource.address || ""}${resource.city || ""}`;
+    const event = /遵义|会议|会址|苟坝|娄山关|赤水/.test(text)
+      ? "遵义会议与战略转折"
+      : /湘江|广西|全州|兴安/.test(text)
+        ? "突破湘江封锁线"
+        : /金沙江|皎平渡/.test(text)
+          ? "巧渡金沙江"
+          : /泸定|大渡河|桥|渡/.test(text)
+            ? "强渡大渡河与飞夺泸定桥"
+            : /雪山|夹金山|草地|若尔盖|松潘/.test(text)
+              ? "翻越雪山草地"
+              : /瑞金|于都|苏维埃|叶坪|红井/.test(text)
+                ? "中央苏区与长征出发"
+                : /会宁|将台堡|吴起|延安/.test(text)
+                  ? "胜利会师与战略落脚"
+                  : "长征重要节点";
+    const spirit = /会议|会址|遵义|苟坝/.test(text)
+      ? "实事求是 · 独立自主"
+      : /桥|战斗|渡|关|湘江/.test(text)
+        ? "英勇斗争 · 突破封锁"
+        : /雪山|草地|夹金山/.test(text)
+          ? "艰苦奋斗 · 生命意志"
+          : "坚定信念 · 纪律协同";
+    const task = /桥|河|渡|关|金沙江|湘江/.test(text)
+      ? "地形交通观察任务"
+      : /馆|纪念|博物/.test(text)
+        ? "展陈信息提取任务"
+        : /雪山|草地|夹金山/.test(text)
+          ? "自然环境与行军困难复盘"
+          : "现场复盘讨论任务";
+    const process = /瑞金|于都|苏维埃|叶坪|红井/.test(text)
+      ? "战略转移出发阶段"
+      : /遵义|赤水|金沙江|大渡河|泸定/.test(text)
+        ? "战略机动与转折阶段"
+        : /雪山|草地|会宁|吴起|延安/.test(text)
+          ? "北上会师与落脚阶段"
+          : "长征进程演变";
 
-    if (!panel) {
+    return { event, spirit, task, process };
+  }
+
+  function graphResources(resources = []) {
+    const base = resources.length
+      ? resources
+      : state.currentRoute?.resources?.length
+        ? state.currentRoute.resources
+        : state.currentDetailResource
+          ? [state.currentDetailResource]
+          : state.resources.slice(0, 4);
+
+    return base.slice(0, 8).filter(Boolean);
+  }
+
+  function splitSvgLabel(text, full = false) {
+    const raw = String(text || "").replace(/\s+/g, "").trim() || "节点";
+    const maxPerLine = full ? 7 : 6;
+    const maxLines = full ? 3 : 2;
+    const protectedParts = raw.split(/[·\/、]/).filter(Boolean);
+    const chunks = [];
+
+    if (protectedParts.length > 1 && protectedParts.every((item) => item.length <= maxPerLine + 1)) {
+      protectedParts.forEach((item, index) => {
+        chunks.push(index < protectedParts.length - 1 ? `${item}·` : item);
+      });
+    } else {
+      for (let index = 0; index < raw.length; index += maxPerLine) {
+        chunks.push(raw.slice(index, index + maxPerLine));
+      }
+    }
+
+    if (chunks.length > maxLines) {
+      const kept = chunks.slice(0, maxLines);
+      kept[maxLines - 1] = `${kept[maxLines - 1].replace(/…$/g, "")}…`;
+      return kept;
+    }
+
+    return chunks;
+  }
+
+  function svgTextLines(label, full = false) {
+    const lines = splitSvgLabel(label, full);
+    const lineHeight = full ? 16 : 14;
+    const startY = -((lines.length - 1) * lineHeight) / 2;
+
+    return lines.map((line, index) => {
+      return `<tspan x="0" y="${startY + index * lineHeight}">${escapeHtml(line)}</tspan>`;
+    }).join("");
+  }
+
+  function knowledgeGraphData(resources = [], full = false) {
+    const pointItems = graphResources(resources);
+    const focusName = pointItems[0]?.name || "红色资源点";
+    const parts = knowledgeParts(pointItems[0] || {});
+    const routeTitle = state.currentRoute?.title || "当前研学路线";
+    const coreNodes = full
+      ? [
+          { id: "route", label: routeTitle, x: 0.50, y: 0.07, type: "route" },
+          { id: "resource", label: focusName, x: 0.16, y: 0.22, type: "resource" },
+          { id: "event", label: parts.event, x: 0.36, y: 0.22, type: "event" },
+          { id: "process", label: parts.process, x: 0.56, y: 0.22, type: "process" },
+          { id: "army", label: "红一/红二/红四方面军", x: 0.78, y: 0.22, type: "army" },
+          { id: "terrain", label: "山河关隘与交通约束", x: 0.14, y: 0.43, type: "terrain" },
+          { id: "policy", label: "政治路线与政策支持", x: 0.34, y: 0.43, type: "policy" },
+          { id: "people", label: "群众动员与民族政策", x: 0.54, y: 0.43, type: "people" },
+          { id: "spirit", label: parts.spirit, x: 0.74, y: 0.43, type: "spirit" },
+          { id: "supply", label: "后勤补给与安全研判", x: 0.24, y: 0.64, type: "support" },
+          { id: "task", label: parts.task, x: 0.48, y: 0.64, type: "task" },
+          { id: "ai", label: "AI研学助手解释", x: 0.72, y: 0.64, type: "ai" },
+          { id: "outcome", label: "研学成果汇报", x: 0.50, y: 0.84, type: "outcome" },
+        ]
+      : [
+          { id: "route", label: "当前研学路线", x: 0.50, y: 0.10, type: "route" },
+          { id: "resource", label: focusName, x: 0.18, y: 0.28, type: "resource" },
+          { id: "event", label: parts.event, x: 0.50, y: 0.28, type: "event" },
+          { id: "process", label: "军队进程演变", x: 0.82, y: 0.28, type: "process" },
+          { id: "policy", label: "政策支持", x: 0.24, y: 0.55, type: "policy" },
+          { id: "terrain", label: "地形交通", x: 0.50, y: 0.55, type: "terrain" },
+          { id: "spirit", label: parts.spirit, x: 0.76, y: 0.55, type: "spirit" },
+          { id: "task", label: parts.task, x: 0.38, y: 0.80, type: "task" },
+          { id: "ai", label: "AI研学助手", x: 0.68, y: 0.80, type: "ai" },
+        ];
+
+    const stageNodes = full
+      ? [
+          { id: "stage_start", label: "中央苏区出发", x: 0.09, y: 0.94, type: "extra" },
+          { id: "stage_xiang", label: "突破湘江", x: 0.20, y: 0.94, type: "extra" },
+          { id: "stage_zunyi", label: "遵义会议", x: 0.31, y: 0.94, type: "extra" },
+          { id: "stage_chishui", label: "四渡赤水", x: 0.42, y: 0.94, type: "extra" },
+          { id: "stage_jinsha", label: "巧渡金沙江", x: 0.53, y: 0.94, type: "extra" },
+          { id: "stage_luding", label: "飞夺泸定桥", x: 0.64, y: 0.94, type: "extra" },
+          { id: "stage_grass", label: "翻雪山过草地", x: 0.76, y: 0.94, type: "extra" },
+          { id: "stage_join", label: "胜利会师", x: 0.88, y: 0.94, type: "extra" },
+        ]
+      : [];
+
+    const routePointNodes = full
+      ? pointItems.slice(1, 5).map((resource, index) => ({
+          id: `point_${index}`,
+          label: resource.name,
+          x: 0.91,
+          y: 0.34 + index * 0.10,
+          type: "resource",
+        }))
+      : [];
+
+    const nodes = [...coreNodes, ...routePointNodes, ...stageNodes];
+    const links = [
+      ["route", "resource", "包含"],
+      ["resource", "event", "关联"],
+      ["event", "process", "推动"],
+      ["process", "army", "对应部队"],
+      ["terrain", "route", "约束路线"],
+      ["policy", "process", "支撑决策"],
+      ["people", "policy", "落实"],
+      ["event", "spirit", "提炼"],
+      ["spirit", "task", "转化"],
+      ["supply", "task", "保障"],
+      ["task", "ai", "生成问答"],
+      ["ai", "event", "解释"],
+      ["ai", "outcome", "输出"],
+      ...routePointNodes.map((node) => ["resource", node.id, "同线点位"]),
+      ...stageNodes.map((node) => ["process", node.id, "阶段"]),
+    ];
+
+    return { nodes, links };
+  }
+
+  function renderKnowledgeGraphSvg(resources = [], options = {}) {
+    const full = Boolean(options.full);
+    const width = full ? 1280 : 560;
+    const height = full ? 760 : 390;
+    const { nodes, links } = knowledgeGraphData(resources, full);
+    const nodeMap = new Map(nodes.map((node) => [node.id, node]));
+    const scaleX = (node) => Math.round(node.x * width);
+    const scaleY = (node) => Math.round(node.y * height);
+    const uid = full ? "full" : "preview";
+    const nodeSize = (node) => {
+      const lines = splitSvgLabel(node.label, full);
+      const longest = Math.max(...lines.map((line) => line.length), 2);
+      const rx = Math.max(full ? 58 : 42, Math.min(full ? 112 : 64, longest * (full ? 8 : 7) + (full ? 28 : 22)));
+      const ry = Math.max(full ? 25 : 21, lines.length * (full ? 9 : 8) + (full ? 14 : 11));
+      return { rx, ry };
+    };
+
+    return `
+      <svg class="kg-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="长征研学知识图谱">
+        <defs>
+          <marker id="kgArrow-${uid}" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#9e2118"></path>
+          </marker>
+          <radialGradient id="kgGlow-${uid}" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="#fff7d8"></stop>
+            <stop offset="100%" stop-color="#f2c16c"></stop>
+          </radialGradient>
+        </defs>
+        <rect x="10" y="10" width="${width - 20}" height="${height - 20}" rx="24" class="kg-bg"></rect>
+        ${links.map(([from, to, label], index) => {
+          const a = nodeMap.get(from);
+          const b = nodeMap.get(to);
+          if (!a || !b) return "";
+          const ax = scaleX(a), ay = scaleY(a), bx = scaleX(b), by = scaleY(b);
+          const mx = Math.round((ax + bx) / 2), my = Math.round((ay + by) / 2) + (index % 2 ? -4 : 8);
+          return `
+            <line class="kg-link" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" marker-end="url(#kgArrow-${uid})"></line>
+            ${full ? `<text class="kg-link-label" x="${mx}" y="${my}">${escapeHtml(label)}</text>` : ""}
+          `;
+        }).join("")}
+        ${nodes.map((node) => {
+          const x = scaleX(node), y = scaleY(node);
+          const { rx, ry } = nodeSize(node);
+          return `
+            <g class="kg-node-svg kg-node-${node.type}" transform="translate(${x}, ${y})">
+              <ellipse rx="${rx}" ry="${ry}"></ellipse>
+              <text text-anchor="middle" dominant-baseline="middle">${svgTextLines(node.label, full)}</text>
+            </g>
+          `;
+        }).join("")}
+      </svg>
+    `;
+  }
+
+  function renderKnowledgeGraphPreview(resources = []) {
+    const preview = $("#knowledgeGraphPreview");
+
+    if (!preview) {
       return;
     }
 
-    const source = resources.length ? resources : state.resources.slice(0, 3);
-    const items = source
-      .slice(0, 5)
-      .map((resource) => {
-        const text = `${resource.name}${resource.type}${resource.address}`;
-        const event = /遵义|会议|会址/.test(text)
-          ? "遵义会议"
-          : /泸定|大渡河|桥/.test(text)
-            ? "飞夺泸定桥"
-            : /雪山|夹金山|草地/.test(text)
-              ? "翻越雪山草地"
-              : "长征重要节点";
-        const spirit = /会议|会址|遵义/.test(text)
-          ? "实事求是"
-          : /桥|战斗|渡/.test(text)
-            ? "英勇斗争"
-            : "艰苦奋斗";
-        const task = /桥|河|渡/.test(text)
-          ? "地形交通观察任务"
-          : /馆|纪念/.test(text)
-            ? "展陈信息提取任务"
-            : "现场复盘讨论任务";
+    preview.innerHTML = renderKnowledgeGraphSvg(resources, { full: false });
+  }
 
-        return `${resource.name} → ${event} → ${spirit} → ${task}`;
-      })
-      .filter(Boolean);
+  function openKnowledgeGraphModal() {
+    const modal = $("#knowledgeGraphModal");
+    const graph = $("#knowledgeGraphFull");
 
-    panel.innerHTML = items.length
-      ? items.map((item) => `<span>${escapeHtml(item)}</span>`).join("")
-      : "<span>生成路线或点击资源点后显示关联链。</span>";
+    if (!modal || !graph) {
+      return;
+    }
+
+    const resources = state.currentRoute?.resources?.length
+      ? state.currentRoute.resources
+      : state.currentDetailResource
+        ? [state.currentDetailResource]
+        : state.resources.slice(0, 8);
+
+    graph.innerHTML = renderKnowledgeGraphSvg(resources, { full: true });
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeKnowledgeGraphModal() {
+    const modal = $("#knowledgeGraphModal");
+    modal?.classList.remove("show");
+    modal?.setAttribute("aria-hidden", "true");
+  }
+
+  function openAiStudyModal() {
+    const modal = $("#aiStudyModal");
+    modal?.classList.add("show");
+    modal?.setAttribute("aria-hidden", "false");
+    setTimeout(() => $("#agentInput")?.focus(), 30);
+  }
+
+  function closeAiStudyModal() {
+    const modal = $("#aiStudyModal");
+    modal?.classList.remove("show");
+    modal?.setAttribute("aria-hidden", "true");
+  }
+
+  function renderKnowledgeLinks(resources = []) {
+    const panel = $("#knowledgeLinkList");
+    const source = resources.length ? resources : state.resources.slice(0, 5);
+
+    if (panel) {
+      panel.innerHTML = "";
+    }
+
+    renderKnowledgeGraphPreview(source);
   }
 
   function bindEvents() {
@@ -1963,9 +2220,30 @@
       });
     });
 
+    document.querySelectorAll("[data-right-tab]").forEach((button) => {
+      button.addEventListener("click", () => switchRightTab(button.dataset.rightTab));
+    });
+
+    $("#openKnowledgeGraphBtn")?.addEventListener("click", openKnowledgeGraphModal);
+    $("#closeKnowledgeGraphBtn")?.addEventListener("click", closeKnowledgeGraphModal);
+    $("#knowledgeGraphModal")?.addEventListener("click", (event) => {
+      if (event.target?.id === "knowledgeGraphModal") {
+        closeKnowledgeGraphModal();
+      }
+    });
+
+    $("#bottomAiCircleBtn")?.addEventListener("click", openAiStudyModal);
+    $("#closeAiStudyModalBtn")?.addEventListener("click", closeAiStudyModal);
+    $("#aiStudyModal")?.addEventListener("click", (event) => {
+      if (event.target?.id === "aiStudyModal") {
+        closeAiStudyModal();
+      }
+    });
+
     bindRoutePresetCards();
     renderTravelServicePlan();
     renderKnowledgeLinks();
+    switchRightTab("resource");
   }
 
   document.addEventListener("DOMContentLoaded", async () => {

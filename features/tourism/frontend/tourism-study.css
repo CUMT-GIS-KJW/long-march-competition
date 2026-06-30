@@ -480,3 +480,724 @@
   background: linear-gradient(135deg, #9e2118, #c64b35);
   color: #fff7d8;
 }
+
+/* =====================================================================
+   v16：按“二维主地图 + 彩色省份滤镜 + 红色资源点 + 右侧四页签 + 底部AI”重构
+   ===================================================================== */
+.tourism-layout {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+/* 中间地图：去掉所有卡通图案，只保留省份彩色滤镜和红色资源点 */
+.map-illustration,
+.map-illustration-leader,
+.map-illustration-anchor,
+.province-landmark,
+.landmark-picture,
+.cartoon-sticker,
+.cartoon-cloud,
+.cartoon-mountain,
+.cartoon-river,
+.cartoon-flag {
+  display: none !important;
+}
+
+.tourism-map-wrap::before {
+  background:
+    radial-gradient(circle at 22% 24%, rgba(180, 77, 50, 0.18), transparent 18%),
+    radial-gradient(circle at 41% 56%, rgba(222, 166, 74, 0.18), transparent 20%),
+    radial-gradient(circle at 62% 44%, rgba(142, 125, 190, 0.16), transparent 20%),
+    radial-gradient(circle at 78% 64%, rgba(69, 123, 157, 0.12), transparent 17%) !important;
+  mix-blend-mode: multiply;
+}
+
+.tourism-map-wrap::after {
+  background:
+    radial-gradient(circle at center, transparent 58%, rgba(72, 23, 10, 0.16)),
+    linear-gradient(rgba(255, 232, 168, 0.07), rgba(130, 30, 18, 0.05)) !important;
+}
+
+#tourismMap .leaflet-tile {
+  filter: sepia(0.08) saturate(0.98) contrast(0.98) brightness(1.04) !important;
+}
+
+.china-province-real {
+  stroke-linejoin: round;
+  filter: drop-shadow(0 5px 8px rgba(92, 54, 32, .14)) !important;
+}
+
+.resource-marker.red-resource-marker {
+  width: var(--size);
+  height: var(--size);
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  background: #d6281f !important;
+  border: 2px solid rgba(255, 248, 224, .98) !important;
+  border-radius: 50% !important;
+  transform: none !important;
+  animation: none !important;
+  box-shadow:
+    0 0 0 4px rgba(214, 40, 31, .16),
+    0 8px 16px rgba(83, 18, 12, .28) !important;
+}
+
+.resource-marker.red-resource-marker::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: rgba(255, 246, 210, .92);
+}
+
+.resource-marker.red-resource-marker::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(214, 40, 31, .46);
+  border-radius: 50%;
+  opacity: .5;
+  animation: markerRipple 1.9s ease-out infinite;
+}
+
+.resource-marker.red-resource-marker i {
+  position: relative;
+  z-index: 2;
+  inset: auto;
+  display: grid;
+  place-items: center;
+  color: #fff7df;
+  font-size: 13px;
+  font-weight: 900;
+  transform: none !important;
+}
+
+.resource-marker.red-resource-marker i::after {
+  display: none !important;
+}
+
+.resource-marker.red-resource-marker.focus {
+  width: var(--size);
+  height: var(--size);
+  background: #b81712 !important;
+  box-shadow:
+    0 0 0 7px rgba(255, 207, 111, .34),
+    0 0 26px rgba(214, 40, 31, .60),
+    0 10px 18px rgba(83, 18, 12, .30) !important;
+}
+
+.resource-marker.red-resource-marker.selected {
+  background: #7f1510 !important;
+  border-color: #ffe29a !important;
+  box-shadow:
+    0 0 0 7px rgba(255, 209, 102, .46),
+    0 0 0 12px rgba(214, 40, 31, .10),
+    0 12px 22px rgba(83, 18, 12, .34) !important;
+}
+
+/* 图例显示完整 */
+.tourism-legend.cartoon-floating-legend {
+  width: 218px !important;
+  gap: 8px !important;
+  padding: 13px 14px !important;
+  left: 16px !important;
+  bottom: 16px !important;
+  z-index: 720 !important;
+  background: rgba(255, 249, 230, .96) !important;
+  border: 1px solid rgba(130, 42, 25, .24) !important;
+  border-radius: 16px !important;
+}
+
+.tourism-legend.cartoon-floating-legend span {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.tourism-legend i.red-resource,
+.tourism-legend i.selected-resource,
+.tourism-legend i.province-filter {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  transform: none;
+}
+
+.tourism-legend i.red-resource {
+  background: #d6281f;
+  box-shadow: 0 0 0 4px rgba(214, 40, 31, .16);
+}
+
+.tourism-legend i.selected-resource {
+  background: #7f1510;
+  border-color: #ffe29a;
+  box-shadow: 0 0 0 4px rgba(255, 209, 102, .36);
+}
+
+.tourism-legend i.province-filter {
+  background: linear-gradient(135deg, #ffcc80, #a8e6a3 45%, #8dd7f7);
+}
+
+.tourism-legend em.route-main {
+  width: 28px;
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f25f5c, #ffb347, #4db6ac);
+}
+
+/* 右侧四个页签 */
+.cartoon-right-panel {
+  overflow: hidden !important;
+  padding: 12px !important;
+}
+
+.right-tab-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+
+.right-tab-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 9px;
+  background: rgba(255, 249, 230, .78);
+  border: 1px solid rgba(132, 42, 25, .16);
+  border-radius: 18px;
+}
+
+.right-tab-buttons button {
+  min-height: 36px;
+  padding: 7px 8px;
+  color: #6d2118;
+  background: rgba(255, 255, 255, .62);
+  border: 1px solid rgba(142, 44, 26, .16);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.right-tab-buttons button.active {
+  color: #fff5d2;
+  background: linear-gradient(135deg, #9e2118, #d65a3c);
+  box-shadow: 0 10px 20px rgba(126, 24, 17, .18);
+}
+
+.right-tab-content {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.right-tab-panel {
+  display: none;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.right-tab-panel.active {
+  display: block;
+}
+
+.right-tab-panel .detail-panel,
+.right-tab-panel .route-panel,
+.right-tab-panel .chart-panel,
+.right-tab-panel .study-service-panel,
+.right-tab-panel .knowledge-panel,
+.right-tab-panel .route-reason-panel {
+  margin-bottom: 12px;
+}
+
+.cartoon-chart-panel {
+  max-height: none !important;
+}
+
+/* 知识图谱预览与弹窗 */
+.kg-graph-preview,
+.kg-full-graph {
+  overflow: hidden;
+  margin: 10px 0 12px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(214, 40, 31, .12), transparent 40%),
+    rgba(255, 250, 231, .78);
+  border: 1px solid rgba(142, 44, 26, .14);
+}
+
+.kg-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.kg-bg {
+  fill: rgba(255, 250, 231, .58);
+  stroke: rgba(142, 44, 26, .12);
+}
+
+.kg-link {
+  stroke: rgba(158, 33, 24, .58);
+  stroke-width: 2.2;
+}
+
+.kg-link-label {
+  fill: #8a3a23;
+  font-size: 13px;
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: rgba(255, 248, 226, .95);
+  stroke-width: 5px;
+}
+
+.kg-node-svg ellipse {
+  fill: rgba(255, 247, 226, .98);
+  stroke: rgba(139, 41, 24, .28);
+  stroke-width: 2;
+  filter: drop-shadow(0 5px 8px rgba(84, 28, 18, .14));
+}
+
+.kg-node-route ellipse,
+.kg-node-ai ellipse {
+  fill: url(#kgGlow);
+  stroke: rgba(158, 33, 24, .45);
+}
+
+.kg-node-event ellipse {
+  fill: #f6d79a;
+}
+
+.kg-node-resource ellipse {
+  fill: #f1b8a8;
+}
+
+.kg-node-spirit ellipse {
+  fill: #d8c2f0;
+}
+
+.kg-node-task ellipse {
+  fill: #bfe3c3;
+}
+
+.kg-node-support ellipse {
+  fill: #b9ddeb;
+}
+
+.kg-node-extra ellipse {
+  fill: #fff4d8;
+}
+
+.kg-node-svg text {
+  fill: #5a2118;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.knowledge-graph-modal,
+.ai-study-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5200;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  background: rgba(46, 13, 9, .48);
+  backdrop-filter: blur(7px) saturate(1.12);
+}
+
+.knowledge-graph-modal.show,
+.ai-study-modal.show {
+  display: grid;
+}
+
+.knowledge-graph-dialog,
+.ai-study-dialog {
+  position: relative;
+  width: min(1040px, 94vw);
+  max-height: min(760px, 92vh);
+  overflow: auto;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 12% 0, rgba(255, 231, 160, .42), transparent 28%),
+    linear-gradient(180deg, rgba(255, 250, 235, .98), rgba(245, 224, 187, .96));
+  border: 1px solid rgba(132, 42, 25, .22);
+  border-radius: 28px;
+  box-shadow: 0 36px 90px rgba(52, 13, 9, .42);
+}
+
+.knowledge-graph-dialog header span {
+  color: #9e2118;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.knowledge-graph-dialog header h2 {
+  margin: 6px 0 6px;
+  color: #5b2118;
+}
+
+.knowledge-graph-dialog header p {
+  margin: 0 0 12px;
+  color: rgba(57, 35, 24, .72);
+  line-height: 1.6;
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  color: #fff8dc;
+  background: linear-gradient(135deg, #8d1c14, #cf5137);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  box-shadow: 0 10px 20px rgba(142, 30, 22, .22);
+}
+
+/* 底部经典路线右侧 AI 圆圈 */
+.route-recommend-strip.bottom-route-recommend {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) 86px !important;
+  align-items: stretch;
+}
+
+.bottom-ai-circle {
+  align-self: center;
+  justify-self: center;
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #fff7d8;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 240, 185, .95), transparent 25%),
+    linear-gradient(135deg, #8e1d15, #d65337 60%, #f1b451);
+  border: 2px solid rgba(255, 238, 174, .82);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow:
+    0 16px 26px rgba(126, 24, 17, .28),
+    0 0 0 8px rgba(214, 40, 31, .10);
+  animation: aiCirclePulse 2.6s ease-in-out infinite;
+}
+
+.bottom-ai-circle span {
+  margin-top: 8px;
+  font-size: 23px;
+  font-weight: 1000;
+  letter-spacing: .04em;
+}
+
+.bottom-ai-circle b {
+  margin-top: -12px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.bottom-ai-circle:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+@keyframes aiCirclePulse {
+  50% {
+    box-shadow:
+      0 20px 30px rgba(126, 24, 17, .34),
+      0 0 0 14px rgba(214, 40, 31, .04),
+      0 0 28px rgba(242, 180, 81, .58);
+  }
+}
+
+.ai-study-dialog {
+  width: min(620px, 94vw);
+  padding: 18px;
+}
+
+.ai-study-dialog .tourism-ai-card.agent-panel {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ai-study-dialog .agent-window {
+  height: min(560px, 76vh) !important;
+  border-radius: 22px;
+  border: 1px solid rgba(132, 42, 25, .20);
+  overflow: hidden;
+}
+
+.ai-study-dialog .agent-toggle {
+  display: none !important;
+}
+
+@media (max-width: 1200px) {
+  .route-recommend-strip.bottom-route-recommend {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 86px !important;
+  }
+
+  .bottom-ai-circle {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .right-tab-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .route-recommend-strip.bottom-route-recommend {
+    grid-template-columns: 1fr !important;
+  }
+
+  .bottom-ai-circle {
+    grid-row: auto;
+  }
+}
+
+/* =====================================================================
+   v17：三类资源点分色、右侧四页签横排、知识图谱放大、路线标签显示完整
+   ===================================================================== */
+.tourism-app {
+  grid-template-rows: 50px 1fr !important;
+}
+
+.tourism-cartoon-topbar,
+.tourism-topbar.tourism-cartoon-topbar {
+  height: 50px !important;
+  min-height: 50px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.cartoon-brand strong {
+  font-size: 21px !important;
+  line-height: 1.05 !important;
+}
+
+.cartoon-brand span {
+  padding: 1px 8px !important;
+  font-size: 11px !important;
+}
+
+.brand-star {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 13px 13px 13px 6px !important;
+}
+
+.cartoon-nav button,
+.cartoon-nav .site-nav-btn,
+.tourism-nav button {
+  height: 29px !important;
+  padding: 0 12px !important;
+  font-size: 12px !important;
+}
+
+/* 三种资源点：旧址/遗址、纪念馆/博物馆、红色景区 */
+.resource-marker.red-resource-marker {
+  background: var(--color, #d6281f) !important;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--color, #d6281f) 24%, transparent),
+    0 8px 16px rgba(83, 18, 12, .28) !important;
+}
+
+.resource-marker.red-resource-marker::after {
+  border-color: color-mix(in srgb, var(--color, #d6281f) 58%, transparent) !important;
+}
+
+.resource-marker.red-resource-marker::before {
+  background: rgba(255, 246, 210, .90) !important;
+}
+
+.resource-marker.red-resource-marker.resource-site i { color: #d6281f !important; }
+.resource-marker.red-resource-marker.resource-museum i { color: #b66300 !important; }
+.resource-marker.red-resource-marker.resource-scenic i { color: #08766b !important; }
+
+.resource-marker.red-resource-marker.focus {
+  background: var(--color, #b81712) !important;
+  box-shadow:
+    0 0 0 7px rgba(255, 207, 111, .34),
+    0 0 26px color-mix(in srgb, var(--color, #d6281f) 62%, transparent),
+    0 10px 18px rgba(83, 18, 12, .30) !important;
+}
+
+.tourism-legend.cartoon-floating-legend {
+  width: 236px !important;
+  max-width: calc(100% - 32px) !important;
+  gap: 7px !important;
+}
+
+.tourism-legend.cartoon-floating-legend span {
+  white-space: nowrap !important;
+  font-size: 12px !important;
+}
+
+.tourism-legend i.resource-site,
+.tourism-legend i.resource-museum,
+.tourism-legend i.resource-scenic,
+.tourism-legend i.selected-resource,
+.tourism-legend i.province-filter {
+  width: 13px !important;
+  height: 13px !important;
+  border-radius: 50% !important;
+  transform: none !important;
+}
+
+.tourism-legend i.resource-site {
+  background: #d6281f !important;
+  box-shadow: 0 0 0 4px rgba(214, 40, 31, .16) !important;
+}
+
+.tourism-legend i.resource-museum {
+  background: #f2a12b !important;
+  box-shadow: 0 0 0 4px rgba(242, 161, 43, .18) !important;
+}
+
+.tourism-legend i.resource-scenic {
+  background: #2a9d8f !important;
+  box-shadow: 0 0 0 4px rgba(42, 157, 143, .18) !important;
+}
+
+.cartoon-floating-legend span:has(em),
+.tourism-legend span:has(em) {
+  display: flex !important;
+}
+
+/* 右侧四个页签一行显示，长文字自动换行但不重叠 */
+.right-tab-buttons {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  padding: 8px !important;
+}
+
+.right-tab-buttons button {
+  min-width: 0 !important;
+  min-height: 44px !important;
+  padding: 6px 4px !important;
+  border-radius: 14px !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+  text-align: center !important;
+  font-size: 11.5px !important;
+  line-height: 1.18 !important;
+}
+
+/* 知识关联页签只显示图谱，不显示文字链；图谱放大 */
+.knowledge-link-list {
+  display: none !important;
+}
+
+.compact-knowledge-card {
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+  min-height: 100% !important;
+}
+
+.kg-graph-preview {
+  min-height: 360px !important;
+  margin: 6px 0 12px !important;
+}
+
+.kg-graph-preview .kg-svg {
+  height: 360px !important;
+}
+
+.kg-full-graph .kg-svg {
+  min-height: 620px !important;
+}
+
+.kg-node-svg text {
+  font-size: 13px !important;
+  line-height: 1.12 !important;
+}
+
+.kg-full-graph .kg-node-svg text {
+  font-size: 14px !important;
+}
+
+.kg-node-process ellipse { fill: #ffd6a5 !important; }
+.kg-node-army ellipse { fill: #ffc4b6 !important; }
+.kg-node-terrain ellipse { fill: #b9ddeb !important; }
+.kg-node-policy ellipse { fill: #ffe8a3 !important; }
+.kg-node-people ellipse { fill: #d7efc2 !important; }
+.kg-node-outcome ellipse { fill: #f6d79a !important; }
+
+/* 研学方案生成后地图上的文字标签显示完整：加宽、允许两行 */
+.route-name-label,
+.route-name-label.day-name-label {
+  width: 238px !important;
+  max-width: 238px !important;
+  min-height: 32px !important;
+  justify-content: center !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 1.18 !important;
+  padding: 5px 9px !important;
+  border-radius: 15px !important;
+  font-size: 11px !important;
+}
+
+.route-name-label.day-name-label span {
+  align-self: center !important;
+}
+
+.endpoint-label {
+  width: 178px !important;
+  min-height: 40px !important;
+  transform: none !important;
+}
+
+.endpoint-label span {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 1.15 !important;
+}
+
+/* 底部经典路线铺满屏幕，卡片间距加大 */
+.route-recommend-strip.bottom-route-recommend {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) 96px !important;
+  gap: 18px !important;
+  padding: 12px 18px !important;
+  width: 100% !important;
+}
+
+.recommend-card {
+  min-width: 0 !important;
+}
+
+@media (max-width: 1200px) {
+  .right-tab-buttons {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .route-recommend-strip.bottom-route-recommend {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 96px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .right-tab-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+.kg-node-route ellipse,
+.kg-node-ai ellipse {
+  fill: #f2c16c !important;
+}
