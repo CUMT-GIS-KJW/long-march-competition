@@ -103,6 +103,8 @@
         layerKey,
       });
     },
+    getRouteSegmentTimes: () => fetchJson("routeSegmentTimes"),
+    getHomeContextData: () => fetchJson("homeContextData"),
     getResources: () => fetchJson("resources"),
     getRedTourismResources,
     getAnalysisSummary: () => fetchJson("analysisSummary"),

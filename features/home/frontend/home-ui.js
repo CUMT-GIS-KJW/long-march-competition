@@ -64,6 +64,10 @@
       IndexMap.playSelectedRoute();
     });
 
+    $("#playAllRoutesBtn").addEventListener("click", () => {
+      IndexMap.playAllRoutesChronologically();
+    });
+
     $("#progressRange").addEventListener("input", (event) => {
       IndexMap.seekRouteProgress(event.target.value);
     });
