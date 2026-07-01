@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>红色研学之旅｜红图绘长征</title>
+  <title>红色研学｜红图绘长征</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/tourism/frontend/tourism.css">
@@ -28,7 +28,7 @@
         <button class="site-nav-btn" type="button" onclick="location.href='/index.html'">二维主地图</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/analysis.html'">综合分析</button>
         <button class="site-nav-btn" type="button" onclick="location.href='/scene3d.html'">3D地形</button>
-        <button class="site-nav-btn site-nav-active active" type="button">红色旅游</button>
+        <button class="site-nav-btn site-nav-active active" type="button">红色研学</button>
       </nav>
     </header>
 
@@ -189,15 +189,6 @@
                 <h2>重点研学方案</h2>
                 <p>请选择主题和天数后生成方案。路线会在中间地图中按天分色显示，并在这里展示每天“从哪里到哪里”的分段安排。</p>
               </section>
-
-              <section class="route-reason-panel is-hidden" id="routeReasonSection">
-                <span class="panel-kicker">ROUTE ANALYSIS</span>
-                <h2>为什么选择这条线</h2>
-                <div id="routeReasonPanel" class="route-reason-card">
-                  <img src="/assets/images/longmarch-route-corner.png" alt="长征研学路线分析示意">
-                  <p>生成方案后，这里会说明路线选择依据、道路条件、学习重点与风险提示。</p>
-                </div>
-              </section>
             </section>
 
             <section class="right-tab-panel" data-right-tab-panel="traffic">
@@ -284,7 +275,11 @@
               <b id="aiStudyTitle">AI研学助手</b>
             </div>
           </header>
-          <div class="agent-messages" id="agentMessages"></div>
+          <div class="agent-messages" id="agentMessages">
+            <div class="agent-message assistant">
+              你好，我是AI研学助手。你可以问我“这条路线为什么合理”“某个资源点和长征事件有什么关系”“交通食宿怎么安排”等问题。
+            </div>
+          </div>
           <form class="agent-form" id="agentForm">
             <input id="agentInput" type="text" placeholder="问问AI：这条路线为什么合理？这个点和长征事件有什么关系？">
             <button type="submit">发送</button>
@@ -311,6 +306,5 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="/features/shared/frontend/config.js"></script>
   <script src="/features/tourism/frontend/tourism.js"></script>
-  <script src="/features/agent/frontend/agent-ui.js"></script>
 </body>
 </html>
