@@ -1,5 +1,6 @@
 ﻿import json
 import os
+import itertools
 import struct
 import sys
 
@@ -112,6 +113,41 @@ CORRECT_ROUTE_SPECS = [
         "default_stage_name": "\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf",
         "order_overrides": {8: 7, 9: 7},
         "branch_groups": {7: {7: "left", 8: "right", 9: "right"}},
+    },
+    {
+        "route_key": "route_hongershiwu_jun",
+        "prefix": "\u7ea2\u4e8c\u5341\u4e94\u519b\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e8c\u5341\u4e94\u519b\u8def\u7ebf\u56fe_01-07.shp",
+        "default_corps_name": "\u7ea2\u4e8c\u5341\u4e94\u519b",
+        "default_stage_name": "\u7ea2\u4e8c\u5341\u4e94\u519b\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongwu_juntuan",
+        "prefix": "\u7ea2\u4e94\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e94\u519b\u56e2\u8def\u7ebf\u56fe_01-10.shp",
+        "default_corps_name": "\u7ea2\u4e94\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u4e94\u519b\u56e2\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongliu_juntuan",
+        "prefix": "\u7ea2\u516d\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u516d\u519b\u56e2\u8def\u7ebf\u56fe_01-10.shp",
+        "default_corps_name": "\u7ea2\u516d\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u516d\u519b\u56e2\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongshiba_shi",
+        "prefix": "\u7ea2\u5341\u516b\u5e08\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u5341\u516b\u5e08\u8def\u7ebf\u56fe_01-04.shp",
+        "default_corps_name": "\u7ea2\u5341\u516b\u5e08",
+        "default_stage_name": "\u7ea2\u5341\u516b\u5e08\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongsi_juntuan",
+        "prefix": "\u7ea2\u56db\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u56db\u519b\u56e2\u8def\u7ebf\u56fe_01-05.shp",
+        "default_corps_name": "\u7ea2\u56db\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u56db\u519b\u56e2\u8def\u7ebf",
     },
 ]
 
@@ -490,7 +526,51 @@ def choose_connected_entry(entries, current_anchor, next_anchor):
     return best[1], best[2]
 
 
+def order_route_entries_exhaustive(entries, previous_anchor, next_anchor):
+    best = None
+
+    orientation_choices = []
+    for entry in entries:
+        line = entry["line"]
+        orientations = [oriented_entry(entry, False)]
+        if len(line) > 1 and coordinate_gap(line[0], line[-1]) > 1e-18:
+            orientations.append(oriented_entry(entry, True))
+        orientation_choices.append(orientations)
+
+    for permutation in itertools.permutations(range(len(entries))):
+        for choices in itertools.product(*(orientation_choices[index] for index in permutation)):
+            start_gap = 0 if previous_anchor is None else coordinate_gap(previous_anchor, choices[0]["line"][0])
+            final_gap = 0 if next_anchor is None else coordinate_gap(choices[-1]["line"][-1], next_anchor)
+            inner_gap = 0
+
+            for previous, current in zip(choices, choices[1:]):
+                inner_gap += coordinate_gap(previous["line"][-1], current["line"][0])
+
+            source_order = tuple(
+                (
+                    entry["source_index"],
+                    entry["part_index"],
+                    1 if entry.get("reversed") else 0,
+                )
+                for entry in choices
+            )
+            score = (
+                start_gap,
+                final_gap,
+                inner_gap,
+                source_order,
+            )
+
+            if best is None or score < best[0]:
+                best = (score, [dict(entry) for entry in choices])
+
+    return best[1] if best else list(entries)
+
+
 def order_route_entries(entries, previous_anchor, next_anchor):
+    if len(entries) <= 6:
+        return order_route_entries_exhaustive(entries, previous_anchor, next_anchor)
+
     remaining = list(entries)
     ordered = []
     current_anchor = previous_anchor
