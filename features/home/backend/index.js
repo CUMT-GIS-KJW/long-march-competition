@@ -81,9 +81,9 @@ function handleResourceApi(pathname, sendSuccess, sendError, response) {
   return true;
 }
 
-// ★ 新增：处理诗歌相关API
+// ★ 诗歌API处理
 function handlePoetryApi(pathname, sendSuccess, sendError, response) {
-  // 获取诗歌点位数据
+  // 1. 获取诗歌点位数据
   if (pathname === "/api/poetry-points") {
     try {
       const data = readDataFile("poetry-points.json");
@@ -95,7 +95,7 @@ function handlePoetryApi(pathname, sendSuccess, sendError, response) {
     return true;
   }
 
-  // 获取诗歌内容
+  // 2. 获取所有诗歌内容
   if (pathname === "/api/poetry-content") {
     try {
       const data = readDataFile("poem.json");
@@ -103,6 +103,50 @@ function handlePoetryApi(pathname, sendSuccess, sendError, response) {
     } catch (error) {
       console.error(error);
       sendError(response, 500, "Poetry content load failed");
+    }
+    return true;
+  }
+
+  // ★★★ 关键：通过ID获取单首诗歌 ★★★
+  const match = pathname.match(/^\/api\/poetry\/([^/]+)$/);
+  if (match) {
+    try {
+      const poemId = match[1];
+      console.log('🔍 查找诗歌ID:', poemId);
+      
+      const data = readDataFile("poem.json");
+      const poems = data.poems || [];
+      const poem = poems.find(p => p.id === poemId);
+      
+      if (poem) {
+        console.log('✅ 找到诗歌:', poem.title);
+        sendSuccess(response, poem);
+      } else {
+        console.log('❌ 未找到诗歌:', poemId);
+        console.log('📋 可用的诗歌ID:', poems.map(p => p.id).join(', '));
+        sendError(response, 404, `Poem not found: ${poemId}`);
+      }
+    } catch (error) {
+      console.error('❌ 加载诗歌失败:', error);
+      sendError(response, 500, "Poetry load failed");
+    }
+    return true;
+  }
+
+  // 4. 兼容旧的 /api/poetry/long-march 接口
+  if (pathname === "/api/poetry/long-march") {
+    try {
+      const data = readDataFile("poem.json");
+      const poems = data.poems || [];
+      const wallLines = poems.map((p, index) => ({
+        id: `line-${index + 1}`,
+        poemId: p.id,
+        text: p.text.split('\n')[0]?.replace(/^[其一、二、三、四、五、六、七、八、九、十]+[：:]/g, '').trim() || p.title,
+      }));
+      sendSuccess(response, { poems, wallLines });
+    } catch (error) {
+      console.error(error);
+      sendError(response, 500, "Poetry data load failed");
     }
     return true;
   }

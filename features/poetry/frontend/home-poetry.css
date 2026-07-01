@@ -73,13 +73,14 @@ body.poetry-cursor-active * {
   pointer-events: auto !important;
 }
 
-.poetry-wall-page,
-.poetry-detail-page {
-  position: absolute !important;
-  inset: 0 !important;
+.poetry-wall-page {
   display: none !important;
-  overflow: hidden !important;
 }
+
+.poetry-detail-page {
+  display: block !important;
+}
+
 
 .poetry-wall-page::before,
 .poetry-detail-page::before {
@@ -831,4 +832,23 @@ body.poetry-cursor-active * {
 /* 诗词列表整体向左移动 */
 .poetry-wall-list {
   transform: translateX(-42px) !important;
+}
+
+/* 导航按钮状态 */
+#poetryPrevBtn:disabled,
+#poetryNextBtn:disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+#poetryPrevBtn:not(:disabled):hover,
+#poetryNextBtn:not(:disabled):hover {
+  transform: translateY(-50%) scale(1.08);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* 返回按钮 - 修改为关闭样式 */
+#poetryBackBtn span {
+  content: "关闭";
 }
