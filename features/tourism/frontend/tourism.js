@@ -1084,7 +1084,7 @@
         </div>
       `,
       iconSize: [size, size],
-      iconAnchor: [size / 2, size],
+      iconAnchor: [size / 2, size / 2],
     });
   }
 
@@ -2144,10 +2144,59 @@
     return { nodes, links };
   }
 
+
+  function stabilizeKnowledgeNodeLayout(nodes, width, height, full) {
+    const padding = full ? 16 : 10;
+    const protectedWeight = (node) => {
+      if (node.level === "core") return 0.18;
+      if (node.level === "hub") return 0.38;
+      return 0.5;
+    };
+
+    for (let round = 0; round < 260; round += 1) {
+      for (let i = 0; i < nodes.length; i += 1) {
+        for (let j = i + 1; j < nodes.length; j += 1) {
+          const a = nodes[i];
+          const b = nodes[j];
+          let dx = b.x - a.x;
+          let dy = b.y - a.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if (!dist) {
+            const angle = ((i + j + 1) * 137.5 * Math.PI) / 180;
+            dx = Math.cos(angle);
+            dy = Math.sin(angle);
+            dist = 1;
+          }
+
+          const minDist = a.r + b.r + (full ? 42 : 24);
+          if (dist >= minDist) continue;
+
+          const overlap = (minDist - dist) / dist;
+          const axWeight = protectedWeight(a);
+          const bxWeight = protectedWeight(b);
+          const total = axWeight + bxWeight;
+          const pushX = dx * overlap;
+          const pushY = dy * overlap;
+
+          a.x -= Math.round(pushX * (bxWeight / total));
+          a.y -= Math.round(pushY * (bxWeight / total));
+          b.x += Math.round(pushX * (axWeight / total));
+          b.y += Math.round(pushY * (axWeight / total));
+        }
+      }
+
+      nodes.forEach((node) => {
+        const margin = node.r + padding;
+        node.x = Math.max(margin, Math.min(width - margin, node.x));
+        node.y = Math.max(margin, Math.min(height - margin, node.y));
+      });
+    }
+  }
+
   function renderKnowledgeGraphSvg(resources = [], options = {}) {
     const full = Boolean(options.full);
-    const width = full ? 1360 : 720;
-    const height = full ? 820 : 470;
+    const width = full ? 1760 : 760;
+    const height = full ? 1060 : 520;
     const pointItems = graphResources(resources);
     const parts = knowledgeParts(pointItems[0] || {});
     const routeTitle = state.currentRoute?.title || "当前研学路线";
@@ -2197,15 +2246,15 @@
       radial(nodes, links, "policy", ["北上抗日", "群众路线", "民族政策", "纪律建设"].map((label) => ({ label, type: "policy" })), 545, 292, 90, -72, 178, "policy", 23);
       radial(nodes, links, "task", [parts.spirit, parts.task, "成果汇报", "AI问答"].map((label, idx) => ({ label, type: idx === 3 ? "ai" : idx === 0 ? "spirit" : "task" })), 350, 355, 88, 32, 156, "task", 23);
     } else {
-      addNode(nodes, "core", "长征", 680, 410, "core", 58, "core");
-      addNode(nodes, "route", routeTitle, 410, 250, "hub", 54, "hub");
-      addNode(nodes, "resource", "红色资源点", 305, 465, "hub", 52, "hub");
-      addNode(nodes, "process", "军队进程演变", 625, 205, "hub", 52, "hub");
-      addNode(nodes, "policy", "政策支持", 920, 455, "hub", 52, "hub");
-      addNode(nodes, "spirit", "长征精神", 735, 610, "hub", 50, "hub");
-      addNode(nodes, "task", "研学任务", 480, 660, "hub", 50, "hub");
-      addNode(nodes, "ai", "AI研学助手", 1045, 245, "hub", 48, "hub");
-      addNode(nodes, "terrain", "地形交通", 790, 315, "hub", 48, "hub");
+      addNode(nodes, "core", "长征", 880, 530, "core", 60, "core");
+      addNode(nodes, "route", routeTitle, 520, 315, "hub", 56, "hub");
+      addNode(nodes, "resource", "红色资源点", 390, 600, "hub", 54, "hub");
+      addNode(nodes, "process", "军队进程演变", 805, 265, "hub", 54, "hub");
+      addNode(nodes, "policy", "政策支持", 1185, 585, "hub", 54, "hub");
+      addNode(nodes, "spirit", "长征精神", 960, 785, "hub", 52, "hub");
+      addNode(nodes, "task", "研学任务", 615, 845, "hub", 52, "hub");
+      addNode(nodes, "ai", "AI研学助手", 1345, 320, "hub", 50, "hub");
+      addNode(nodes, "terrain", "地形交通", 1020, 410, "hub", 50, "hub");
 
       ["route", "resource", "process", "policy", "spirit", "task", "ai", "terrain"].forEach((id) => addLink(links, "core", id, "关联"));
       addLink(links, "resource", "route", "形成线路");
@@ -2220,41 +2269,43 @@
       const stageItems = [
         "中央苏区出发", "突破湘江", "遵义会议", "四渡赤水", "巧渡金沙江", "强渡大渡河", "飞夺泸定桥", "翻雪山过草地", "会宁会师", "战略落脚"
       ].map((label) => ({ label, type: "process", edge: "阶段" }));
-      radial(nodes, links, "process", stageItems, 625, 205, 155, 185, 245, "process", 30);
+      radial(nodes, links, "process", stageItems, 805, 265, 205, 185, 245, "process", 30);
 
       const armyItems = [
         "中央红军", "红一方面军", "红二方面军", "红四方面军", "方面军会师", "军事指挥", "行军纪律"
       ].map((label) => ({ label, type: "army", edge: "部队" }));
-      radial(nodes, links, "process", armyItems, 625, 205, 170, -125, 120, "army", 28);
+      radial(nodes, links, "process", armyItems, 805, 265, 220, -125, 120, "army", 28);
 
       const fallbackResources = ["瑞金", "于都", "遵义", "苟坝", "赤水", "泸定桥", "夹金山", "会宁"];
       const resourceNames = (pointItems.length ? pointItems.map((item) => item.name) : fallbackResources).filter(Boolean).slice(0, 8);
-      radial(nodes, links, "resource", resourceNames.map((label) => ({ label, type: "resource", edge: "点位" })), 305, 465, 175, 112, 230, "resource", 31);
+      radial(nodes, links, "resource", resourceNames.map((label) => ({ label, type: "resource", edge: "点位" })), 390, 600, 230, 112, 230, "resource", 31);
 
       const eventItems = [parts.event, "战役会议", "重大转折", "群众支前", "革命旧址", "纪念馆展陈"].map((label, index) => ({ label, type: index < 3 ? "event" : "resource", edge: "关联" }));
-      radial(nodes, links, "route", eventItems, 410, 250, 150, 190, 210, "event", 29);
+      radial(nodes, links, "route", eventItems, 520, 315, 195, 190, 210, "event", 29);
 
       const policyItems = [
         "北上抗日方针", "统一战线", "群众路线", "民族政策", "纪律建设", "组织领导", "后勤补给", "安全研判"
       ].map((label, index) => ({ label, type: index > 5 ? "support" : "policy", edge: "支撑" }));
-      radial(nodes, links, "policy", policyItems, 920, 455, 165, -70, 230, "policy", 30);
+      radial(nodes, links, "policy", policyItems, 1185, 585, 220, -70, 230, "policy", 30);
 
       const terrainItems = ["山地河谷", "关隘桥渡", "雪山草地", "气候风险", "道路组织", "交通集散"].map((label) => ({ label, type: "terrain", edge: "约束" }));
-      radial(nodes, links, "terrain", terrainItems, 790, 315, 135, -88, 154, "terrain", 28);
+      radial(nodes, links, "terrain", terrainItems, 1020, 410, 180, -88, 154, "terrain", 28);
 
       const spiritItems = ["坚定信念", "实事求是", "独立自主", "英勇斗争", "艰苦奋斗", "团结协作", parts.spirit].map((label) => ({ label, type: "spirit", edge: "精神" }));
-      radial(nodes, links, "spirit", spiritItems, 735, 610, 140, 18, 190, "spirit", 29);
+      radial(nodes, links, "spirit", spiritItems, 960, 785, 190, 18, 190, "spirit", 29);
 
       const taskItems = ["史料研读", "现场讲解", "路线复盘", "交通研判", parts.task, "任务卡", "成果汇报"].map((label, index) => ({ label, type: index === 6 ? "task" : "task", edge: "任务" }));
-      radial(nodes, links, "task", taskItems, 480, 660, 135, 156, 210, "task", 28);
+      radial(nodes, links, "task", taskItems, 615, 845, 175, 156, 210, "task", 28);
 
       const aiItems = ["路线合理性", "事件问答", "知识关联", "研学报告", "风险提醒"].map((label) => ({ label, type: "ai", edge: "生成" }));
-      radial(nodes, links, "ai", aiItems, 1045, 245, 130, -80, 185, "ai", 28);
+      radial(nodes, links, "ai", aiItems, 1345, 320, 175, -80, 185, "ai", 28);
     }
+
+    stabilizeKnowledgeNodeLayout(nodes, width, height, full);
 
     const nodeMap = new Map(nodes.map((node) => [node.id, node]));
     const uid = full ? "fullNet" : "previewNet";
-    const visibleLinkLabel = (index) => full && index % 3 === 0;
+    const visibleLinkLabel = () => false;
     const curvePath = (a, b, index) => {
       const ax = a.x, ay = a.y, bx = b.x, by = b.y;
       const mx = (ax + bx) / 2;
@@ -2282,9 +2333,11 @@
     };
     const textLines = (label, node) => {
       const lines = circleLabelLines(label, node);
-      const lineHeight = node.level === "leaf" ? (full ? 13 : 11) : (full ? 15 : 13);
+      const lineHeight = node.level === "core" ? 14 : node.level === "hub" ? 13 : 11;
       const startY = -((lines.length - 1) * lineHeight) / 2;
-      return lines.map((line, index) => `<tspan x="0" y="${startY + index * lineHeight}">${escapeHtml(line)}</tspan>`).join("");
+      return lines.map((line, index) => {
+        return `<tspan x="0" y="${startY + index * lineHeight}" dominant-baseline="middle">${escapeHtml(line)}</tspan>`;
+      }).join("");
     };
 
     return `
@@ -2309,7 +2362,7 @@
           <g class="kg-node-shell" transform="translate(${node.x}, ${node.y})">
             <g class="kg-node-svg kg-node-${node.type} kg-node-${node.level}" style="--kg-delay:${(index % 12) * -0.22}s;--kg-x:${(index % 3 - 1) * 2}px">
               <circle r="${node.r}"></circle>
-              <text text-anchor="middle" dominant-baseline="middle">${textLines(node.label, node)}</text>
+              <text x="0" y="0" text-anchor="middle" dominant-baseline="middle">${textLines(node.label, node)}</text>
             </g>
           </g>
         `).join("")}
