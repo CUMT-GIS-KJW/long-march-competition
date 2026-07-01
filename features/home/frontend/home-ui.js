@@ -71,6 +71,31 @@
     $("#routeSelect").addEventListener("change", (event) => {
       // 只用于播放，不直接影响事件过滤
     });
+
+    // ★ 新增：诗歌点图层控制
+    const poetryToggle = document.getElementById('poetryToggle');
+    console.log('poetryToggle 元素:', poetryToggle);  // 调试日志
+    
+    if (poetryToggle) {
+      poetryToggle.addEventListener('click', function() {
+        const isVisible = this.dataset.visible === 'true';
+        const newVisible = !isVisible;
+        this.dataset.visible = String(newVisible);
+        this.textContent = newVisible ? '隐藏诗词点' : '显示诗词点';
+        this.classList.toggle('is-off', !newVisible);
+        
+        console.log('切换诗词点:', newVisible);  // 调试日志
+        
+        // ★ 确保 IndexMap 存在
+        if (window.IndexMap && typeof IndexMap.togglePoetryLayer === 'function') {
+          IndexMap.togglePoetryLayer(newVisible);
+        } else {
+          console.error('IndexMap.togglePoetryLayer 不存在');
+        }
+      });
+    } else {
+      console.error('找不到 #poetryToggle 元素');
+    }
   }
 
   document.addEventListener("DOMContentLoaded", () => {

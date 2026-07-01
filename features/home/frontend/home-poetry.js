@@ -219,13 +219,24 @@
     }, 320);
   }
 
-  function openModal() {
+async function openModal() {
+  $("#poetryModal").classList.add("show");
+  $("#poetryModal").setAttribute("aria-hidden", "false");
+  document.body.classList.add("poetry-cursor-active");
+  setButtonEnabled(false);
+
+  if (!state.poems.length) {
+    const data = await fetchPoetryData();
+    state.poems = data.poems || [];
+    state.wallLines = data.wallLines || [];
     renderWall();
-    $("#poetryModal").classList.add("show");
-    $("#poetryModal").setAttribute("aria-hidden", "false");
-    document.body.classList.add("poetry-cursor-active");
-    showWall();
   }
+
+  // ★ 默认显示卷轴墙（不是详情页）
+  showWall();
+  
+  // 如果没有指定诗歌ID，不打开详情
+}
 
   function closeModal() {
     stopVoice();
@@ -244,6 +255,78 @@
     cursor.style.left = `${event.clientX + 4}px`;
     cursor.style.top = `${event.clientY + 6}px`;
   }
+
+// ★ 新增：根据诗歌ID打开卷轴
+// ★ 根据诗歌ID打开卷轴
+function openPoetryById(poemId) {
+  if (!state.poems.length) {
+    fetchPoetryData().then(data => {
+      state.poems = data.poems || [];
+      state.wallLines = data.wallLines || [];
+      renderWall();
+      openPoetryByIdDirect(poemId);
+    }).catch(() => {
+      flash('加载诗歌数据失败');
+    });
+    return;
+  }
+  openPoetryByIdDirect(poemId);
+}
+
+function openPoetryByIdDirect(poemId) {
+  const index = state.poems.findIndex(p => p.id === poemId);
+  if (index === -1) {
+    if (window.IndexMap && typeof window.IndexMap.flash === 'function') {
+      window.IndexMap.flash('未找到该诗歌');
+    }
+    return;
+  }
+  
+  // 如果弹窗未打开，先打开并直接进入详情
+  if (!$("#poetryModal").classList.contains("show")) {
+    // 先打开弹窗
+    $("#poetryModal").classList.add("show");
+    $("#poetryModal").setAttribute("aria-hidden", "false");
+    document.body.classList.add("poetry-cursor-active");
+    setButtonEnabled(false);
+
+    if (!state.poems.length) {
+      fetchPoetryData().then(data => {
+        state.poems = data.poems || [];
+        state.wallLines = data.wallLines || [];
+        renderWall();
+        // 数据加载完成后显示详情
+        state.activeIndex = index;
+        state.analysisVisible = false;
+        renderDetail();
+        $("#poetryWallPage").classList.remove("active");
+        $("#poetryDetailPage").classList.add("active");
+        $("#poetryWindow").classList.add("detail-mode");
+        setButtonEnabled(true);
+      }).catch(console.error);
+      return;
+    }
+    
+    state.activeIndex = index;
+    state.analysisVisible = false;
+    renderDetail();
+    $("#poetryWallPage").classList.remove("active");
+    $("#poetryDetailPage").classList.add("active");
+    $("#poetryWindow").classList.add("detail-mode");
+    setButtonEnabled(true);
+  } else {
+    // 弹窗已打开，直接切换
+    showDetail(index);
+  }
+}
+
+// ★ 暴露 API
+window.Poetry = {
+  openById: openPoetryById,
+  getPoems: () => state.poems,
+  isOpen: () => $("#poetryModal").classList.contains("show"),
+  close: closeModal,
+};
 
   function bindPoetry() {
     $("#poetryScrollEntry").addEventListener("click", openModal);

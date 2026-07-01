@@ -1,6 +1,7 @@
-import json
+﻿import json
 import os
 import struct
+import sys
 
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -8,7 +9,31 @@ PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_ROOT = os.path.join(PROJECT_DIR, "data")
 JSON_DATA_DIR = os.path.join(DATA_ROOT, "json")
 ROUTE_DATA_DIR = os.path.join(DATA_ROOT, "routes")
-ROUTE_SOURCE_DIR = os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e")
+DESKTOP_DIR = os.path.abspath(os.path.join(ROOT_DIR, ".."))
+ROUTE_SOURCE_CANDIDATES = [
+    os.environ.get("ROUTE_SOURCE_DIR", ""),
+    os.path.join(DESKTOP_DIR, "\u8def\u7ebf\u6570\u636e", "\u8def\u7ebf\u6570\u636e"),
+    os.path.join(DESKTOP_DIR, "\u8def\u7ebf\u6570\u636e"),
+    os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e", "\u8def\u7ebf\u6570\u636e"),
+    os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e"),
+]
+ZHONGYANG_ROUTE_KEY = "route_zhongyang_zongdui"
+HONGYI_ROUTE_KEY = "route_hongyi_juntuan"
+ZHONGYANG_CORRECT_ROUTE_CANDIDATES = [
+    os.environ.get("ZHONGYANG_ROUTE_SOURCE_DIR", ""),
+    os.path.join(DESKTOP_DIR, "\u8def\u7ebf\u6570\u636e", "\u6b63\u786e\u8def\u7ebf"),
+    os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e", "\u6b63\u786e\u8def\u7ebf"),
+]
+HONGYI_CORRECT_ROUTE_CANDIDATES = [
+    os.environ.get("HONGYI_ROUTE_SOURCE_DIR", ""),
+    os.path.join(DESKTOP_DIR, "\u8def\u7ebf\u6570\u636e", "\u6b63\u786e\u8def\u7ebf"),
+    os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e", "\u6b63\u786e\u8def\u7ebf"),
+]
+CORRECT_ROUTE_CANDIDATES = [
+    os.environ.get("CORRECT_ROUTE_SOURCE_DIR", ""),
+    os.path.join(DESKTOP_DIR, "\u8def\u7ebf\u6570\u636e", "\u6b63\u786e\u8def\u7ebf"),
+    os.path.join(ROOT_DIR, "\u8def\u7ebf\u6570\u636e", "\u6b63\u786e\u8def\u7ebf"),
+]
 EVENT_SOURCE_DIR = os.path.join(ROOT_DIR, "\u91cd\u8981\u4e8b\u4ef6\u70b9")
 ROUTE_OUTPUT_DIR = os.path.join(ROUTE_DATA_DIR, "route-layers")
 
@@ -26,6 +51,68 @@ ROUTE_COLORS = [
     "#c43e35",
     "#2c7a7b",
     "#805ad5",
+]
+
+ROUTE_DISPLAY_ORDER = [
+    "route_zhongyang_zongdui",
+    "route_hongyi_juntuan",
+    "route_hongqi_juntuan",
+    "route_hongsan_juntuan",
+    "route_hongsanshi_jun",
+    "route_hongjiu_juntuan",
+    "route_honger_juntuan",
+    "route_hongershiwu_jun",
+    "route_hongwu_juntuan",
+    "route_hongliu_juntuan",
+    "route_hongshiba_shi",
+    "route_hongsi_juntuan",
+]
+
+CORRECT_ROUTE_SPECS = [
+    {
+        "route_key": "route_zhongyang_zongdui",
+        "prefix": "\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe_01-07.shp",
+        "default_corps_name": "\u4e2d\u592e\u7eb5\u961f",
+        "default_stage_name": "\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongyi_juntuan",
+        "prefix": "\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe_01-09.shp",
+        "default_corps_name": "\u7ea2\u4e00\u65b9\u9762\u519b",
+        "default_stage_name": "\u7ea2\u4e00\u65b9\u9762\u519b\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongqi_juntuan",
+        "prefix": "\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf\u56fe_01-03.shp",
+        "default_corps_name": "\u7ea2\u4e03\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongsan_juntuan",
+        "prefix": "\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf\u56fe_01-08.shp",
+        "default_corps_name": "\u7ea2\u4e09\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_hongjiu_juntuan",
+        "prefix": "\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf\u56fe_01-08.shp",
+        "default_corps_name": "\u7ea2\u4e5d\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf",
+    },
+    {
+        "route_key": "route_honger_juntuan",
+        "prefix": "\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf\u56fe_01-10.shp",
+        "default_corps_name": "\u7ea2\u4e8c\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf",
+        "order_overrides": {8: 7, 9: 7},
+        "branch_groups": {7: {7: "left", 8: "right", 9: "right"}},
+    },
 ]
 
 
@@ -76,6 +163,18 @@ def parse_date(text):
         return "{}-{}-{}".format(text[0:4], text[4:6], text[6:8])
 
     return text
+
+
+def date_sort_value(value):
+    text = str(value or "")
+
+    if len(text) == 10 and text[4] == "-" and text[7] == "-":
+        return text
+
+    if len(text) == 8 and text.isdigit():
+        return "{}-{}-{}".format(text[0:4], text[4:6], text[6:8])
+
+    return "9999-99-99"
 
 
 def read_dbf(dbf_path):
@@ -263,14 +362,285 @@ def make_feature_collection(records, geometries):
     }
 
 
-def sort_route_features(features):
+def make_route_feature_collection(records, geometries):
+    features = []
+
+    for source_index, properties in enumerate(records):
+        geometry = geometries[source_index] if source_index < len(geometries) else None
+
+        if not geometry:
+            continue
+
+        props = dict(properties)
+        props["_source_order"] = props.get("_order")
+        props["_source_index"] = source_index + 1
+
+        if props.get("descript") is None and props.get("descriptio") is not None:
+            props["descript"] = props.get("descriptio")
+
+        lines = (
+            geometry.get("coordinates", [])
+            if geometry.get("type") == "MultiLineString"
+            else [geometry.get("coordinates", [])]
+        )
+
+        for part_index, line in enumerate(lines, start=1):
+            if not line:
+                continue
+
+            part_props = dict(props)
+            part_props["_part_index"] = part_index
+            part_props["_source_geometry"] = geometry.get("type")
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": part_props,
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": line,
+                    },
+                }
+            )
+
+    features = sort_route_features_by_time(features)
+
+    for order, feature in enumerate(features, start=1):
+        feature["properties"]["_order"] = order
+
+    return {
+        "type": "FeatureCollection",
+        "features": features,
+    }
+
+
+def coordinate_gap(left, right):
+    if not left or not right:
+        return float("inf")
+
+    return (left[0] - right[0]) ** 2 + (left[1] - right[1]) ** 2
+
+
+def oriented_entry(entry, reverse=False):
+    line = list(reversed(entry["line"])) if reverse else entry["line"]
+    current = dict(entry)
+    current["line"] = line
+    current["reversed"] = reverse
+
+    return current
+
+
+def entry_is_loop(entry):
+    line = entry["line"]
+
+    return len(line) > 1 and coordinate_gap(line[0], line[-1]) < 1e-18
+
+
+def best_terminal_index(entries, next_anchor):
+    if not next_anchor:
+        return None
+
+    best = None
+
+    for index, entry in enumerate(entries):
+        line = entry["line"]
+        candidates = [
+            coordinate_gap(line[-1], next_anchor),
+            coordinate_gap(line[0], next_anchor),
+        ]
+        distance = min(candidates)
+
+        if best is None or distance < best[0]:
+            best = (distance, index)
+
+    return best[1] if best else None
+
+
+def choose_connected_entry(entries, current_anchor, next_anchor):
+    terminal_index = best_terminal_index(entries, next_anchor)
+    candidate_indexes = list(range(len(entries)))
+
+    if terminal_index is not None and len(entries) > 1:
+        candidate_indexes = [index for index in candidate_indexes if index != terminal_index]
+
+    best = None
+
+    for index in candidate_indexes:
+        entry = entries[index]
+        line = entry["line"]
+        orientations = [False, True] if len(line) > 1 else [False]
+
+        for reverse in orientations:
+            oriented = oriented_entry(entry, reverse)
+            start = oriented["line"][0]
+            end = oriented["line"][-1]
+            start_gap = 0 if current_anchor is None else coordinate_gap(current_anchor, start)
+            loop_priority = 0 if entry_is_loop(oriented) else 1
+            next_gap = coordinate_gap(end, next_anchor) if next_anchor else 0
+            score = (
+                start_gap,
+                loop_priority,
+                next_gap,
+                entry["source_index"],
+                entry["part_index"],
+            )
+
+            if best is None or score < best[0]:
+                best = (score, index, oriented)
+
+    return best[1], best[2]
+
+
+def order_route_entries(entries, previous_anchor, next_anchor):
+    remaining = list(entries)
+    ordered = []
+    current_anchor = previous_anchor
+
+    while remaining:
+        index, entry = choose_connected_entry(remaining, current_anchor, next_anchor)
+        ordered.append(entry)
+        current_anchor = entry["line"][-1]
+        remaining.pop(index)
+
+    return ordered
+
+
+
+def has_branch_entries(entries):
+    return any(entry["props"].get("_branch_id") for entry in entries)
+
+
+def order_branch_entries(entries, previous_anchor):
+    branches = {}
+
+    for entry in entries:
+        branch_id = entry["props"].get("_branch_id") or "main"
+        branches.setdefault(branch_id, []).append(entry)
+
+    ordered = []
+
+    for branch_id in sorted(branches):
+        branch_entries = branches[branch_id]
+        ordered.extend(order_route_entries(branch_entries, previous_anchor, None))
+
+    return ordered
+
+def make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name, branch_groups=None):
+    features = []
+    fields = []
+    groups = []
+    branch_groups = branch_groups or {}
+
+    for item in shp_items:
+        if len(item) == 5:
+            file_order, shp_name, dbf_data, geometries, file_number = item
+        else:
+            file_order, shp_name, dbf_data, geometries = item
+            file_number = file_order
+
+        group = []
+
+        for field in dbf_data["fields"]:
+            if field["name"] not in fields:
+                fields.append(field["name"])
+
+        for source_index, properties in enumerate(dbf_data["records"]):
+            geometry = geometries[source_index] if source_index < len(geometries) else None
+
+            if not geometry:
+                continue
+
+            props = dict(properties)
+            props["_source_order"] = props.get("_order")
+            props["_source_file_order"] = file_order
+            props["_source_file_number"] = file_number
+            props["_source_file"] = shp_name
+            branch_group = branch_groups.get(file_order, {})
+            if file_number in branch_group:
+                props["_branch_group"] = file_order
+                props["_branch_id"] = branch_group[file_number]
+            props["_source_index"] = source_index + 1
+            props["corps_name"] = props.get("corps_name") or default_corps_name
+            props["stage_name"] = props.get("stage_name") or props.get("KML_FOLDER") or default_stage_name
+
+            if props.get("descript") is None and props.get("descriptio") is not None:
+                props["descript"] = props.get("descriptio")
+
+            lines = (
+                geometry.get("coordinates", [])
+                if geometry.get("type") == "MultiLineString"
+                else [geometry.get("coordinates", [])]
+            )
+
+            for part_index, line in enumerate(lines, start=1):
+                if not line:
+                    continue
+
+                group.append(
+                    {
+                        "props": props,
+                        "line": line,
+                        "part_index": part_index,
+                        "source_index": source_index + 1,
+                        "source_geometry": geometry.get("type"),
+                    }
+                )
+
+        if groups and groups[-1]["file_order"] == file_order:
+            groups[-1]["entries"].extend(group)
+        else:
+            groups.append({"file_order": file_order, "entries": group})
+
+    previous_anchor = None
+
+    for group_index, group in enumerate(groups):
+        next_anchor = None
+
+        for next_group in groups[group_index + 1:]:
+            if next_group["entries"]:
+                next_anchor = next_group["entries"][0]["line"][0]
+                break
+
+        ordered_entries = order_branch_entries(group["entries"], previous_anchor) if has_branch_entries(group["entries"]) else order_route_entries(group["entries"], previous_anchor, next_anchor)
+
+        for play_index, entry in enumerate(ordered_entries, start=1):
+            part_props = dict(entry["props"])
+            part_props["_order"] = group["file_order"]
+            part_props["_part_index"] = entry["part_index"]
+            part_props["_play_part_index"] = play_index
+            part_props["_source_geometry"] = entry["source_geometry"]
+            part_props["_reversed"] = entry.get("reversed", False)
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": part_props,
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": entry["line"],
+                    },
+                }
+            )
+            previous_anchor = entry["line"][-1]
+
+    return {
+        "collection": {
+            "type": "FeatureCollection",
+            "features": features,
+        },
+        "fields": fields,
+    }
+
+
+def sort_route_features_by_time(features):
     def order_value(feature):
-        value = feature["properties"].get("_order")
+        properties = feature["properties"]
 
-        if value is None:
-            return 999999
-
-        return value
+        return (
+            date_sort_value(properties.get("start_date")),
+            date_sort_value(properties.get("end_date")),
+            properties.get("_source_order") or 999999,
+            properties.get("_source_index") or 999999,
+            properties.get("_part_index") or 999999,
+        )
 
     return sorted(features, key=order_value)
 
@@ -290,23 +660,59 @@ def sort_event_features(features):
 def generate_routes():
     os.makedirs(ROUTE_OUTPUT_DIR, exist_ok=True)
     os.makedirs(JSON_DATA_DIR, exist_ok=True)
+    route_source_dir = resolve_route_source_dir()
+    zhongyang_correct_dir = resolve_zhongyang_correct_route_dir()
+    hongyi_correct_dir = resolve_hongyi_correct_route_dir()
+    existing_configs = load_existing_route_configs()
     layer_configs = []
+
+    for name in os.listdir(ROUTE_OUTPUT_DIR):
+        if name.lower().endswith(".json"):
+            os.remove(os.path.join(ROUTE_OUTPUT_DIR, name))
 
     shp_names = [
         name
-        for name in os.listdir(ROUTE_SOURCE_DIR)
+        for name in os.listdir(route_source_dir)
         if name.lower().endswith(".shp") and ".gis." not in name.lower()
     ]
 
-    for index, shp_name in enumerate(sorted(shp_names)):
+    shp_names.sort(key=lambda name: route_display_order(slugify_route_name(os.path.splitext(name)[0])))
+
+    for index, shp_name in enumerate(shp_names):
         base_name = os.path.splitext(shp_name)[0]
         layer_key = slugify_route_name(base_name)
-        shp_path = os.path.join(ROUTE_SOURCE_DIR, shp_name)
+        existing_config = existing_configs.get(layer_key, {})
+        shp_path = os.path.join(route_source_dir, shp_name)
         dbf_path = os.path.splitext(shp_path)[0] + ".dbf"
         dbf_data = read_dbf(dbf_path)
         shp_data = read_shp(shp_path)
-        collection = make_feature_collection(dbf_data["records"], shp_data["geometries"])
-        collection["features"] = sort_route_features(collection["features"])
+        fields = [field["name"] for field in dbf_data["fields"]]
+        source_file = shp_name
+
+        if layer_key == ZHONGYANG_ROUTE_KEY and zhongyang_correct_dir:
+            correct_route = read_ordered_correct_route(
+                zhongyang_correct_dir,
+                "\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe_",
+                "\u4e2d\u592e\u7eb5\u961f",
+                "\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf",
+                "Zhongyang correct route Shapefile source directory not found",
+            )
+            collection = correct_route["collection"]
+            fields = correct_route["fields"]
+            source_file = "\u6b63\u786e\u8def\u7ebf/\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe_01-07.shp"
+        elif layer_key == HONGYI_ROUTE_KEY and hongyi_correct_dir:
+            correct_route = read_ordered_correct_route(
+                hongyi_correct_dir,
+                "\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf_",
+                "\u7ea2\u4e00\u65b9\u9762\u519b",
+                "\u7ea2\u4e00\u65b9\u9762\u519b\u8def\u7ebf",
+                "Hongyi correct route Shapefile source directory not found",
+            )
+            collection = correct_route["collection"]
+            fields = correct_route["fields"]
+            source_file = "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf_01-10.shp"
+        else:
+            collection = make_route_feature_collection(dbf_data["records"], shp_data["geometries"])
 
         output_path = os.path.join(ROUTE_OUTPUT_DIR, "{}.json".format(layer_key))
 
@@ -315,16 +721,16 @@ def generate_routes():
 
         layer_configs.append(
             {
-                "id": index + 1,
+                "id": existing_config.get("id", index + 1),
                 "layer_key": layer_key,
                 "layer_name": base_name,
                 "table_name": layer_key,
-                "source_file": shp_name,
-                "color": ROUTE_COLORS[index % len(ROUTE_COLORS)],
-                "line_width": 4 if index == 0 else 3,
-                "default_visible": index < 6,
-                "display_order": index + 1,
-                "fields": [field["name"] for field in dbf_data["fields"]],
+                "source_file": source_file,
+                "color": existing_config.get("color", ROUTE_COLORS[index % len(ROUTE_COLORS)]),
+                "line_width": existing_config.get("line_width", 4 if index == 0 else 3),
+                "default_visible": existing_config.get("default_visible", index < 6),
+                "display_order": existing_config.get("display_order", route_display_order(layer_key)),
+                "fields": fields,
             }
         )
 
@@ -332,6 +738,217 @@ def generate_routes():
 
     with open(os.path.join(ROUTE_DATA_DIR, "route-layer-config.json"), "w", encoding="utf-8") as file:
         json.dump(layer_configs, file, ensure_ascii=False, indent=2)
+
+
+def generate_zhongyang_route_only():
+    correct_route = read_ordered_correct_route(
+        resolve_zhongyang_correct_route_dir(),
+        "\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe_",
+        "\u4e2d\u592e\u7eb5\u961f",
+        "\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf",
+        "Zhongyang correct route Shapefile source directory not found",
+    )
+
+    write_single_route(
+        ZHONGYANG_ROUTE_KEY,
+        "\u6b63\u786e\u8def\u7ebf/\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe_01-07.shp",
+        correct_route,
+    )
+
+
+def generate_hongyi_route_only():
+    correct_route = read_ordered_correct_route(
+        resolve_hongyi_correct_route_dir(),
+        "\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe",
+        "\u7ea2\u4e00\u65b9\u9762\u519b",
+        "\u7ea2\u4e00\u65b9\u9762\u519b\u8def\u7ebf",
+        "Hongyi correct route Shapefile source directory not found",
+    )
+
+    write_single_route(
+        HONGYI_ROUTE_KEY,
+        "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe_01-09.shp",
+        correct_route,
+    )
+
+
+def generate_correct_routes_only():
+    correct_route_dir = resolve_correct_route_dir()
+
+    if not correct_route_dir:
+        raise FileNotFoundError("Correct route Shapefile source directory not found")
+
+    for spec in CORRECT_ROUTE_SPECS:
+        if not has_ordered_route_files(correct_route_dir, spec["prefix"]):
+            continue
+
+        correct_route = read_ordered_correct_route(
+            correct_route_dir,
+            spec["prefix"],
+            spec["default_corps_name"],
+            spec["default_stage_name"],
+            "Correct route Shapefile source files not found: {}".format(spec["prefix"]),
+            spec.get("order_overrides"),
+            spec.get("branch_groups"),
+        )
+        write_single_route(spec["route_key"], spec["source_file"], correct_route)
+
+
+def write_single_route(route_key, source_file, route_data):
+    os.makedirs(ROUTE_OUTPUT_DIR, exist_ok=True)
+    output_path = os.path.join(ROUTE_OUTPUT_DIR, "{}.json".format(route_key))
+
+    with open(output_path, "w", encoding="utf-8") as file:
+        json.dump(route_data["collection"], file, ensure_ascii=False, indent=2)
+
+    config_path = os.path.join(ROUTE_DATA_DIR, "route-layer-config.json")
+
+    if not os.path.exists(config_path):
+        return
+
+    with open(config_path, "r", encoding="utf-8") as file:
+        configs = json.load(file)
+
+    for item in configs:
+        if item.get("layer_key") != route_key:
+            continue
+
+        item["source_file"] = source_file
+        item["fields"] = route_data["fields"]
+        break
+
+    with open(config_path, "w", encoding="utf-8") as file:
+        json.dump(configs, file, ensure_ascii=False, indent=2)
+
+
+def resolve_route_source_dir():
+    for directory in ROUTE_SOURCE_CANDIDATES:
+        if not directory or not os.path.isdir(directory):
+            continue
+
+        if any(name.lower().endswith(".shp") for name in os.listdir(directory)):
+            return directory
+
+    raise FileNotFoundError("Route Shapefile source directory not found")
+
+
+def resolve_zhongyang_correct_route_dir():
+    for directory in ZHONGYANG_CORRECT_ROUTE_CANDIDATES:
+        if not directory or not os.path.isdir(directory):
+            continue
+
+        if any(is_zhongyang_correct_route_file(name) for name in os.listdir(directory)):
+            return directory
+
+    return ""
+
+
+def resolve_correct_route_dir():
+    for directory in CORRECT_ROUTE_CANDIDATES:
+        if not directory or not os.path.isdir(directory):
+            continue
+
+        if any(
+            has_ordered_route_files(directory, spec["prefix"])
+            for spec in CORRECT_ROUTE_SPECS
+        ):
+            return directory
+
+    return ""
+
+
+def resolve_hongyi_correct_route_dir():
+    for directory in HONGYI_CORRECT_ROUTE_CANDIDATES:
+        if not directory or not os.path.isdir(directory):
+            continue
+
+        if any(is_hongyi_correct_route_file(name) for name in os.listdir(directory)):
+            return directory
+
+    return ""
+
+
+def is_zhongyang_correct_route_file(name):
+    return name.startswith("\u4e2d\u592e\u7eb5\u961f\u8def\u7ebf\u56fe_") and name.lower().endswith(".shp")
+
+
+def is_hongyi_correct_route_file(name):
+    return name.startswith("\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe") and name.lower().endswith(".shp")
+
+
+def is_ordered_route_file(name, prefix):
+    return name.startswith(prefix) and name.lower().endswith(".shp")
+
+
+def has_ordered_route_files(directory, prefix):
+    return any(
+        is_ordered_route_file(name, prefix) and route_file_order(name) != 999999
+        for name in os.listdir(directory)
+    )
+
+
+def route_file_order(name):
+    base_name = os.path.splitext(name)[0]
+    digits = []
+
+    for char in reversed(base_name):
+        if not char.isdigit():
+            break
+
+        digits.append(char)
+
+    try:
+        return int("".join(reversed(digits)))
+    except ValueError:
+        return 999999
+
+
+def read_ordered_correct_route(directory, prefix, default_corps_name, default_stage_name, error_message, order_overrides=None, branch_groups=None):
+    if not directory:
+        raise FileNotFoundError(error_message)
+
+    shp_names = [
+        name
+        for name in os.listdir(directory)
+        if is_ordered_route_file(name, prefix) and route_file_order(name) != 999999
+    ]
+    shp_names.sort(key=route_file_order)
+
+    if not shp_names:
+        raise FileNotFoundError(error_message)
+
+    shp_items = []
+    order_overrides = order_overrides or {}
+
+    for shp_name in shp_names:
+        shp_path = os.path.join(directory, shp_name)
+        dbf_path = os.path.splitext(shp_path)[0] + ".dbf"
+        dbf_data = read_dbf(dbf_path)
+        shp_data = read_shp(shp_path)
+        file_number = route_file_order(shp_name)
+        file_order = order_overrides.get(file_number, file_number)
+        shp_items.append((file_order, shp_name, dbf_data, shp_data["geometries"], file_number))
+
+    return make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name, branch_groups)
+
+
+def load_existing_route_configs():
+    config_path = os.path.join(ROUTE_DATA_DIR, "route-layer-config.json")
+
+    if not os.path.exists(config_path):
+        return {}
+
+    with open(config_path, "r", encoding="utf-8") as file:
+        configs = json.load(file)
+
+    return {item.get("layer_key"): item for item in configs}
+
+
+def route_display_order(layer_key):
+    if layer_key in ROUTE_DISPLAY_ORDER:
+        return ROUTE_DISPLAY_ORDER.index(layer_key) + 1
+
+    return 999999
 
 
 def generate_events():
@@ -347,9 +964,25 @@ def generate_events():
 
 
 def main():
+    if "--zhongyang-only" in sys.argv:
+        generate_zhongyang_route_only()
+        return
+
+    if "--hongyi-only" in sys.argv:
+        generate_hongyi_route_only()
+        return
+
+    if "--correct-routes-only" in sys.argv:
+        generate_correct_routes_only()
+        return
+
     generate_routes()
-    generate_events()
+
+    if "--routes-only" not in sys.argv:
+        generate_events()
 
 
 if __name__ == "__main__":
     main()
+
+

@@ -1597,3 +1597,154 @@ body.poetry-cursor-active * {
     font-size: 16px;
   }
 }
+
+/* ===== 诗歌点样式 ===== */
+.poetry-point-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.poetry-point-marker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.poetry-icon {
+  font-size: 28px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+  animation: poetryFloat 2s ease-in-out infinite;
+}
+
+.poetry-tooltip {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  color: #fff5d8;
+  background: rgba(100, 24, 15, 0.85);
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.poetry-point-marker:hover .poetry-tooltip {
+  opacity: 1;
+}
+
+@keyframes poetryFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+/* ===== 诗歌弹窗样式 ===== */
+.poetry-popup .leaflet-popup-content-wrapper {
+  background: linear-gradient(160deg, rgba(255, 248, 226, 0.96), rgba(241, 220, 174, 0.92));
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(45, 18, 8, 0.25);
+}
+
+.poetry-popup .leaflet-popup-content {
+  margin: 14px 18px;
+  min-width: 280px;
+  max-width: 360px;
+}
+
+.poetry-popup-content {
+  display: grid;
+  gap: 8px;
+}
+
+.poetry-popup-header h3 {
+  margin: 0;
+  color: #4a150d;
+  font-size: 18px;
+  font-family: "KaiTi", "STKaiti", serif;
+}
+
+.poetry-popup-header .poetry-author {
+  color: #8a4d2d;
+  font-size: 12px;
+}
+
+.poetry-popup-text {
+  margin: 6px 0;
+  padding: 10px 12px;
+  color: #371c12;
+  font-family: "KaiTi", "STKaiti", serif;
+  font-size: 15px;
+  line-height: 1.8;
+  background: rgba(255, 255, 255, 0.4);
+  border-left: 3px solid #a8261d;
+  border-radius: 4px;
+  white-space: pre-wrap;
+}
+
+.poetry-popup-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b3a28;
+}
+
+.poetry-popup-footer .poetry-place {
+  font-weight: 700;
+  color: #4a150d;
+}
+
+.poetry-popup-desc p {
+  margin: 4px 0 0;
+  color: #5d3b28;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.poetry-open-full {
+  width: 100%;
+  padding: 8px 14px;
+  margin-top: 6px;
+  color: #fff5d8;
+  background: linear-gradient(135deg, #a8261d, #d8ad4f);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.2s ease;
+}
+
+.poetry-open-full:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(168, 38, 29, 0.25);
+}
+
+/* ===== 控制按钮 ===== */
+#poetryToggle {
+  padding: 6px 14px;
+  color: #fff5d8;
+  background: var(--red);
+  border: 1px solid rgba(247, 234, 208, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+#poetryToggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 38, 29, 0.2);
+}
+
+#poetryToggle.is-off {
+  color: #7a5b48;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(122, 91, 72, 0.28);
+}

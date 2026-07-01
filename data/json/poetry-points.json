@@ -1,0 +1,185 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "poetry_001",
+      "properties": {
+        "name": "长征途经地",
+        "poem_id": "poem_001",
+        "poem_title": "七律·长征",
+        "author": "毛泽东",
+        "province": "甘肃/陕西",
+        "city": "长征沿线",
+        "stage": "长征全程",
+        "description": "高度概括长征全程的经典诗作"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [104.036731, 34.43833]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_002",
+      "properties": {
+        "name": "娄山关",
+        "poem_id": "poem_002",
+        "poem_title": "忆秦娥·娄山关",
+        "author": "毛泽东",
+        "province": "贵州省",
+        "city": "遵义市",
+        "stage": "遵义会议后",
+        "description": "娄山关大捷后所作，悲壮豪迈"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.855728, 28.022595]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_003",
+      "properties": {
+        "name": "湘桂黔山区",
+        "poem_id": "poem_003",
+        "poem_title": "十六字令三首",
+        "author": "毛泽东",
+        "province": "湖南/广西/贵州",
+        "city": "湘桂黔山区",
+        "stage": "长征初期",
+        "description": "写于长征初期，歌颂红军穿越山区的英勇气概"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [109.452343, 26.170502]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_004",
+      "properties": {
+        "name": "六盘山",
+        "poem_id": "poem_004",
+        "poem_title": "清平乐·六盘山",
+        "author": "毛泽东",
+        "province": "宁夏回族自治区",
+        "city": "固原市",
+        "stage": "长征末期",
+        "description": "越过六盘山后所作，标志长征即将胜利"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [106.308561, 35.341353]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_005",
+      "properties": {
+        "name": "陕北",
+        "poem_id": "poem_005",
+        "poem_title": "念奴娇·昆仑",
+        "author": "毛泽东",
+        "province": "陕西省",
+        "city": "陕北",
+        "stage": "长征末期",
+        "description": "即将到达陕北时，远望昆仑山脉生发感慨"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [109.823388, 37.010321]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_006",
+      "properties": {
+        "name": "吴起镇",
+        "poem_id": "poem_006",
+        "poem_title": "六言诗·给彭德怀同志",
+        "author": "毛泽东",
+        "province": "陕西省",
+        "city": "延安市吴起县",
+        "stage": "长征终点",
+        "description": "到达吴起镇后赠彭德怀"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [108.17586, 36.927096]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_007",
+      "properties": {
+        "name": "陕北",
+        "poem_id": "poem_007",
+        "poem_title": "沁园春·雪",
+        "author": "毛泽东",
+        "province": "陕西省",
+        "city": "陕北",
+        "stage": "长征后",
+        "description": "东征途中作于陕北"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [110.610226, 36.99497]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_008",
+      "properties": {
+        "name": "会昌",
+        "poem_id": "poem_008",
+        "poem_title": "清平乐·会昌",
+        "author": "毛泽东",
+        "province": "江西省",
+        "city": "赣州市会昌县",
+        "stage": "长征前",
+        "description": "1934年夏，毛泽东在会昌养病期间所作"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [115.809271, 25.58734]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_009",
+      "properties": {
+        "name": "井冈山",
+        "poem_id": "poem_009",
+        "poem_title": "西江月·井冈山",
+        "author": "毛泽东",
+        "province": "江西省",
+        "city": "吉安市井冈山市",
+        "stage": "井冈山时期",
+        "description": "黄洋界保卫战胜利后所作"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [114.210291, 26.249628]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poetry_010",
+      "properties": {
+        "name": "镇石封锁线",
+        "poem_id": "poem_010",
+        "poem_title": "突破镇石封锁线（二首）",
+        "author": "萧克",
+        "province": "贵州省",
+        "city": "镇远-石阡",
+        "stage": "长征初期",
+        "description": "萧克将军突破镇石封锁线时所作"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [108.223686, 27.513499]
+      }
+    }
+  ]
+}

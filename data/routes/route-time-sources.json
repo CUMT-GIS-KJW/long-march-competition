@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "timezone": "+08:00",
+  "method": "Use web-level route ranges as historical guardrails, then interpolate point dates from the existing project start_date/end_date fields by distance inside each route segment.",
+  "web_sources": [
+    {
+      "id": "gov_long_march_80_speech",
+      "title": "Speech at the meeting marking the 80th anniversary of the victory of the Long March",
+      "url": "https://www.gov.cn/xinwen/2016-10/21/content_5122212.htm",
+      "notes": "Used as a web reference for the overall 1934-10 to 1936-10 Long March range."
+    },
+    {
+      "id": "wiki_zh_long_march",
+      "title": "Long March overview, Chinese edition",
+      "url": "https://zh.wikipedia.org/wiki/%E9%95%BF%E5%BE%81",
+      "notes": "Used as a secondary web reference for route group chronology and force-level ranges."
+    },
+    {
+      "id": "wiki_en_long_march",
+      "title": "Long March overview, English edition",
+      "url": "https://en.wikipedia.org/wiki/Long_March",
+      "notes": "Used as a secondary web reference for the overall chronology."
+    }
+  ],
+  "route_groups": {
+    "first_front_army": {
+      "label": "Central Red Army / First Front Army related routes",
+      "range_start": "1934-10-01",
+      "range_end": "1935-10-31",
+      "precision": "month",
+      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+    },
+    "second_front_army": {
+      "label": "Second Front Army related routes",
+      "range_start": "1935-11-01",
+      "range_end": "1936-10-31",
+      "precision": "month",
+      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+    },
+    "fourth_front_army": {
+      "label": "Fourth Front Army related routes",
+      "range_start": "1935-03-01",
+      "range_end": "1936-10-31",
+      "precision": "month",
+      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+    },
+    "twenty_fifth_army": {
+      "label": "25th Red Army route",
+      "range_start": "1934-11-01",
+      "range_end": "1935-09-30",
+      "precision": "month",
+      "source_ids": ["wiki_zh_long_march", "wiki_en_long_march"]
+    },
+    "related_detachment": {
+      "label": "Other related Long March route layer",
+      "range_start": "1934-10-01",
+      "range_end": "1936-10-31",
+      "precision": "month",
+      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+    }
+  },
+  "route_key_groups": {
+    "route_zhongyang_zongdui": "first_front_army",
+    "route_hongyi_juntuan": "first_front_army",
+    "route_hongsan_juntuan": "first_front_army",
+    "route_hongwu_juntuan": "first_front_army",
+    "route_hongjiu_juntuan": "first_front_army",
+    "route_hongqi_juntuan": "related_detachment",
+    "route_hongshiba_shi": "related_detachment",
+    "route_honger_juntuan": "second_front_army",
+    "route_hongliu_juntuan": "second_front_army",
+    "route_hongsi_juntuan": "fourth_front_army",
+    "route_hongsanshi_jun": "fourth_front_army",
+    "route_hongershiwu_jun": "twenty_fifth_army"
+  }
+}
