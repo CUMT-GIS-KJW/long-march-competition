@@ -104,6 +104,15 @@ CORRECT_ROUTE_SPECS = [
         "default_corps_name": "\u7ea2\u4e5d\u519b\u56e2",
         "default_stage_name": "\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf",
     },
+    {
+        "route_key": "route_honger_juntuan",
+        "prefix": "\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf\u56fe_01-10.shp",
+        "default_corps_name": "\u7ea2\u4e8c\u519b\u56e2",
+        "default_stage_name": "\u7ea2\u4e8c\u519b\u56e2\u8def\u7ebf",
+        "order_overrides": {8: 7, 9: 7},
+        "branch_groups": {7: {7: "left", 8: "right", 9: "right"}},
+    },
 ]
 
 
@@ -495,12 +504,39 @@ def order_route_entries(entries, previous_anchor, next_anchor):
     return ordered
 
 
-def make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name):
+
+def has_branch_entries(entries):
+    return any(entry["props"].get("_branch_id") for entry in entries)
+
+
+def order_branch_entries(entries, previous_anchor):
+    branches = {}
+
+    for entry in entries:
+        branch_id = entry["props"].get("_branch_id") or "main"
+        branches.setdefault(branch_id, []).append(entry)
+
+    ordered = []
+
+    for branch_id in sorted(branches):
+        branch_entries = branches[branch_id]
+        ordered.extend(order_route_entries(branch_entries, previous_anchor, None))
+
+    return ordered
+
+def make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name, branch_groups=None):
     features = []
     fields = []
     groups = []
+    branch_groups = branch_groups or {}
 
-    for file_order, shp_name, dbf_data, geometries in shp_items:
+    for item in shp_items:
+        if len(item) == 5:
+            file_order, shp_name, dbf_data, geometries, file_number = item
+        else:
+            file_order, shp_name, dbf_data, geometries = item
+            file_number = file_order
+
         group = []
 
         for field in dbf_data["fields"]:
@@ -516,7 +552,12 @@ def make_ordered_route_feature_collection(shp_items, default_corps_name, default
             props = dict(properties)
             props["_source_order"] = props.get("_order")
             props["_source_file_order"] = file_order
+            props["_source_file_number"] = file_number
             props["_source_file"] = shp_name
+            branch_group = branch_groups.get(file_order, {})
+            if file_number in branch_group:
+                props["_branch_group"] = file_order
+                props["_branch_id"] = branch_group[file_number]
             props["_source_index"] = source_index + 1
             props["corps_name"] = props.get("corps_name") or default_corps_name
             props["stage_name"] = props.get("stage_name") or props.get("KML_FOLDER") or default_stage_name
@@ -544,7 +585,10 @@ def make_ordered_route_feature_collection(shp_items, default_corps_name, default
                     }
                 )
 
-        groups.append({"file_order": file_order, "entries": group})
+        if groups and groups[-1]["file_order"] == file_order:
+            groups[-1]["entries"].extend(group)
+        else:
+            groups.append({"file_order": file_order, "entries": group})
 
     previous_anchor = None
 
@@ -556,7 +600,7 @@ def make_ordered_route_feature_collection(shp_items, default_corps_name, default
                 next_anchor = next_group["entries"][0]["line"][0]
                 break
 
-        ordered_entries = order_route_entries(group["entries"], previous_anchor, next_anchor)
+        ordered_entries = order_branch_entries(group["entries"], previous_anchor) if has_branch_entries(group["entries"]) else order_route_entries(group["entries"], previous_anchor, next_anchor)
 
         for play_index, entry in enumerate(ordered_entries, start=1):
             part_props = dict(entry["props"])
@@ -744,6 +788,8 @@ def generate_correct_routes_only():
             spec["default_corps_name"],
             spec["default_stage_name"],
             "Correct route Shapefile source files not found: {}".format(spec["prefix"]),
+            spec.get("order_overrides"),
+            spec.get("branch_groups"),
         )
         write_single_route(spec["route_key"], spec["source_file"], correct_route)
 
@@ -857,7 +903,7 @@ def route_file_order(name):
         return 999999
 
 
-def read_ordered_correct_route(directory, prefix, default_corps_name, default_stage_name, error_message):
+def read_ordered_correct_route(directory, prefix, default_corps_name, default_stage_name, error_message, order_overrides=None, branch_groups=None):
     if not directory:
         raise FileNotFoundError(error_message)
 
@@ -872,15 +918,18 @@ def read_ordered_correct_route(directory, prefix, default_corps_name, default_st
         raise FileNotFoundError(error_message)
 
     shp_items = []
+    order_overrides = order_overrides or {}
 
     for shp_name in shp_names:
         shp_path = os.path.join(directory, shp_name)
         dbf_path = os.path.splitext(shp_path)[0] + ".dbf"
         dbf_data = read_dbf(dbf_path)
         shp_data = read_shp(shp_path)
-        shp_items.append((route_file_order(shp_name), shp_name, dbf_data, shp_data["geometries"]))
+        file_number = route_file_order(shp_name)
+        file_order = order_overrides.get(file_number, file_number)
+        shp_items.append((file_order, shp_name, dbf_data, shp_data["geometries"], file_number))
 
-    return make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name)
+    return make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name, branch_groups)
 
 
 def load_existing_route_configs():
@@ -935,4 +984,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

@@ -53,6 +53,7 @@
     routeNearbyEventIds: {},
     routePlayback: null,
     routeHeadMarker: null,
+    routeBranchHeadMarkers: new Map(),
     poetryPoints: [],
     poetryLayer: null,
     poetryVisible: false,
@@ -513,7 +514,7 @@
     cancelRouteFrame();
     state.isPlayingRoute = false;
     state.routePlayback = null;
-    state.routeHeadMarker = null;
+    clearRouteHeadMarkers();
     state.activeRouteKey = "";
     if (clearLayer) state.animatedRouteLayer.clearLayers();
     if (resetEvents) {
@@ -646,6 +647,23 @@
     const orderedParts = [];
     let anchor = null;
     groups.forEach(group => {
+      if (group.parts.some(part => part.feature.properties?._branch_group)) {
+        const branchParts = group.parts
+          .map(part => ({ ...part, points: [...part.points] }))
+          .sort((a, b) => {
+            const branchGap = String(a.feature.properties?._branch_id || "").localeCompare(
+              String(b.feature.properties?._branch_id || ""),
+            );
+            if (branchGap !== 0) return branchGap;
+            return Number(a.feature.properties?._play_part_index || a.partIndex) -
+              Number(b.feature.properties?._play_part_index || b.partIndex);
+          });
+        orderedParts.push(...branchParts);
+        const mergePart = branchParts.find(part => part.feature.properties?._branch_id === "left") || branchParts[0];
+        anchor = mergePart?.points?.[mergePart.points.length - 1] || anchor;
+        return;
+      }
+
       const remaining = group.parts.map(part => ({ ...part, points: [...part.points] }));
       while (remaining.length) {
         let bestIndex = 0;
@@ -673,16 +691,169 @@
     return orderedParts;
   }
 
+  function routeLineDistance(points) {
+    return points.slice(1).reduce((sum, point, index) => {
+      return sum + L.latLng(points[index]).distanceTo(L.latLng(point));
+    }, 0);
+  }
+
+  function sliceRouteLine(points, distance) {
+    if (!points.length || distance <= 0) return points.length ? [points[0]] : [];
+    const slice = [points[0]];
+    let walked = 0;
+
+    for (let index = 1; index < points.length; index += 1) {
+      const start = points[index - 1];
+      const end = points[index];
+      const segmentDistance = L.latLng(start).distanceTo(L.latLng(end));
+      if (walked + segmentDistance <= distance) {
+        slice.push(end);
+        walked += segmentDistance;
+        continue;
+      }
+
+      const ratio = segmentDistance ? (distance - walked) / segmentDistance : 0;
+      slice.push([
+        start[0] + (end[0] - start[0]) * ratio,
+        start[1] + (end[1] - start[1]) * ratio,
+      ]);
+      break;
+    }
+
+    return slice;
+  }
+
+  function renderRouteUnitParts(parts, distance) {
+    const rendered = [];
+    let remaining = distance;
+
+    for (const part of parts) {
+      if (remaining <= 0) {
+        const start = part.points[0];
+        if (start) rendered.push([start]);
+        break;
+      }
+
+      const slice = sliceRouteLine(part.points, remaining);
+      if (slice.length) rendered.push(slice);
+      remaining -= part.distance;
+      if (remaining < 0) break;
+    }
+
+    return rendered;
+  }
+
+  function routeUnitHeadPoint(parts, distance) {
+    let remaining = distance;
+    let fallback = parts[0]?.points?.[0];
+
+    for (const part of parts) {
+      fallback = part.points[part.points.length - 1] || fallback;
+      if (remaining <= part.distance) {
+        return sliceRouteLine(part.points, remaining).at(-1) || fallback;
+      }
+      remaining -= part.distance;
+    }
+
+    return fallback;
+  }
+
+  function routeUnitAtDistance(routeData, distance) {
+    return routeData.units?.find(item => distance >= item.startDistance && distance <= item.endDistance) ||
+      routeData.units?.[routeData.units.length - 1];
+  }
+
+  function routeBranchHeadPoints(routeData, distance) {
+    const unit = routeUnitAtDistance(routeData, distance);
+    if (unit?.type !== "branch") return null;
+    const unitDistance = Math.max(0, Math.min(unit.length, distance - unit.startDistance));
+
+    return unit.branches
+      .map(branch => ({
+        branchId: branch.branchId,
+        point: routeUnitHeadPoint(branch.parts, Math.min(unitDistance, branch.length)),
+      }))
+      .filter(item => item.point);
+  }
+
   function buildRoutePoints(collection) {
     const orderedRouteParts = buildOrderedRouteParts(collection);
     const points = [];
     const cumulativeDistances = [];
     const segments = [];
     const parts = [];
+    const units = [];
     let totalDistance = 0;
 
-    orderedRouteParts.forEach(routePart => {
+    for (let index = 0; index < orderedRouteParts.length; index += 1) {
+      const routePart = orderedRouteParts[index];
+      const branchGroup = routePart.feature.properties?._branch_group;
+      if (branchGroup) {
+        const branchItems = [];
+        while (
+          index < orderedRouteParts.length &&
+          orderedRouteParts[index].feature.properties?._branch_group === branchGroup
+        ) {
+          branchItems.push(orderedRouteParts[index]);
+          index += 1;
+        }
+        index -= 1;
+
+        const branches = new Map();
+        branchItems.forEach(item => {
+          const branchId = item.feature.properties?._branch_id || "main";
+          if (!branches.has(branchId)) branches.set(branchId, []);
+          branches.get(branchId).push(item);
+        });
+
+        const unit = {
+          type: "branch",
+          order: branchGroup,
+          startDistance: totalDistance,
+          length: 0,
+          branches: [],
+        };
+
+        branches.forEach((items, branchId) => {
+          const branchParts = items.map(item => {
+            const startIndex = points.length;
+            const distance = routeLineDistance(item.points);
+            item.points.forEach((pt, localIndex) => {
+              if (localIndex > 0) {
+                const previous = item.points[localIndex - 1];
+                const lastDistance = cumulativeDistances[cumulativeDistances.length - 1] || totalDistance;
+                cumulativeDistances.push(lastDistance + L.latLng(previous).distanceTo(L.latLng(pt)));
+              } else {
+                cumulativeDistances.push(totalDistance);
+              }
+              points.push(pt);
+            });
+            const part = {
+              feature: item.feature,
+              points: item.points,
+              distance,
+              startIndex,
+              endIndex: points.length - 1,
+              unit,
+              branchId,
+            };
+            parts.push(part);
+            segments.push(part);
+            return part;
+          });
+          const branchLength = branchParts.reduce((sum, part) => sum + part.distance, 0);
+          unit.length = Math.max(unit.length, branchLength);
+          unit.branches.push({ branchId, parts: branchParts, length: branchLength });
+        });
+
+        unit.endDistance = unit.startDistance + unit.length;
+        units.push(unit);
+        totalDistance = unit.endDistance;
+        continue;
+      }
+
       const startIndex = points.length;
+      const distance = routeLineDistance(routePart.points);
       routePart.points.forEach((pt, localIndex) => {
         if (localIndex > 0) {
           totalDistance += L.latLng(routePart.points[localIndex - 1]).distanceTo(L.latLng(pt));
@@ -693,21 +864,89 @@
       const part = {
         feature: routePart.feature,
         points: routePart.points,
+        distance,
         startIndex,
         endIndex: points.length - 1,
       };
       parts.push(part);
       segments.push(part);
-    });
+      units.push({
+        type: "line",
+        part,
+        startDistance: cumulativeDistances[startIndex] || 0,
+        endDistance: totalDistance,
+        length: distance,
+      });
+    }
 
-    return { points, cumulativeDistances, totalDistance, segments, parts };
+    return { points, cumulativeDistances, totalDistance, segments, parts, units };
   }
 
   function findSegmentByPointIndex(segments, index) {
     return segments.find(s => index >= s.startIndex && index <= s.endIndex) || segments[0];
   }
 
+  function getRenderedRoutePartsByDistance(routeData, distance) {
+    if (!routeData.units?.length) return [];
+    const rendered = [];
+
+    routeData.units.forEach(unit => {
+      if (distance < unit.startDistance) return;
+      const unitDistance = Math.min(distance - unit.startDistance, unit.length);
+
+      if (unit.type === "branch") {
+        unit.branches.forEach(branch => {
+          rendered.push(...renderRouteUnitParts(branch.parts, unitDistance));
+        });
+        return;
+      }
+
+      const slice = sliceRouteLine(unit.part.points, unitDistance);
+      if (slice.length) rendered.push(slice);
+    });
+
+    return rendered;
+  }
+
+  function getRouteHeadPointByDistance(routeData, distance) {
+    const unit = routeData.units?.find(item => distance >= item.startDistance && distance <= item.endDistance) ||
+      routeData.units?.[routeData.units.length - 1];
+    if (!unit) return routeData.points[0];
+    const unitDistance = Math.max(0, Math.min(unit.length, distance - unit.startDistance));
+
+    if (unit.type === "branch") {
+      const branch = unit.branches.reduce((longest, item) => {
+        return item.length > (longest?.length || 0) ? item : longest;
+      }, null);
+      return routeUnitHeadPoint(branch?.parts || [], unitDistance);
+    }
+
+    return sliceRouteLine(unit.part.points, unitDistance).at(-1);
+  }
+
+  function findSegmentByDistance(routeData, distance) {
+    const unit = routeData.units?.find(item => distance >= item.startDistance && distance <= item.endDistance);
+    if (!unit) return routeData.segments[0];
+    const unitDistance = Math.max(0, distance - unit.startDistance);
+
+    if (unit.type === "branch") {
+      const branch = unit.branches[0];
+      let walked = 0;
+      return branch?.parts.find(part => {
+        walked += part.distance;
+        return unitDistance <= walked;
+      }) || branch?.parts?.[0] || routeData.segments[0];
+    }
+
+    return unit.part;
+  }
+
   function getRenderedRouteParts(routeData, index) {
+    if (routeData.units?.length) {
+      const distance = routeData.totalDistance * Math.max(0, Math.min(1, routeData.currentProgress || 0));
+      return getRenderedRoutePartsByDistance(routeData, distance);
+    }
+
     const rendered = [];
     routeData.parts.forEach(part => {
       if (index < part.startIndex) return;
@@ -749,8 +988,76 @@
     popupAnchor: [0, -27],
   });
 
+  function clearRouteHeadMarkers() {
+    if (!state.animatedRouteLayer) {
+      state.routeHeadMarker = null;
+      state.routeBranchHeadMarkers.clear();
+      return;
+    }
+    if (state.routeHeadMarker) {
+      state.animatedRouteLayer.removeLayer(state.routeHeadMarker);
+      state.routeHeadMarker = null;
+    }
+    state.routeBranchHeadMarkers.forEach(marker => {
+      state.animatedRouteLayer.removeLayer(marker);
+    });
+    state.routeBranchHeadMarkers.clear();
+  }
+
+  function clearRouteBranchHeadMarkers() {
+    if (!state.animatedRouteLayer) {
+      state.routeBranchHeadMarkers.clear();
+      return;
+    }
+    state.routeBranchHeadMarkers.forEach(marker => {
+      state.animatedRouteLayer.removeLayer(marker);
+    });
+    state.routeBranchHeadMarkers.clear();
+  }
+
+  function updateRouteBranchHeads(branchHeads) {
+    if (state.routeHeadMarker) {
+      state.animatedRouteLayer.removeLayer(state.routeHeadMarker);
+      state.routeHeadMarker = null;
+    }
+
+    const activeBranchIds = new Set(branchHeads.map(item => item.branchId));
+    state.routeBranchHeadMarkers.forEach((marker, branchId) => {
+      if (!activeBranchIds.has(branchId)) {
+        state.animatedRouteLayer.removeLayer(marker);
+        state.routeBranchHeadMarkers.delete(branchId);
+      }
+    });
+
+    branchHeads.forEach(({ branchId, point }) => {
+      let marker = state.routeBranchHeadMarkers.get(branchId);
+      if (!marker) {
+        marker = L.marker(point, {
+          icon: cpcPartyFlagIcon,
+          zIndexOffset: 720,
+          interactive: false,
+        }).addTo(state.animatedRouteLayer);
+        state.routeBranchHeadMarkers.set(branchId, marker);
+        return;
+      }
+      marker.setLatLng(point);
+    });
+  }
+
   function updateRouteHead(playback, index) {
-    const point = playback.routeData.points[index];
+    const distance = playback.routeData.totalDistance * Math.max(0, Math.min(1, playback.progress || 0));
+    const branchHeads = playback.routeData.units?.length
+      ? routeBranchHeadPoints(playback.routeData, distance)
+      : null;
+    if (branchHeads?.length) {
+      updateRouteBranchHeads(branchHeads);
+      return;
+    }
+
+    clearRouteBranchHeadMarkers();
+    const point = playback.routeData.units?.length
+      ? getRouteHeadPointByDistance(playback.routeData, distance)
+      : playback.routeData.points[index];
     if (!point) return;
     if (!state.routeHeadMarker) {
       state.routeHeadMarker = L.marker(point, {
@@ -765,6 +1072,7 @@
 
   function renderRoutePlaybackFrame(playback, updateRange = true) {
     const routeData = playback.routeData;
+    routeData.currentProgress = playback.progress;
     const index = findPointIndexByProgress(routeData, playback.progress);
     const rendered = getRenderedRouteParts(routeData, index);
     playback.glow.setLatLngs(rendered);
@@ -772,7 +1080,10 @@
     updateRouteHead(playback, index);
     updateRoutePlaybackEvents(index);
 
-    const segment = findSegmentByPointIndex(routeData.segments, index);
+    const distance = routeData.totalDistance * Math.max(0, Math.min(1, playback.progress || 0));
+    const segment = routeData.units?.length
+      ? findSegmentByDistance(routeData, distance)
+      : findSegmentByPointIndex(routeData.segments, index);
     const segmentKey = `${segment?.startIndex ?? 0}-${segment?.feature.properties?._order ?? ""}`;
     if (segment && playback.lastSegmentKey !== segmentKey) {
       playback.lastSegmentKey = segmentKey;
