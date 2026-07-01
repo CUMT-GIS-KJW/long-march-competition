@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "source": "C:/Users/Kou Jiawei/Desktop/路线数据/路线数据/*.dbf",
+  "date_fields": ["start_date", "end_date"],
+  "routes": {
+    "route_zhongyang_zongdui": {
+      "source_file": "中央纵队路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-10-10", "end_date": "1934-12-05" },
+        { "order": 2, "start_date": "1934-12-06", "end_date": "1935-02-10" },
+        { "order": 3, "start_date": "1935-02-11", "end_date": "1935-03-30" },
+        { "order": 4, "start_date": "1935-03-31", "end_date": "1935-05-09" },
+        { "order": 5, "start_date": "1935-05-10", "end_date": "1935-06-01" },
+        { "order": 6, "start_date": "1935-06-02", "end_date": "1935-06-18" }
+      ]
+    },
+    "route_hongyi_juntuan": {
+      "source_file": "红一军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-10-10", "end_date": "1934-11-06" },
+        { "order": 2, "start_date": "1934-11-06", "end_date": "1935-01-01" },
+        { "order": 3, "start_date": "1935-01-02", "end_date": "1935-02-01" },
+        { "order": 3, "start_date": "1935-01-28", "end_date": "1935-01-28" },
+        { "order": 4, "start_date": "1935-02-01", "end_date": "1935-03-30" },
+        { "order": 5, "start_date": "1935-03-30", "end_date": "1935-05-29" },
+        { "order": 6, "start_date": "1935-05-20", "end_date": "1935-05-24" },
+        { "order": 6, "start_date": "1935-05-25", "end_date": "1935-05-31" },
+        { "order": 6, "start_date": "1935-05-25", "end_date": "1935-06-01" },
+        { "order": 6, "start_date": "1935-05-29", "end_date": "1935-06-03" },
+        { "order": 7, "start_date": "1935-05-29", "end_date": "1935-06-18" },
+        { "order": 8, "start_date": "1935-06-18", "end_date": "1935-10-19" }
+      ]
+    },
+    "route_hongqi_juntuan": {
+      "source_file": "红七军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-07-07", "end_date": "1934-10-20" }
+      ]
+    },
+    "route_hongsan_juntuan": {
+      "source_file": "红三军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-10-16", "end_date": "1935-01-28" },
+        { "order": 2, "start_date": "1935-01-29", "end_date": "1935-04-10" },
+        { "order": 3, "start_date": "1935-04-11", "end_date": "1935-05-09" },
+        { "order": 4, "start_date": "1935-05-10", "end_date": "1935-06-12" },
+        { "order": 5, "start_date": "1935-06-13", "end_date": "1935-06-18" }
+      ]
+    },
+    "route_hongsanshi_jun": {
+      "source_file": "红三十军路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1935-03-28", "end_date": "1935-06-12" }
+      ]
+    },
+    "route_hongjiu_juntuan": {
+      "source_file": "红九军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-09-30", "end_date": "1934-12-28" },
+        { "order": 2, "start_date": "1935-01-01", "end_date": "1935-03-22" },
+        { "order": 3, "start_date": "1935-03-22", "end_date": "1935-05-21" },
+        { "order": 4, "start_date": "1935-05-21", "end_date": "1935-06-15" }
+      ]
+    },
+    "route_honger_juntuan": {
+      "source_file": "红二军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1935-11-19", "end_date": "1936-03-20" },
+        { "order": 2, "start_date": "1936-03-20", "end_date": "1936-07-02" },
+        { "order": 3, "start_date": "1936-07-02", "end_date": "1936-08-25" },
+        { "order": 4, "start_date": "1936-09-01", "end_date": "1936-09-17" },
+        { "order": 4, "start_date": "1936-09-01", "end_date": "1936-09-16" },
+        { "order": 5, "start_date": "1936-09-17", "end_date": "1936-10-22" }
+      ]
+    },
+    "route_hongershiwu_jun": {
+      "source_file": "红二十五军路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-11-16", "end_date": "1935-03-01" },
+        { "order": 2, "start_date": "1935-07-15", "end_date": "1935-09-16" }
+      ]
+    },
+    "route_hongwu_juntuan": {
+      "source_file": "红五军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1934-10-16", "end_date": "1934-11-15" },
+        { "order": 2, "start_date": "1934-11-15", "end_date": "1934-11-27" },
+        { "order": 3, "start_date": "1934-11-27", "end_date": "1934-12-28" },
+        { "order": 4, "start_date": "1934-12-28", "end_date": "1935-01-29" },
+        { "order": 5, "start_date": "1935-01-29", "end_date": "1935-04-01" },
+        { "order": 6, "start_date": "1935-04-01", "end_date": "1935-04-23" },
+        { "order": 7, "start_date": "1935-04-23", "end_date": "1935-05-09" },
+        { "order": 8, "start_date": "1935-05-09", "end_date": "1935-05-29" },
+        { "order": 9, "start_date": "1935-05-29", "end_date": "1935-06-18" }
+      ]
+    },
+    "route_hongliu_juntuan": {
+      "source_file": "红六军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1935-11-19", "end_date": "1936-03-20" },
+        { "order": 2, "start_date": "1936-03-20", "end_date": "1936-07-02" },
+        { "order": 3, "start_date": "1936-07-02", "end_date": "1936-08-25" },
+        { "order": 4, "start_date": "1936-09-01", "end_date": "1936-09-18" },
+        { "order": 5, "start_date": "1936-09-10", "end_date": "1936-09-19" },
+        { "order": 6, "start_date": "1936-09-17", "end_date": "1936-10-22" }
+      ]
+    },
+    "route_hongshiba_shi": {
+      "source_file": "红十八师路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1935-11-19", "end_date": "1936-01-15" }
+      ]
+    },
+    "route_hongsi_juntuan": {
+      "source_file": "红四军团路线图.dbf",
+      "segments": [
+        { "order": 1, "start_date": "1935-06-18", "end_date": "1936-10-22" }
+      ]
+    }
+  }
+}

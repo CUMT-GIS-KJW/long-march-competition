@@ -29,6 +29,7 @@
 
   const state = {
     map: null,
+    contextDataLayer: null,
     routeConfigs: [],
     routeLayers: {},
     eventFeatures: [],
@@ -51,9 +52,12 @@
     routePlaybackEventIndexes: new Map(),
     routePlaybackStartTime: 0,
     routeNearbyEventIds: {},
+    routeSegmentTimes: null,
     routePlayback: null,
+    allRoutePlayback: null,
     routeHeadMarker: null,
     routeBranchHeadMarkers: new Map(),
+    isPlayingAllRoutes: false,
     poetryPoints: [],
     poetryLayer: null,
     poetryVisible: false,
@@ -283,6 +287,50 @@
     state.animatedRouteLayer = L.layerGroup().addTo(state.map);
   }
 
+  function contextDataStyle(feature) {
+    const kind = feature.properties?.kind;
+
+    if (kind === "river") {
+      return {
+        color: "#1e88e5",
+        weight: 3,
+        opacity: 0.88,
+        lineCap: "round",
+        lineJoin: "round",
+      };
+    }
+
+    return {
+      color: "#8f1d14",
+      weight: 1.4,
+      opacity: 0.76,
+      fillColor: "#c66a3d",
+      fillOpacity: 0.18,
+    };
+  }
+
+  async function loadHomeContextData() {
+    try {
+      const collection = await DataService.getHomeContextData();
+      if (state.contextDataLayer) state.map.removeLayer(state.contextDataLayer);
+
+      state.contextDataLayer = L.geoJSON(collection, {
+        style: contextDataStyle,
+        onEachFeature: (feature, layer) => {
+          const props = feature.properties || {};
+          const name = props.kind === "base"
+            ? props.NAME || props.Name || props.name || props.layer_name
+            : props.layer_name || props.Name || props.NAME || props.name;
+          if (name) layer.bindTooltip(name, { sticky: true });
+        },
+      }).addTo(state.map);
+
+      state.contextDataLayer.bringToBack();
+    } catch (error) {
+      console.warn("home context data load failed", error);
+    }
+  }
+
   function toLatLngs(geometry) {
     if (!geometry) return [];
     if (geometry.type === "LineString") return geometry.coordinates.map(c => [c[1], c[0]]);
@@ -500,6 +548,11 @@
     if (button) button.textContent = text;
   }
 
+  function setAllRoutePlayButtonLabel(text) {
+    const button = $("#playAllRoutesBtn");
+    if (button) button.textContent = text;
+  }
+
   function getRouteSpeed() {
     const value = Number($("#routeSpeedSelect")?.value || 1);
     return Number.isFinite(value) && value > 0 ? value : 1;
@@ -516,7 +569,9 @@
     const { clearLayer = true, resetEvents = true } = options;
     cancelRouteFrame();
     state.isPlayingRoute = false;
+    state.isPlayingAllRoutes = false;
     state.routePlayback = null;
+    state.allRoutePlayback = null;
     clearRouteHeadMarkers();
     state.activeRouteKey = "";
     if (clearLayer) state.animatedRouteLayer.clearLayers();
@@ -527,6 +582,7 @@
       renderEventMarkers();
     }
     setRoutePlayButtonLabel("播放路线");
+    setAllRoutePlayButtonLabel("播放全部路线");
   }
 
   function stopAnimation(options = {}) {
@@ -557,11 +613,15 @@
   function pauseAnimation() {
     state.isPlayingEvents = false;
     state.isPlayingRoute = false;
+    state.isPlayingAllRoutes = false;
     clearInterval(state.eventTimer);
     clearInterval(state.routeTimer);
     cancelRouteFrame();
     if (state.routePlayback && state.routePlayback.progress < 1) {
       setRoutePlayButtonLabel("继续路线");
+    }
+    if (isAllRouteTimelineIncomplete(state.allRoutePlayback)) {
+      setAllRoutePlayButtonLabel("继续全部");
     }
   }
 
@@ -1047,6 +1107,20 @@
     });
   }
 
+  function updateSingleRouteHeadPoint(point) {
+    if (!point) return;
+    clearRouteBranchHeadMarkers();
+    if (!state.routeHeadMarker) {
+      state.routeHeadMarker = L.marker(point, {
+        icon: cpcPartyFlagIcon,
+        zIndexOffset: 720,
+        interactive: false,
+      }).addTo(state.animatedRouteLayer);
+      return;
+    }
+    state.routeHeadMarker.setLatLng(point);
+  }
+
   function updateRouteHead(playback, index) {
     const distance = playback.routeData.totalDistance * Math.max(0, Math.min(1, playback.progress || 0));
     const branchHeads = playback.routeData.units?.length
@@ -1061,16 +1135,7 @@
     const point = playback.routeData.units?.length
       ? getRouteHeadPointByDistance(playback.routeData, distance)
       : playback.routeData.points[index];
-    if (!point) return;
-    if (!state.routeHeadMarker) {
-      state.routeHeadMarker = L.marker(point, {
-        icon: cpcPartyFlagIcon,
-        zIndexOffset: 720,
-        interactive: false,
-      }).addTo(state.animatedRouteLayer);
-      return;
-    }
-    state.routeHeadMarker.setLatLng(point);
+    updateSingleRouteHeadPoint(point);
   }
 
   function renderRoutePlaybackFrame(playback, updateRange = true) {
@@ -1221,6 +1286,503 @@
     state.routePlayback = playback;
     renderRoutePlaybackFrame(playback);
     startRoutePlayback(playback);
+  }
+
+  async function loadRouteSegmentTimes() {
+    if (state.routeSegmentTimes) return state.routeSegmentTimes;
+    try {
+      state.routeSegmentTimes = await DataService.getRouteSegmentTimes();
+    } catch (error) {
+      console.warn("route segment times load failed", error);
+      state.routeSegmentTimes = { routes: {} };
+    }
+    return state.routeSegmentTimes;
+  }
+
+  function getRouteTimeSegments(layerKey) {
+    return state.routeSegmentTimes?.routes?.[layerKey]?.segments || [];
+  }
+
+  function getPartTimeRange(layerKey, part) {
+    const props = part?.feature?.properties || {};
+    const order = getRouteFeatureOrder(part.feature);
+    let startDate = props.start_date || "";
+    let endDate = props.end_date || props.start_date || "";
+
+    if (!startDate) {
+      const candidates = getRouteTimeSegments(layerKey).filter(item => Number(item.order) === order);
+      const partIndex = Math.max(0, Number(props._play_part_index || 1) - 1);
+      const fallback = candidates[Math.min(partIndex, candidates.length - 1)] || candidates[0];
+      startDate = fallback?.start_date || "";
+      endDate = fallback?.end_date || fallback?.start_date || "";
+    }
+
+    return {
+      startDate,
+      endDate: endDate || startDate,
+      startTime: parseDateTime(startDate),
+      endTime: parseDateTime(endDate || startDate),
+    };
+  }
+
+  function getRoutePlaybackTimeRange(layerKey, routeData) {
+    const ranges = (routeData.parts || [])
+      .map(part => getPartTimeRange(layerKey, part))
+      .filter(range => range.startTime || range.endTime);
+
+    if (!ranges.length) {
+      getRouteTimeSegments(layerKey).forEach(item => {
+        const startDate = item.start_date || "";
+        const endDate = item.end_date || item.start_date || "";
+        const startTime = parseDateTime(startDate);
+        const endTime = parseDateTime(endDate || startDate);
+        if (startTime || endTime) ranges.push({ startDate, endDate, startTime, endTime });
+      });
+    }
+
+    if (!ranges.length) return { startDate: "", endDate: "", startTime: 0, endTime: 0 };
+
+    const first = ranges.reduce((best, item) => {
+      const itemTime = item.startTime || item.endTime || Number.MAX_SAFE_INTEGER;
+      const bestTime = best.startTime || best.endTime || Number.MAX_SAFE_INTEGER;
+      return itemTime < bestTime ? item : best;
+    }, ranges[0]);
+    const last = ranges.reduce((best, item) => {
+      const itemTime = item.endTime || item.startTime || 0;
+      const bestTime = best.endTime || best.startTime || 0;
+      return itemTime > bestTime ? item : best;
+    }, ranges[0]);
+
+    return {
+      startDate: first.startDate || first.endDate || "",
+      endDate: last.endDate || last.startDate || "",
+      startTime: first.startTime || first.endTime || 0,
+      endTime: last.endTime || last.startTime || 0,
+    };
+  }
+
+  function updateAllRoutePlaybackEvents(currentTime) {
+    if (!state.routePlaybackEventIds.size) return;
+    state.routePlaybackEventIds = new Set();
+    renderEventMarkers();
+  }
+
+  async function buildAllRoutePlaybackItems() {
+    await loadRouteSegmentTimes();
+    const routeItems = await Promise.all(state.routeConfigs.map(async config => {
+      const collection = await DataService.getRouteLayerAnimation(config.layer_key);
+      const routeData = buildRoutePoints(collection);
+      return { config, routeData };
+    }));
+
+    const items = [];
+    routeItems.forEach(({ config, routeData }) => {
+      if (routeData.points.length < 2 || !routeData.parts.length) return;
+      const timeRange = getRoutePlaybackTimeRange(config.layer_key, routeData);
+      const sortTime = timeRange.startTime || timeRange.endTime || Number.MAX_SAFE_INTEGER;
+      items.push({
+        layerKey: config.layer_key,
+        config,
+        routeData,
+        durationMs: getRouteDurationMs(routeData),
+        startDate: timeRange.startDate,
+        endDate: timeRange.endDate,
+        startTime: timeRange.startTime,
+        endTime: timeRange.endTime || timeRange.startTime,
+        sortTime,
+      });
+    });
+
+    return items.sort((a, b) => {
+      const timeGap = a.sortTime - b.sortTime;
+      if (timeGap !== 0) return timeGap;
+      const endGap = (a.endTime || 0) - (b.endTime || 0);
+      if (endGap !== 0) return endGap;
+      const routeGap = Number(a.config.display_order || 0) - Number(b.config.display_order || 0);
+      if (routeGap !== 0) return routeGap;
+      return String(a.layerKey).localeCompare(String(b.layerKey));
+    });
+  }
+
+  function getAllRouteCurrentTime(playback) {
+    const item = playback.currentItem;
+    if (!item) return 0;
+    if (!item.startTime && !item.endTime) return 0;
+    if (!item.startTime || !item.endTime || item.startTime === item.endTime) {
+      return item.endTime || item.startTime;
+    }
+    return item.startTime + (item.endTime - item.startTime) * Math.max(0, Math.min(1, playback.currentProgress || 0));
+  }
+
+  function setAllRouteProgressValue(playback) {
+    const currentElapsed = (playback.currentItem?.durationMs || 0) * (playback.currentProgress || 0);
+    const totalElapsed = playback.completedDurationMs + currentElapsed;
+    const percent = playback.totalDurationMs ? (totalElapsed / playback.totalDurationMs) * 100 : 0;
+    setProgressValue(percent);
+  }
+
+  function renderAllRoutePlaybackFrame(playback) {
+    const item = playback.currentItem;
+    if (!item) return;
+    const progress = Math.max(0, Math.min(1, playback.currentProgress || 0));
+    const routeData = item.routeData;
+    routeData.currentProgress = progress;
+    const index = findPointIndexByProgress(routeData, progress);
+    const rendered = getRenderedRouteParts(routeData, index);
+
+    item.glow.setLatLngs(rendered);
+    item.line.setLatLngs(rendered);
+    updateRouteHead({ routeData, progress }, index);
+
+    const currentTime = getAllRouteCurrentTime(playback);
+    const eventTimeBucket = currentTime ? Math.floor(currentTime / 86400000) : 0;
+    if (eventTimeBucket !== playback.lastEventTimeBucket) {
+      playback.lastEventTimeBucket = eventTimeBucket;
+      updateAllRoutePlaybackEvents(currentTime);
+    }
+
+    const progressPercent = Math.round(progress * 100);
+    const dateText = item.startDate && item.endDate
+      ? `${item.startDate} — ${item.endDate}`
+      : "时间待补充";
+    $("#playStatusTitle").textContent =
+      `全部路线 ${playback.index + 1}/${playback.items.length} · ${item.config.layer_name} · ${dateText} · ${progressPercent}%`;
+    setAllRouteProgressValue(playback);
+  }
+
+  function startAllRouteItem(index) {
+    const playback = state.allRoutePlayback;
+    if (!playback) return false;
+    if (index >= playback.items.length) return false;
+
+    const item = playback.items[index];
+    playback.index = index;
+    playback.currentItem = item;
+    playback.currentProgress = item.progress || 0;
+    playback.lastEventTimeBucket = 0;
+
+    item.glow = L.polyline([], {
+      color: "#ffd36b",
+      weight: 10,
+      opacity: 0.24,
+      interactive: false,
+    }).addTo(state.animatedRouteLayer);
+    item.line = L.polyline([], {
+      color: item.config.color || "#b42318",
+      weight: Number(item.config.line_width || 4) + 2,
+      opacity: 0.98,
+      className: "animated-route",
+      interactive: false,
+    }).addTo(state.animatedRouteLayer);
+
+    state.activeRouteKey = item.layerKey;
+    state.routePlaybackMode = true;
+    renderRouteDetail(item.routeData.segments[0]?.feature, item.config);
+    renderAllRoutePlaybackFrame(playback);
+    return true;
+  }
+
+  function finishAllRoutePlayback() {
+    const playback = state.allRoutePlayback;
+    cancelRouteFrame();
+    state.isPlayingAllRoutes = false;
+    if (playback) {
+      playback.index = playback.items.length;
+      playback.currentProgress = 1;
+    }
+    $("#playStatusTitle").textContent = "全部路线 · 播放完成";
+    setProgressValue(100);
+    setAllRoutePlayButtonLabel("重播全部路线");
+  }
+
+  function animateAllRouteFrame(now) {
+    const playback = state.allRoutePlayback;
+    if (!state.isPlayingAllRoutes || !playback?.currentItem) return;
+
+    const lastFrameTime = playback.lastFrameTime || now;
+    const elapsed = now - lastFrameTime;
+    playback.lastFrameTime = now;
+    playback.currentProgress = Math.min(
+      1,
+      playback.currentProgress + (elapsed * getRouteSpeed()) / playback.currentItem.durationMs,
+    );
+    playback.currentItem.progress = playback.currentProgress;
+
+    renderAllRoutePlaybackFrame(playback);
+    if (playback.currentProgress >= 1) {
+      playback.completedDurationMs += playback.currentItem.durationMs;
+      playback.currentItem.progress = 1;
+      const nextIndex = playback.index + 1;
+      if (!startAllRouteItem(nextIndex)) {
+        finishAllRoutePlayback();
+        return;
+      }
+      playback.lastFrameTime = now;
+    }
+
+    state.routeAnimationFrame = requestAnimationFrame(animateAllRouteFrame);
+  }
+
+  function isAllRouteTimelineIncomplete(playback) {
+    return Boolean(playback && !playback.finished && (playback.timelineProgress || 0) < 1);
+  }
+
+  function formatTimelineDate(time) {
+    if (!time) return "";
+    return new Date(time).toISOString().slice(0, 10);
+  }
+
+  function getAllRouteTimelineCurrentTime(playback) {
+    return playback?.currentTime || playback?.timelineStart || 0;
+  }
+
+  function ensureAllRouteTimelineLayers(item) {
+    if (item.line && item.glow) return false;
+
+    item.glow = L.polyline([], {
+      color: "#ffd36b",
+      weight: 10,
+      opacity: 0.24,
+      interactive: false,
+    }).addTo(state.animatedRouteLayer);
+    item.line = L.polyline([], {
+      color: item.config.color || "#b42318",
+      weight: Number(item.config.line_width || 4) + 2,
+      opacity: 0.98,
+      className: "animated-route",
+      interactive: false,
+    }).addTo(state.animatedRouteLayer);
+    item.branchHeadMarkers = item.branchHeadMarkers || new Map();
+    return true;
+  }
+
+  function clearAllRouteTimelineBranchHeads(item) {
+    item.branchHeadMarkers?.forEach(marker => {
+      state.animatedRouteLayer.removeLayer(marker);
+    });
+    item.branchHeadMarkers?.clear();
+  }
+
+  function updateAllRouteTimelineBranchHeads(item, branchHeads) {
+    if (item.headMarker) {
+      state.animatedRouteLayer.removeLayer(item.headMarker);
+      item.headMarker = null;
+    }
+
+    item.branchHeadMarkers = item.branchHeadMarkers || new Map();
+    const activeBranchIds = new Set(branchHeads.map(head => head.branchId));
+    item.branchHeadMarkers.forEach((marker, branchId) => {
+      if (!activeBranchIds.has(branchId)) {
+        state.animatedRouteLayer.removeLayer(marker);
+        item.branchHeadMarkers.delete(branchId);
+      }
+    });
+
+    branchHeads.forEach(({ branchId, point }) => {
+      let marker = item.branchHeadMarkers.get(branchId);
+      if (!marker) {
+        marker = L.marker(point, {
+          icon: cpcPartyFlagIcon,
+          zIndexOffset: 720,
+          interactive: false,
+        }).addTo(state.animatedRouteLayer);
+        item.branchHeadMarkers.set(branchId, marker);
+        return;
+      }
+      marker.setLatLng(point);
+    });
+  }
+
+  function updateAllRouteTimelineHeadPoint(item, point) {
+    if (!point) return;
+    clearAllRouteTimelineBranchHeads(item);
+    if (!item.headMarker) {
+      item.headMarker = L.marker(point, {
+        icon: cpcPartyFlagIcon,
+        zIndexOffset: 720,
+        interactive: false,
+      }).addTo(state.animatedRouteLayer);
+      return;
+    }
+    item.headMarker.setLatLng(point);
+  }
+
+  function updateAllRouteTimelineHead(item, index, progress) {
+    const routeData = item.routeData;
+    const distance = routeData.totalDistance * Math.max(0, Math.min(1, progress || 0));
+    const branchHeads = routeData.units?.length ? routeBranchHeadPoints(routeData, distance) : null;
+    if (branchHeads?.length) {
+      updateAllRouteTimelineBranchHeads(item, branchHeads);
+      return;
+    }
+
+    const point = routeData.units?.length
+      ? getRouteHeadPointByDistance(routeData, distance)
+      : routeData.points[index];
+    updateAllRouteTimelineHeadPoint(item, point);
+  }
+
+  function getAllRouteTimelineItemProgress(item, currentTime) {
+    const startTime = item.startTime || item.endTime || 0;
+    const endTime = item.endTime || item.startTime || 0;
+    if (!startTime || !endTime || startTime === endTime) {
+      return currentTime >= startTime ? 1 : 0;
+    }
+    return Math.max(0, Math.min(1, (currentTime - startTime) / (endTime - startTime)));
+  }
+
+  function renderAllRouteTimelineItem(playback, item) {
+    const currentTime = getAllRouteTimelineCurrentTime(playback);
+    const startTime = item.startTime || item.endTime || 0;
+    if (!startTime || currentTime < startTime) return { started: false, active: false };
+
+    const created = ensureAllRouteTimelineLayers(item);
+    const progress = getAllRouteTimelineItemProgress(item, currentTime);
+    item.progress = progress;
+    const routeData = item.routeData;
+    routeData.currentProgress = progress;
+    const index = findPointIndexByProgress(routeData, progress);
+    const rendered = getRenderedRouteParts(routeData, index);
+    item.glow.setLatLngs(rendered);
+    item.line.setLatLngs(rendered);
+    updateAllRouteTimelineHead(item, index, progress);
+
+    if (created) {
+      state.activeRouteKey = item.layerKey;
+      renderRouteDetail(item.routeData.segments[0]?.feature, item.config);
+    }
+
+    return {
+      started: true,
+      active: progress > 0 && progress < 1,
+    };
+  }
+
+  function renderAllRouteTimelineFrame(playback) {
+    if (!playback?.items?.length) return;
+    const currentTime = getAllRouteTimelineCurrentTime(playback);
+    const started = [];
+    const active = [];
+
+    playback.items.forEach(item => {
+      const result = renderAllRouteTimelineItem(playback, item);
+      if (result.started) started.push(item);
+      if (result.active) active.push(item);
+    });
+
+    const eventTimeBucket = currentTime ? Math.floor(currentTime / 86400000) : 0;
+    if (eventTimeBucket !== playback.lastEventTimeBucket) {
+      playback.lastEventTimeBucket = eventTimeBucket;
+      updateAllRoutePlaybackEvents(currentTime);
+    }
+
+    playback.timelineProgress = playback.totalDurationMs ? (playback.elapsedMs || 0) / playback.totalDurationMs : 1;
+    setProgressValue(playback.timelineProgress * 100);
+
+    const activeNames = active.slice(0, 3).map(item => item.config.layer_name).join("、");
+    const activeText = activeNames
+      ? `${activeNames}${active.length > 3 ? `等${active.length}条` : ""}`
+      : "暂无进行中路线";
+    $("#playStatusTitle").textContent =
+      `全部路线 · ${formatTimelineDate(currentTime)} · 已启动 ${started.length}/${playback.items.length} · ${activeText}`;
+  }
+
+  function finishAllRouteTimelinePlayback() {
+    const playback = state.allRoutePlayback;
+    cancelRouteFrame();
+    state.isPlayingAllRoutes = false;
+    if (playback) {
+      playback.finished = true;
+      playback.elapsedMs = playback.totalDurationMs;
+      playback.timelineProgress = 1;
+      playback.currentTime = playback.timelineEnd;
+      renderAllRouteTimelineFrame(playback);
+    }
+    $("#playStatusTitle").textContent = "全部路线 · 播放完成";
+    setProgressValue(100);
+    setAllRoutePlayButtonLabel("重播全部路线");
+  }
+
+  function animateAllRouteTimelineFrame(now) {
+    const playback = state.allRoutePlayback;
+    if (!state.isPlayingAllRoutes || !playback) return;
+
+    const lastFrameTime = playback.lastFrameTime || now;
+    const elapsed = now - lastFrameTime;
+    playback.lastFrameTime = now;
+    playback.elapsedMs = Math.min(
+      playback.totalDurationMs,
+      (playback.elapsedMs || 0) + elapsed * getRouteSpeed(),
+    );
+    playback.timelineProgress = playback.totalDurationMs ? playback.elapsedMs / playback.totalDurationMs : 1;
+    playback.currentTime = playback.timelineStart +
+      (playback.timelineEnd - playback.timelineStart) * Math.max(0, Math.min(1, playback.timelineProgress));
+
+    renderAllRouteTimelineFrame(playback);
+    if (playback.timelineProgress >= 1) {
+      finishAllRouteTimelinePlayback();
+      return;
+    }
+
+    state.routeAnimationFrame = requestAnimationFrame(animateAllRouteTimelineFrame);
+  }
+
+  function startAllRoutePlayback(playback) {
+    cancelRouteFrame();
+    state.allRoutePlayback = playback;
+    state.isPlayingAllRoutes = true;
+    state.isPlayingRoute = false;
+    state.routePlayback = null;
+    state.routePlaybackMode = true;
+    playback.lastFrameTime = performance.now();
+    setAllRoutePlayButtonLabel("暂停全部");
+    setRoutePlayButtonLabel("播放路线");
+    state.routeAnimationFrame = requestAnimationFrame(animateAllRouteTimelineFrame);
+  }
+
+  async function playAllRoutesChronologically() {
+    const existing = state.allRoutePlayback;
+    if (isAllRouteTimelineIncomplete(existing)) {
+      if (state.isPlayingAllRoutes) pauseAnimation();
+      else startAllRoutePlayback(existing);
+      return;
+    }
+
+    stopAnimation({ clearLayer: true, resetEvents: true });
+    state.animatedRouteLayer.clearLayers();
+
+    const items = await buildAllRoutePlaybackItems();
+    if (!items.length) {
+      flash("暂无可播放的路线时间段");
+      return;
+    }
+
+    const bounds = L.latLngBounds([]);
+    items.forEach(item => item.routeData.points.forEach(point => bounds.extend(point)));
+    if (bounds.isValid()) state.map.fitBounds(bounds, { padding: [36, 36] });
+
+    const timelineStart = Math.min(...items.map(item => item.startTime || item.endTime).filter(Boolean));
+    const timelineEnd = Math.max(...items.map(item => item.endTime || item.startTime).filter(Boolean));
+    const playback = {
+      items,
+      timelineStart,
+      timelineEnd,
+      currentTime: timelineStart,
+      elapsedMs: 0,
+      totalDurationMs: Math.min(70000, Math.max(36000, items.length * 4200)),
+      timelineProgress: 0,
+      lastFrameTime: 0,
+      lastEventTimeBucket: 0,
+      finished: false,
+    };
+
+    state.allRoutePlayback = playback;
+    state.routePlaybackEventIds = new Set();
+    state.routePlaybackEventIndexes = new Map();
+    state.routePlaybackMode = true;
+    renderEventMarkers();
+    renderAllRouteTimelineFrame(playback);
+    startAllRoutePlayback(playback);
   }
 
   function setEventFilter(type) {
@@ -1654,6 +2216,7 @@ async function initApp() {
   initMap();
   initLayerGroups();
   renderDefaultDetail();
+  await loadHomeContextData();
 
   state.routeConfigs = await DataService.getRouteLayers();
   const firstKey = state.routeConfigs[0]?.layer_key || "";
@@ -1695,6 +2258,7 @@ async function initApp() {
     setEventLayerVisible,
     playEventsTimeline,
     playSelectedRoute,
+    playAllRoutesChronologically,
     playPrevious,
     playNext,
     pauseAnimation,

@@ -1111,6 +1111,20 @@ body.poetry-cursor-active * {
   background: var(--red);
 }
 
+.legend-river {
+  width: 24px;
+  height: 4px;
+  background: #1e88e5;
+  border-radius: 999px;
+}
+
+.legend-base {
+  width: 13px;
+  height: 13px;
+  border: 1px solid #8f1d14;
+  background: rgba(198, 106, 61, 0.24);
+}
+
 .legend-event,
 .legend-tourism {
   width: 11px;
