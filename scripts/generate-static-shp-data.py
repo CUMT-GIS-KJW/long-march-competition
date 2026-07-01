@@ -1,4 +1,4 @@
-import json
+﻿import json
 import os
 import struct
 import sys
@@ -78,29 +78,29 @@ CORRECT_ROUTE_SPECS = [
     },
     {
         "route_key": "route_hongyi_juntuan",
-        "prefix": "\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf",
-        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf_01-10.shp",
+        "prefix": "\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe_01-09.shp",
         "default_corps_name": "\u7ea2\u4e00\u65b9\u9762\u519b",
         "default_stage_name": "\u7ea2\u4e00\u65b9\u9762\u519b\u8def\u7ebf",
     },
     {
         "route_key": "route_hongqi_juntuan",
         "prefix": "\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf\u56fe",
-        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf\u56fe01-03.shp",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf\u56fe_01-03.shp",
         "default_corps_name": "\u7ea2\u4e03\u519b\u56e2",
         "default_stage_name": "\u7ea2\u4e03\u519b\u56e2\u8def\u7ebf",
     },
     {
         "route_key": "route_hongsan_juntuan",
         "prefix": "\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf\u56fe",
-        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf\u56fe_01-09.shp",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf\u56fe_01-08.shp",
         "default_corps_name": "\u7ea2\u4e09\u519b\u56e2",
         "default_stage_name": "\u7ea2\u4e09\u519b\u56e2\u8def\u7ebf",
     },
     {
         "route_key": "route_hongjiu_juntuan",
         "prefix": "\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf\u56fe",
-        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf\u56fe_01-07.shp",
+        "source_file": "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf\u56fe_01-08.shp",
         "default_corps_name": "\u7ea2\u4e5d\u519b\u56e2",
         "default_stage_name": "\u7ea2\u4e5d\u519b\u56e2\u8def\u7ebf",
     },
@@ -404,11 +404,105 @@ def make_route_feature_collection(records, geometries):
     }
 
 
+def coordinate_gap(left, right):
+    if not left or not right:
+        return float("inf")
+
+    return (left[0] - right[0]) ** 2 + (left[1] - right[1]) ** 2
+
+
+def oriented_entry(entry, reverse=False):
+    line = list(reversed(entry["line"])) if reverse else entry["line"]
+    current = dict(entry)
+    current["line"] = line
+    current["reversed"] = reverse
+
+    return current
+
+
+def entry_is_loop(entry):
+    line = entry["line"]
+
+    return len(line) > 1 and coordinate_gap(line[0], line[-1]) < 1e-18
+
+
+def best_terminal_index(entries, next_anchor):
+    if not next_anchor:
+        return None
+
+    best = None
+
+    for index, entry in enumerate(entries):
+        line = entry["line"]
+        candidates = [
+            coordinate_gap(line[-1], next_anchor),
+            coordinate_gap(line[0], next_anchor),
+        ]
+        distance = min(candidates)
+
+        if best is None or distance < best[0]:
+            best = (distance, index)
+
+    return best[1] if best else None
+
+
+def choose_connected_entry(entries, current_anchor, next_anchor):
+    terminal_index = best_terminal_index(entries, next_anchor)
+    candidate_indexes = list(range(len(entries)))
+
+    if terminal_index is not None and len(entries) > 1:
+        candidate_indexes = [index for index in candidate_indexes if index != terminal_index]
+
+    best = None
+
+    for index in candidate_indexes:
+        entry = entries[index]
+        line = entry["line"]
+        orientations = [False, True] if len(line) > 1 else [False]
+
+        for reverse in orientations:
+            oriented = oriented_entry(entry, reverse)
+            start = oriented["line"][0]
+            end = oriented["line"][-1]
+            start_gap = 0 if current_anchor is None else coordinate_gap(current_anchor, start)
+            loop_priority = 0 if entry_is_loop(oriented) else 1
+            next_gap = coordinate_gap(end, next_anchor) if next_anchor else 0
+            score = (
+                start_gap,
+                loop_priority,
+                next_gap,
+                entry["source_index"],
+                entry["part_index"],
+            )
+
+            if best is None or score < best[0]:
+                best = (score, index, oriented)
+
+    return best[1], best[2]
+
+
+def order_route_entries(entries, previous_anchor, next_anchor):
+    remaining = list(entries)
+    ordered = []
+    current_anchor = previous_anchor
+
+    while remaining:
+        index, entry = choose_connected_entry(remaining, current_anchor, next_anchor)
+        ordered.append(entry)
+        current_anchor = entry["line"][-1]
+        remaining.pop(index)
+
+    return ordered
+
+
 def make_ordered_route_feature_collection(shp_items, default_corps_name, default_stage_name):
     features = []
     fields = []
+    groups = []
 
     for file_order, shp_name, dbf_data, geometries in shp_items:
+        group = []
+
         for field in dbf_data["fields"]:
             if field["name"] not in fields:
                 fields.append(field["name"])
@@ -440,20 +534,48 @@ def make_ordered_route_feature_collection(shp_items, default_corps_name, default
                 if not line:
                     continue
 
-                part_props = dict(props)
-                part_props["_order"] = file_order
-                part_props["_part_index"] = part_index
-                part_props["_source_geometry"] = geometry.get("type")
-                features.append(
+                group.append(
                     {
-                        "type": "Feature",
-                        "properties": part_props,
-                        "geometry": {
-                            "type": "LineString",
-                            "coordinates": line,
-                        },
+                        "props": props,
+                        "line": line,
+                        "part_index": part_index,
+                        "source_index": source_index + 1,
+                        "source_geometry": geometry.get("type"),
                     }
                 )
+
+        groups.append({"file_order": file_order, "entries": group})
+
+    previous_anchor = None
+
+    for group_index, group in enumerate(groups):
+        next_anchor = None
+
+        for next_group in groups[group_index + 1:]:
+            if next_group["entries"]:
+                next_anchor = next_group["entries"][0]["line"][0]
+                break
+
+        ordered_entries = order_route_entries(group["entries"], previous_anchor, next_anchor)
+
+        for play_index, entry in enumerate(ordered_entries, start=1):
+            part_props = dict(entry["props"])
+            part_props["_order"] = group["file_order"]
+            part_props["_part_index"] = entry["part_index"]
+            part_props["_play_part_index"] = play_index
+            part_props["_source_geometry"] = entry["source_geometry"]
+            part_props["_reversed"] = entry.get("reversed", False)
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": part_props,
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": entry["line"],
+                    },
+                }
+            )
+            previous_anchor = entry["line"][-1]
 
     return {
         "collection": {
@@ -593,7 +715,7 @@ def generate_zhongyang_route_only():
 def generate_hongyi_route_only():
     correct_route = read_ordered_correct_route(
         resolve_hongyi_correct_route_dir(),
-        "\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf_",
+        "\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe",
         "\u7ea2\u4e00\u65b9\u9762\u519b",
         "\u7ea2\u4e00\u65b9\u9762\u519b\u8def\u7ebf",
         "Hongyi correct route Shapefile source directory not found",
@@ -601,7 +723,7 @@ def generate_hongyi_route_only():
 
     write_single_route(
         HONGYI_ROUTE_KEY,
-        "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf_01-10.shp",
+        "\u6b63\u786e\u8def\u7ebf/\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe_01-09.shp",
         correct_route,
     )
 
@@ -705,7 +827,7 @@ def is_zhongyang_correct_route_file(name):
 
 
 def is_hongyi_correct_route_file(name):
-    return name.startswith("\u7ea2\u4e00\u65b9\u9762\u519b\u957f\u5f81\u8def\u7ebf_") and name.lower().endswith(".shp")
+    return name.startswith("\u7ea2\u4e00\u519b\u56e2\u8def\u7ebf\u56fe") and name.lower().endswith(".shp")
 
 
 def is_ordered_route_file(name, prefix):
@@ -813,3 +935,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -18,7 +18,9 @@
         "_source_file": "中央纵队路线图_01.shp",
         "_source_index": 1,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
@@ -9463,7 +9465,9 @@
         "_source_file": "中央纵队路线图_02.shp",
         "_source_index": 1,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
@@ -18754,7 +18758,9 @@
         "stage_name": "中央纵队四渡赤水",
         "_order": 3,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
@@ -23981,7 +23987,9 @@
         "stage_name": "中央纵队四渡赤水",
         "_order": 4,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
@@ -27186,7 +27194,9 @@
         "_source_file": "中央纵队路线图_05.shp",
         "_source_index": 1,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
@@ -34831,7 +34841,9 @@
         "_source_file": "中央纵队路线图_06.shp",
         "_source_index": 1,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
@@ -40296,7 +40308,9 @@
         "_source_file": "中央纵队路线图_07.shp",
         "_source_index": 1,
         "_part_index": 1,
-        "_source_geometry": "LineString"
+        "_play_part_index": 1,
+        "_source_geometry": "LineString",
+        "_reversed": false
       },
       "geometry": {
         "type": "LineString",
