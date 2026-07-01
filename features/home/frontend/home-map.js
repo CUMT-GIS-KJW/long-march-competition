@@ -58,6 +58,7 @@
     routeHeadMarker: null,
     routeBranchHeadMarkers: new Map(),
     isPlayingAllRoutes: false,
+    mapBackgroundLayer: null,
     poetryPoints: [],
     poetryLayer: null,
     poetryVisible: false,
@@ -279,6 +280,28 @@
       zoomControl: true,
     });
     L.tileLayer(APP_CONFIG.basemaps.ancient.url, APP_CONFIG.basemaps.ancient.options).addTo(state.map);
+    addHomeMapBackground();
+  }
+
+  function addHomeMapBackground() {
+    const paneName = "homeBackgroundPane";
+
+    if (!state.map.getPane(paneName)) {
+      const pane = state.map.createPane(paneName);
+      pane.style.zIndex = 250;
+      pane.style.pointerEvents = "none";
+    }
+
+    const pane = state.map.getPane(paneName);
+
+    if (!pane || pane.querySelector(".home-map-full-background")) {
+      return;
+    }
+
+    const backgroundElement = document.createElement("div");
+    backgroundElement.className = "home-map-full-background";
+    pane.appendChild(backgroundElement);
+    state.mapBackgroundLayer = backgroundElement;
   }
 
   function initLayerGroups() {

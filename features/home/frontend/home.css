@@ -221,6 +221,47 @@ input {
   background: #ead9b6;
 }
 
+.home-map-full-background {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  background:
+    linear-gradient(rgba(246, 225, 184, 0.08), rgba(122, 35, 22, 0.05)),
+    url("/assets/images/home/map-background.png") center center / cover no-repeat;
+  opacity: 0.45;
+  mix-blend-mode: multiply;
+}
+
+#map .leaflet-tile-pane {
+  z-index: 200;
+}
+
+#map .leaflet-pane.homeBackgroundPane,
+#map .leaflet-pane.leaflet-homeBackgroundPane-pane {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 250;
+  pointer-events: none;
+}
+
+#map .leaflet-overlay-pane,
+#map .leaflet-shadow-pane,
+#map .leaflet-marker-pane,
+#map .leaflet-tooltip-pane,
+#map .leaflet-popup-pane {
+  z-index: 400;
+}
+
+.home-map-background-image {
+  pointer-events: none !important;
+  user-select: none;
+  mix-blend-mode: multiply;
+  filter: sepia(0.18) saturate(1.08) contrast(0.98);
+}
+
 .map-wrap::after {
   content: "";
   position: absolute;
