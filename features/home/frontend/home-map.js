@@ -58,7 +58,8 @@
     poetryLayer: null,
     poetryVisible: false,
     poetryList: [],        // ★ 新增：所有诗歌列表
-    currentPoemIndex: -1, 
+    currentPoemIndex: -1,
+    poetryOpenToken: 0,
   };
 
   const $ = (selector) => document.querySelector(selector);
@@ -1297,83 +1298,224 @@ async function loadAllPoems() {
 
   // ★ 打开诗词详情（卷轴弹窗）
 async function openPoetryDetail(poemId, direction) {
+  const openToken = ++state.poetryOpenToken;
+
   try {
-    // 如果诗歌列表为空，先加载
     if (!state.poetryList.length) {
       await loadAllPoems();
     }
-    
-    // 查找当前诗歌索引
-    let targetIndex = state.poetryList.findIndex(p => p.id === poemId);
-    
-    // 如果有方向参数，切换到相邻诗歌
-    if (direction === 'prev' && targetIndex > 0) {
-      targetIndex = targetIndex - 1;
-    } else if (direction === 'next' && targetIndex < state.poetryList.length - 1) {
-      targetIndex = targetIndex + 1;
+
+    let targetIndex = state.poetryList.findIndex((poem) => poem.id === poemId);
+
+    if (direction === "prev") {
+      targetIndex = Math.max(0, state.currentPoemIndex - 1);
     }
-    
-    // 如果索引无效，返回
+
+    if (direction === "next") {
+      targetIndex = Math.min(state.poetryList.length - 1, state.currentPoemIndex + 1);
+    }
+
     if (targetIndex === -1 || targetIndex >= state.poetryList.length) {
       flash('没有更多诗歌了');
       return;
     }
-    
+
     const poem = state.poetryList[targetIndex];
     state.currentPoemIndex = targetIndex;
-    
-    // 1. 获取诗歌数据（如果当前诗歌数据不完整，重新获取）
+
     let fullPoem = poem;
+
     if (!poem.text || poem.text.length < 10) {
       const response = await fetch(`/api/poetry/${poem.id}`);
+
       if (response.ok) {
         const payload = await response.json();
         fullPoem = payload.code === 200 ? payload.data : payload;
-        // 更新列表中的数据
         state.poetryList[targetIndex] = fullPoem;
       }
     }
 
-    // 2. 打开卷轴弹窗
+    if (openToken !== state.poetryOpenToken) {
+      return;
+    }
+
     const modal = document.getElementById('poetryModal');
+
     if (!modal) return;
-    
+
     modal.classList.add('show');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('poetry-cursor-active');
 
-    // ★ 3. 强制切换到详情页，始终隐藏卷轴墙
     const wallPage = document.getElementById('poetryWallPage');
     const detailPage = document.getElementById('poetryDetailPage');
     const windowEl = document.getElementById('poetryWindow');
-    
-    // 始终隐藏卷轴墙
+
     if (wallPage) wallPage.classList.remove('active');
-    // 始终显示详情页
     if (detailPage) detailPage.classList.add('active');
     if (windowEl) windowEl.classList.add('detail-mode');
 
-    // 4. 填充诗歌数据
     const titleEl = document.getElementById('poetryDetailTitle');
     const metaEl = document.getElementById('poetryDetailMeta');
     const textEl = document.getElementById('poetryDetailText');
     const placeNameEl = document.getElementById('poetryPlaceName');
     const placePositionEl = document.getElementById('poetryPlacePosition');
     const placeStoryEl = document.getElementById('poetryPlaceStory');
-    
+    const ancientImgEl = document.getElementById('poetryAncientImg');
+    const modernImgEl = document.getElementById('poetryModernImg');
+    const poetImgEl = document.getElementById('poetryPoetImg');
+
+    const poetryImages = {
+      poem_001: "/assets/images/poetry/VCG211634570806.jpg",
+      poem_002: "/assets/images/poetry/VCG211620090490.png",
+      poem_003: "/assets/images/poetry/VCG211611345420.jpg",
+      poem_004: "/assets/images/poetry/OIP.webp",
+      poem_005: "/assets/images/poetry/VCG211643672387.jpg",
+      poem_006: "/assets/images/poetry/O1CN01a4fN2C1f43yrCr9ya_!!533673952.jpg_q90.webp",
+      poem_007: "/assets/images/poetry/VCG211444428325.jpg",
+      poem_008: "/assets/images/poetry/VCG211353582315.jpg",
+      poem_009: "/assets/images/poetry/VCG211458592604.jpg",
+      poem_010: "/assets/images/poetry/VCG211611345420.jpg",
+    };
+
+    const poetryAnalysis = {
+      poem_001: {
+        theme: "全程概括与胜利叙事",
+        geography: "诗中把五岭、乌蒙、金沙江、大渡河、岷山等关键地理障碍连成一条完整长征空间链，适合和主路线、渡江点、雪山点联动理解。",
+        history: "作品写于中央红军到达陕北后，是对长征艰难历程的高度概括，也把军事转移升华为革命意志的集中表达。",
+        spirit: "突出“不怕远征难”的坚定信念、战略乐观和革命英雄主义。",
+        study: "研学时可让学生按诗句标注地理节点，比较“山、水、桥、雪”四类障碍对应的行军困难。"
+      },
+      poem_002: {
+        theme: "娄山关战斗与转折豪情",
+        geography: "娄山关位于黔北山地要冲，地势险峻，是理解红军突破封锁、夺取主动的重要地形节点。",
+        history: "遵义会议后，红军取得娄山关大捷，诗词中的悲壮声响与“从头越”的气势共同表现革命重新出发。",
+        spirit: "体现面对险关不退缩、在困难中重建信心的奋斗精神。",
+        study: "可结合遵义会议、娄山关战斗和黔北地形，讨论为什么战略方向调整会影响部队行动成效。"
+      },
+      poem_003: {
+        theme: "群山意象与长征初期行军",
+        geography: "湘桂黔山区山高路险、道路曲折，是长征初期红军连续行军和摆脱围追堵截的重要地理背景。",
+        history: "三首小令以“山”为核心意象，写出红军在复杂山地环境中快速行军、突破险阻的状态。",
+        spirit: "突出不畏艰险、勇往直前和革命队伍作为中流砥柱的担当。",
+        study: "可观察山区地形与路线弯曲度，分析山地对行军速度、后勤补给和路线选择的影响。"
+      },
+      poem_004: {
+        theme: "六盘山与胜利在望",
+        geography: "六盘山是长征后期的重要山地节点，翻越此处意味着中央红军接近陕北根据地。",
+        history: "作品写于长征即将胜利之时，“不到长城非好汉”把空间跋涉转化为坚定目标意识。",
+        spirit: "体现必胜信念、革命理想和继续斗争的昂扬姿态。",
+        study: "可把六盘山与会宁、吴起镇等终段节点连读，理解长征末期的胜利会合脉络。"
+      },
+      poem_005: {
+        theme: "昆仑想象与世界胸怀",
+        geography: "昆仑作为高大山脉意象，承载了雪山、高寒、边地等宏阔自然景观。",
+        history: "诗人借昆仑抒发改造旧世界的宏大理想，把长征胜利前后的革命视野推向更广阔空间。",
+        spirit: "体现胸怀天下、敢于变革和追求共同未来的理想主义。",
+        study: "可结合雪山草地段，讨论自然地理意象如何转化为革命诗词中的精神象征。"
+      },
+      poem_006: {
+        theme: "吴起镇与将帅精神",
+        geography: "吴起镇是中央红军长征到达陕北后的关键节点，具有终点和新起点的双重意义。",
+        history: "诗作赞扬彭德怀及红军将士在长征尾声仍能英勇作战、击退追敌。",
+        spirit: "体现英勇斗争、临危不惧和将士同心。",
+        study: "可结合吴起镇战斗与终点位置，分析长征胜利并非停止斗争，而是革命力量重新集结。"
+      },
+      poem_007: {
+        theme: "北国雪景与革命气象",
+        geography: "陕北、黄河、长城等北方意象构成宏阔空间背景，和长征胜利后的战略新阶段相连接。",
+        history: "虽作于长征胜利之后，但常被视为长征精神的延伸，展现革命队伍到达北方后的历史自信。",
+        spirit: "体现历史担当、时代自信和开创新局面的气魄。",
+        study: "可把诗中北国意象与陕北根据地结合，讨论地理空间转换如何影响革命叙事。"
+      },
+      poem_008: {
+        theme: "会昌高峰与长征前夜",
+        geography: "会昌处在赣南山地，诗中高峰、南粤等意象展示中央苏区周边地理视野。",
+        history: "作品写于长征前，能帮助理解红军出发前的环境、心境和战略背景。",
+        spirit: "体现革命乐观主义和在复杂局面中保持信心的精神状态。",
+        study: "可与瑞金、于都出发节点关联，梳理长征前中央苏区的空间格局。"
+      },
+      poem_009: {
+        theme: "井冈山斗争与根据地经验",
+        geography: "井冈山山地易守难攻，黄洋界等地形节点体现了山地根据地的防御优势。",
+        history: "诗作表现井冈山时期根据地军民团结、壁垒森严的斗争经验，是理解长征精神源流的重要补充。",
+        spirit: "体现众志成城、坚定信念和依靠群众的革命传统。",
+        study: "可比较井冈山山地防御与长征山地行军，理解地形在不同革命阶段的作用差异。"
+      },
+      poem_010: {
+        theme: "突围战斗与长征初期艰险",
+        geography: "镇远、石阡一带山谷狭窄、道路迂回，是红军面对封锁和突围压力的典型地形环境。",
+        history: "作品记录长征初期被围追堵截、兵疲粮少的困难处境，呈现基层行军作战的真实艰辛。",
+        spirit: "体现顽强突围、百折不挠和艰苦奋斗。",
+        study: "可结合路线狭窄处、敌军封锁线和补给困难，讨论为什么长征路线选择充满风险。"
+      },
+    };
+
+    const poemImage = poetryImages[fullPoem.id] || "/assets/images/poetry/source-poet-placeholder.png";
+    const analysis = poetryAnalysis[fullPoem.id] || {
+      theme: fullPoem.stage || "长征诗词",
+      geography: "该诗词与长征沿线地理节点、路线转折和历史事件存在空间关联。",
+      history: fullPoem.description || "作品呈现长征历史记忆与革命叙事。",
+      spirit: "体现坚定信念、艰苦奋斗、团结协作和勇于胜利的长征精神。",
+      study: "可结合地图点位、路线动画和事件详情开展诗词—地理—历史综合研学。"
+    };
+    const formattedText = String(fullPoem.text || "")
+      .replace(/。/g, "。\n")
+      .replace(/！/g, "！\n")
+      .replace(/？/g, "？\n")
+      .replace(/；/g, "；\n")
+      .replace(/\n{2,}/g, "\n")
+      .trim();
+
     if (titleEl) titleEl.textContent = `《${fullPoem.title}》`;
     if (metaEl) metaEl.textContent = `${fullPoem.author} · ${fullPoem.year}`;
-    if (textEl) textEl.textContent = fullPoem.text;
+    if (textEl) textEl.textContent = formattedText;
     if (placeNameEl) placeNameEl.textContent = fullPoem.places ? fullPoem.places.join('、') : '长征沿线';
     if (placePositionEl) placePositionEl.textContent = `位置：${fullPoem.provinces ? fullPoem.provinces.join('、') : ''}`;
     if (placeStoryEl) placeStoryEl.textContent = fullPoem.description || '';
+    if (ancientImgEl) ancientImgEl.src = "/assets/images/poetry/source-bg.jpg";
+    if (modernImgEl) modernImgEl.src = "/assets/images/poetry/source-bg.jpg";
+    if (poetImgEl) poetImgEl.src = poemImage;
 
-    // 5. 更新导航按钮状态
+    let analysisBox = document.querySelector(".poetry-analysis");
+
+    if (!analysisBox && detailPage) {
+      analysisBox = document.createElement("section");
+      analysisBox.className = "poetry-analysis";
+      detailPage.appendChild(analysisBox);
+    }
+
+    if (analysisBox) {
+      analysisBox.innerHTML = `
+        <b>诗词解读</b>
+        <dl>
+          <dt>主题</dt>
+          <dd>${analysis.theme}</dd>
+          <dt>地理关联</dt>
+          <dd>${analysis.geography}</dd>
+          <dt>历史语境</dt>
+          <dd>${analysis.history}</dd>
+          <dt>精神内涵</dt>
+          <dd>${analysis.spirit}</dd>
+          <dt>研学提示</dt>
+          <dd>${analysis.study}</dd>
+        </dl>
+      `;
+    }
+
+    if (detailPage) {
+      detailPage.classList.remove("show-analysis");
+    }
+
+    const switchText = document.getElementById("poetrySwitchText");
+
+    if (switchText) {
+      switchText.textContent = "析";
+    }
+
     updatePoetryNavButtons(targetIndex);
-
-    // 6. 启用按钮
     setButtonEnabled(true);
-    
+
     console.log('✅ 打开诗歌:', fullPoem.title, `(${targetIndex + 1}/${state.poetryList.length})`);
   } catch (error) {
     console.error('打开诗歌失败:', error);
@@ -1386,29 +1528,23 @@ function updatePoetryNavButtons(currentIndex) {
   const nextBtn = document.getElementById('poetryNextBtn');
   
   if (prevBtn) {
-    prevBtn.disabled = currentIndex <= 0;
-    prevBtn.style.opacity = currentIndex <= 0 ? '0.3' : '1';
+    prevBtn.disabled = true;
+    prevBtn.style.display = 'none';
   }
   if (nextBtn) {
-    nextBtn.disabled = currentIndex >= state.poetryList.length - 1;
-    nextBtn.style.opacity = currentIndex >= state.poetryList.length - 1 ? '0.3' : '1';
+    nextBtn.disabled = true;
+    nextBtn.style.display = 'none';
   }
 }
 
-// ★ 切换到上一首
+// ★ 地图点位诗词只展示本地点对应诗歌，不做跨地点切换
 function prevPoem() {
-  if (state.currentPoemIndex > 0) {
-    const poem = state.poetryList[state.currentPoemIndex - 1];
-    openPoetryDetail(poem.id, 'prev');
-  }
+  flash('当前点位仅展示对应诗词');
 }
 
-// ★ 切换到下一首
+// ★ 地图点位诗词只展示本地点对应诗歌，不做跨地点切换
 function nextPoem() {
-  if (state.currentPoemIndex < state.poetryList.length - 1) {
-    const poem = state.poetryList[state.currentPoemIndex + 1];
-    openPoetryDetail(poem.id, 'next');
-  }
+  flash('当前点位仅展示对应诗词');
 }
 
 // ★ 关闭诗歌弹窗（不返回卷轴墙）
@@ -1426,6 +1562,7 @@ function closePoetryModal() {
   }
   
   state.currentPoemIndex = -1;
+  state.poetryOpenToken += 1;
 }
 
 
@@ -1447,7 +1584,7 @@ function createPoetryLayer() {
     const icon = L.divIcon({
       className: 'poetry-point-icon',
       html: `
-        <div class="poetry-point-marker">
+        <div class="poetry-point-marker" data-poem-id="${poemId}" title="${props.poem_title || props.name || '长征诗词'}">
           <span class="poetry-icon">📜</span>
           <span class="poetry-tooltip">${props.name}</span>
         </div>

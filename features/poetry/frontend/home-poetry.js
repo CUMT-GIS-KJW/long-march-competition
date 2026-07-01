@@ -98,14 +98,26 @@
       return;
     }
 
+    const titleText = $("#poetryDetailTitle")?.textContent || "";
+    const metaText = $("#poetryDetailMeta")?.textContent || "";
+    const poemText = $("#poetryDetailText")?.textContent || "";
+    const storyText = $("#poetryPlaceStory")?.textContent || "";
+
+    if (!poemText && (!state.poems.length || !state.poems[state.activeIndex])) {
+      if (window.IndexMap && typeof window.IndexMap.flash === "function") {
+        window.IndexMap.flash("没有可朗读的诗歌");
+      }
+
+      return;
+    }
+
     if (state.isSpeaking) {
       stopVoice();
       return;
     }
 
-    const poem = state.poems[state.activeIndex];
     const utterance = new SpeechSynthesisUtterance(
-      `${poem.title}。${poem.author}。${poem.time}。${poem.text}。作品介绍：${poem.intro}`,
+      `${titleText}。${metaText}。${poemText}。作品介绍：${storyText}`,
     );
 
     utterance.lang = "zh-CN";
@@ -138,23 +150,38 @@
 
   function renderDetail() {
     const poem = state.poems[state.activeIndex];
+    const title = poem.title || "长征诗词";
+    const author = poem.author || "毛泽东";
+    const time = poem.time || poem.year || "";
+    const text = String(poem.text || "")
+      .replace(/。/g, "。\n")
+      .replace(/！/g, "！\n")
+      .replace(/？/g, "？\n")
+      .replace(/；/g, "；\n")
+      .replace(/\n{2,}/g, "\n")
+      .trim();
+    const place = poem.place || (Array.isArray(poem.places) ? poem.places.join("、") : "长征沿线");
+    const position = poem.position || (Array.isArray(poem.provinces) ? poem.provinces.join("、") : "");
+    const intro = poem.intro || poem.description || "";
+    const backgroundImage = poem.backgroundImage || poem.poetImage || "/assets/images/poetry/source-bg-ink.png";
+    const poetImage = poem.poetImage || poem.backgroundImage || "/assets/images/poetry/source-poet-placeholder.png";
 
-    $("#poetryDetailTitle").textContent = `《${poem.title}》`;
-    $("#poetryDetailMeta").textContent = `${poem.author} · ${poem.time}`;
-    $("#poetryDetailText").textContent = poem.text;
-    $("#poetryPlaceName").textContent = poem.place;
-    $("#poetryPlacePosition").textContent = `位置：${poem.position}`;
-    $("#poetryPlaceStory").textContent = poem.intro;
-    $("#poetryModernImg").src = poem.backgroundImage;
-    $("#poetryAncientImg").src = poem.backgroundImage;
-    $("#poetryPoetImg").src = poem.poetImage;
+    $("#poetryDetailTitle").textContent = `《${title}》`;
+    $("#poetryDetailMeta").textContent = `${author} · ${time}`;
+    $("#poetryDetailText").textContent = text;
+    $("#poetryPlaceName").textContent = place;
+    $("#poetryPlacePosition").textContent = `位置：${position}`;
+    $("#poetryPlaceStory").textContent = intro;
+    $("#poetryModernImg").src = backgroundImage;
+    $("#poetryAncientImg").src = "/assets/images/poetry/source-bg-ink.png";
+    $("#poetryPoetImg").src = poetImage;
 
     const analysisBox = ensureAnalysisBox();
 
     analysisBox.innerHTML = `
       <b>诗词解读</b>
-      <p>${poem.intro}</p>
-      <p>空间关联：${poem.place} 是长征叙事中的关键意象或地理节点，可与路线、事件点、地形起伏联动展示。</p>
+      <p>${intro}</p>
+      <p>空间关联：${place} 是长征叙事中的关键意象或地理节点，可与路线、事件点、地形起伏联动展示。</p>
     `;
 
     $("#poetryDetailPage").classList.toggle("show-analysis", state.analysisVisible);
@@ -195,7 +222,7 @@
       renderWall();
     }
 
-    showWall();
+    showDetail(0);
   }
 
   function closeModal() {
@@ -217,7 +244,12 @@
   }
 
   function bindEvents() {
-    $("#poetryScrollEntry").addEventListener("click", () => {
+    $("#poetryScrollEntry")?.addEventListener("click", () => {
+      if (window.IndexMap && typeof window.IndexMap.openPoetryDetail === "function") {
+        window.IndexMap.openPoetryDetail("poem_001");
+        return;
+      }
+
       openModal().catch((error) => {
         console.error(error);
         if (window.IndexMap && typeof window.IndexMap.flash === "function") {
@@ -226,11 +258,11 @@
       });
     });
 
-    $("#poetryCloseBtn").addEventListener("click", closeModal);
-    $("#poetryWallCloseBtn").addEventListener("click", closeModal);
-    $("#poetryBackBtn").addEventListener("click", showWall);
+    $("#poetryCloseBtn")?.addEventListener("click", closeModal);
+    $("#poetryWallCloseBtn")?.addEventListener("click", closeModal);
+    $("#poetryBackBtn")?.addEventListener("click", closeModal);
 
-    $("#poetryList").addEventListener("click", (event) => {
+    $("#poetryList")?.addEventListener("click", (event) => {
       const button = event.target.closest("[data-poem-id]");
 
       if (!button) {
@@ -240,21 +272,34 @@
       showDetail(poemIndexById(button.dataset.poemId));
     });
 
-    $("#poetryPrevBtn").addEventListener("click", () => {
-      showDetail(state.activeIndex - 1);
+    $("#poetryPrevBtn")?.addEventListener("click", () => {
+      if (window.IndexMap && typeof window.IndexMap.flash === "function") {
+        window.IndexMap.flash("当前点位仅展示对应诗词");
+      }
     });
 
-    $("#poetryNextBtn").addEventListener("click", () => {
-      showDetail(state.activeIndex + 1);
+    $("#poetryNextBtn")?.addEventListener("click", () => {
+      if (window.IndexMap && typeof window.IndexMap.flash === "function") {
+        window.IndexMap.flash("当前点位仅展示对应诗词");
+      }
     });
 
-    $("#poetrySwitchBtn").addEventListener("click", () => {
-      state.analysisVisible = !state.analysisVisible;
-      renderDetail();
+    $("#poetrySwitchBtn")?.addEventListener("click", () => {
+      if (state.poems.length) {
+        state.analysisVisible = !state.analysisVisible;
+        renderDetail();
+        return;
+      }
+
+      const detailPage = $("#poetryDetailPage");
+      const nextVisible = !detailPage?.classList.contains("show-analysis");
+
+      detailPage?.classList.toggle("show-analysis", nextVisible);
+      $("#poetrySwitchText").textContent = nextVisible ? "隐" : "析";
     });
 
-    $("#poetryVoiceBtn").addEventListener("click", speakCurrentPoem);
-    $("#poetryModal").addEventListener("mousemove", moveBrush);
+    $("#poetryVoiceBtn")?.addEventListener("click", speakCurrentPoem);
+    $("#poetryModal")?.addEventListener("mousemove", moveBrush);
 
     document.addEventListener("keydown", (event) => {
       if (!$("#poetryModal").classList.contains("show")) {
@@ -265,12 +310,11 @@
         closeModal();
       }
 
-      if (event.key === "ArrowLeft" && $("#poetryDetailPage").classList.contains("active")) {
-        showDetail(state.activeIndex - 1);
-      }
-
-      if (event.key === "ArrowRight" && $("#poetryDetailPage").classList.contains("active")) {
-        showDetail(state.activeIndex + 1);
+      if (
+        (event.key === "ArrowLeft" || event.key === "ArrowRight") &&
+        $("#poetryDetailPage").classList.contains("active")
+      ) {
+        event.preventDefault();
       }
     });
   }
