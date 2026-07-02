@@ -132,7 +132,7 @@
   {
     "id": "red_resource_17",
     "name": "半条被子展示馆",
-    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色旅游景区内(北侧)",
+    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色研学景区内(北侧)",
     "pname": "湖南省",
     "cityname": "郴州市",
     "business_area": "",
@@ -417,7 +417,7 @@
   },
   {
     "id": "red_resource_53",
-    "name": "渡红色旅游景区",
+    "name": "渡红色研学景区",
     "address": "红军长征元谋纪念馆西侧160米",
     "pname": "云南省",
     "cityname": "楚雄彝族自治州",
@@ -782,7 +782,7 @@
   {
     "id": "red_resource_96",
     "name": "红军检阅台",
-    "address": "叶坪镇叶坪红色旅游区(东北角)",
+    "address": "叶坪镇叶坪红色研学区(东北角)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -1042,7 +1042,7 @@
   {
     "id": "red_resource_122",
     "name": "红军长征元谋纪念馆",
-    "address": "江边乡渡红色旅游景区东侧160米",
+    "address": "江边乡渡红色研学景区东侧160米",
     "pname": "云南省",
     "cityname": "楚雄彝族自治州",
     "business_area": "",
@@ -2121,7 +2121,7 @@
   {
     "id": "red_resource_259",
     "name": "全总苏区中央执行局旧址",
-    "address": "叶坪镇叶坪红色旅游区内(北侧)",
+    "address": "叶坪镇叶坪红色研学区内(北侧)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -2394,7 +2394,7 @@
   {
     "id": "red_resource_291",
     "name": "苏维埃红色文献藏品展览",
-    "address": "叶坪镇叶坪红色旅游区内(北侧)",
+    "address": "叶坪镇叶坪红色研学区内(北侧)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -2667,7 +2667,7 @@
   {
     "id": "red_resource_335",
     "name": "叶坪革命旧址群",
-    "address": "叶坪镇叶坪红色旅游区(西南角)",
+    "address": "叶坪镇叶坪红色研学区(西南角)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -2680,7 +2680,7 @@
   {
     "id": "red_resource_336",
     "name": "叶坪红军烈士纪念亭",
-    "address": "叶坪镇叶坪红色旅游区(东北角)",
+    "address": "叶坪镇叶坪红色研学区(东北角)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -2862,7 +2862,7 @@
   {
     "id": "red_resource_368",
     "name": "长征步道",
-    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色旅游景区(东南角)",
+    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色研学景区(东南角)",
     "pname": "湖南省",
     "cityname": "郴州市",
     "business_area": "",
@@ -2875,7 +2875,7 @@
   {
     "id": "red_resource_369",
     "name": "长征步道炮台工事遗址",
-    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色旅游景区(东南角)",
+    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色研学景区(东南角)",
     "pname": "湖南省",
     "cityname": "郴州市",
     "business_area": "",
@@ -2940,7 +2940,7 @@
   {
     "id": "red_resource_374",
     "name": "长征文化村",
-    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色旅游景区内(东侧)",
+    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色研学景区内(东侧)",
     "pname": "湖南省",
     "cityname": "郴州市",
     "business_area": "",
@@ -3382,7 +3382,7 @@
   {
     "id": "red_resource_415",
     "name": "中国工农红军长征百丈岭狙击战遗址",
-    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色旅游景区(东南角)",
+    "address": "文明瑶族乡沙洲村湖南省汝城县沙洲红色研学景区(东南角)",
     "pname": "湖南省",
     "cityname": "郴州市",
     "business_area": "",
@@ -3434,7 +3434,7 @@
   {
     "id": "red_resource_423",
     "name": "中华苏维埃共和国妇女生活改善委员会旧址",
-    "address": "八一路oyo号叶坪镇叶坪红色旅游区内(北侧)",
+    "address": "八一路oyo号叶坪镇叶坪红色研学区内(北侧)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -3460,7 +3460,7 @@
   {
     "id": "red_resource_426",
     "name": "中华苏维埃共和国国家银行中央印刷厂旧址金融文化展馆",
-    "address": "叶坪镇叶坪红色旅游区内(北侧)",
+    "address": "叶坪镇叶坪红色研学区内(北侧)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -3473,7 +3473,7 @@
   {
     "id": "red_resource_427",
     "name": "中华苏维埃共和国国家政治保卫局旧址",
-    "address": "叶坪镇叶坪红色旅游区内(北侧)",
+    "address": "叶坪镇叶坪红色研学区内(北侧)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -3499,7 +3499,7 @@
   {
     "id": "red_resource_429",
     "name": "中华苏维埃共和国科普史料陈列馆",
-    "address": "叶坪镇叶坪红色旅游区内(北侧)",
+    "address": "叶坪镇叶坪红色研学区内(北侧)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -3551,7 +3551,7 @@
   {
     "id": "red_resource_433",
     "name": "中华苏维埃共和国医疗保障史陈列馆",
-    "address": "叶坪镇叶坪红色旅游区(西北角)",
+    "address": "叶坪镇叶坪红色研学区(西北角)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",
@@ -3616,7 +3616,7 @@
   {
     "id": "red_resource_439",
     "name": "中央传令排旧址",
-    "address": "叶坪镇叶坪红色旅游区(东北角)",
+    "address": "叶坪镇叶坪红色研学区(东北角)",
     "pname": "江西省",
     "cityname": "赣州市",
     "business_area": "",

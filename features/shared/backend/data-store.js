@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 
 const PROJECT_ROOT = path.join(__dirname, "..", "..", "..");
-const PUBLIC_ROOT = path.join(PROJECT_ROOT, "public");
 const ASSETS_ROOT = path.join(PROJECT_ROOT, "assets");
 const DATA_ROOT = path.join(PROJECT_ROOT, "data");
 const DATA_JSON_ROOT = path.join(DATA_ROOT, "json");
@@ -113,7 +112,6 @@ function sortEventTimeline(collection) {
 
 module.exports = {
   PROJECT_ROOT,
-  PUBLIC_ROOT,
   ASSETS_ROOT,
   DATA_ROOT,
   DATA_JSON_ROOT,

@@ -82,7 +82,10 @@ function formatCss(source) {
   return result.trim() + "\n";
 }
 
-const root = path.join(__dirname, "..", "public");
+const roots = [
+  path.join(__dirname, "..", "features"),
+  path.join(__dirname, "..", "data"),
+];
 
 function walk(directory) {
   fs.readdirSync(directory, { withFileTypes: true }).forEach((entry) => {
@@ -106,4 +109,4 @@ function walk(directory) {
   });
 }
 
-walk(root);
+roots.filter((root) => fs.existsSync(root)).forEach(walk);

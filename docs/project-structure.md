@@ -26,8 +26,7 @@ long-march-competition/
 │  └─ fonts/                       # 预留字体资源目录
 ├─ gis-analysis/                   # GIS 统计/DEM 分析生成脚本和缓存
 ├─ scripts/                        # 数据转换与格式化脚本
-├─ docs/                           # 项目说明文档
-└─ cleanup_review/                 # 待人工复核的旧版/重复/不确定文件
+└─ docs/                           # 项目说明文档
 ```
 
 ## 主要 JS 文件说明
@@ -51,7 +50,7 @@ long-march-competition/
 
 - 主页二维地图由 `home-map.js` 调用 `L.map()`、`L.tileLayer()`、`L.polyline()`、`L.marker()` 和 `L.layerGroup()`，底图仍使用 `APP_CONFIG.basemaps.ancient`，未替换为 Mapbox。
 - 综合分析页由 `analysis-map.js` 初始化独立 Leaflet 地图，并保留山体阴影、路线、事件、资源、缓冲区和难度专题图层逻辑。
-- 红色旅游页由 `tourism.js` 初始化 Leaflet 地图，省界 GeoJSON 已改为优先读取 `/data/geojson/china-provinces.geojson`。
+- 红色研学页由 `tourism.js` 初始化 Leaflet 地图，省界 GeoJSON 已改为优先读取 `/data/geojson/china-provinces.geojson`。
 - 所有数据请求仍通过 `DataService` 或后端 API 统一进入，前端功能行为保持不变。
 
 ## 数据与资源

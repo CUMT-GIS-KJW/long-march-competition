@@ -716,7 +716,7 @@
     viewer.scene.fog.density = 0.0000018;
     viewer.scene.fog.minimumBrightness = 0.16;
     viewer.scene.screenSpaceCameraController.enableCollisionDetection = true;
-    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 70000;
+    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 20000;
     viewer.scene.screenSpaceCameraController.maximumZoomDistance = 6200000;
     viewer.scene.screenSpaceCameraController.inertiaSpin = 0.35;
     viewer.scene.screenSpaceCameraController.inertiaTranslate = 0.28;
@@ -1041,7 +1041,8 @@
       label: "中国区域 DEM 地形",
       lng: SCENE_CENTER.lng,
       lat: SCENE_CENTER.lat - 0.4,
-      height: 5200000,
+      range: 5200000,
+      radius: 1800000,
       heading: -10,
       pitch: -76,
       description: "仅显示中国经纬度范围内的 DEM 地形、长征路线与关键节点。",
@@ -1050,28 +1051,37 @@
       label: "遵义会议会址",
       lng: 106.928,
       lat: 27.725,
-      height: 260000,
+      range: 110000,
+      radius: 26000,
+      targetHeight: 850,
+      useFocusPoint: true,
       heading: -24,
       pitch: -56,
       description: "聚焦长征转折点与周边山地环境。",
     },
     luding: {
       label: "泸定桥与大渡河",
-      lng: 102.26,
-      lat: 29.92,
-      height: 430000,
+      lng: 102.23014668332286,
+      lat: 29.914233781064183,
+      range: 150000,
+      radius: 32000,
+      targetHeight: 1350,
+      eventNameKeywords: ["泸定"],
       heading: 28,
       pitch: -58,
       description: "观察大渡河峡谷与桥位通道关系。",
     },
     snow: {
-      label: "雪山草地区域",
-      lng: 101.6,
-      lat: 32.2,
-      height: 1050000,
-      heading: -35,
-      pitch: -60,
-      description: "查看高海拔地形对行军线路的影响。",
+      label: "夹金山雪山区域",
+      lng: 102.63941444172315,
+      lat: 30.965968312187897,
+      range: 280000,
+      radius: 52000,
+      targetHeight: 4100,
+      eventNameKeywords: ["夹金山"],
+      heading: -32,
+      pitch: -59,
+      description: "查看高海拔雪山地形对行军线路的影响。",
     },
   };
 
@@ -1082,22 +1092,88 @@
     });
   }
 
-  function flyToPreset(name, duration = 1.5) {
-    const preset = VIEW_PRESETS[name] || VIEW_PRESETS.overview;
+  function includesEvery(text, keywords = []) {
+    return keywords.every((keyword) => String(text || "").includes(keyword));
+  }
 
-    setActivePreset(name);
-    state.viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(
-        preset.lng,
-        preset.lat,
-        preset.height,
-      ),
-      orientation: {
-        heading: Cesium.Math.toRadians(preset.heading),
-        pitch: Cesium.Math.toRadians(preset.pitch),
-        roll: 0,
-      },
+  function findPresetEvent(preset) {
+    if (!preset.eventNameKeywords?.length && !preset.eventKeywords?.length) {
+      return null;
+    }
+
+    return state.events.find((event) => {
+      if (
+        preset.eventNameKeywords?.length &&
+        !includesEvery(event.name, preset.eventNameKeywords)
+      ) {
+        return false;
+      }
+
+      const text = [
+        event.name,
+        event.description,
+        event.date,
+        event.type,
+      ].join(" ");
+
+      return includesEvery(text, preset.eventKeywords);
+    });
+  }
+
+  function getSurfaceHeight(lng, lat, fallback = 0) {
+    const cartographic = Cesium.Cartographic.fromDegrees(lng, lat);
+    const height = state.viewer?.scene?.globe?.getHeight(cartographic);
+
+    return Number.isFinite(height) ? height : fallback;
+  }
+
+  function resolvePresetTarget(preset) {
+    if (preset.useFocusPoint && state.focus) {
+      return {
+        lng: state.focus.lng,
+        lat: state.focus.lat,
+        height: state.focus.height ?? preset.targetHeight ?? 0,
+      };
+    }
+
+    const event = findPresetEvent(preset);
+
+    return {
+      lng: event?.lng ?? preset.lng,
+      lat: event?.lat ?? preset.lat,
+      height: preset.targetHeight ?? 0,
+    };
+  }
+
+  function flyToPreset(name, duration = 1.5) {
+    const presetName = VIEW_PRESETS[name] ? name : "overview";
+    const preset = VIEW_PRESETS[presetName];
+    const target = resolvePresetTarget(preset);
+    const targetHeight = getSurfaceHeight(target.lng, target.lat, target.height);
+    const targetCartesian = Cesium.Cartesian3.fromDegrees(
+      target.lng,
+      target.lat,
+      targetHeight,
+    );
+    const boundingSphere = new Cesium.BoundingSphere(
+      targetCartesian,
+      preset.radius || 20000,
+    );
+    const offset = new Cesium.HeadingPitchRange(
+      Cesium.Math.toRadians(preset.heading),
+      Cesium.Math.toRadians(preset.pitch),
+      preset.range || preset.height || 260000,
+    );
+
+    setActivePreset(presetName);
+    state.viewer.camera.flyToBoundingSphere(boundingSphere, {
+      offset,
       duration,
+    });
+    updatePointerReadout({
+      longitude: Cesium.Math.toRadians(target.lng),
+      latitude: Cesium.Math.toRadians(target.lat),
+      height: targetHeight,
     });
     updateSelectedFeature(
       preset.label,

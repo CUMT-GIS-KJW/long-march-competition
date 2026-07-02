@@ -1,7 +1,6 @@
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
-const { PROJECT_ROOT, PUBLIC_ROOT, ASSETS_ROOT, DATA_ROOT } = require("./data-store");
+const { PROJECT_ROOT, ASSETS_ROOT, DATA_ROOT } = require("./data-store");
 
 const FEATURES_ROOT = path.join(PROJECT_ROOT, "features");
 
@@ -37,10 +36,6 @@ const pageAliases = {
   "/sanwei-changjing.html": "/features/scene3d/frontend/index.html",
 };
 
-const externalAssetFallbacks = {
-  "/assets/images/home-poster/logal.png": path.join(os.homedir(), "Downloads", "logal.png"),
-};
-
 function resolveMountedPath(root, requestedPath, prefix) {
   const relativePath = requestedPath.slice(prefix.length);
 
@@ -65,7 +60,7 @@ function resolveStaticPath(pathname) {
     return resolveMountedPath(DATA_ROOT, requestedPath, "/data/");
   }
 
-  return resolveMountedPath(PUBLIC_ROOT, requestedPath, "/");
+  return null;
 }
 
 function isInside(root, filePath) {
@@ -75,7 +70,14 @@ function isInside(root, filePath) {
 }
 
 function serveStatic(response, pathname, send) {
-  const { root, filePath } = resolveStaticPath(pathname);
+  const resolvedPath = resolveStaticPath(pathname);
+
+  if (!resolvedPath) {
+    send(response, 404, "Page or resource not found", "text/plain; charset=utf-8");
+    return;
+  }
+
+  const { root, filePath } = resolvedPath;
 
   if (!isInside(root, filePath)) {
     send(response, 403, "Forbidden", "text/plain; charset=utf-8");
@@ -84,22 +86,6 @@ function serveStatic(response, pathname, send) {
 
   fs.readFile(filePath, (error, data) => {
     if (error) {
-      const fallbackPath = externalAssetFallbacks[pathname];
-
-      if (fallbackPath) {
-        fs.readFile(fallbackPath, (fallbackError, fallbackData) => {
-          if (fallbackError) {
-            send(response, 404, "Page or resource not found", "text/plain; charset=utf-8");
-            return;
-          }
-
-          const fallbackExtension = path.extname(fallbackPath).toLowerCase();
-          const fallbackContentType = mimeTypes[fallbackExtension] || "application/octet-stream";
-          send(response, 200, fallbackData, fallbackContentType);
-        });
-        return;
-      }
-
       send(response, 404, "Page or resource not found", "text/plain; charset=utf-8");
       return;
     }

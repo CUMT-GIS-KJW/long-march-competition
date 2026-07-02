@@ -28,35 +28,54 @@
       "range_start": "1934-10-01",
       "range_end": "1935-10-31",
       "precision": "month",
-      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+      "source_ids": [
+        "gov_long_march_80_speech",
+        "wiki_zh_long_march",
+        "wiki_en_long_march"
+      ]
     },
     "second_front_army": {
       "label": "Second Front Army related routes",
       "range_start": "1935-11-01",
       "range_end": "1936-10-31",
       "precision": "month",
-      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+      "source_ids": [
+        "gov_long_march_80_speech",
+        "wiki_zh_long_march",
+        "wiki_en_long_march"
+      ]
     },
     "fourth_front_army": {
       "label": "Fourth Front Army related routes",
       "range_start": "1935-03-01",
       "range_end": "1936-10-31",
       "precision": "month",
-      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+      "source_ids": [
+        "gov_long_march_80_speech",
+        "wiki_zh_long_march",
+        "wiki_en_long_march"
+      ]
     },
     "twenty_fifth_army": {
       "label": "25th Red Army route",
       "range_start": "1934-11-01",
       "range_end": "1935-09-30",
       "precision": "month",
-      "source_ids": ["wiki_zh_long_march", "wiki_en_long_march"]
+      "source_ids": [
+        "wiki_zh_long_march",
+        "wiki_en_long_march"
+      ]
     },
     "related_detachment": {
       "label": "Other related Long March route layer",
       "range_start": "1934-10-01",
       "range_end": "1936-10-31",
       "precision": "month",
-      "source_ids": ["gov_long_march_80_speech", "wiki_zh_long_march", "wiki_en_long_march"]
+      "source_ids": [
+        "gov_long_march_80_speech",
+        "wiki_zh_long_march",
+        "wiki_en_long_march"
+      ]
     }
   },
   "route_key_groups": {
