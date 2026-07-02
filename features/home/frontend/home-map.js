@@ -596,10 +596,16 @@
     const suffix = estimated ? "（估算）" : "";
     return `
       <div class="people-icons">
-        <span class="icons">${"👥".repeat(iconCount)}</span>
+        <span class="icons red-army-line" aria-label="红军头像人数示意">${renderRedArmyAvatars(iconCount)}</span>
         <strong>${label}${suffix}</strong>
       </div>
     `;
+  }
+
+  function renderRedArmyAvatars(iconCount) {
+    return Array.from({ length: iconCount }, (_, index) => `
+      <span class="red-army-avatar${index % 3 === 1 ? " is-forward" : ""}" aria-hidden="true"><i></i></span>
+    `).join("");
   }
 
   function updateMovingPeople(feature, troopInfo) {
@@ -610,7 +616,7 @@
         className: "",
         html: `
           <div class="moving-people">
-            <b>${"👥".repeat(iconCount)}</b>
+            <b class="red-army-line compact" aria-label="红军头像行进示意">${renderRedArmyAvatars(iconCount)}</b>
             <span>${Math.round(troopInfo.value / 10000)}万${troopInfo.estimated ? "·估" : ""}</span>
           </div>
         `,

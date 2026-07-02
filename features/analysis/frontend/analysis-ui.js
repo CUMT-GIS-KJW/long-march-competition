@@ -15,6 +15,27 @@
     people: "\u961f\u4f0d\u603b",
   };
 
+  const routeLeaderInfo = {
+    route_zhongyang_zongdui: {
+      name: "中央纵队",
+      leaders: "长征初期：博古、李德、周恩来；遵义会议后：毛泽东、周恩来、王稼祥",
+    },
+    route_hongyi_juntuan: { name: "红一军团", leaders: "军团长：林彪；政治委员：聂荣臻" },
+    route_hongsan_juntuan: { name: "红三军团", leaders: "军团长：彭德怀；政治委员：杨尚昆" },
+    route_hongwu_juntuan: { name: "红五军团", leaders: "军团长：董振堂；政治委员：李卓然" },
+    route_hongjiu_juntuan: { name: "红九军团", leaders: "军团长：罗炳辉；政治委员：蔡树藩，遵义会议后为何长工" },
+    route_honger_juntuan: { name: "红二军团", leaders: "军团长：贺龙；政治委员：任弼时" },
+    route_hongliu_juntuan: { name: "红六军团", leaders: "军团长：萧克；政治委员：王震；军政委员会主席：任弼时" },
+    route_hongsi_juntuan: {
+      name: "红四军",
+      leaders: "长征中：军长王宏坤、政治委员周纯全；会师后军长许世友、政治委员王建安",
+    },
+    route_hongqi_juntuan: { name: "红七军团", leaders: "北上抗日先遣队总指挥：寻淮洲；政治委员：乐少华" },
+    route_hongershiwu_jun: { name: "红二十五军", leaders: "长征初期军长：程子华；政治委员：吴焕先；副军长：徐海东；吴焕先牺牲后徐海东任军长、程子华任政委" },
+    route_hongshiba_shi: { name: "红十八师", leaders: "红二、六军团长征时留守老根据地；1936年初师长兼政委：张正坤" },
+    route_hongsanshi_jun: { name: "红三十军", leaders: "代理军长：程世才；政治委员：李先念" },
+  };
+
   let activeTool = "route";
   let activeChart = "primary";
   let selectedTerrainRoute = "all";
@@ -54,6 +75,16 @@
     return window.MapUtils?.formatNumber
       ? MapUtils.formatNumber(value || 0)
       : Number(value || 0).toLocaleString("zh-CN");
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "\"": "&quot;",
+      "'": "&#39;",
+    }[char]));
   }
 
   function maxBy(items, getter) {
@@ -245,6 +276,31 @@
     return data.routeCompare || [];
   }
 
+  function compareRouteName(row) {
+    return routeLeaderInfo[row?.routeKey]?.name || (row?.routeName || "").replace("路线图", "") || "未知路线";
+  }
+
+  function compareRouteLeaders(row) {
+    return routeLeaderInfo[row?.routeKey]?.leaders || "暂无领导人资料";
+  }
+
+  function compareTooltipFormatter(params, rows) {
+    const items = Array.isArray(params) ? params : [params];
+    const index = items[0]?.dataIndex ?? 0;
+    const row = rows[index] || {};
+    const valueLines = items
+      .map((item) => {
+        const value = Array.isArray(item.value) ? item.value.join(" / ") : item.value;
+        return `${item.marker || ""}${escapeHtml(item.seriesName || "")}：${escapeHtml(formatNumber(value))}`;
+      })
+      .join("<br>");
+    return [
+      `<strong>${escapeHtml(compareRouteName(row))}</strong>`,
+      `领导人：${escapeHtml(compareRouteLeaders(row))}`,
+      valueLines,
+    ].filter(Boolean).join("<br>");
+  }
+
   function selectedBufferStats() {
     const radius = `${appliedAnalysis.radius || $("#bufferSelect")?.value || 20}km`;
     const rows = currentAnalysis().buffer || data.buffer || [];
@@ -386,7 +442,7 @@
         const dense = maxBy(rows, (item) => item.resourceDensity) || {};
         return [
           ["对比路线", hasData ? `${rows.length} 条` : "-"],
-          ["最长路线", hasData ? (longest.routeName || "-").replace("路线图", "") : "-"],
+          ["最长路线", hasData ? compareRouteName(longest) : "-"],
           ["最高难度", hasData ? `${hardest.maxDifficulty || 0} 分` : "-"],
           ["资源最密", hasData ? `${dense.resourceDensity || 0} 处/百km` : "-"],
         ];
@@ -559,7 +615,8 @@
   function compareDistanceOption() {
     const option = baseOption();
     const rows = compareRows();
-    option.xAxis.data = rows.map((item) => item.routeName.replace("路线图", ""));
+    option.tooltip.formatter = (params) => compareTooltipFormatter(params, rows);
+    option.xAxis.data = rows.map(compareRouteName);
     option.xAxis.axisLabel.rotate = 35;
     option.series = [{ name: "总里程", type: "bar", data: rows.map((item) => item.totalDistance) }];
     return option;
@@ -568,7 +625,8 @@
   function compareStructureOption() {
     const option = baseOption();
     const rows = compareRows();
-    option.xAxis.data = rows.map((item) => item.routeName.replace("路线图", ""));
+    option.tooltip.formatter = (params) => compareTooltipFormatter(params, rows);
+    option.xAxis.data = rows.map(compareRouteName);
     option.xAxis.axisLabel.rotate = 35;
     option.series = [
       { name: "最高难度", type: "bar", data: rows.map((item) => item.maxDifficulty) },
@@ -684,6 +742,14 @@
     chart.setOption(chartOption(), true);
     chart.off("click");
     chart.on("click", (params) => {
+      if (activeTool === "compare") {
+        const row = compareRows()[params.dataIndex] || {};
+        showModal(
+          `多路线对比分析：${compareRouteName(row)}`,
+          `<p>领导人：<b>${escapeHtml(compareRouteLeaders(row))}</b></p><p>${escapeHtml(params.seriesName || "当前值")}：<b>${escapeHtml(formatNumber(params.value))}</b></p>`,
+        );
+        return;
+      }
       showModal(`${toolNames[activeTool]}：${params.name || params.seriesName}`, `<p>当前值：<b>${params.value}</b></p><p>该图形已放大展示，标签避让并可继续切换专题查看。</p>`);
     });
   }
@@ -712,7 +778,7 @@
         ["空间叙事建议", `建议在 ${spatial.topEventProvince.province || "主要省份"} 和 ${spatial.topResourceProvince.province || "主要省份"} 增设研学展陈节点，强化路线叙事节奏。省域连接段可补充中转服务设施，提升全线研学体验的连续性与完整性。`],
       ],
       compare: [
-        ["路线差异", `本次纳入 ${compareRows().length} 条路线对比，最长路线为 ${(maxBy(compareRows(), (item) => item.totalDistance) || {}).routeName || "—"}，最高难度路线为 ${(maxBy(compareRows(), (item) => item.maxDifficulty) || {}).routeName || "—"}。`],
+        ["路线差异", `本次纳入 ${compareRows().length} 条路线对比，最长路线为 ${compareRouteName(maxBy(compareRows(), (item) => item.totalDistance)) || "—"}，最高难度路线为 ${compareRouteName(maxBy(compareRows(), (item) => item.maxDifficulty)) || "—"}。`],
         ["综合判断", "多路线对比把里程、海拔、节点密度、资源密度和难度指数放在同一框架下，适合展示系统的横向 GIS 分析能力。"],
         ["答辩建议", "可以强调系统不只是展示路线，而是能够比较不同部队路线的空间组织差异和行军阻力差异。"],
       ],

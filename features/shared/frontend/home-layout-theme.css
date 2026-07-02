@@ -506,10 +506,10 @@
 }
 
 .tourism-cartoon-layout {
-    gap: 14px !important;
-    padding: 0 22px 14px !important;
-    grid-template-columns: 320px minmax(0, 1fr) clamp(360px, 22vw, 430px) !important;
-    grid-template-rows: minmax(0, 1fr) 120px !important;
+    gap: 10px !important;
+    padding: 0 18px 12px !important;
+    grid-template-columns: 260px minmax(0, 1fr) clamp(300px, 16vw, 340px) !important;
+    grid-template-rows: minmax(0, 1fr) 108px !important;
     background: transparent !important;
 }
 
@@ -666,7 +666,7 @@
 
 @media (max-width: 1280px) {
     .tourism-cartoon-layout {
-        grid-template-columns: 280px minmax(0, 1fr) 320px !important;
+        grid-template-columns: 220px minmax(0, 1fr) 260px !important;
   }
 }
 
@@ -995,6 +995,11 @@
     min-height: 0 !important;
     padding: 0 22px 14px !important;
     background: transparent !important;
+}
+
+.tourism-app.tourism-cartoon-shell .tourism-cartoon-layout {
+    gap: 10px !important;
+    padding: 0 18px 12px !important;
 }
 
 .analysis-app .tools-panel, .analysis-app .metrics-panel, .scene-app .scene-archive, .tourism-app .tourism-left, .tourism-app .tourism-right, .tourism-app.tourism-cartoon-shell .cartoon-left-panel, .tourism-app.tourism-cartoon-shell .cartoon-right-panel {
