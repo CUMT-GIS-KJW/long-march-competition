@@ -1092,31 +1092,15 @@
     });
   }
 
-  function includesEvery(text, keywords = []) {
-    return keywords.every((keyword) => String(text || "").includes(keyword));
-  }
-
   function findPresetEvent(preset) {
-    if (!preset.eventNameKeywords?.length && !preset.eventKeywords?.length) {
+    if (!preset.eventNameKeywords?.length) {
       return null;
     }
 
     return state.events.find((event) => {
-      if (
-        preset.eventNameKeywords?.length &&
-        !includesEvery(event.name, preset.eventNameKeywords)
-      ) {
-        return false;
-      }
-
-      const text = [
-        event.name,
-        event.description,
-        event.date,
-        event.type,
-      ].join(" ");
-
-      return includesEvery(text, preset.eventKeywords);
+      return preset.eventNameKeywords.every((keyword) =>
+        String(event.name || "").includes(keyword),
+      );
     });
   }
 
@@ -1162,7 +1146,7 @@
     const offset = new Cesium.HeadingPitchRange(
       Cesium.Math.toRadians(preset.heading),
       Cesium.Math.toRadians(preset.pitch),
-      preset.range || preset.height || 260000,
+      preset.range || 260000,
     );
 
     setActivePreset(presetName);
