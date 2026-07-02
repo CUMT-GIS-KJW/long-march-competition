@@ -212,14 +212,15 @@ button, select, input {
     background: #ead9b6;
 }
 
-.home-map-full-background {
+.home-map-red-wash {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 240;
     pointer-events: none;
     user-select: none;
-    background:     linear-gradient(rgba(246, 225, 184, 0.08), rgba(122, 35, 22, 0.05)),     url("/assets/images/home/map-background.png") center center / cover no-repeat;
-    opacity: 0.45;
+    background:
+        radial-gradient(ellipse 54% 42% at 45% 48%, rgba(255, 244, 225, 0.015) 0%, rgba(198, 68, 48, 0.035) 62%, rgba(151, 36, 28, 0.085) 100%),
+        linear-gradient(135deg, rgba(255, 239, 211, 0.035), rgba(148, 32, 25, 0.06));
     mix-blend-mode: multiply;
 }
 
@@ -244,6 +245,12 @@ button, select, input {
     user-select: none;
     mix-blend-mode: multiply;
     filter: sepia(0.18) saturate(1.08) contrast(0.98);
+}
+
+#map .home-map-background-overlay {
+    pointer-events: none !important;
+    mix-blend-mode: multiply;
+    filter: sepia(0.14) saturate(1.02) contrast(0.95);
 }
 
 .map-wrap::after {

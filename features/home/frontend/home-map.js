@@ -292,16 +292,127 @@
       pane.style.pointerEvents = "none";
     }
 
-    const pane = state.map.getPane(paneName);
+    addHomeMapRedWash();
 
-    if (!pane || pane.querySelector(".home-map-full-background")) {
+    const svg = buildHomeMapBackgroundSvg();
+    const imageBounds = [
+      [4.5, 71],
+      [47.5, 137],
+    ];
+
+    state.mapBackgroundLayer = L.svgOverlay(
+      svg,
+      imageBounds,
+      {
+        pane: paneName,
+        opacity: 0.45,
+        interactive: false,
+        className: "home-map-background-overlay",
+      },
+    ).addTo(state.map);
+  }
+
+  function addHomeMapRedWash() {
+    const mapElement = document.getElementById("map");
+
+    if (!mapElement || mapElement.querySelector(".home-map-red-wash")) {
       return;
     }
 
-    const backgroundElement = document.createElement("div");
-    backgroundElement.className = "home-map-full-background";
-    pane.appendChild(backgroundElement);
-    state.mapBackgroundLayer = backgroundElement;
+    const redWash = document.createElement("div");
+    redWash.className = "home-map-red-wash";
+    mapElement.insertBefore(redWash, mapElement.firstChild);
+  }
+
+  function buildHomeMapBackgroundSvg() {
+    const svgNamespace = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNamespace, "svg");
+    const defs = document.createElementNS(svgNamespace, "defs");
+    const mask = document.createElementNS(svgNamespace, "mask");
+    const radialGradient = document.createElementNS(svgNamespace, "radialGradient");
+    const stopSolid = document.createElementNS(svgNamespace, "stop");
+    const stopSoft = document.createElementNS(svgNamespace, "stop");
+    const stopFade = document.createElementNS(svgNamespace, "stop");
+    const stopClear = document.createElementNS(svgNamespace, "stop");
+    const blurFilter = document.createElementNS(svgNamespace, "filter");
+    const blurNode = document.createElementNS(svgNamespace, "feGaussianBlur");
+    const blackRect = document.createElementNS(svgNamespace, "rect");
+    const whiteEllipse = document.createElementNS(svgNamespace, "ellipse");
+    const image = document.createElementNS(svgNamespace, "image");
+
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("preserveAspectRatio", "none");
+
+    mask.setAttribute("id", "homeMountainChinaAreaMask");
+    mask.setAttribute("maskUnits", "userSpaceOnUse");
+
+    radialGradient.setAttribute("id", "homeMountainFadeGradient");
+    radialGradient.setAttribute("cx", "50%");
+    radialGradient.setAttribute("cy", "50%");
+    radialGradient.setAttribute("r", "50%");
+    radialGradient.setAttribute("fx", "50%");
+    radialGradient.setAttribute("fy", "50%");
+
+    stopSolid.setAttribute("offset", "0%");
+    stopSolid.setAttribute("stop-color", "white");
+    stopSolid.setAttribute("stop-opacity", "1");
+
+    stopSoft.setAttribute("offset", "46%");
+    stopSoft.setAttribute("stop-color", "white");
+    stopSoft.setAttribute("stop-opacity", "0.68");
+
+    stopFade.setAttribute("offset", "84%");
+    stopFade.setAttribute("stop-color", "white");
+    stopFade.setAttribute("stop-opacity", "0.12");
+
+    stopClear.setAttribute("offset", "100%");
+    stopClear.setAttribute("stop-color", "white");
+    stopClear.setAttribute("stop-opacity", "0");
+
+    radialGradient.appendChild(stopSolid);
+    radialGradient.appendChild(stopSoft);
+    radialGradient.appendChild(stopFade);
+    radialGradient.appendChild(stopClear);
+
+    blurFilter.setAttribute("id", "homeMountainMaskBlur");
+    blurFilter.setAttribute("x", "-24%");
+    blurFilter.setAttribute("y", "-24%");
+    blurFilter.setAttribute("width", "148%");
+    blurFilter.setAttribute("height", "148%");
+
+    blurNode.setAttribute("stdDeviation", "3.4");
+    blurFilter.appendChild(blurNode);
+
+    blackRect.setAttribute("x", "0");
+    blackRect.setAttribute("y", "0");
+    blackRect.setAttribute("width", "100");
+    blackRect.setAttribute("height", "100");
+    blackRect.setAttribute("fill", "black");
+
+    whiteEllipse.setAttribute("cx", "50");
+    whiteEllipse.setAttribute("cy", "48");
+    whiteEllipse.setAttribute("rx", "42");
+    whiteEllipse.setAttribute("ry", "25");
+    whiteEllipse.setAttribute("fill", "url(#homeMountainFadeGradient)");
+    whiteEllipse.setAttribute("filter", "url(#homeMountainMaskBlur)");
+
+    image.setAttribute("x", "0");
+    image.setAttribute("y", "0");
+    image.setAttribute("width", "100");
+    image.setAttribute("height", "100");
+    image.setAttribute("preserveAspectRatio", "xMidYMid slice");
+    image.setAttribute("href", "/assets/images/home/map-background.png");
+    image.setAttribute("mask", "url(#homeMountainChinaAreaMask)");
+
+    defs.appendChild(radialGradient);
+    defs.appendChild(blurFilter);
+    mask.appendChild(blackRect);
+    mask.appendChild(whiteEllipse);
+    defs.appendChild(mask);
+    svg.appendChild(defs);
+    svg.appendChild(image);
+
+    return svg;
   }
 
   function initLayerGroups() {
