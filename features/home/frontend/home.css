@@ -1069,9 +1069,9 @@ button, select, input {
     left: 14px;
     bottom: 14px;
     display: grid;
-    gap: 7px;
-    width: 184px;
-    padding: 12px;
+    gap: 4px;
+    width: 165px;
+    padding: 8px 10px;
     color: #4d2418;
     background: rgba(255, 246, 220, 0.9);
     border: 1px solid rgba(132, 38, 24, 0.18);
@@ -1728,4 +1728,25 @@ button, select, input {
     color: #7a5b48;
     background: rgba(255, 255, 255, 0.72);
     border-color: rgba(122, 91, 72, 0.28);
+}
+
+.legend-poetry {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 18px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  flex-shrink: 0;
+  margin-left: -8px;
+  margin-right: -3px;
+}
+
+/* 或者使用图标样式 */
+.legend-poetry::before {
+  content: "📜";
+  font-size: 18px;
 }

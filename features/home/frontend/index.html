@@ -37,41 +37,43 @@
 
     <main class="main-layout">
       <aside class="left-panel">
-        <section class="control-card fold-card open" id="routeFold">
-          <button class="fold-title" data-fold="routeFold" type="button">
-            <span>路线图层</span>
-          </button>
-          <div class="fold-body route-list" id="routeLayerList"></div>
-        </section>
+  <!-- 路线图层 - 独立 -->
+  <section class="control-card fold-card open" id="routeFold">
+    <button class="fold-title" data-fold="routeFold" type="button">
+      <span>路线图层</span>
+    </button>
+    <div class="fold-body route-list" id="routeLayerList"></div>
+  </section>
 
-        <section class="control-card fold-card open" id="eventFold">
-          <button class="fold-title" data-fold="eventFold" type="button">
-            <span>重要事件</span>
-          </button>
-          <div class="fold-body">
-            <div class="event-type-buttons" id="eventTypeButtons">
-              <button id="eventVisibilityBtn" type="button" data-events-visible="true">隐藏事件点</button>
-              <button class="active" type="button" data-event-type="all">全部</button>
-              <button type="button" data-event-type="battle">战斗</button>
-              <button type="button" data-event-type="meeting">会议</button>
-              <button type="button" data-event-type="river">渡江</button>
-              <button type="button" data-event-type="mountain">雪山草地</button>
-              <button type="button" data-event-type="join">会师</button>
-            </div>
-          </div>
-        <section class="control-card fold-card open" id="poetryFold">
-  <button class="fold-title" data-fold="poetryFold" type="button">
-    <span>诗词点位</span>
-  </button>
-  <div class="fold-body">
-    <button id="poetryToggle" type="button" data-visible="true" class="is-off">显示诗词点</button>
-    <p style="font-size:11px;color:#6b3a28;margin:4px 0 0;">点击地图上的诗词图标可查看当地关联诗词</p>
-  </div>
-</section>
+  <!-- 重要事件 - 独立 -->
+  <section class="control-card fold-card open" id="eventFold">
+    <button class="fold-title" data-fold="eventFold" type="button">
+      <span>重要事件</span>
+    </button>
+    <div class="fold-body">
+      <div class="event-type-buttons" id="eventTypeButtons">
+        <button id="eventVisibilityBtn" type="button" data-events-visible="true">隐藏事件点</button>
+        <button class="active" type="button" data-event-type="all">全部</button>
+        <button type="button" data-event-type="battle">战斗</button>
+        <button type="button" data-event-type="meeting">会议</button>
+        <button type="button" data-event-type="river">渡江</button>
+        <button type="button" data-event-type="mountain">雪山草地</button>
+        <button type="button" data-event-type="join">会师</button>
+      </div>
+    </div>
+  </section>
 
-
-
-      </aside>
+  <!-- ★ 诗词点位 - 独立出来，不在事件框内 ★ -->
+  <section class="control-card fold-card open" id="poetryFold">
+    <button class="fold-title" data-fold="poetryFold" type="button">
+      <span>诗词点位</span>
+    </button>
+    <div class="fold-body">
+      <button id="poetryToggle" type="button" data-visible="true" class="is-off">显示诗词点</button>
+      <p style="font-size:11px;color:#6b3a28;margin:4px 0 0;">点击地图上的诗词图标可查看当地关联诗词</p>
+    </div>
+  </section>
+</aside>
 
 
 
@@ -82,6 +84,7 @@
           <span><i class="legend-route"></i>独立路线图层</span>
           <span><i class="legend-river"></i>长江 / 乌江 / 赤水河</span>
           <span><i class="legend-base"></i>革命根据地</span>
+          <span><i class="legend-poetry"></i>长征诗词点位</span>
           <span><i class="legend-event battle"></i>战斗</span>
           <span><i class="legend-event meeting"></i>会议</span>
           <span><i class="legend-event river"></i>渡江</span>
