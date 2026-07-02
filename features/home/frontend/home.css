@@ -253,6 +253,11 @@ button, select, input {
     filter: sepia(0.14) saturate(1.02) contrast(0.95);
 }
 
+#map.home-background-hidden .home-map-red-wash,
+#map.home-background-hidden .home-map-background-overlay {
+    opacity: 0 !important;
+}
+
 .map-wrap::after {
     content: "";
     position: absolute;

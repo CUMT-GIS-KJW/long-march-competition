@@ -294,11 +294,11 @@
 
     addHomeMapRedWash();
 
-    const svg = buildHomeMapBackgroundSvg();
     const imageBounds = [
       [4.5, 71],
       [47.5, 137],
     ];
+    const svg = buildHomeMapBackgroundSvg();
 
     state.mapBackgroundLayer = L.svgOverlay(
       svg,
@@ -322,6 +322,16 @@
     const redWash = document.createElement("div");
     redWash.className = "home-map-red-wash";
     mapElement.insertBefore(redWash, mapElement.firstChild);
+  }
+
+  function setHomeBackgroundVisible(visible) {
+    const mapElement = document.getElementById("map");
+
+    mapElement?.classList.toggle("home-background-hidden", !visible);
+  }
+
+  function hideHomeBackgroundDuringPlayback() {
+    setHomeBackgroundVisible(false);
   }
 
   function buildHomeMapBackgroundSvg() {
@@ -724,6 +734,7 @@
     clearInterval(state.eventTimer);
     clearInterval(state.routeTimer);
     clearRoutePlayback(options);
+    setHomeBackgroundVisible(true);
   }
 
   function highlightEventMarker(feature) {
@@ -751,6 +762,7 @@
     clearInterval(state.eventTimer);
     clearInterval(state.routeTimer);
     cancelRouteFrame();
+    setHomeBackgroundVisible(true);
     if (state.routePlayback && state.routePlayback.progress < 1) {
       setRoutePlayButtonLabel("继续路线");
     }
@@ -766,6 +778,7 @@
       flash("当前路线没有可播放事件");
       return;
     }
+    hideHomeBackgroundDuringPlayback();
     state.isPlayingEvents = true;
     const step = () => {
       if (!state.isPlayingEvents) return;
@@ -1303,6 +1316,7 @@
     if (!playback) return;
     cancelRouteFrame();
     state.isPlayingRoute = false;
+    setHomeBackgroundVisible(true);
     playback.progress = 1;
     renderRoutePlaybackFrame(playback);
     $("#playStatusTitle").textContent = `${playback.config.layer_name} · 播放完成`;
@@ -1334,6 +1348,7 @@
     state.routePlayback = playback;
     state.isPlayingRoute = true;
     state.routePlaybackMode = true;
+    hideHomeBackgroundDuringPlayback();
     playback.lastFrameTime = performance.now();
     setRoutePlayButtonLabel("暂停路线");
     state.routeAnimationFrame = requestAnimationFrame(animateRouteFrame);
@@ -1388,6 +1403,7 @@
     updateRoutePlaybackEvents(0);
     renderEventMarkers();
 
+    hideHomeBackgroundDuringPlayback();
     state.isPlayingRoute = true;
 
     const glow = L.polyline([], {
@@ -1620,6 +1636,7 @@
     const playback = state.allRoutePlayback;
     cancelRouteFrame();
     state.isPlayingAllRoutes = false;
+    setHomeBackgroundVisible(true);
     if (playback) {
       playback.index = playback.items.length;
       playback.currentProgress = 1;
@@ -1914,6 +1931,7 @@
     state.routePlaybackEventIds = new Set();
     state.routePlaybackEventIndexes = new Map();
     state.routePlaybackMode = true;
+    hideHomeBackgroundDuringPlayback();
     renderEventMarkers();
     renderAllRouteTimelineFrame(playback);
     startAllRoutePlayback(playback);
