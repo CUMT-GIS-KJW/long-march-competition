@@ -1485,7 +1485,7 @@
       progress: 0,
       lastFrameTime: 0,
       lastSegmentKey: "",
-      lockDetailToFirstSegment: true,
+      lockDetailToFirstSegment: false,
       detailFeature: routeData.segments[0]?.feature,
     };
     state.routePlayback = playback;
