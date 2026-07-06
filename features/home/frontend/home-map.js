@@ -672,19 +672,42 @@
     resetDetailPanelScroll();
   }
 
+  function normalizeRouteText(value, fallback = "暂无") {
+    const text = String(value ?? "").trim();
+    return text || fallback;
+  }
+
+  function formatRouteDateRange(startDate, endDate) {
+    const start = String(startDate || "").trim();
+    const end = String(endDate || "").trim();
+    if (start && end) return start === end ? start : `${start} — ${end}`;
+    return start || end || "暂无时间";
+  }
+
+  function formatRouteLength(value) {
+    const length = Number(value);
+    if (!Number.isFinite(length) || length <= 0) return "暂无数据";
+    return length.toLocaleString("zh-CN", {
+      maximumFractionDigits: 2,
+    });
+  }
+
   function renderRouteDetail(feature, config) {
     const props = feature.properties || {};
+    const dateRange = formatRouteDateRange(props.start_date, props.end_date);
+    const lengthText = formatRouteLength(props.Shape_Leng);
+    const description = normalizeRouteText(props.descript || props.descriptio, "该路线段暂无说明。");
     $("#detailPanel").innerHTML = `
       <article class="detail-card route-detail-card">
         <span class="detail-kicker">路线详情</span>
         <h2 class="route-detail-title"><span class="route-name-text">${config.layer_name}</span></h2>
         <div class="detail-grid">
-          <div class="detail-row"><span>军团</span><b>${props.corps_name || "-"}</b></div>
-          <div class="detail-row"><span>阶段</span><b>${props.stage_name || "-"}</b></div>
-          <div class="detail-row"><span>起始时间</span><b>${props.start_date || "-"} — ${props.end_date || "-"}</b></div>
-          <div class="detail-row"><span>长度</span><b>${props.Shape_Leng ?? "-"}</b></div>
+          <div class="detail-row"><span>军团</span><b>${normalizeRouteText(props.corps_name)}</b></div>
+          <div class="detail-row"><span>阶段</span><b>${normalizeRouteText(props.stage_name)}</b></div>
+          <div class="detail-row"><span>起始时间</span><b>${dateRange}</b></div>
+          <div class="detail-row"><span>长度</span><b>${lengthText}</b></div>
         </div>
-        <p>${props.descript || props.descriptio || "该路线段暂无说明字段。"}</p>
+        <p>${description}</p>
       </article>
     `;
     resetDetailPanelScroll();
@@ -1383,6 +1406,8 @@
   }
 
   function seekRouteProgress(value) {
+    if (seekAllRouteProgress(value)) return;
+
     const playback = state.routePlayback;
     if (!playback) {
       setProgressValue(Number(value) || 0);
@@ -1632,16 +1657,8 @@
     setAllRouteProgressValue(playback);
   }
 
-  function startAllRouteItem(index) {
-    const playback = state.allRoutePlayback;
-    if (!playback) return false;
-    if (index >= playback.items.length) return false;
-
-    const item = playback.items[index];
-    playback.index = index;
-    playback.currentItem = item;
-    playback.currentProgress = item.progress || 0;
-    playback.lastEventTimeBucket = 0;
+  function ensureAllRouteItemLayers(item) {
+    if (item.glow && item.line) return;
 
     item.glow = L.polyline([], {
       color: "#ffd36b",
@@ -1656,12 +1673,105 @@
       className: "animated-route",
       interactive: false,
     }).addTo(state.animatedRouteLayer);
+  }
 
+  function removeAllRouteItemLayers(items) {
+    clearRouteHeadMarkers();
+    (items || []).forEach(item => {
+      if (item.glow) {
+        state.animatedRouteLayer.removeLayer(item.glow);
+        item.glow = null;
+      }
+      if (item.line) {
+        state.animatedRouteLayer.removeLayer(item.line);
+        item.line = null;
+      }
+      if (item.headMarker) {
+        state.animatedRouteLayer.removeLayer(item.headMarker);
+        item.headMarker = null;
+      }
+      item.branchHeadMarkers?.forEach(marker => {
+        state.animatedRouteLayer.removeLayer(marker);
+      });
+      item.branchHeadMarkers?.clear();
+    });
+  }
+
+  function renderAllRouteItemAtProgress(item, progress) {
+    ensureAllRouteItemLayers(item);
+    item.progress = Math.max(0, Math.min(1, progress || 0));
+    item.routeData.currentProgress = item.progress;
+    const index = findPointIndexByProgress(item.routeData, item.progress);
+    const rendered = getRenderedRouteParts(item.routeData, index);
+    item.glow.setLatLngs(rendered);
+    item.line.setLatLngs(rendered);
+  }
+
+  function startAllRouteItem(index, progress = null) {
+    const playback = state.allRoutePlayback;
+    if (!playback) return false;
+    if (index >= playback.items.length) return false;
+
+    const item = playback.items[index];
+    playback.index = index;
+    playback.currentItem = item;
+    playback.currentProgress = progress ?? (item.progress || 0);
+    playback.lastEventTimeBucket = 0;
+
+    ensureAllRouteItemLayers(item);
     state.activeRouteKey = item.layerKey;
     state.routePlaybackMode = true;
     state.routePlaybackFocusPoint = null;
     renderRouteDetail(item.routeData.segments[0]?.feature, item.config);
     renderAllRoutePlaybackFrame(playback);
+    return true;
+  }
+
+  function seekAllRouteProgress(value) {
+    const playback = state.allRoutePlayback;
+    if (!playback?.items?.length || playback.mode !== "sequential") return false;
+
+    const percent = Math.max(0, Math.min(100, Number(value) || 0));
+    const targetElapsed = playback.totalDurationMs * (percent / 100);
+    let completedDurationMs = 0;
+    let targetIndex = playback.items.length - 1;
+    let targetProgress = 1;
+
+    for (let index = 0; index < playback.items.length; index += 1) {
+      const item = playback.items[index];
+      const duration = Math.max(1, item.durationMs || 0);
+      if (targetElapsed <= completedDurationMs + duration || index === playback.items.length - 1) {
+        targetIndex = index;
+        targetProgress = Math.max(0, Math.min(1, (targetElapsed - completedDurationMs) / duration));
+        break;
+      }
+      completedDurationMs += duration;
+    }
+
+    const shouldResume = state.isPlayingAllRoutes && percent < 100;
+    cancelRouteFrame();
+    removeAllRouteItemLayers(playback.items);
+    playback.items.forEach((item, index) => {
+      item.progress = index < targetIndex ? 1 : 0;
+      if (index < targetIndex) renderAllRouteItemAtProgress(item, 1);
+    });
+
+    playback.completedDurationMs = completedDurationMs;
+    playback.finished = false;
+    startAllRouteItem(targetIndex, targetProgress);
+    setProgressValue(percent);
+
+    if (percent >= 100) {
+      finishAllRoutePlayback();
+      return true;
+    }
+
+    state.isPlayingAllRoutes = shouldResume;
+    setAllRoutePlayButtonLabel(shouldResume ? "暂停全部" : "继续全部");
+    if (shouldResume) {
+      playback.lastFrameTime = performance.now();
+      state.routeAnimationFrame = requestAnimationFrame(animateAllRouteFrame);
+    }
     return true;
   }
 
