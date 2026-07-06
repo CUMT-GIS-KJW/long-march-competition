@@ -1,1251 +1,1251 @@
 /* Shared poster-style shell used to align feature pages with the home page. */ :root {
-    --home-red: #9d1f15;
-    --home-gold: #e6c06a;
-    --home-paper: #f5dfb8;
-    --home-ink: #3d1c11;
-    --home-line: rgba(122, 54, 21, 0.25);
+                        --home-red: #9d1f15;
+                        --home-gold: #e6c06a;
+                        --home-paper: #f5dfb8;
+                        --home-ink: #3d1c11;
+                        --home-line: rgba(122, 54, 21, 0.25);
 }
 
 .analysis-app, .scene-app, .tourism-app {
-    width: 100vw;
-    height: 100vh;
-    color: var(--home-ink);
-    background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        width: 100vw;
+                        height: 100vh;
+                        color: var(--home-ink);
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
 }
 
 .analysis-app {
-   grid-template-rows: 92px minmax(0, 1fr) 76px !important;
+                       grid-template-rows: 92px minmax(0, 1fr) 76px !important;
 }
 
 .scene-app, .tourism-app {
-   grid-template-rows: 92px minmax(0, 1fr) !important;
+                       grid-template-rows: 92px minmax(0, 1fr) !important;
 }
 
 .topbar, .tourism-topbar {
-    position: relative;
-    min-height: 92px !important;
-    height: 92px !important;
-    padding: 12px 26px 10px !important;
-    align-items: flex-start !important;
-    color: var(--home-ink) !important;
-    background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
-    border-bottom: 0 !important;
-    box-shadow: none !important;
+                        position: relative;
+                        min-height: 92px !important;
+                        height: 92px !important;
+                        padding: 12px 26px 10px !important;
+                        align-items: flex-start !important;
+                        color: var(--home-ink) !important;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
+                        border-bottom: 0 !important;
+                        box-shadow: none !important;
 }
 
 .topbar::after, .tourism-topbar::after {
-    content: "" !important;
-    position: absolute;
-    left: 36%;
-    top: 14px;
-    width: 190px;
-    height: 58px;
-    pointer-events: none;
-    background: url("/assets/images/home-poster/slogan.png") center / contain no-repeat;
+                        content: "" !important;
+                        position: absolute;
+                        left: 36%;
+                        top: 14px;
+                        width: 190px;
+                        height: 58px;
+                        pointer-events: none;
+                        background: url("/assets/images/home-poster/slogan.png") center / contain no-repeat;
 }
 
 .brand, .tourism-brand {
-    display: grid !important;
-    grid-template-columns: 72px minmax(0, 1fr);
-    align-items: center;
-    width: 440px;
-    height: 72px;
-    column-gap: 12px !important;
-    gap: 4px !important;
-    min-width: 0;
+                        display: grid !important;
+                        grid-template-columns: 72px minmax(0, 1fr);
+                        align-items: center;
+                        width: 440px;
+                        height: 72px;
+                        column-gap: 12px !important;
+                        gap: 4px !important;
+                        min-width: 0;
 }
 
 .brand-logo {
-    grid-row: 1 / 3;
-    align-self: start !important;
-    margin-top: 0;
-    width: 72px;
-    height: 72px;
-    object-fit: cover;
-    object-position: center;
-    border: 2px solid rgba(255, 231, 169, 0.78);
-    border-radius: 50%;
-    box-shadow:     0 0 0 3px rgba(128, 23, 15, 0.16),     0 8px 18px rgba(77, 20, 10, 0.18);
+                        grid-row: 1 / 3;
+                        align-self: start !important;
+                        margin-top: 0;
+                        width: 72px;
+                        height: 72px;
+                        object-fit: cover;
+                        object-position: center;
+                        border: 2px solid rgba(255, 231, 169, 0.78);
+                        border-radius: 50%;
+                        box-shadow:     0 0 0 3px rgba(128, 23, 15, 0.16),     0 8px 18px rgba(77, 20, 10, 0.18);
 }
 
 .seal, .brand-star {
-   display: none !important;
+                       display: none !important;
 }
 
 .brand h1, .tourism-brand strong {
-    display: block !important;
-    width: min(330px, 21vw) !important;
-    height: 58px !important;
-    margin: 0 !important;
-    overflow: hidden !important;
-    color: transparent !important;
-    font-size: 0 !important;
-    line-height: 0 !important;
-    letter-spacing: 0 !important;
-    text-shadow: none !important;
-    background: url("/assets/images/home-poster/title-art.png") left center / contain no-repeat !important;
+                        display: block !important;
+                        width: min(330px, 21vw) !important;
+                        height: 58px !important;
+                        margin: 0 !important;
+                        overflow: hidden !important;
+                        color: transparent !important;
+                        font-size: 0 !important;
+                        line-height: 0 !important;
+                        letter-spacing: 0 !important;
+                        text-shadow: none !important;
+                        background: url("/assets/images/home-poster/title-art.png") left center / contain no-repeat !important;
 }
 
 .brand h1::after, .tourism-brand strong::after {
-    content: "";
-    display: block;
-    width: 300px;
-    height: 8px;
-    margin: 56px 0 0 6px;
-    background: linear-gradient(90deg, rgba(126, 25, 16, 0), #7e1910 12%, #7e1910 72%, rgba(126, 25, 16, 0));
-    border-radius: 999px;
-    opacity: 0.78;
+                        content: "";
+                        display: block;
+                        width: 300px;
+                        height: 8px;
+                        margin: 56px 0 0 6px;
+                        background: linear-gradient(90deg, rgba(126, 25, 16, 0), #7e1910 12%, #7e1910 72%, rgba(126, 25, 16, 0));
+                        border-radius: 999px;
+                        opacity: 0.78;
 }
 
 .brand small, .tourism-brand span {
-    display: inline-flex !important;
-    align-items: center;
-    gap: 10px;
-    margin-left: 38px;
-    color: #3f2015 !important;
-    font-size: 14px !important;
-    letter-spacing: 0.08em !important;
+                        display: inline-flex !important;
+                        align-items: center;
+                        gap: 10px;
+                        margin-left: 38px;
+                        color: #3f2015 !important;
+                        font-size: 14px !important;
+                        letter-spacing: 0.08em !important;
 }
 
 .brand small::before, .brand small::after, .tourism-brand span::before, .tourism-brand span::after {
-    content: "";
-    width: 6px;
-    height: 6px;
-    background: var(--home-red);
-    border-radius: 50%;
+                        content: "";
+                        width: 6px;
+                        height: 6px;
+                        background: var(--home-red);
+                        border-radius: 50%;
 }
 
 .topbar .site-nav, .tourism-topbar .site-nav {
-    position: absolute !important;
-    left: auto !important;
-    right: 28px !important;
-    top: 18px !important;
-    width: 560px !important;
-    height: 54px !important;
-    margin: 0 !important;
-    padding: 0 18px 0 54px !important;
-    display: flex !important;
-    justify-content: flex-end !important;
-    gap: 8px !important;
-    overflow: visible !important;
-    transform: none !important;
-    background: linear-gradient(90deg, rgba(136, 22, 14, 0), rgba(151, 28, 18, 0.96) 10%, rgba(132, 24, 16, 0.94) 92%, rgba(136, 22, 14, 0)) !important;
-    border: 0 !important;
-    border-radius: 2px !important;
-    clip-path: polygon(3% 8%, 100% 0, 96% 88%, 0 100%);
+                        position: absolute !important;
+                        left: auto !important;
+                        right: 28px !important;
+                        top: 18px !important;
+                        width: 560px !important;
+                        height: 54px !important;
+                        margin: 0 !important;
+                        padding: 0 18px 0 54px !important;
+                        display: flex !important;
+                        justify-content: flex-end !important;
+                        gap: 8px !important;
+                        overflow: visible !important;
+                        transform: none !important;
+                        background: linear-gradient(90deg, rgba(136, 22, 14, 0), rgba(151, 28, 18, 0.96) 10%, rgba(132, 24, 16, 0.94) 92%, rgba(136, 22, 14, 0)) !important;
+                        border: 0 !important;
+                        border-radius: 2px !important;
+                        clip-path: polygon(3% 8%, 100% 0, 96% 88%, 0 100%);
 }
 
 .topbar .site-nav::before, .tourism-topbar .site-nav::before {
-    content: "";
-    position: absolute;
-    inset: -10px -14px;
-    z-index: -1;
-    background: linear-gradient(90deg, transparent, rgba(130, 20, 12, 0.86), transparent);
-    filter: blur(3px);
-    clip-path: polygon(0 18%, 100% 0, 96% 78%, 6% 100%);
+                        content: "";
+                        position: absolute;
+                        inset: -10px -14px;
+                        z-index: -1;
+                        background: linear-gradient(90deg, transparent, rgba(130, 20, 12, 0.86), transparent);
+                        filter: blur(3px);
+                        clip-path: polygon(0 18%, 100% 0, 96% 78%, 6% 100%);
 }
 
 .site-nav .site-nav-btn, .tourism-nav button {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 92px !important;
-    height: 36px !important;
-    padding: 0 13px !important;
-    color: #fff6d6 !important;
-    background: rgba(90, 18, 12, 0.45) !important;
-    border: 1px solid rgba(255, 223, 139, 0.62) !important;
-    border-radius: 999px !important;
-    box-shadow: none !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    white-space: nowrap;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        min-width: 92px !important;
+                        height: 36px !important;
+                        padding: 0 13px !important;
+                        color: #fff6d6 !important;
+                        background: rgba(90, 18, 12, 0.45) !important;
+                        border: 1px solid rgba(255, 223, 139, 0.62) !important;
+                        border-radius: 999px !important;
+                        box-shadow: none !important;
+                        font-size: 13px !important;
+                        font-weight: 700 !important;
+                        line-height: 1 !important;
+                        white-space: nowrap;
 }
 
 .site-nav .site-nav-btn::before {
-   display: none !important;
-   content: none !important;
+                       display: none !important;
+                       content: none !important;
 }
 
 .site-nav .site-nav-active, .tourism-nav button.active, .tourism-nav button.site-nav-active {
-    color: #62130c !important;
-    background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
-    border-color: rgba(255, 242, 194, 0.86) !important;
+                        color: #62130c !important;
+                        background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+                        border-color: rgba(255, 242, 194, 0.86) !important;
 }
 
 .system-state, .scene-app .site-nav .system-state {
-   display: none !important;
+                       display: none !important;
 }
 
 .analysis-grid, .scene-layout, .tourism-layout {
-    min-height: 0;
-    gap: 14px !important;
-    padding: 0 22px 14px !important;
-    background: transparent !important;
+                        min-height: 0;
+                        gap: 14px !important;
+                        padding: 0 22px 14px !important;
+                        background: transparent !important;
 }
 
 .analysis-grid {
-   grid-template-columns: 320px minmax(0, 1fr) clamp(360px, 22vw, 430px) !important;
+                       grid-template-columns: 320px minmax(0, 1fr) clamp(360px, 22vw, 430px) !important;
 }
 
 .scene-layout {
-   grid-template-columns: 320px minmax(0, 1fr) !important;
+                       grid-template-columns: 320px minmax(0, 1fr) !important;
 }
 
 .tourism-layout {
-    grid-template-columns: 320px minmax(0, 1fr) clamp(360px, 22vw, 430px) !important;
-    grid-template-rows: minmax(0, 1fr) 120px !important;
+                        grid-template-columns: 320px minmax(0, 1fr) clamp(360px, 22vw, 430px) !important;
+                        grid-template-rows: minmax(0, 1fr) 120px !important;
 }
 
 .tools-panel, .metrics-panel, .scene-archive, .tourism-left, .tourism-right {
-    min-height: 0;
-    padding: 18px !important;
-    overflow: auto;
-    color: var(--home-ink) !important;
-    background:     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
-    border: 1px solid var(--home-line) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 12px 30px rgba(87, 31, 12, 0.18), inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
+                        min-height: 0;
+                        padding: 18px !important;
+                        overflow: auto;
+                        color: var(--home-ink) !important;
+                        background:     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
+                        border: 1px solid var(--home-line) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 12px 30px rgba(87, 31, 12, 0.18), inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
 }
 
 .analysis-map, .scene-stage, .tourism-map-wrap {
-    margin: 0 !important;
-    overflow: hidden;
-    border: 1px solid rgba(125, 56, 25, 0.2) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16) !important;
+                        margin: 0 !important;
+                        overflow: hidden;
+                        border: 1px solid rgba(125, 56, 25, 0.2) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16) !important;
 }
 
 .analysis-map, .tourism-map-wrap {
-   background: #ead8b2 !important;
+                       background: #ead8b2 !important;
 }
 
 .scene-stage {
-   background: #3b1d12 !important;
+                       background: #3b1d12 !important;
 }
 
 .section-label, .panel-kicker {
-    color: #9d1f15 !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.14em !important;
+                        color: #9d1f15 !important;
+                        font-weight: 800 !important;
+                        letter-spacing: 0.14em !important;
 }
 
 .section-label::after {
-   background: linear-gradient(90deg, #9d1f15, rgba(157, 31, 21, 0)) !important;
+                       background: linear-gradient(90deg, #9d1f15, rgba(157, 31, 21, 0)) !important;
 }
 
 .tool-list button, .archive-card, .panel-card, .detail-panel, .route-panel, .chart-panel, .parameter-panel, .metrics article, .overall-analysis-panel, .ai-result-card, .layer-control, .map-pick-card {
-    color: #462013 !important;
-    background: rgba(255, 248, 230, 0.68) !important;
-    border: 1px solid rgba(120, 47, 20, 0.22) !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
+                        color: #462013 !important;
+                        background: rgba(255, 248, 230, 0.68) !important;
+                        border: 1px solid rgba(120, 47, 20, 0.22) !important;
+                        border-radius: 8px !important;
+                        box-shadow: none !important;
 }
 
 .tool-list button:hover, .tool-list button.active {
-    color: #7d1d13 !important;
-    background: rgba(255, 241, 200, 0.92) !important;
-    border-color: rgba(157, 31, 21, 0.42) !important;
+                        color: #7d1d13 !important;
+                        background: rgba(255, 241, 200, 0.92) !important;
+                        border-color: rgba(157, 31, 21, 0.42) !important;
 }
 
 .tool-list i {
-    color: #fff5d1 !important;
-    background: #9d2016 !important;
-    border-color: rgba(255, 223, 139, 0.62) !important;
-    border-radius: 8px !important;
+                        color: #fff5d1 !important;
+                        background: #9d2016 !important;
+                        border-color: rgba(255, 223, 139, 0.62) !important;
+                        border-radius: 8px !important;
 }
 
 .tool-list b, .panel-card h2, .detail-panel h2, .route-panel h2, .chart-panel h2, .selected-card h3, .panel-title-row span, .route-summary h3 {
-   color: #4b170f !important;
+                       color: #4b170f !important;
 }
 
 .tool-list small, .hint, .detail-panel p, .route-panel p, .measure-card p, .selected-card p, .selected-card small, .ai-result-card p, .overall-analysis-panel p {
-   color: #6d4128 !important;
+                       color: #6d4128 !important;
 }
 
 .parameter-panel select, .parameter-panel input, .panel-card select, .panel-card input {
-    color: #3d1c11 !important;
-    background: rgba(255, 250, 232, 0.86) !important;
-    border: 1px solid rgba(139, 41, 24, 0.22) !important;
-    border-radius: 8px !important;
+                        color: #3d1c11 !important;
+                        background: rgba(255, 250, 232, 0.86) !important;
+                        border: 1px solid rgba(139, 41, 24, 0.22) !important;
+                        border-radius: 8px !important;
 }
 
 .run-analysis, .primary-action, .preset-grid button, .measure-card button, .result-actions button, .chart-tabs button.active {
-    color: #fff5d1 !important;
-    background: #9d2016 !important;
-    border: 1px solid rgba(255, 223, 139, 0.62) !important;
-    border-radius: 9px !important;
+                        color: #fff5d1 !important;
+                        background: #9d2016 !important;
+                        border: 1px solid rgba(255, 223, 139, 0.62) !important;
+                        border-radius: 9px !important;
 }
 
 .primary-action, .chart-tabs button.active {
-    color: #62130c !important;
-    background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+                        color: #62130c !important;
+                        background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
 }
 
 .metrics-head span, .route-switch button, .chart-tabs button, .layer-control label, .archive-grid dt, .archive-grid dd, .stat-grid span, .stat-grid b {
-   color: #6d4128 !important;
+                       color: #6d4128 !important;
 }
 
 .metrics article b, .overall-kpis b, .ai-mini-metrics b, .archive-grid dd, .stat-grid b {
-   color: #9d1f15 !important;
+                       color: #9d1f15 !important;
 }
 
 .map-title-card, .map-badge, .scene-hud, .scene-legend, .analysis-legend, .tourism-legend {
-    color: #4d120b !important;
-    background: rgba(255, 238, 199, 0.86) !important;
-    border: 1px solid rgba(157, 31, 21, 0.28) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 12px 28px rgba(69, 24, 12, 0.12) !important;
+                        color: #4d120b !important;
+                        background: rgba(255, 238, 199, 0.86) !important;
+                        border: 1px solid rgba(157, 31, 21, 0.28) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 12px 28px rgba(69, 24, 12, 0.12) !important;
 }
 
 .map-title-card span, .map-badge span, .scene-guide b, .scene-legend b, .analysis-legend b, .tourism-legend b {
-   color: #9d1f15 !important;
+                       color: #9d1f15 !important;
 }
 
 .map-title-card b, .map-badge b, .scene-guide span, .scene-metrics span, .scene-metrics b, .scene-legend span, .analysis-legend span, .tourism-legend span {
-   color: #4d120b !important;
+                       color: #4d120b !important;
 }
 
 .conclusion {
-    min-height: 76px !important;
-    height: 76px !important;
-    padding: 0 28px !important;
-    color: #ffecc0 !important;
-    background:     linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),     radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%) !important;
-    border-top: 2px solid rgba(232, 192, 101, 0.5) !important;
-    box-shadow: none !important;
+                        min-height: 76px !important;
+                        height: 76px !important;
+                        padding: 0 28px !important;
+                        color: #ffecc0 !important;
+                        background:     linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),     radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%) !important;
+                        border-top: 2px solid rgba(232, 192, 101, 0.5) !important;
+                        box-shadow: none !important;
 }
 
 .conclusion p {
-   color: #fff2c8 !important;
+                       color: #fff2c8 !important;
 }
 
 .result-badge {
-    color: #62130c !important;
-    background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
-    border: 1px solid rgba(255, 242, 194, 0.72) !important;
-    border-radius: 8px !important;
+                        color: #62130c !important;
+                        background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+                        border: 1px solid rgba(255, 242, 194, 0.72) !important;
+                        border-radius: 8px !important;
 }
 
 .bottom-route-recommend {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    min-height: 0 !important;
-    height: 120px !important;
-    margin: 0 !important;
-    padding: 10px 18px !important;
-    align-self: stretch !important;
-    background:     linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),     radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%) !important;
-    border: 2px solid rgba(232, 192, 101, 0.5) !important;
-    border-radius: 8px !important;
-    overflow: auto hidden !important;
+                        grid-column: 1 / -1 !important;
+                        grid-row: 2 !important;
+                        min-height: 0 !important;
+                        height: 120px !important;
+                        margin: 0 !important;
+                        padding: 10px 18px !important;
+                        align-self: stretch !important;
+                        background:     linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),     radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%) !important;
+                        border: 2px solid rgba(232, 192, 101, 0.5) !important;
+                        border-radius: 8px !important;
+                        overflow: auto hidden !important;
 }
 
 .recommend-card {
-    min-width: 250px !important;
-    color: #4d120b !important;
-    background: rgba(255, 238, 199, 0.9) !important;
-    border: 1px solid rgba(255, 223, 139, 0.58) !important;
-    border-radius: 8px !important;
+                        min-width: 250px !important;
+                        color: #4d120b !important;
+                        background: rgba(255, 238, 199, 0.9) !important;
+                        border: 1px solid rgba(255, 223, 139, 0.58) !important;
+                        border-radius: 8px !important;
 }
 
 .recommend-card button {
-    color: #62130c !important;
-    background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
-    border: 1px solid rgba(255, 242, 194, 0.72) !important;
-    border-radius: 999px !important;
+                        color: #62130c !important;
+                        background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+                        border: 1px solid rgba(255, 242, 194, 0.72) !important;
+                        border-radius: 999px !important;
 }
 
 .analysis-modal-card {
-    color: #3d1c11 !important;
-    background:     linear-gradient(rgba(255, 246, 222, 0.97), rgba(239, 207, 152, 0.94)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
-    border: 1px solid rgba(122, 54, 21, 0.25) !important;
-    border-radius: 8px !important;
+                        color: #3d1c11 !important;
+                        background:     linear-gradient(rgba(255, 246, 222, 0.97), rgba(239, 207, 152, 0.94)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
+                        border: 1px solid rgba(122, 54, 21, 0.25) !important;
+                        border-radius: 8px !important;
 }
 
 #modalTitle, #modalBody, #modalBody b {
-   color: #4b170f !important;
+                       color: #4b170f !important;
 }
 
 @media (max-width: 1280px) {
-    .brand,   .tourism-brand {
-        grid-template-columns: 60px minmax(0, 1fr);
-        width: 390px;
-        height: 80px;
-        column-gap: 10px !important;
+                        .brand,   .tourism-brand {
+                                                grid-template-columns: 60px minmax(0, 1fr);
+                                                width: 390px;
+                                                height: 80px;
+                                                column-gap: 10px !important;
   }
 
-    .brand-logo {
-        width: 60px;
-        height: 60px;
-        margin-top: 10px !important;
+                        .brand-logo {
+                                                width: 60px;
+                                                height: 60px;
+                                                margin-top: 10px !important;
   }
 
-    .brand h1,   .tourism-brand strong {
-     width: 300px !important;
+                        .brand h1,   .tourism-brand strong {
+                                             width: 300px !important;
   }
 
-    .topbar::after,   .tourism-topbar::after {
-     left: 30%;
+                        .topbar::after,   .tourism-topbar::after {
+                                             left: 30%;
   }
 
-    .analysis-grid,   .tourism-layout {
-     grid-template-columns: 280px minmax(0, 1fr) 320px !important;
+                        .analysis-grid,   .tourism-layout {
+                                             grid-template-columns: 280px minmax(0, 1fr) 320px !important;
   }
 
-    .scene-layout {
-     grid-template-columns: 280px minmax(0, 1fr) !important;
+                        .scene-layout {
+                                             grid-template-columns: 280px minmax(0, 1fr) !important;
   }
 }
 
 @media (max-width: 920px) {
-    .analysis-app,   .scene-app,   .tourism-app {
-     height: auto;
-     min-height: 100vh;
-     overflow: auto;
+                        .analysis-app,   .scene-app,   .tourism-app {
+                                             height: auto;
+                                             min-height: 100vh;
+                                             overflow: auto;
   }
 
-    .topbar,   .tourism-topbar {
-     height: auto !important;
-     min-height: 92px !important;
-     display: grid !important;
-     gap: 10px !important;
+                        .topbar,   .tourism-topbar {
+                                             height: auto !important;
+                                             min-height: 92px !important;
+                                             display: grid !important;
+                                             gap: 10px !important;
   }
 
-    .topbar::after,   .tourism-topbar::after {
-     display: none;
+                        .topbar::after,   .tourism-topbar::after {
+                                             display: none;
   }
 
-    .brand,   .tourism-brand {
-     width: 100%;
-     display: grid !important;
-     grid-template-columns: 56px minmax(0, 1fr);
-     height: auto;
+                        .brand,   .tourism-brand {
+                                             width: 100%;
+                                             display: grid !important;
+                                             grid-template-columns: 56px minmax(0, 1fr);
+                                             height: auto;
   }
 
-    .brand-logo {
-     width: 56px;
-     height: 56px;
-     margin-top: 0 !important;
+                        .brand-logo {
+                                             width: 56px;
+                                             height: 56px;
+                                             margin-top: 0 !important;
   }
 
-    .brand h1,   .tourism-brand strong {
-     width: min(360px, 88vw) !important;
+                        .brand h1,   .tourism-brand strong {
+                                             width: min(360px, 88vw) !important;
   }
 
-    .topbar .site-nav,   .tourism-topbar .site-nav {
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
-        min-height: 48px;
-        justify-content: flex-start !important;
-        overflow-x: auto !important;
-        transform: none !important;
+                        .topbar .site-nav,   .tourism-topbar .site-nav {
+                                                position: static !important;
+                                                width: 100% !important;
+                                                height: auto !important;
+                                                min-height: 48px;
+                                                justify-content: flex-start !important;
+                                                overflow-x: auto !important;
+                                                transform: none !important;
   }
 
-    .analysis-grid,   .scene-layout,   .tourism-layout {
-     grid-template-columns: 1fr !important;
-     grid-template-rows: auto !important;
-     padding: 0 14px 14px !important;
+                        .analysis-grid,   .scene-layout,   .tourism-layout {
+                                             grid-template-columns: 1fr !important;
+                                             grid-template-rows: auto !important;
+                                             padding: 0 14px 14px !important;
   }
 
-    .analysis-map,   .scene-stage,   .tourism-map-wrap {
-     min-height: 62vh;
+                        .analysis-map,   .scene-stage,   .tourism-map-wrap {
+                                             min-height: 62vh;
   }
 
-    .bottom-route-recommend {
-     grid-column: 1 !important;
-     grid-row: auto !important;
-     height: auto !important;
-     min-height: 130px !important;
+                        .bottom-route-recommend {
+                                             grid-column: 1 !important;
+                                             grid-row: auto !important;
+                                             height: auto !important;
+                                             min-height: 130px !important;
   }
 
-    .conclusion {
-     height: auto !important;
-     min-height: 76px !important;
-     flex-wrap: wrap;
-     padding: 12px 14px !important;
+                        .conclusion {
+                                             height: auto !important;
+                                             min-height: 76px !important;
+                                             flex-wrap: wrap;
+                                             padding: 12px 14px !important;
   }
 }
 
 .tourism-layout .tourism-map-wrap.cartoon-map-card, .tourism-map-wrap.cartoon-map-card {
-    border-radius: 8px !important;
+                        border-radius: 8px !important;
 }
 
 /* Tourism page final alignment: neutralize the older cartoon theme so it matches home. */ .tourism-app.tourism-cartoon-shell {
-    background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
 }
 
 .tourism-topbar.tourism-cartoon-topbar {
-    display: flex !important;
-    align-items: flex-start !important;
-    height: 92px !important;
-    min-height: 92px !important;
-    padding: 12px 26px 10px !important;
-    background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
+                        display: flex !important;
+                        align-items: flex-start !important;
+                        height: 92px !important;
+                        min-height: 92px !important;
+                        padding: 12px 26px 10px !important;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
 }
 
 .tourism-brand.cartoon-brand, .tourism-brand.cartoon-brand > div:last-child {
-    display: grid !important;
-    gap: 2px !important;
-    padding: 0 !important;
-    background: none !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    transform: none !important;
+                        display: grid !important;
+                        gap: 2px !important;
+                        padding: 0 !important;
+                        background: none !important;
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                        transform: none !important;
 }
 
 .tourism-brand.cartoon-brand::before, .tourism-brand.cartoon-brand::after, .cartoon-left-panel .panel-card::before, .cartoon-right-panel .detail-panel::before, .cartoon-right-panel .route-panel::before, .cartoon-right-panel .chart-panel::before, .cartoon-stickers, .cartoon-nav button::before, .cartoon-nav .site-nav-btn::before {
-    display: none !important;
-    content: none !important;
+                        display: none !important;
+                        content: none !important;
 }
 
 .tourism-cartoon-layout {
-    gap: 10px !important;
-    padding: 0 18px 12px !important;
-    grid-template-columns: 260px minmax(0, 1fr) clamp(300px, 16vw, 340px) !important;
-    grid-template-rows: minmax(0, 1fr) 108px !important;
-    background: transparent !important;
+                        gap: 10px !important;
+                        padding: 0 18px 12px !important;
+                        grid-template-columns: 260px minmax(0, 1fr) clamp(300px, 16vw, 340px) !important;
+                        grid-template-rows: minmax(0, 1fr) 108px !important;
+                        background: transparent !important;
 }
 
 .cartoon-left-panel, .cartoon-right-panel {
-    padding: 18px !important;
-    background:     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
-    border: 1px solid var(--home-line) !important;
-    border-radius: 8px !important;
-    box-shadow:     0 12px 30px rgba(87, 31, 12, 0.18),     inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
+                        padding: 18px !important;
+                        background:     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
+                        border: 1px solid var(--home-line) !important;
+                        border-radius: 8px !important;
+                        box-shadow:     0 12px 30px rgba(87, 31, 12, 0.18),     inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
 }
 
 .cartoon-left-panel .panel-card, .cartoon-right-panel .detail-panel, .cartoon-right-panel .route-panel, .cartoon-right-panel .chart-panel, .route-point-picker.map-pick-card, .selected-route-point-list .route-point-empty, .selected-route-chip, .left-route-recommend, .review-board {
-    color: #462013 !important;
-    background: rgba(255, 248, 230, 0.68) !important;
-    border: 1px solid rgba(120, 47, 20, 0.22) !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
+                        color: #462013 !important;
+                        background: rgba(255, 248, 230, 0.68) !important;
+                        border: 1px solid rgba(120, 47, 20, 0.22) !important;
+                        border-radius: 8px !important;
+                        box-shadow: none !important;
 }
 
 .cartoon-left-panel .panel-card, .cartoon-right-panel .detail-panel, .cartoon-right-panel .route-panel, .cartoon-right-panel .chart-panel {
-    padding: 14px !important;
-    margin-bottom: 12px !important;
+                        padding: 14px !important;
+                        margin-bottom: 12px !important;
 }
 
 .cartoon-left-panel .primary-action, .cartoon-right-panel .primary-action, .map-click-mode button.active, .detail-route-action, .comment-submit {
-    color: #fff5d1 !important;
-    background: #9d2016 !important;
-    border: 1px solid rgba(255, 223, 139, 0.62) !important;
-    border-radius: 9px !important;
-    box-shadow: none !important;
+                        color: #fff5d1 !important;
+                        background: #9d2016 !important;
+                        border: 1px solid rgba(255, 223, 139, 0.62) !important;
+                        border-radius: 9px !important;
+                        box-shadow: none !important;
 }
 
 .map-click-mode, .detail-route-mode, .left-route-recommend-grid button, .route-point-chip span {
-    background: rgba(255, 248, 230, 0.68) !important;
-    border: 1px solid rgba(120, 47, 20, 0.22) !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
+                        background: rgba(255, 248, 230, 0.68) !important;
+                        border: 1px solid rgba(120, 47, 20, 0.22) !important;
+                        border-radius: 8px !important;
+                        box-shadow: none !important;
 }
 
 .tourism-map-wrap.cartoon-map-card, .cartoon-map-card {
-    background: #ead8b2 !important;
-    border: 1px solid rgba(125, 56, 25, 0.2) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16) !important;
+                        background: #ead8b2 !important;
+                        border: 1px solid rgba(125, 56, 25, 0.2) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16) !important;
 }
 
 .cartoon-map-card #tourismMap, .tourism-map-wrap.cartoon-map-card #tourismMap {
-    background: #ead8b2 !important;
-    border-radius: 0 !important;
+                        background: #ead8b2 !important;
+                        border-radius: 0 !important;
 }
 
 .cartoon-map-card::before, .tourism-map-wrap.cartoon-map-card::before, .cartoon-map-card::after, .tourism-map-wrap.cartoon-map-card::after {
-    display: none !important;
-    background: none !important;
-    box-shadow: none !important;
+                        display: none !important;
+                        background: none !important;
+                        box-shadow: none !important;
 }
 
 .map-badge.cartoon-map-title, .cartoon-map-title {
-    display: block !important;
-    top: 16px !important;
-    min-width: 320px !important;
-    padding: 9px 18px !important;
-    color: #4d120b !important;
-    background: rgba(255, 238, 199, 0.86) !important;
-    border: 1px solid rgba(157, 31, 21, 0.28) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 12px 28px rgba(69, 24, 12, 0.12) !important;
+                        display: block !important;
+                        top: 16px !important;
+                        min-width: 320px !important;
+                        padding: 9px 18px !important;
+                        color: #4d120b !important;
+                        background: rgba(255, 238, 199, 0.86) !important;
+                        border: 1px solid rgba(157, 31, 21, 0.28) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 12px 28px rgba(69, 24, 12, 0.12) !important;
 }
 
 .cartoon-floating-legend, .tourism-map-wrap .cartoon-floating-legend, .cartoon-map-card .cartoon-floating-legend {
-    width: 184px !important;
-    padding: 11px !important;
-    color: #4d120b !important;
-    background: rgba(255, 238, 199, 0.86) !important;
-    border: 1px solid rgba(157, 31, 21, 0.28) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 12px 28px rgba(69, 24, 12, 0.12) !important;
+                        width: 184px !important;
+                        padding: 11px !important;
+                        color: #4d120b !important;
+                        background: rgba(255, 238, 199, 0.86) !important;
+                        border: 1px solid rgba(157, 31, 21, 0.28) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 12px 28px rgba(69, 24, 12, 0.12) !important;
 }
 
 .tourism-legend i.site, .legend-mini i.site, .tourism-legend i.museum, .legend-mini i.museum, .tourism-legend i.scenic, .legend-mini i.scenic, .tourism-legend i.other, .legend-mini i.other {
-    background: #9d2016 !important;
-    border-color: rgba(255, 245, 214, 0.95) !important;
+                        background: #9d2016 !important;
+                        border-color: rgba(255, 245, 214, 0.95) !important;
 }
 
 .bottom-route-recommend.route-recommend-strip {
-    display: flex !important;
-    align-items: stretch !important;
-    gap: 12px !important;
-    height: 120px !important;
-    min-height: 0 !important;
-    padding: 10px 18px !important;
-    color: #ffecc0 !important;
-    background:     linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),     radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%) !important;
-    border: 2px solid rgba(232, 192, 101, 0.5) !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
-    overflow: auto hidden !important;
+                        display: flex !important;
+                        align-items: stretch !important;
+                        gap: 12px !important;
+                        height: 120px !important;
+                        min-height: 0 !important;
+                        padding: 10px 18px !important;
+                        color: #ffecc0 !important;
+                        background:     linear-gradient(180deg, rgba(159, 42, 28, 0.96), rgba(93, 17, 10, 0.98)),     radial-gradient(circle at 50% 0, rgba(255, 218, 121, 0.16), transparent 40%) !important;
+                        border: 2px solid rgba(232, 192, 101, 0.5) !important;
+                        border-radius: 8px !important;
+                        box-shadow: none !important;
+                        overflow: auto hidden !important;
 }
 
 .bottom-route-recommend .recommend-card {
-    flex: 0 0 270px !important;
-    min-width: 270px !important;
-    height: 96px !important;
-    min-height: 0 !important;
-    padding: 9px 11px !important;
-    align-content: start !important;
-    gap: 5px !important;
-    color: #4d120b !important;
-    background: rgba(255, 238, 199, 0.9) !important;
-    border: 1px solid rgba(255, 223, 139, 0.58) !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
+                        flex: 0 0 270px !important;
+                        min-width: 270px !important;
+                        height: 96px !important;
+                        min-height: 0 !important;
+                        padding: 9px 11px !important;
+                        align-content: start !important;
+                        gap: 5px !important;
+                        color: #4d120b !important;
+                        background: rgba(255, 238, 199, 0.9) !important;
+                        border: 1px solid rgba(255, 223, 139, 0.58) !important;
+                        border-radius: 8px !important;
+                        box-shadow: none !important;
 }
 
 .bottom-route-recommend .recommend-card p {
-    display: none !important;
+                        display: none !important;
 }
 
 .bottom-route-recommend .recommend-card header {
-    gap: 4px !important;
-    margin: 0 !important;
+                        gap: 4px !important;
+                        margin: 0 !important;
 }
 
 .bottom-route-recommend .recommend-card header b {
-    color: #4b170f !important;
-    font-size: 13px !important;
+                        color: #4b170f !important;
+                        font-size: 13px !important;
 }
 
 .bottom-route-recommend .recommend-card header span {
-    color: #7d1d13 !important;
-    background: rgba(255, 232, 180, 0.74) !important;
-    border: 1px solid rgba(141, 35, 22, 0.28) !important;
-    border-radius: 999px !important;
+                        color: #7d1d13 !important;
+                        background: rgba(255, 232, 180, 0.74) !important;
+                        border: 1px solid rgba(141, 35, 22, 0.28) !important;
+                        border-radius: 999px !important;
 }
 
 .bottom-route-recommend .recommend-flow {
-    margin: 2px 0 !important;
+                        margin: 2px 0 !important;
 }
 
 .bottom-route-recommend .recommend-flow i, .bottom-route-recommend .recommend-flow em {
-    background: #9d2016 !important;
-    color: #fff5d1 !important;
+                        background: #9d2016 !important;
+                        color: #fff5d1 !important;
 }
 
 .bottom-route-recommend .recommend-card button, .recommend-card button, .recommend-card button[data-route-preset] {
-    min-height: 26px !important;
-    margin-top: 0 !important;
-    color: #62130c !important;
-    background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
-    border: 1px solid rgba(255, 242, 194, 0.72) !important;
-    border-radius: 999px !important;
-    box-shadow: none !important;
+                        min-height: 26px !important;
+                        margin-top: 0 !important;
+                        color: #62130c !important;
+                        background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+                        border: 1px solid rgba(255, 242, 194, 0.72) !important;
+                        border-radius: 999px !important;
+                        box-shadow: none !important;
 }
 
 @media (max-width: 1280px) {
-    .tourism-cartoon-layout {
-        grid-template-columns: 220px minmax(0, 1fr) 260px !important;
+                        .tourism-cartoon-layout {
+                                                grid-template-columns: 220px minmax(0, 1fr) 260px !important;
   }
 }
 
 @media (max-width: 920px) {
-    .tourism-topbar.tourism-cartoon-topbar {
-        display: grid !important;
-        height: auto !important;
+                        .tourism-topbar.tourism-cartoon-topbar {
+                                                display: grid !important;
+                                                height: auto !important;
   }
 
-    .tourism-cartoon-layout {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto !important;
-        padding: 0 14px 14px !important;
+                        .tourism-cartoon-layout {
+                                                grid-template-columns: 1fr !important;
+                                                grid-template-rows: auto !important;
+                                                padding: 0 14px 14px !important;
   }
 
-    .map-badge.cartoon-map-title,   .cartoon-map-title {
-        min-width: min(320px, calc(100% - 28px)) !important;
+                        .map-badge.cartoon-map-title,   .cartoon-map-title {
+                                                min-width: min(320px, calc(100% - 28px)) !important;
   }
 
-    .bottom-route-recommend.route-recommend-strip {
-        height: auto !important;
-        min-height: 130px !important;
+                        .bottom-route-recommend.route-recommend-strip {
+                                                height: auto !important;
+                                                min-height: 130px !important;
   }
 }
 
 /* Keep tourism top navigation flush with the other pages. */ .tourism-app.tourism-cartoon-shell, .tourism-cartoon-shell {
-    padding: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    overflow: hidden !important;
+                        padding: 0 !important;
+                        width: 100vw !important;
+                        height: 100vh !important;
+                        overflow: hidden !important;
 }
 
 .tourism-app.tourism-cartoon-shell .tourism-topbar, .tourism-topbar.tourism-cartoon-topbar {
-    margin: 0 !important;
-    width: 100% !important;
+                        margin: 0 !important;
+                        width: 100% !important;
 }
 
 /* Align feature page logos to the home page topbar position. */ .topbar .brand, .tourism-topbar .tourism-brand {
-    position: relative !important;
+                        position: relative !important;
 }
 
 .topbar .brand > .brand-logo, .tourism-topbar .tourism-brand > .brand-logo {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    margin: 0 !important;
+                        position: absolute !important;
+                        left: 0 !important;
+                        top: 0 !important;
+                        margin: 0 !important;
 }
 
 @media (max-width: 1280px) {
-    .topbar .brand > .brand-logo,   .tourism-topbar .tourism-brand > .brand-logo {
-        top: 10px !important;
+                        .topbar .brand > .brand-logo,   .tourism-topbar .tourism-brand > .brand-logo {
+                                                top: 10px !important;
   }
 }
 
 @media (max-width: 920px) {
-    .topbar .brand > .brand-logo,   .tourism-topbar .tourism-brand > .brand-logo {
-        position: static !important;
-        margin: 0 !important;
+                        .topbar .brand > .brand-logo,   .tourism-topbar .tourism-brand > .brand-logo {
+                                                position: static !important;
+                                                margin: 0 !important;
   }
 }
 
 /* Keep feature page title art clear of the round logo. */ .brand > div:last-child, .tourism-brand > div:last-child {
-    grid-column: 2 !important;
+                        grid-column: 2 !important;
 }
 
 .brand h1, .tourism-brand strong {
-    grid-column: 2 !important;
-    margin-left: 18px !important;
+                        grid-column: 2 !important;
+                        margin-left: 18px !important;
 }
 
 .brand small, .tourism-brand span {
-    grid-column: 2 !important;
-    margin-left: 56px !important;
+                        grid-column: 2 !important;
+                        margin-left: 56px !important;
 }
 
 @media (max-width: 1280px) {
-    .brand h1,   .tourism-brand strong {
-        margin-left: 18px !important;
+                        .brand h1,   .tourism-brand strong {
+                                                margin-left: 18px !important;
   }
 
-    .brand small,   .tourism-brand span {
-        margin-left: 50px !important;
+                        .brand small,   .tourism-brand span {
+                                                margin-left: 50px !important;
   }
 }
 
 @media (max-width: 920px) {
-    .brand h1,   .tourism-brand strong,   .brand small,   .tourism-brand span {
-        margin-left: 0 !important;
+                        .brand h1,   .tourism-brand strong,   .brand small,   .tourism-brand span {
+                                                margin-left: 0 !important;
   }
 }
 
 /* Final home-page alignment for the three feature pages. */ .analysis-app, .scene-app, .tourism-app, .tourism-app.tourism-cartoon-shell {
-    width: 100vw !important;
-    height: 100vh !important;
-    color: var(--home-ink) !important;
-    background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        width: 100vw !important;
+                        height: 100vh !important;
+                        color: var(--home-ink) !important;
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
 }
 
 .analysis-app {
-    grid-template-rows: 92px minmax(0, 1fr) 76px !important;
+                        grid-template-rows: 92px minmax(0, 1fr) 76px !important;
 }
 
 .scene-app, .tourism-app, .tourism-app.tourism-cartoon-shell {
-    grid-template-rows: 92px minmax(0, 1fr) !important;
+                        grid-template-rows: 92px minmax(0, 1fr) !important;
 }
 
 .analysis-app > .topbar, .scene-app > .topbar, .tourism-app > .tourism-topbar, .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar {
-    position: relative !important;
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    height: 92px !important;
-    min-height: 92px !important;
-    max-height: 92px !important;
-    margin: 0 !important;
-    padding: 12px 26px 10px !important;
-    overflow: visible !important;
-    color: var(--home-ink) !important;
-    background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    clip-path: none !important;
+                        position: relative !important;
+                        display: flex !important;
+                        align-items: flex-start !important;
+                        justify-content: space-between !important;
+                        width: 100% !important;
+                        height: 92px !important;
+                        min-height: 92px !important;
+                        max-height: 92px !important;
+                        margin: 0 !important;
+                        padding: 12px 26px 10px !important;
+                        overflow: visible !important;
+                        color: var(--home-ink) !important;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                        clip-path: none !important;
 }
 
 .analysis-app > .topbar::after, .scene-app > .topbar::after, .tourism-app > .tourism-topbar::after, .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar::after {
-    content: "" !important;
-    position: absolute !important;
-    left: 36% !important;
-    top: 14px !important;
-    width: 190px !important;
-    height: 58px !important;
-    pointer-events: none !important;
-    background: url("/assets/images/home-poster/slogan.png") center / contain no-repeat !important;
-    border: 0 !important;
-    box-shadow: none !important;
+                        content: "" !important;
+                        position: absolute !important;
+                        left: 36% !important;
+                        top: 14px !important;
+                        width: 190px !important;
+                        height: 58px !important;
+                        pointer-events: none !important;
+                        background: url("/assets/images/home-poster/slogan.png") center / contain no-repeat !important;
+                        border: 0 !important;
+                        box-shadow: none !important;
 }
 
 .analysis-app .brand, .scene-app .brand, .tourism-app .tourism-brand, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand {
-    position: relative !important;
-    display: grid !important;
-    grid-template-columns: 72px minmax(0, 1fr) !important;
-    grid-template-rows: 58px 18px !important;
-    align-items: center !important;
-    width: 440px !important;
-    height: 72px !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    gap: 4px 12px !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    color: var(--home-ink) !important;
-    background: none !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    transform: none !important;
+                        position: relative !important;
+                        display: grid !important;
+                        grid-template-columns: 72px minmax(0, 1fr) !important;
+                        grid-template-rows: 58px 18px !important;
+                        align-items: center !important;
+                        width: 440px !important;
+                        height: 72px !important;
+                        min-width: 0 !important;
+                        max-width: none !important;
+                        gap: 4px 12px !important;
+                        padding: 0 !important;
+                        overflow: visible !important;
+                        color: var(--home-ink) !important;
+                        background: none !important;
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                        transform: none !important;
 }
 
 .analysis-app .brand > .brand-logo, .scene-app .brand > .brand-logo, .tourism-app .tourism-brand > .brand-logo, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand > .brand-logo {
-    grid-row: 1 / 3 !important;
-    grid-column: 1 !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    display: block !important;
-    width: 72px !important;
-    min-width: 72px !important;
-    max-width: 72px !important;
-    height: 72px !important;
-    min-height: 72px !important;
-    max-height: 72px !important;
-    margin: 0 !important;
-    object-fit: cover !important;
-    object-position: center !important;
-    background: rgba(255, 249, 228, 0.96) !important;
-    border: 2px solid rgba(255, 231, 169, 0.78) !important;
-    border-radius: 50% !important;
-    box-shadow:     0 0 0 3px rgba(128, 23, 15, 0.16),     0 8px 18px rgba(77, 20, 10, 0.18) !important;
-    flex: 0 0 72px !important;
-    transform: none !important;
+                        grid-row: 1 / 3 !important;
+                        grid-column: 1 !important;
+                        position: absolute !important;
+                        left: 0 !important;
+                        top: 0 !important;
+                        display: block !important;
+                        width: 72px !important;
+                        min-width: 72px !important;
+                        max-width: 72px !important;
+                        height: 72px !important;
+                        min-height: 72px !important;
+                        max-height: 72px !important;
+                        margin: 0 !important;
+                        object-fit: cover !important;
+                        object-position: center !important;
+                        background: rgba(255, 249, 228, 0.96) !important;
+                        border: 2px solid rgba(255, 231, 169, 0.78) !important;
+                        border-radius: 50% !important;
+                        box-shadow:     0 0 0 3px rgba(128, 23, 15, 0.16),     0 8px 18px rgba(77, 20, 10, 0.18) !important;
+                        flex: 0 0 72px !important;
+                        transform: none !important;
 }
 
 .analysis-app .brand > div:last-child, .scene-app .brand > div:last-child, .tourism-app .tourism-brand > div:last-child, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand > div:last-child {
-    grid-column: 2 !important;
-    grid-row: 1 / 3 !important;
-    display: grid !important;
-    grid-template-rows: 58px 18px !important;
-    align-items: start !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    gap: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
+                        grid-column: 2 !important;
+                        grid-row: 1 / 3 !important;
+                        display: grid !important;
+                        grid-template-rows: 58px 18px !important;
+                        align-items: start !important;
+                        width: 100% !important;
+                        min-width: 0 !important;
+                        max-width: none !important;
+                        gap: 0 !important;
+                        padding: 0 !important;
+                        overflow: visible !important;
 }
 
 .analysis-app .brand h1, .scene-app .brand h1, .tourism-app .tourism-brand strong, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand strong {
-    grid-column: 2 !important;
-    display: block !important;
-    width: min(330px, 21vw) !important;
-    min-width: 0 !important;
-    max-width: 330px !important;
-    height: 58px !important;
-    margin: 0 0 0 18px !important;
-    overflow: hidden !important;
-    color: transparent !important;
-    font-size: 0 !important;
-    font-weight: 900 !important;
-    line-height: 0 !important;
-    letter-spacing: 0 !important;
-    white-space: nowrap !important;
-    text-shadow: none !important;
-    text-overflow: clip !important;
-    background: url("/assets/images/home-poster/title-art.png") left center / contain no-repeat !important;
+                        grid-column: 2 !important;
+                        display: block !important;
+                        width: min(330px, 21vw) !important;
+                        min-width: 0 !important;
+                        max-width: 330px !important;
+                        height: 58px !important;
+                        margin: 0 0 0 18px !important;
+                        overflow: hidden !important;
+                        color: transparent !important;
+                        font-size: 0 !important;
+                        font-weight: 900 !important;
+                        line-height: 0 !important;
+                        letter-spacing: 0 !important;
+                        white-space: nowrap !important;
+                        text-shadow: none !important;
+                        text-overflow: clip !important;
+                        background: url("/assets/images/home-poster/title-art.png") left center / contain no-repeat !important;
 }
 
 .analysis-app .brand h1::after, .scene-app .brand h1::after, .tourism-app .tourism-brand strong::after, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand strong::after {
-    content: "" !important;
-    display: block !important;
-    width: 300px !important;
-    height: 8px !important;
-    margin: 56px 0 0 6px !important;
-    background: linear-gradient(90deg, rgba(126, 25, 16, 0), #7e1910 12%, #7e1910 72%, rgba(126, 25, 16, 0)) !important;
-    border-radius: 999px !important;
-    opacity: 0.78 !important;
+                        content: "" !important;
+                        display: block !important;
+                        width: 300px !important;
+                        height: 8px !important;
+                        margin: 56px 0 0 6px !important;
+                        background: linear-gradient(90deg, rgba(126, 25, 16, 0), #7e1910 12%, #7e1910 72%, rgba(126, 25, 16, 0)) !important;
+                        border-radius: 999px !important;
+                        opacity: 0.78 !important;
 }
 
 .analysis-app .brand small, .scene-app .brand small, .tourism-app .tourism-brand span, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand span {
-    grid-column: 2 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: auto !important;
-    max-width: 330px !important;
-    margin: 0 0 0 56px !important;
-    overflow: visible !important;
-    color: #3f2015 !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    line-height: 18px !important;
-    letter-spacing: 0.08em !important;
-    white-space: nowrap !important;
-    text-shadow: none !important;
-    text-overflow: clip !important;
+                        grid-column: 2 !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        gap: 10px !important;
+                        width: auto !important;
+                        max-width: 330px !important;
+                        margin: 0 0 0 56px !important;
+                        overflow: visible !important;
+                        color: #3f2015 !important;
+                        font-size: 14px !important;
+                        font-weight: 400 !important;
+                        line-height: 18px !important;
+                        letter-spacing: 0.08em !important;
+                        white-space: nowrap !important;
+                        text-shadow: none !important;
+                        text-overflow: clip !important;
 }
 
 .analysis-app .brand small::before, .analysis-app .brand small::after, .scene-app .brand small::before, .scene-app .brand small::after, .tourism-app .tourism-brand span::before, .tourism-app .tourism-brand span::after, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand span::before, .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand span::after {
-    content: "" !important;
-    display: block !important;
-    width: 6px !important;
-    height: 6px !important;
-    flex: 0 0 6px !important;
-    background: var(--home-red) !important;
-    border-radius: 50% !important;
+                        content: "" !important;
+                        display: block !important;
+                        width: 6px !important;
+                        height: 6px !important;
+                        flex: 0 0 6px !important;
+                        background: var(--home-red) !important;
+                        border-radius: 50% !important;
 }
 
 .analysis-app .seal, .scene-app .seal, .tourism-app .brand-star, .tourism-app.tourism-cartoon-shell .brand-star {
-    display: none !important;
+                        display: none !important;
 }
 
 .analysis-app .topbar .site-nav, .scene-app .topbar .site-nav, .tourism-app .tourism-topbar .site-nav, .tourism-app.tourism-cartoon-shell .tourism-topbar .site-nav, .tourism-app.tourism-cartoon-shell .tourism-nav.site-nav.cartoon-nav {
-    position: absolute !important;
-    left: auto !important;
-    right: 28px !important;
-    top: 18px !important;
-    z-index: 10 !important;
-    width: 560px !important;
-    min-width: 0 !important;
-    height: 54px !important;
-    margin: 0 !important;
-    padding: 0 18px 0 54px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    gap: 8px !important;
-    overflow: visible !important;
-    transform: none !important;
-    background: linear-gradient(90deg, rgba(136, 22, 14, 0), rgba(151, 28, 18, 0.96) 10%, rgba(132, 24, 16, 0.94) 92%, rgba(136, 22, 14, 0)) !important;
-    border: 0 !important;
-    border-radius: 2px !important;
-    box-shadow: none !important;
-    clip-path: polygon(3% 8%, 100% 0, 96% 88%, 0 100%) !important;
+                        position: absolute !important;
+                        left: auto !important;
+                        right: 28px !important;
+                        top: 18px !important;
+                        z-index: 10 !important;
+                        width: 560px !important;
+                        min-width: 0 !important;
+                        height: 54px !important;
+                        margin: 0 !important;
+                        padding: 0 18px 0 54px !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: flex-end !important;
+                        gap: 8px !important;
+                        overflow: visible !important;
+                        transform: none !important;
+                        background: linear-gradient(90deg, rgba(136, 22, 14, 0), rgba(151, 28, 18, 0.96) 10%, rgba(132, 24, 16, 0.94) 92%, rgba(136, 22, 14, 0)) !important;
+                        border: 0 !important;
+                        border-radius: 2px !important;
+                        box-shadow: none !important;
+                        clip-path: polygon(3% 8%, 100% 0, 96% 88%, 0 100%) !important;
 }
 
 .analysis-app .topbar .site-nav::before, .scene-app .topbar .site-nav::before, .tourism-app .tourism-topbar .site-nav::before, .tourism-app.tourism-cartoon-shell .tourism-topbar .site-nav::before, .tourism-app.tourism-cartoon-shell .tourism-nav.site-nav.cartoon-nav::before {
-    content: "" !important;
-    position: absolute !important;
-    inset: -10px -14px !important;
-    z-index: -1 !important;
-    display: block !important;
-    background: linear-gradient(90deg, transparent, rgba(130, 20, 12, 0.86), transparent) !important;
-    border: 0 !important;
-    filter: blur(3px) !important;
-    clip-path: polygon(0 18%, 100% 0, 96% 78%, 6% 100%) !important;
+                        content: "" !important;
+                        position: absolute !important;
+                        inset: -10px -14px !important;
+                        z-index: -1 !important;
+                        display: block !important;
+                        background: linear-gradient(90deg, transparent, rgba(130, 20, 12, 0.86), transparent) !important;
+                        border: 0 !important;
+                        filter: blur(3px) !important;
+                        clip-path: polygon(0 18%, 100% 0, 96% 78%, 6% 100%) !important;
 }
 
 .analysis-app .site-nav .site-nav-btn, .scene-app .site-nav .site-nav-btn, .tourism-app .site-nav .site-nav-btn, .tourism-app.tourism-cartoon-shell .tourism-nav .site-nav-btn, .tourism-app.tourism-cartoon-shell .tourism-nav button {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 92px !important;
-    height: 36px !important;
-    padding: 0 13px !important;
-    color: #fff6d6 !important;
-    background: rgba(90, 18, 12, 0.45) !important;
-    border: 1px solid rgba(255, 223, 139, 0.62) !important;
-    border-radius: 999px !important;
-    box-shadow: none !important;
-    font-size: 13px !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        min-width: 92px !important;
+                        height: 36px !important;
+                        padding: 0 13px !important;
+                        color: #fff6d6 !important;
+                        background: rgba(90, 18, 12, 0.45) !important;
+                        border: 1px solid rgba(255, 223, 139, 0.62) !important;
+                        border-radius: 999px !important;
+                        box-shadow: none !important;
+                        font-size: 13px !important;
+                        font-weight: 700 !important;
+                        line-height: 1 !important;
+                        white-space: nowrap !important;
 }
 
 .analysis-app .site-nav .site-nav-active, .scene-app .site-nav .site-nav-active, .tourism-app .site-nav .site-nav-active, .tourism-app .site-nav .active, .tourism-app.tourism-cartoon-shell .tourism-nav .site-nav-active, .tourism-app.tourism-cartoon-shell .tourism-nav .active {
-    color: #62130c !important;
-    background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
-    border-color: rgba(255, 242, 194, 0.86) !important;
-    box-shadow: none !important;
+                        color: #62130c !important;
+                        background: linear-gradient(180deg, #ffe5a2, #d9a43a) !important;
+                        border-color: rgba(255, 242, 194, 0.86) !important;
+                        box-shadow: none !important;
 }
 
 .analysis-app .analysis-grid, .scene-app .scene-layout, .tourism-app .tourism-layout, .tourism-app.tourism-cartoon-shell .tourism-cartoon-layout {
-    gap: 14px !important;
-    min-height: 0 !important;
-    padding: 0 22px 14px !important;
-    background: transparent !important;
+                        gap: 14px !important;
+                        min-height: 0 !important;
+                        padding: 0 22px 14px !important;
+                        background: transparent !important;
 }
 
 .tourism-app.tourism-cartoon-shell .tourism-cartoon-layout {
-    gap: 10px !important;
-    padding: 0 18px 12px !important;
+                        gap: 10px !important;
+                        padding: 0 18px 12px !important;
 }
 
 .analysis-app .tools-panel, .analysis-app .metrics-panel, .scene-app .scene-archive, .tourism-app .tourism-left, .tourism-app .tourism-right, .tourism-app.tourism-cartoon-shell .cartoon-left-panel, .tourism-app.tourism-cartoon-shell .cartoon-right-panel {
-    min-height: 0 !important;
-    padding: 18px !important;
-    color: var(--home-ink) !important;
-    background:     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
-    border: 1px solid var(--home-line) !important;
-    border-radius: 8px !important;
-    box-shadow:     0 12px 30px rgba(87, 31, 12, 0.18),     inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
+                        min-height: 0 !important;
+                        padding: 18px !important;
+                        color: var(--home-ink) !important;
+                        background:     linear-gradient(rgba(255, 246, 222, 0.94), rgba(239, 207, 152, 0.9)),     url("/assets/icons/map-scroll.svg") center / cover no-repeat !important;
+                        border: 1px solid var(--home-line) !important;
+                        border-radius: 8px !important;
+                        box-shadow:     0 12px 30px rgba(87, 31, 12, 0.18),     inset 0 0 0 1px rgba(255, 246, 220, 0.48) !important;
 }
 
 .analysis-app .analysis-map, .scene-app .scene-stage, .tourism-app .tourism-map-wrap, .tourism-app.tourism-cartoon-shell .tourism-map-wrap.cartoon-map-card {
-    overflow: hidden !important;
-    background: #ead8b2 !important;
-    border: 1px solid rgba(125, 56, 25, 0.2) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16) !important;
+                        overflow: hidden !important;
+                        background: #ead8b2 !important;
+                        border: 1px solid rgba(125, 56, 25, 0.2) !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 15px 36px rgba(85, 29, 10, 0.16) !important;
 }
 
 .scene-app .scene-stage {
-    background: #3b1d12 !important;
+                        background: #3b1d12 !important;
 }
 
 .tourism-app .tourism-map-wrap::before, .tourism-app .tourism-map-wrap::after {
-    box-shadow: none !important;
+                        box-shadow: none !important;
 }
 
 @media (max-width: 1280px) {
-    .analysis-app .brand,   .scene-app .brand,   .tourism-app .tourism-brand,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand {
-        grid-template-columns: 60px minmax(0, 1fr) !important;
-        width: 390px !important;
-        height: 80px !important;
-        column-gap: 10px !important;
+                        .analysis-app .brand,   .scene-app .brand,   .tourism-app .tourism-brand,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand {
+                                                grid-template-columns: 60px minmax(0, 1fr) !important;
+                                                width: 390px !important;
+                                                height: 80px !important;
+                                                column-gap: 10px !important;
   }
 
-    .analysis-app .brand > .brand-logo,   .scene-app .brand > .brand-logo,   .tourism-app .tourism-brand > .brand-logo,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand > .brand-logo {
-        top: 10px !important;
-        width: 60px !important;
-        min-width: 60px !important;
-        max-width: 60px !important;
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-        flex-basis: 60px !important;
+                        .analysis-app .brand > .brand-logo,   .scene-app .brand > .brand-logo,   .tourism-app .tourism-brand > .brand-logo,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand > .brand-logo {
+                                                top: 10px !important;
+                                                width: 60px !important;
+                                                min-width: 60px !important;
+                                                max-width: 60px !important;
+                                                height: 60px !important;
+                                                min-height: 60px !important;
+                                                max-height: 60px !important;
+                                                flex-basis: 60px !important;
   }
 
-    .analysis-app .brand h1,   .scene-app .brand h1,   .tourism-app .tourism-brand strong,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand strong {
-        width: 300px !important;
+                        .analysis-app .brand h1,   .scene-app .brand h1,   .tourism-app .tourism-brand strong,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand strong {
+                                                width: 300px !important;
   }
 
-    .analysis-app > .topbar::after,   .scene-app > .topbar::after,   .tourism-app > .tourism-topbar::after,   .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar::after {
-        left: 30% !important;
+                        .analysis-app > .topbar::after,   .scene-app > .topbar::after,   .tourism-app > .tourism-topbar::after,   .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar::after {
+                                                left: 30% !important;
   }
 }
 
 @media (max-width: 920px) {
-    .analysis-app,   .scene-app,   .tourism-app,   .tourism-app.tourism-cartoon-shell {
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow: auto !important;
+                        .analysis-app,   .scene-app,   .tourism-app,   .tourism-app.tourism-cartoon-shell {
+                                                height: auto !important;
+                                                min-height: 100vh !important;
+                                                overflow: auto !important;
   }
 
-    .analysis-app > .topbar,   .scene-app > .topbar,   .tourism-app > .tourism-topbar,   .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar {
-        display: grid !important;
-        height: auto !important;
-        min-height: 92px !important;
-        max-height: none !important;
-        gap: 10px !important;
+                        .analysis-app > .topbar,   .scene-app > .topbar,   .tourism-app > .tourism-topbar,   .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar {
+                                                display: grid !important;
+                                                height: auto !important;
+                                                min-height: 92px !important;
+                                                max-height: none !important;
+                                                gap: 10px !important;
   }
 
-    .analysis-app > .topbar::after,   .scene-app > .topbar::after,   .tourism-app > .tourism-topbar::after,   .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar::after {
-        display: none !important;
+                        .analysis-app > .topbar::after,   .scene-app > .topbar::after,   .tourism-app > .tourism-topbar::after,   .tourism-app.tourism-cartoon-shell > .tourism-topbar.tourism-cartoon-topbar::after {
+                                                display: none !important;
   }
 
-    .analysis-app .brand,   .scene-app .brand,   .tourism-app .tourism-brand,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand {
-        width: 100% !important;
-        height: auto !important;
-        grid-template-columns: 56px minmax(0, 1fr) !important;
+                        .analysis-app .brand,   .scene-app .brand,   .tourism-app .tourism-brand,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand {
+                                                width: 100% !important;
+                                                height: auto !important;
+                                                grid-template-columns: 56px minmax(0, 1fr) !important;
   }
 
-    .analysis-app .brand > .brand-logo,   .scene-app .brand > .brand-logo,   .tourism-app .tourism-brand > .brand-logo,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand > .brand-logo {
-        position: static !important;
-        width: 56px !important;
-        min-width: 56px !important;
-        max-width: 56px !important;
-        height: 56px !important;
-        min-height: 56px !important;
-        max-height: 56px !important;
+                        .analysis-app .brand > .brand-logo,   .scene-app .brand > .brand-logo,   .tourism-app .tourism-brand > .brand-logo,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand > .brand-logo {
+                                                position: static !important;
+                                                width: 56px !important;
+                                                min-width: 56px !important;
+                                                max-width: 56px !important;
+                                                height: 56px !important;
+                                                min-height: 56px !important;
+                                                max-height: 56px !important;
   }
 
-    .analysis-app .brand h1,   .scene-app .brand h1,   .tourism-app .tourism-brand strong,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand strong {
-        width: min(360px, 88vw) !important;
-        margin-left: 0 !important;
+                        .analysis-app .brand h1,   .scene-app .brand h1,   .tourism-app .tourism-brand strong,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand strong {
+                                                width: min(360px, 88vw) !important;
+                                                margin-left: 0 !important;
   }
 
-    .analysis-app .brand small,   .scene-app .brand small,   .tourism-app .tourism-brand span,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand span {
-        margin-left: 0 !important;
+                        .analysis-app .brand small,   .scene-app .brand small,   .tourism-app .tourism-brand span,   .tourism-app.tourism-cartoon-shell .tourism-brand.cartoon-brand span {
+                                                margin-left: 0 !important;
   }
 
-    .analysis-app .topbar .site-nav,   .scene-app .topbar .site-nav,   .tourism-app .tourism-topbar .site-nav,   .tourism-app.tourism-cartoon-shell .tourism-topbar .site-nav,   .tourism-app.tourism-cartoon-shell .tourism-nav.site-nav.cartoon-nav {
-        position: static !important;
-        width: 100% !important;
-        height: auto !important;
-        min-height: 48px !important;
-        justify-content: flex-start !important;
-        overflow-x: auto !important;
-        transform: none !important;
+                        .analysis-app .topbar .site-nav,   .scene-app .topbar .site-nav,   .tourism-app .tourism-topbar .site-nav,   .tourism-app.tourism-cartoon-shell .tourism-topbar .site-nav,   .tourism-app.tourism-cartoon-shell .tourism-nav.site-nav.cartoon-nav {
+                                                position: static !important;
+                                                width: 100% !important;
+                                                height: auto !important;
+                                                min-height: 48px !important;
+                                                justify-content: flex-start !important;
+                                                overflow-x: auto !important;
+                                                transform: none !important;
   }
 }
 
 /* Tourism bottom strip: distribute route cards and AI entry evenly. */ .tourism-app .route-recommend-strip.bottom-route-recommend, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(92px, 108px) !important;
-    align-items: stretch !important;
-    justify-items: stretch !important;
-    gap: 12px !important;
-    width: 100% !important;
-    height: 120px !important;
-    min-height: 120px !important;
-    margin: 0 !important;
-    padding: 10px 16px !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
+                        grid-column: 1 / -1 !important;
+                        grid-row: 2 !important;
+                        display: grid !important;
+                        grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(92px, 108px) !important;
+                        align-items: stretch !important;
+                        justify-items: stretch !important;
+                        gap: 12px !important;
+                        width: 100% !important;
+                        height: 120px !important;
+                        min-height: 120px !important;
+                        margin: 0 !important;
+                        padding: 10px 16px !important;
+                        overflow: hidden !important;
+                        box-sizing: border-box !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card {
-    position: relative !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 10px 12px 42px !important;
-    display: block !important;
-    overflow: hidden !important;
+                        position: relative !important;
+                        width: 100% !important;
+                        min-width: 0 !important;
+                        max-width: none !important;
+                        height: 100% !important;
+                        min-height: 0 !important;
+                        margin: 0 !important;
+                        padding: 10px 12px 42px !important;
+                        display: block !important;
+                        overflow: hidden !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: 8px !important;
+                        display: grid !important;
+                        grid-template-columns: minmax(0, 1fr) auto !important;
+                        align-items: center !important;
+                        gap: 8px !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header b, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header b {
-    min-width: 0 !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+                        min-width: 0 !important;
+                        overflow: hidden !important;
+                        text-overflow: ellipsis !important;
+                        white-space: nowrap !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header span, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header span {
-    max-width: 126px !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+                        max-width: 126px !important;
+                        overflow: hidden !important;
+                        text-overflow: ellipsis !important;
+                        white-space: nowrap !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-flow, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-flow {
-    position: absolute !important;
-    left: 12px !important;
-    right: 124px !important;
-    bottom: 11px !important;
-    height: 26px !important;
-    margin: 0 !important;
-    min-width: 0 !important;
+                        position: absolute !important;
+                        left: 12px !important;
+                        right: 124px !important;
+                        bottom: 11px !important;
+                        height: 26px !important;
+                        margin: 0 !important;
+                        min-width: 0 !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card button, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card button {
-    position: absolute !important;
-    right: 12px !important;
-    bottom: 10px !important;
-    height: 28px !important;
-    min-height: 28px !important;
-    min-width: 96px !important;
-    max-width: 108px !important;
-    margin: 0 !important;
-    padding: 0 12px !important;
+                        position: absolute !important;
+                        right: 12px !important;
+                        bottom: 10px !important;
+                        height: 28px !important;
+                        min-height: 28px !important;
+                        min-width: 96px !important;
+                        max-width: 108px !important;
+                        margin: 0 !important;
+                        padding: 0 12px !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .bottom-ai-circle, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .bottom-ai-circle {
-    width: 100% !important;
-    height: 100% !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    align-self: stretch !important;
-    justify-self: stretch !important;
-    display: grid !important;
-    grid-template-rows: auto auto !important;
-    place-items: center !important;
-    align-content: center !important;
-    gap: 7px !important;
-    border-radius: 16px !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        min-width: 0 !important;
+                        min-height: 0 !important;
+                        align-self: stretch !important;
+                        justify-self: stretch !important;
+                        display: grid !important;
+                        grid-template-rows: auto auto !important;
+                        place-items: center !important;
+                        align-content: center !important;
+                        gap: 7px !important;
+                        border-radius: 16px !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .bottom-ai-circle span, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .bottom-ai-circle span {
-    display: block !important;
-    margin: 0 !important;
-    color: #fff7d8 !important;
-    font-size: 24px !important;
-    font-weight: 1000 !important;
-    line-height: 1 !important;
-    letter-spacing: 0 !important;
+                        display: block !important;
+                        margin: 0 !important;
+                        color: #fff7d8 !important;
+                        font-size: 24px !important;
+                        font-weight: 1000 !important;
+                        line-height: 1 !important;
+                        letter-spacing: 0 !important;
 }
 
 .tourism-app .route-recommend-strip.bottom-route-recommend .bottom-ai-circle b, .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .bottom-ai-circle b {
-    display: block !important;
-    margin: 0 !important;
-    color: #fff7d8 !important;
-    font-size: 12px !important;
-    font-weight: 900 !important;
-    line-height: 1.15 !important;
-    letter-spacing: 0 !important;
-    white-space: nowrap !important;
+                        display: block !important;
+                        margin: 0 !important;
+                        color: #fff7d8 !important;
+                        font-size: 12px !important;
+                        font-weight: 900 !important;
+                        line-height: 1.15 !important;
+                        letter-spacing: 0 !important;
+                        white-space: nowrap !important;
 }
 
 @media (max-width: 1280px) {
-    .tourism-app .route-recommend-strip.bottom-route-recommend,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) 86px !important;
-        gap: 10px !important;
-        padding-inline: 12px !important;
+                        .tourism-app .route-recommend-strip.bottom-route-recommend,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend {
+                                                grid-template-columns: repeat(4, minmax(0, 1fr)) 86px !important;
+                                                gap: 10px !important;
+                                                padding-inline: 12px !important;
   }
 
-    .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header {
-        grid-template-columns: minmax(0, 1fr) auto !important;
+                        .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header {
+                                                grid-template-columns: minmax(0, 1fr) auto !important;
   }
 
-    .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header span,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header span {
-        max-width: 112px !important;
+                        .tourism-app .route-recommend-strip.bottom-route-recommend .recommend-card header span,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .recommend-card header span {
+                                                max-width: 112px !important;
   }
 }
 
 @media (max-width: 920px) {
-    .tourism-app .route-recommend-strip.bottom-route-recommend,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: visible !important;
+                        .tourism-app .route-recommend-strip.bottom-route-recommend,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend {
+                                                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                                                height: auto !important;
+                                                min-height: 0 !important;
+                                                overflow: visible !important;
   }
 
-    .tourism-app .route-recommend-strip.bottom-route-recommend .bottom-ai-circle,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .bottom-ai-circle {
-        grid-column: 1 / -1 !important;
-        min-height: 72px !important;
+                        .tourism-app .route-recommend-strip.bottom-route-recommend .bottom-ai-circle,   .tourism-app.tourism-cartoon-shell .route-recommend-strip.bottom-route-recommend .bottom-ai-circle {
+                                                grid-column: 1 / -1 !important;
+                                                min-height: 72px !important;
   }
 }

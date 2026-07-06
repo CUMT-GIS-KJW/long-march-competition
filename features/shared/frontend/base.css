@@ -1,190 +1,190 @@
 @import url('./app.css');
 :root {
-          --ink:#3b1710;
-          --deep:#2a0d09;
-          --paper:#f3dfb2;
-          --paper2:#d8b86c;
-          --red:#a51f18;
-          --red2:#d4462d;
-          --gold:#e1b64e;
-          --jade:#74472b;
-          --line:rgba(246,211,122,.22)
+                              --ink:#3b1710;
+                              --deep:#2a0d09;
+                              --paper:#f3dfb2;
+                              --paper2:#d8b86c;
+                              --red:#a51f18;
+                              --red2:#d4462d;
+                              --gold:#e1b64e;
+                              --jade:#74472b;
+                              --line:rgba(246,211,122,.22)
 }
 
 body {
-          background:#2a0d09
+                              background:#2a0d09
 }
 
 .topbar {
-          background:linear-gradient(90deg,#3a100b,#741d14 52%,#3b120d);
-          border-bottom-color:rgba(246,211,122,.3)
+                              background:linear-gradient(90deg,#3a100b,#741d14 52%,#3b120d);
+                              border-bottom-color:rgba(246,211,122,.3)
 }
 
 .seal {
-          background:#9f1d16;
-          border-color:#f4cf72
+                              background:#9f1d16;
+                              border-color:#f4cf72
 }
 
 .state-dot {
-          background:#f1bd4e;
-          box-shadow:0 0 0 4px rgba(241,189,78,.14)
+                              background:#f1bd4e;
+                              box-shadow:0 0 0 4px rgba(241,189,78,.14)
 }
 
 .site-nav {
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          gap:8px
+                              display:flex;
+                              align-items:center;
+                              justify-content:center;
+                              gap:8px
 }
 
 .topbar, .topbar-main, .tourism-topbar {
-          position:relative
+                              position:relative
 }
 
 .topbar .site-nav, .topbar-main .site-nav, .tourism-topbar .site-nav {
-          position:absolute;
-          left:50%;
-          top:50%;
-          z-index:10;
-          margin-left:0!important;
-          transform:translate(-50%,-50%)
+                              position:absolute;
+                              left:50%;
+                              top:50%;
+                              z-index:10;
+                              margin-left:0!important;
+                              transform:translate(-50%,-50%)
 }
 
 .site-nav .site-nav-btn {
-          min-width:88px;
-          height:32px;
-          padding:0 13px;
-          color:#fff3cf!important;
-          background:rgba(80,18,10,.52)!important;
-          border:1px solid rgba(255,232,168,.28)!important;
-          border-radius:999px!important;
-          box-shadow:none!important;
-          cursor:pointer;
-          font-size:13px;
-          line-height:30px;
-          white-space:nowrap
+                              min-width:88px;
+                              height:32px;
+                              padding:0 13px;
+                              color:#fff3cf!important;
+                              background:rgba(80,18,10,.52)!important;
+                              border:1px solid rgba(255,232,168,.28)!important;
+                              border-radius:999px!important;
+                              box-shadow:none!important;
+                              cursor:pointer;
+                              font-size:13px;
+                              line-height:30px;
+                              white-space:nowrap
 }
 
 .site-nav .site-nav-btn:hover {
-          color:#fff8df!important;
-          background:rgba(139,41,24,.72)!important;
-          border-color:rgba(255,232,168,.46)!important
+                              color:#fff8df!important;
+                              background:rgba(139,41,24,.72)!important;
+                              border-color:rgba(255,232,168,.46)!important
 }
 
 .site-nav-active, .site-nav .site-nav-active {
-          color:#4a120b!important;
-          background:linear-gradient(180deg,#fff0b8,#e1b64e)!important;
-          border-color:rgba(255,255,255,.42)!important;
-          box-shadow:0 8px 18px rgba(225,182,78,.24)!important;
-          font-weight:700
+                              color:#4a120b!important;
+                              background:linear-gradient(180deg,#fff0b8,#e1b64e)!important;
+                              border-color:rgba(255,255,255,.42)!important;
+                              box-shadow:0 8px 18px rgba(225,182,78,.24)!important;
+                              font-weight:700
 }
 
 @media(max-width:920px) {
-          .topbar .site-nav,         .topbar-main .site-nav,         .tourism-topbar .site-nav {
-                    position:static;
-                    transform:none;
-                    width:100%;
-                    justify-content:flex-start;
-                    overflow:auto;
-                    order:10
+                              .topbar .site-nav,         .topbar-main .site-nav,         .tourism-topbar .site-nav {
+                                                            position:static;
+                                                            transform:none;
+                                                            width:100%;
+                                                            justify-content:flex-start;
+                                                            overflow:auto;
+                                                            order:10
   }
 }
 
 .leaflet-container {
-          font-family:var(--sans);
-          background:#d9d1b8
+                              font-family:var(--sans);
+                              background:#d9d1b8
 }
 
 .leaflet-control-zoom a {
-          background:#f4ead1;
-          color:#173a36;
-          border-color:rgba(20,54,50,.2)
+                              background:#f4ead1;
+                              color:#173a36;
+                              border-color:rgba(20,54,50,.2)
 }
 
 .leaflet-control-attribution {
-          font-size:8px!important
+                              font-size:8px!important
 }
 
 .leaflet-tile-pane {
-          filter:sepia(.46) saturate(.68) brightness(1.05) contrast(.92)
+                              filter:sepia(.46) saturate(.68) brightness(1.05) contrast(.92)
 }
 
 .basemap-satellite .leaflet-tile-pane {
-          filter:saturate(.8) brightness(.75)
+                              filter:saturate(.8) brightness(.75)
 }
 
 .basemap-standard .leaflet-tile-pane {
-          filter:none
+                              filter:none
 }
 
 .lm-div-icon {
-          background:none;
-          border:0
+                              background:none;
+                              border:0
 }
 
 .lm-marker {
-          display:block;
-          width:var(--size);
-          height:var(--size);
-          border-radius:50%;
-          background:#6b6258;
-          border:3px solid #f5dfaa;
-          box-shadow:0 2px 10px rgba(0,0,0,.45);
-          transition:.2s
+                              display:block;
+                              width:var(--size);
+                              height:var(--size);
+                              border-radius:50%;
+                              background:#6b6258;
+                              border:3px solid #f5dfaa;
+                              box-shadow:0 2px 10px rgba(0,0,0,.45);
+                              transition:.2s
 }
 
 .lm-marker.battle {
-          background:#a52a22
+                              background:#a52a22
 }
 
 .lm-marker.meeting {
-          background:#c18a29
+                              background:#c18a29
 }
 
 .lm-marker.crossing {
-          background:#2e6fa6
+                              background:#2e6fa6
 }
 
 .lm-marker.mountain {
-          background:#425f63
+                              background:#425f63
 }
 
 .lm-marker.resource {
-          background:#3d7e5d;
-          border-radius:2px;
-          transform:rotate(45deg)
+                              background:#3d7e5d;
+                              border-radius:2px;
+                              transform:rotate(45deg)
 }
 
 .map-popup {
-          min-width:150px;
-          font-family:var(--serif)
+                              min-width:150px;
+                              font-family:var(--serif)
 }
 
 .map-popup b,.map-popup time,.map-popup span {
-          display:block
+                              display:block
 }
 
 .map-popup b {
-          font-size:15px;
-          color:#8f251e
+                              font-size:15px;
+                              color:#8f251e
 }
 
 .map-popup time {
-          font-size:10px;
-          margin:5px 0;
-          color:#8b755e
+                              font-size:10px;
+                              margin:5px 0;
+                              color:#8b755e
 }
 
 .map-popup span {
-          font-size:10px;
-          color:#53635c
+                              font-size:10px;
+                              color:#53635c
 }
 
 .leaflet-popup-content-wrapper {
-          background:#f5ecd6;
-          border-radius:2px
+                              background:#f5ecd6;
+                              border-radius:2px
 }
 
 .leaflet-popup-tip {
-          background:#f5ecd6
+                              background:#f5ecd6
 }
