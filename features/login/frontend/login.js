@@ -7,8 +7,8 @@
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const user = username.value.trim() || "admin";
-    const pass = password.value.trim() || "123456";
+    const user = username.value.trim();
+    const pass = password.value.trim();
 
     if (user === "admin" && pass === "123456") {
       localStorage.setItem("isLoggedIn", "true");
@@ -23,6 +23,6 @@
     }
 
     message.classList.add("error");
-    message.textContent = "账号或密码不正确。比赛演示账号：admin / 123456";
+    message.textContent = "账号或密码不正确。";
   });
 })();
