@@ -6,7 +6,11 @@
     "start": "node server/app.js",
     "dev": "node server/app.js",
     "gis:analysis": "node gis-analysis/run-analysis.js",
-    "format:css": "node scripts/format-css.js"
+    "assets:optimize": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/optimize-display-images.ps1",
+    "check": "node scripts/check-project.js && node --test",
+    "test": "node --test",
+    "format:css": "node scripts/format-css.js",
+    "format:json": "node scripts/format-json.js"
   },
   "engines": { "node": ">=18" }
 }

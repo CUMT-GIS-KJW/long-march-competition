@@ -26,6 +26,11 @@
   };
 
   const POINT_DISTANCE_THRESHOLD = 5000; // 5km
+  // Keep disconnected source segments visually separate while moving the
+  // playback marker smoothly between them.
+  const ROUTE_GAP_THRESHOLD_METERS = 800;
+  const PLAYBACK_RENDER_INTERVAL_MS = 1000 / 30;
+  const PLAYBACK_MAX_POINTS_PER_PART = 1800;
 
   const state = {
     map: null,
@@ -68,7 +73,7 @@
     poetryOpenToken: 0,
   };
 
-  const $ = (selector) => document.querySelector(selector);
+  const { query: $, escapeHtml } = window.DomUtils;
 
   function flash(message) {
     const toast = $("#toast");
@@ -175,30 +180,32 @@
     return true;
   }
 
+  function buildNearbyEventCache(layerKey) {
+    const item = state.routeLayers[layerKey];
+    const latLngs = [];
+    (item?.collection?.features || []).forEach(feature => {
+      const parts = getRouteLatLngParts(feature.geometry);
+      parts.forEach(part => latLngs.push(...part));
+    });
+    const nearSet = new Set();
+    if (latLngs.length) {
+      state.eventFeatures.forEach(feature => {
+        const eventPt = featureLatLng(feature);
+        let minDist = Infinity;
+        for (const pt of latLngs) {
+          const dist = L.latLng(eventPt).distanceTo(L.latLng(pt));
+          if (dist < minDist) minDist = dist;
+          if (minDist <= POINT_DISTANCE_THRESHOLD) break;
+        }
+        if (minDist <= POINT_DISTANCE_THRESHOLD) nearSet.add(featureId(feature));
+      });
+    }
+    state.routeNearbyEventIds[layerKey] = nearSet;
+  }
+
   function buildNearbyEventCaches() {
     state.routeNearbyEventIds = {};
-    Object.keys(state.routeLayers).forEach(layerKey => {
-      const item = state.routeLayers[layerKey];
-      const latLngs = [];
-      (item.collection?.features || []).forEach(feature => {
-        const parts = getRouteLatLngParts(feature.geometry);
-        parts.forEach(part => latLngs.push(...part));
-      });
-      const nearSet = new Set();
-      if (latLngs.length) {
-        state.eventFeatures.forEach(feature => {
-          const eventPt = featureLatLng(feature);
-          let minDist = Infinity;
-          for (const pt of latLngs) {
-            const dist = L.latLng(eventPt).distanceTo(L.latLng(pt));
-            if (dist < minDist) minDist = dist;
-            if (minDist <= POINT_DISTANCE_THRESHOLD) break;
-          }
-          if (minDist <= POINT_DISTANCE_THRESHOLD) nearSet.add(featureId(feature));
-        });
-      }
-      state.routeNearbyEventIds[layerKey] = nearSet;
-    });
+    Object.keys(state.routeLayers).forEach(buildNearbyEventCache);
   }
 
   function getVisibleRouteKeys() {
@@ -279,6 +286,7 @@
       minZoom: APP_CONFIG.map.minZoom,
       maxZoom: APP_CONFIG.map.maxZoom,
       zoomControl: true,
+      preferCanvas: true,
     });
     L.tileLayer(APP_CONFIG.basemaps.ancient.url, APP_CONFIG.basemaps.ancient.options).addTo(state.map);
     addHomeMapBackground();
@@ -412,7 +420,7 @@
     image.setAttribute("width", "100");
     image.setAttribute("height", "100");
     image.setAttribute("preserveAspectRatio", "xMidYMid slice");
-    image.setAttribute("href", "/assets/images/home/map-background.png");
+    image.setAttribute("href", "/assets/images/home/map-background-display.jpg");
     image.setAttribute("mask", "url(#homeMountainChinaAreaMask)");
 
     defs.appendChild(radialGradient);
@@ -493,23 +501,41 @@
   function renderRouteControls() {
     $("#routeLayerList").innerHTML = state.routeConfigs
       .map(config => {
+        const color = escapeHtml(config.color || "#b42318");
+        const layerKey = escapeHtml(config.layer_key);
+        const layerName = escapeHtml(config.layer_name);
         return `
-          <label style="--route-color: ${config.color || "#b42318"}">
+          <label style="--route-color: ${color}">
             <i class="route-color-line" aria-hidden="true"></i>
-            <input type="checkbox" data-route-layer="${config.layer_key}">
-            <span>${config.layer_name}</span>
+            <input type="checkbox" data-route-layer="${layerKey}">
+            <span>${layerName}</span>
           </label>
         `;
       })
       .join("");
 
     $("#routeSelect").innerHTML = state.routeConfigs
-      .map(config => `<option value="${config.layer_key}">${config.layer_name}</option>`)
+      .map(config => {
+        return `<option value="${escapeHtml(config.layer_key)}">${escapeHtml(config.layer_name)}</option>`;
+      })
       .join("");
   }
 
   async function renderRouteLayer(config) {
-    const collection = await DataService.getRouteLayerFeatures(config.layer_key);
+    const existing = state.routeLayers[config.layer_key];
+    if (existing?.collection && existing.layerGroup) return existing;
+    if (existing?.loadPromise) return existing.loadPromise;
+
+    const item = existing || {
+      config,
+      collection: null,
+      layerGroup: null,
+      visible: false,
+      loadPromise: null,
+    };
+    state.routeLayers[config.layer_key] = item;
+
+    item.loadPromise = DataService.getRouteLayerFeatures(config.layer_key).then((collection) => {
     const layerGroup = L.featureGroup();
 
     collection.features.forEach(feature => {
@@ -535,23 +561,33 @@
       }).addTo(layerGroup);
     });
 
-    state.routeLayers[config.layer_key] = {
-      config,
-      collection,
-      layerGroup,
-      visible: false,
-    };
+      item.collection = collection;
+      item.layerGroup = layerGroup;
+      item.loadPromise = null;
+      buildNearbyEventCache(config.layer_key);
+      return item;
+    }).catch((error) => {
+      item.loadPromise = null;
+      throw error;
+    });
+
+    return item.loadPromise;
   }
 
-  function toggleRouteLayer(layerKey, visible) {
+  async function toggleRouteLayer(layerKey, visible) {
     const item = state.routeLayers[layerKey];
     if (!item) return;
     item.visible = visible;
+
     if (visible) {
-      item.layerGroup.addTo(state.map);
-    } else {
+      await renderRouteLayer(item.config);
+      if (item.visible && item.layerGroup && !state.map.hasLayer(item.layerGroup)) {
+        item.layerGroup.addTo(state.map);
+      }
+    } else if (item.layerGroup && state.map.hasLayer(item.layerGroup)) {
       state.map.removeLayer(item.layerGroup);
     }
+
     renderEventMarkers();
   }
 
@@ -652,21 +688,22 @@
   function renderEventDetail(feature, troopInfo) {
     const props = feature.properties || {};
     const description = props.descript || props[FIELD.event] || "";
+    const text = (value, fallback = "-") => escapeHtml(value || fallback);
     $("#detailPanel").innerHTML = `
       <article class="detail-card">
         <span class="detail-kicker">事件详情</span>
-        <h2>${props[FIELD.place] || "未命名事件"}</h2>
+        <h2>${text(props[FIELD.place], "未命名事件")}</h2>
         <div class="detail-grid">
-          <div class="detail-row"><span>事件编号</span><b>${props[FIELD.id] || "-"}</b></div>
-          <div class="detail-row"><span>事件日</span><b>${props[FIELD.date] || "-"}</b></div>
-          <div class="detail-row"><span>地名</span><b>${props[FIELD.place] || "-"}</b></div>
-          <div class="detail-row"><span>关联部队</span><b>${props[FIELD.unit] || "-"}</b></div>
-          <div class="detail-row"><span>事件类</span><b>${props[FIELD.type] || "-"}</b></div>
+          <div class="detail-row"><span>事件编号</span><b>${text(props[FIELD.id])}</b></div>
+          <div class="detail-row"><span>事件日</span><b>${text(props[FIELD.date])}</b></div>
+          <div class="detail-row"><span>地名</span><b>${text(props[FIELD.place])}</b></div>
+          <div class="detail-row"><span>关联部队</span><b>${text(props[FIELD.unit])}</b></div>
+          <div class="detail-row"><span>事件类</span><b>${text(props[FIELD.type])}</b></div>
           <div class="detail-row"><span>队伍总数</span><b>${troopInfo.value.toLocaleString("zh-CN")} 人${troopInfo.estimated ? "（估算）" : ""}</b></div>
         </div>
         ${renderPeopleIcons(troopInfo.value, troopInfo.estimated)}
         <h3>历史叙事</h3>
-        <p>${description}</p>
+        <p>${escapeHtml(description)}</p>
       </article>
     `;
     resetDetailPanelScroll();
@@ -700,14 +737,14 @@
     $("#detailPanel").innerHTML = `
       <article class="detail-card route-detail-card">
         <span class="detail-kicker">路线详情</span>
-        <h2 class="route-detail-title"><span class="route-name-text">${config.layer_name}</span></h2>
+        <h2 class="route-detail-title"><span class="route-name-text">${escapeHtml(config.layer_name)}</span></h2>
         <div class="detail-grid">
-          <div class="detail-row"><span>军团</span><b>${normalizeRouteText(props.corps_name)}</b></div>
-          <div class="detail-row"><span>阶段</span><b>${normalizeRouteText(props.stage_name)}</b></div>
-          <div class="detail-row"><span>起始时间</span><b>${dateRange}</b></div>
-          <div class="detail-row"><span>长度</span><b>${lengthText}</b></div>
+          <div class="detail-row"><span>军团</span><b>${escapeHtml(normalizeRouteText(props.corps_name))}</b></div>
+          <div class="detail-row"><span>阶段</span><b>${escapeHtml(normalizeRouteText(props.stage_name))}</b></div>
+          <div class="detail-row"><span>起始时间</span><b>${escapeHtml(dateRange)}</b></div>
+          <div class="detail-row"><span>长度</span><b>${escapeHtml(lengthText)}</b></div>
         </div>
-        <p>${description}</p>
+        <p>${escapeHtml(description)}</p>
       </article>
     `;
     resetDetailPanelScroll();
@@ -944,6 +981,20 @@
     }, 0);
   }
 
+  function interpolateLatLng(start, end, ratio) {
+    const progress = Math.max(0, Math.min(1, ratio));
+    return [
+      start[0] + (end[0] - start[0]) * progress,
+      start[1] + (end[1] - start[1]) * progress,
+    ];
+  }
+
+  function getTransitionPlaybackLength(gapMeters) {
+    // A gap is not drawn as a route. Its capped virtual length only reserves
+    // enough playback time for the marker to move continuously.
+    return Math.min(35000, Math.max(5000, gapMeters * 0.08));
+  }
+
   function sliceRouteLine(points, distance) {
     if (!points.length || distance <= 0) return points.length ? [points[0]] : [];
     const slice = [points[0]];
@@ -1010,6 +1061,20 @@
       routeData.units?.[routeData.units.length - 1];
   }
 
+  function findRoutePointIndexByDistance(routeData, distance) {
+    const unit = routeUnitAtDistance(routeData, distance);
+    if (!unit || unit.type === "transition") return unit?.beforePart?.endIndex || 0;
+    if (unit.type === "branch") return unit.branches[0]?.parts[0]?.startIndex || 0;
+
+    const target = Math.max(0, Math.min(unit.length, distance - unit.startDistance));
+    let walked = 0;
+    for (let index = 1; index < unit.part.points.length; index += 1) {
+      walked += L.latLng(unit.part.points[index - 1]).distanceTo(L.latLng(unit.part.points[index]));
+      if (walked >= target) return unit.part.startIndex + index;
+    }
+    return unit.part.endIndex;
+  }
+
   function routeBranchHeadPoints(routeData, distance) {
     const unit = routeUnitAtDistance(routeData, distance);
     if (unit?.type !== "branch") return null;
@@ -1031,6 +1096,25 @@
     const parts = [];
     const units = [];
     let totalDistance = 0;
+    let previousEndPoint = null;
+    let previousPart = null;
+
+    function appendTransition(nextPoint) {
+      if (!previousEndPoint || !nextPoint) return;
+      const gapMeters = latLngDistance(previousEndPoint, nextPoint);
+      if (gapMeters <= ROUTE_GAP_THRESHOLD_METERS) return;
+      const length = getTransitionPlaybackLength(gapMeters);
+      units.push({
+        type: "transition",
+        from: previousEndPoint,
+        to: nextPoint,
+        beforePart: previousPart,
+        startDistance: totalDistance,
+        endDistance: totalDistance + length,
+        length,
+      });
+      totalDistance += length;
+    }
 
     for (let index = 0; index < orderedRouteParts.length; index += 1) {
       const routePart = orderedRouteParts[index];
@@ -1045,6 +1129,8 @@
           index += 1;
         }
         index -= 1;
+
+        appendTransition(branchItems[0]?.points?.[0]);
 
         const branches = new Map();
         branchItems.forEach(item => {
@@ -1096,9 +1182,13 @@
         unit.endDistance = unit.startDistance + unit.length;
         units.push(unit);
         totalDistance = unit.endDistance;
+        const mergeBranch = unit.branches.find(branch => branch.branchId === "left") || unit.branches[0];
+        previousPart = mergeBranch?.parts?.at(-1) || previousPart;
+        previousEndPoint = previousPart?.points?.at(-1) || previousEndPoint;
         continue;
       }
 
+      appendTransition(routePart.points[0]);
       const startIndex = points.length;
       const distance = routeLineDistance(routePart.points);
       routePart.points.forEach((pt, localIndex) => {
@@ -1124,6 +1214,8 @@
         endDistance: totalDistance,
         length: distance,
       });
+      previousPart = part;
+      previousEndPoint = routePart.points.at(-1) || previousEndPoint;
     }
 
     return { points, cumulativeDistances, totalDistance, segments, parts, units };
@@ -1148,11 +1240,20 @@
         return;
       }
 
+      if (unit.type === "transition") return;
+
       const slice = sliceRouteLine(unit.part.points, unitDistance);
       if (slice.length) rendered.push(slice);
     });
 
-    return rendered;
+    return rendered.map((part) => {
+      if (part.length <= PLAYBACK_MAX_POINTS_PER_PART) return part;
+      const step = Math.ceil((part.length - 1) / (PLAYBACK_MAX_POINTS_PER_PART - 1));
+      const simplified = [];
+      for (let index = 0; index < part.length; index += step) simplified.push(part[index]);
+      if (simplified.at(-1) !== part.at(-1)) simplified.push(part.at(-1));
+      return simplified;
+    });
   }
 
   function getRouteHeadPointByDistance(routeData, distance) {
@@ -1160,6 +1261,10 @@
       routeData.units?.[routeData.units.length - 1];
     if (!unit) return routeData.points[0];
     const unitDistance = Math.max(0, Math.min(unit.length, distance - unit.startDistance));
+
+    if (unit.type === "transition") {
+      return interpolateLatLng(unit.from, unit.to, unit.length ? unitDistance / unit.length : 1);
+    }
 
     if (unit.type === "branch") {
       const branch = unit.branches.reduce((longest, item) => {
@@ -1175,6 +1280,8 @@
     const unit = routeData.units?.find(item => distance >= item.startDistance && distance <= item.endDistance);
     if (!unit) return routeData.segments[0];
     const unitDistance = Math.max(0, distance - unit.startDistance);
+
+    if (unit.type === "transition") return unit.beforePart || routeData.segments[0];
 
     if (unit.type === "branch") {
       const branch = unit.branches[0];
@@ -1229,7 +1336,7 @@
   }
 
   const cpcPartyFlagIcon = L.icon({
-    iconUrl: "/assets/images/cpc-party-flag.png",
+    iconUrl: "/assets/images/cpc-party-flag-display.png",
     iconSize: [72, 54],
     iconAnchor: [36, 27],
     popupAnchor: [0, -27],
@@ -1337,7 +1444,8 @@
   function renderRoutePlaybackFrame(playback, updateRange = true) {
     const routeData = playback.routeData;
     routeData.currentProgress = playback.progress;
-    const index = findPointIndexByProgress(routeData, playback.progress);
+    const distance = routeData.totalDistance * Math.max(0, Math.min(1, playback.progress || 0));
+    const index = findRoutePointIndexByDistance(routeData, distance);
     const rendered = getRenderedRouteParts(routeData, index);
     playback.glow.setLatLngs(rendered);
     playback.line.setLatLngs(rendered);
@@ -1345,7 +1453,6 @@
     centerRoutePlaybackView(focusPoints);
     updateRoutePlaybackEvents(index);
 
-    const distance = routeData.totalDistance * Math.max(0, Math.min(1, playback.progress || 0));
     const segment = routeData.units?.length
       ? findSegmentByDistance(routeData, distance)
       : findSegmentByPointIndex(routeData.segments, index);
@@ -1374,6 +1481,14 @@
     setRoutePlayButtonLabel("重播路线");
   }
 
+  function shouldRenderPlaybackFrame(playback, now) {
+    if (!playback.lastRenderTime || now - playback.lastRenderTime >= PLAYBACK_RENDER_INTERVAL_MS) {
+      playback.lastRenderTime = now;
+      return true;
+    }
+    return false;
+  }
+
   function animateRouteFrame(now) {
     const playback = state.routePlayback;
     if (!state.isPlayingRoute || !playback) return;
@@ -1386,7 +1501,7 @@
       playback.progress + (elapsed * getRouteSpeed()) / playback.durationMs,
     );
 
-    renderRoutePlaybackFrame(playback);
+    if (shouldRenderPlaybackFrame(playback, now)) renderRoutePlaybackFrame(playback);
     if (playback.progress >= 1) {
       finishRoutePlayback();
       return;
@@ -1437,7 +1552,7 @@
     state.animatedRouteLayer.clearLayers();
 
     if (!state.routeLayers[layerKey]?.visible) {
-      toggleRouteLayer(layerKey, true);
+      await toggleRouteLayer(layerKey, true);
       const input = document.querySelector(`#routeLayerList input[data-route-layer="${layerKey}"]`);
       if (input) input.checked = true;
     }
@@ -1633,7 +1748,8 @@
     const progress = Math.max(0, Math.min(1, playback.currentProgress || 0));
     const routeData = item.routeData;
     routeData.currentProgress = progress;
-    const index = findPointIndexByProgress(routeData, progress);
+    const distance = routeData.totalDistance * Math.max(0, Math.min(1, progress));
+    const index = findRoutePointIndexByDistance(routeData, distance);
     const rendered = getRenderedRouteParts(routeData, index);
 
     item.glow.setLatLngs(rendered);
@@ -1729,9 +1845,34 @@
 
   function seekAllRouteProgress(value) {
     const playback = state.allRoutePlayback;
-    if (!playback?.items?.length || playback.mode !== "sequential") return false;
+    if (!playback?.items?.length) return false;
 
     const percent = Math.max(0, Math.min(100, Number(value) || 0));
+    if (playback.mode !== "sequential") {
+      const shouldResume = state.isPlayingAllRoutes && percent < 100;
+      cancelRouteFrame();
+      playback.elapsedMs = playback.totalDurationMs * (percent / 100);
+      playback.timelineProgress = percent / 100;
+      playback.currentTime = playback.timelineStart +
+        (playback.timelineEnd - playback.timelineStart) * playback.timelineProgress;
+      playback.finished = percent >= 100;
+      renderAllRouteTimelineFrame(playback);
+      setProgressValue(percent);
+
+      if (percent >= 100) {
+        finishAllRouteTimelinePlayback();
+        return true;
+      }
+
+      state.isPlayingAllRoutes = shouldResume;
+      setAllRoutePlayButtonLabel(shouldResume ? "暂停全部" : "继续全部");
+      if (shouldResume) {
+        playback.lastFrameTime = performance.now();
+        state.routeAnimationFrame = requestAnimationFrame(animateAllRouteTimelineFrame);
+      }
+      return true;
+    }
+
     const targetElapsed = playback.totalDurationMs * (percent / 100);
     let completedDurationMs = 0;
     let targetIndex = playback.items.length - 1;
@@ -1803,7 +1944,7 @@
     );
     playback.currentItem.progress = playback.currentProgress;
 
-    renderAllRoutePlaybackFrame(playback);
+    if (shouldRenderPlaybackFrame(playback, now)) renderAllRoutePlaybackFrame(playback);
     if (playback.currentProgress >= 1) {
       playback.completedDurationMs += playback.currentItem.durationMs;
       playback.currentItem.progress = 1;
@@ -1942,10 +2083,15 @@
 
     const created = ensureAllRouteTimelineLayers(item);
     const progress = getAllRouteTimelineItemProgress(item, currentTime);
+    if (!created && progress === item.lastRenderedProgress && progress >= 1) {
+      return { started: true, active: false, focusPoints: [] };
+    }
     item.progress = progress;
+    item.lastRenderedProgress = progress;
     const routeData = item.routeData;
     routeData.currentProgress = progress;
-    const index = findPointIndexByProgress(routeData, progress);
+    const distance = routeData.totalDistance * Math.max(0, Math.min(1, progress));
+    const index = findRoutePointIndexByDistance(routeData, distance);
     const rendered = getRenderedRouteParts(routeData, index);
     item.glow.setLatLngs(rendered);
     item.line.setLatLngs(rendered);
@@ -2028,7 +2174,7 @@
     playback.currentTime = playback.timelineStart +
       (playback.timelineEnd - playback.timelineStart) * Math.max(0, Math.min(1, playback.timelineProgress));
 
-    renderAllRouteTimelineFrame(playback);
+    if (shouldRenderPlaybackFrame(playback, now)) renderAllRouteTimelineFrame(playback);
     if (playback.timelineProgress >= 1) {
       finishAllRouteTimelinePlayback();
       return;
@@ -2070,13 +2216,18 @@
       return;
     }
 
+    const timelineStart = Math.min(...items.map(item => item.startTime || item.endTime));
+    const timelineEnd = Math.max(...items.map(item => item.endTime || item.startTime));
     const playback = {
-      mode: "sequential",
+      mode: "timeline",
       items,
-      index: 0,
-      currentItem: null,
-      currentProgress: 0,
-      completedDurationMs: 0,
+      timelineStart,
+      timelineEnd,
+      currentTime: timelineStart,
+      elapsedMs: 0,
+      timelineProgress: 0,
+      // Keep the existing user-facing duration scale while mapping every
+      // route to its historical start/end range on one shared timeline.
       totalDurationMs: items.reduce((sum, item) => sum + item.durationMs, 0),
       lastFrameTime: 0,
       lastEventTimeBucket: 0,
@@ -2089,7 +2240,8 @@
     state.routePlaybackMode = true;
     hideHomeBackgroundDuringPlayback();
     renderEventMarkers();
-    if (startAllRouteItem(0)) startAllRoutePlayback(playback);
+    renderAllRouteTimelineFrame(playback);
+    startAllRoutePlayback(playback);
   }
 
   function setEventFilter(type) {
@@ -2113,7 +2265,9 @@
   function resetView() {
     const bounds = L.latLngBounds([]);
     Object.values(state.routeLayers).forEach(item => {
-      if (item.visible && item.layerGroup.getBounds().isValid()) bounds.extend(item.layerGroup.getBounds());
+      if (item.visible && item.layerGroup?.getBounds().isValid()) {
+        bounds.extend(item.layerGroup.getBounds());
+      }
     });
     if (bounds.isValid()) state.map.fitBounds(bounds, { padding: [30, 30] });
   }
@@ -2142,7 +2296,6 @@
       const data = payload.code === 200 ? payload.data : payload;
       state.poetryPoints = data.features || [];
       createPoetryLayer();
-      console.log('✅ 诗歌点加载完成，数量:', state.poetryPoints.length);
     } catch (error) {
       console.warn("加载诗歌点失败:", error);
       state.poetryPoints = [];
@@ -2156,7 +2309,6 @@ async function loadAllPoems() {
     const payload = await response.json();
     const data = payload.code === 200 ? payload.data : payload;
     state.poetryList = data.poems || [];
-    console.log('✅ 诗歌列表加载完成，数量:', state.poetryList.length);
     return state.poetryList;
   } catch (error) {
     console.error('加载诗歌列表失败:', error);
@@ -2235,16 +2387,16 @@ async function openPoetryDetail(poemId, direction) {
     const poetImgEl = document.getElementById('poetryPoetImg');
 
     const poetryImages = {
-      poem_001: "/assets/images/poetry/VCG211634570806.jpg",
+      poem_001: "/assets/images/poetry/VCG211634570806-display.jpg",
       poem_002: "/assets/images/poetry/VCG211620090490.png",
-      poem_003: "/assets/images/poetry/VCG211611345420.jpg",
+      poem_003: "/assets/images/poetry/VCG211611345420-display.jpg",
       poem_004: "/assets/images/poetry/OIP.webp",
-      poem_005: "/assets/images/poetry/VCG211643672387.jpg",
+      poem_005: "/assets/images/poetry/VCG211643672387-display.jpg",
       poem_006: "/assets/images/poetry/O1CN01a4fN2C1f43yrCr9ya_!!533673952.jpg_q90.webp",
-      poem_007: "/assets/images/poetry/VCG211444428325.jpg",
-      poem_008: "/assets/images/poetry/VCG211353582315.jpg",
-      poem_009: "/assets/images/poetry/VCG211458592604.jpg",
-      poem_010: "/assets/images/poetry/VCG211611345420.jpg",
+      poem_007: "/assets/images/poetry/VCG211444428325-display.jpg",
+      poem_008: "/assets/images/poetry/VCG211353582315-display.jpg",
+      poem_009: "/assets/images/poetry/VCG211458592604-display.jpg",
+      poem_010: "/assets/images/poetry/VCG211611345420-display.jpg",
     };
 
     const poetryAnalysis = {
@@ -2342,8 +2494,8 @@ async function openPoetryDetail(poemId, direction) {
     if (placeNameEl) placeNameEl.textContent = fullPoem.places ? fullPoem.places.join('、') : '长征沿线';
     if (placePositionEl) placePositionEl.textContent = `位置：${fullPoem.provinces ? fullPoem.provinces.join('、') : ''}`;
     if (placeStoryEl) placeStoryEl.textContent = fullPoem.description || '';
-    if (ancientImgEl) ancientImgEl.src = "/assets/images/poetry/source-bg.jpg";
-    if (modernImgEl) modernImgEl.src = "/assets/images/poetry/source-bg.jpg";
+    if (ancientImgEl) ancientImgEl.src = "/assets/images/poetry/source-bg-display.jpg";
+    if (modernImgEl) modernImgEl.src = "/assets/images/poetry/source-bg-display.jpg";
     if (poetImgEl) poetImgEl.src = poemImage;
 
     let analysisBox = document.querySelector(".poetry-analysis");
@@ -2359,15 +2511,15 @@ async function openPoetryDetail(poemId, direction) {
         <b>诗词解读</b>
         <dl>
           <dt>主题</dt>
-          <dd>${analysis.theme}</dd>
+          <dd>${escapeHtml(analysis.theme)}</dd>
           <dt>地理关联</dt>
-          <dd>${analysis.geography}</dd>
+          <dd>${escapeHtml(analysis.geography)}</dd>
           <dt>历史语境</dt>
-          <dd>${analysis.history}</dd>
+          <dd>${escapeHtml(analysis.history)}</dd>
           <dt>精神内涵</dt>
-          <dd>${analysis.spirit}</dd>
+          <dd>${escapeHtml(analysis.spirit)}</dd>
           <dt>研学提示</dt>
-          <dd>${analysis.study}</dd>
+          <dd>${escapeHtml(analysis.study)}</dd>
         </dl>
       `;
     }
@@ -2385,7 +2537,6 @@ async function openPoetryDetail(poemId, direction) {
     updatePoetryNavButtons(targetIndex);
     setButtonEnabled(true);
 
-    console.log('✅ 打开诗歌:', fullPoem.title, `(${targetIndex + 1}/${state.poetryList.length})`);
   } catch (error) {
     console.error('打开诗歌失败:', error);
     flash('加载诗歌失败');
@@ -2453,9 +2604,9 @@ function createPoetryLayer() {
     const icon = L.divIcon({
       className: 'poetry-point-icon',
       html: `
-        <div class="poetry-point-marker" data-poem-id="${poemId}" title="${props.poem_title || props.name || '长征诗词'}">
+        <div class="poetry-point-marker" data-poem-id="${escapeHtml(poemId)}" title="${escapeHtml(props.poem_title || props.name || "长征诗词")}">
           <span class="poetry-icon">📜</span>
-          <span class="poetry-tooltip">${props.name}</span>
+          <span class="poetry-tooltip">${escapeHtml(props.name || "长征诗词")}</span>
         </div>
       `,
       iconSize: [32, 32],
@@ -2492,13 +2643,10 @@ function createPoetryLayer() {
     poetryToggle.classList.remove('is-off');
   }
   
-  console.log('✅ 诗歌点已显示，数量:', state.poetryPoints.length);
 }
 
   // ★ 切换诗歌点显示
   function togglePoetryLayer(visible) {
-    console.log('togglePoetryLayer 调用:', visible);
-    
     state.poetryVisible = visible;
     
     if (state.poetryLayer) {
@@ -2527,9 +2675,19 @@ async function initApp() {
 
   state.routeConfigs = await DataService.getRouteLayers();
   const firstKey = state.routeConfigs[0]?.layer_key || "";
+  state.routeLayers = Object.fromEntries(
+    state.routeConfigs.map((config) => [
+      config.layer_key,
+      {
+        config,
+        collection: null,
+        layerGroup: null,
+        visible: false,
+        loadPromise: null,
+      },
+    ]),
+  );
   renderRouteControls();
-
-  await Promise.all(state.routeConfigs.map(config => renderRouteLayer(config)));
 
   const events = await DataService.getEventTimeline();
   state.eventTimeline = enrichEvents(events.features || []);
@@ -2541,7 +2699,7 @@ async function initApp() {
   await loadAllPoems();
 
   if (firstKey && state.routeLayers[firstKey]) {
-    toggleRouteLayer(firstKey, true);
+    await toggleRouteLayer(firstKey, true);
     const input = document.querySelector(`#routeLayerList input[data-route-layer="${firstKey}"]`);
     if (input) input.checked = true;
   }

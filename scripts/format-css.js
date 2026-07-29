@@ -84,7 +84,6 @@ function formatCss(source) {
 
 const roots = [
   path.join(__dirname, "..", "features"),
-  path.join(__dirname, "..", "data"),
 ];
 
 function walk(directory) {
@@ -99,12 +98,6 @@ function walk(directory) {
     if (entry.name.endsWith(".css")) {
       const source = fs.readFileSync(filePath, "utf8");
       fs.writeFileSync(filePath, formatCss(source), "utf8");
-    }
-
-    if (entry.name.endsWith(".json")) {
-      const source = fs.readFileSync(filePath, "utf8");
-      const data = JSON.parse(source);
-      fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + "\n", "utf8");
     }
   });
 }

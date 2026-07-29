@@ -4,18 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>长征路线 GIS 综合分析平台</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&amp;family=Inter:wght@400;500;600&amp;display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/features/shared/frontend/app.css">
   <link rel="stylesheet" href="/features/shared/frontend/base.css">
   <link rel="stylesheet" href="/features/analysis/frontend/analysis.css">
   <link rel="stylesheet" href="/features/analysis/frontend/warm-theme.css">
   <link rel="stylesheet" href="/features/shared/frontend/home-layout-theme.css">
+  <link rel="stylesheet" href="/features/shared/frontend/ui-polish.css">
 </head>
 <body>
   <script src="/features/shared/frontend/auth-check.js"></script>
   <div class="analysis-app">
     <header class="topbar">
       <div class="brand">
-        <img class="brand-logo" src="/assets/images/home-poster/logal.png" alt="">
+        <img class="brand-logo" src="/assets/images/home-poster/logal-display.png" alt="">
         <div class="seal">析</div>
         <div>
           <h1>长征路线 GIS 综合分析平台</h1>
@@ -166,8 +173,9 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
   <script src="/features/shared/frontend/config.js?v=gis-fix3"></script>
+  <script src="/features/shared/frontend/dom-utils.js"></script>
   <script src="/features/shared/frontend/data-service.js?v=gis-fix3"></script>
   <script src="/features/shared/frontend/map-utils.js?v=gis-fix3"></script>
   <script src="/features/analysis/frontend/analysis-map.js?v=gis-fix3"></script>

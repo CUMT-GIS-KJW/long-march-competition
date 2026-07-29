@@ -1,5 +1,5 @@
 (function () {
-  const $ = (selector) => document.querySelector(selector);
+  const { query: $ } = window.DomUtils;
 
   function bindControls() {
     $("#scene3dEntry").addEventListener("click", () => {
@@ -23,7 +23,10 @@
     $("#routeLayerList").addEventListener("change", (event) => {
       const input = event.target.closest("input[data-route-layer]");
       if (!input) return;
-      IndexMap.toggleRouteLayer(input.dataset.routeLayer, input.checked);
+      IndexMap.toggleRouteLayer(input.dataset.routeLayer, input.checked).catch((error) => {
+        console.error(error);
+        IndexMap.flash("路线加载失败");
+      });
     });
 
     $("#eventTypeButtons").addEventListener("click", (event) => {
@@ -78,8 +81,6 @@
 
     // ★ 新增：诗歌点图层控制
     const poetryToggle = document.getElementById('poetryToggle');
-    console.log('poetryToggle 元素:', poetryToggle);  // 调试日志
-    
     if (poetryToggle) {
       poetryToggle.addEventListener('click', function() {
         const isVisible = this.dataset.visible === 'true';
@@ -87,9 +88,6 @@
         this.dataset.visible = String(newVisible);
         this.textContent = newVisible ? '隐藏诗词点' : '显示诗词点';
         this.classList.toggle('is-off', !newVisible);
-        
-        console.log('切换诗词点:', newVisible);  // 调试日志
-        
         // ★ 确保 IndexMap 存在
         if (window.IndexMap && typeof IndexMap.togglePoetryLayer === 'function') {
           IndexMap.togglePoetryLayer(newVisible);

@@ -34,6 +34,7 @@
       description: "\u5c55\u793a\u4e2d\u592e\u82cf\u533a\u5386\u53f2\u7684\u91cd\u8981\u7ea2\u8272\u6587\u5316\u573a\u9986\u3002",
     },
   ];
+  const requestCache = new Map();
 
   function fillPath(path, params = {}) {
     return Object.entries(params).reduce((result, [key, value]) => {
@@ -50,13 +51,22 @@
   }
 
   async function fetchUrl(url) {
-    const response = await fetch(url);
+    if (requestCache.has(url)) return requestCache.get(url);
 
-    if (!response.ok) {
-      throw new Error(`data request failed: ${url}`);
-    }
+    const request = fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`data request failed: ${url}`);
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        requestCache.delete(url);
+        throw error;
+      });
 
-    return response.json();
+    requestCache.set(url, request);
+    return request;
   }
 
   async function fetchJson(key, params = {}) {
@@ -90,6 +100,7 @@
 
   window.DataService = {
     redTourismResources,
+    clearCache: () => requestCache.clear(),
     getEvents: () => fetchJson("events"),
     getEventTimeline: () => fetchJson("eventTimeline"),
     getRouteLayers: () => fetchJson("routeLayers"),
@@ -99,9 +110,7 @@
       });
     },
     getRouteLayerAnimation: (layerKey) => {
-      return fetchJson("routeLayerAnimation", {
-        layerKey,
-      });
+      return fetchJson("routeLayerFeatures", { layerKey });
     },
     getRouteSegmentTimes: () => fetchJson("routeSegmentTimes"),
     getHomeContextData: () => fetchJson("homeContextData"),

@@ -10,8 +10,8 @@
     allResources: [],
     options: null,
     markers: new Map(),
+    markerResources: new Map(),
     selectedRoutePointIds: new Set(),
-    currentMarkerResources: [],
     currentFocusIds: new Set(),
     activeTheme: "meeting",
     activePreset: "",
@@ -115,7 +115,7 @@
     { province: "广东省", kind: "flower", lat: 21.20, lng: 119.80, leader: { lat: 23.35, lng: 113.28 }, coastLeader: true, size: 98, rotate: -5, shift: "south" },
     { province: "海南省", kind: "coconut", lat: 17.95, lng: 115.10, leader: { lat: 19.15, lng: 110.00 }, coastLeader: true, size: 96, rotate: -5, shift: "hainan" },
   ];
-  const $ = (selector) => document.querySelector(selector);
+  const { query: $, escapeHtml } = window.DomUtils;
 
   function switchRightTab(tab = "resource") {
     const active = ["resource", "route", "traffic", "knowledge"].includes(tab) ? tab : "resource";
@@ -366,15 +366,6 @@
         zIndexOffset: 12,
       }).addTo(state.provinceIconLayer);
     });
-  }
-
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
   }
 
   const REVIEW_VERSION = 4;
@@ -1091,7 +1082,7 @@
   function renderResourceMarkers(resources = state.resources, focusIds = new Set()) {
     state.resourceLayer.clearLayers();
     state.markers.clear();
-    state.currentMarkerResources = resources;
+    state.markerResources.clear();
     state.currentFocusIds = focusIds;
 
     resources.forEach((resource) => {
@@ -1113,14 +1104,27 @@
 
       marker.addTo(state.resourceLayer);
       state.markers.set(resource.id, marker);
+      state.markerResources.set(resource.id, resource);
     });
   }
 
-  function rerenderCurrentMarkers() {
-    renderResourceMarkers(
-      state.currentMarkerResources.length ? state.currentMarkerResources : state.resources,
-      state.currentFocusIds || new Set(),
-    );
+  function updateResourceMarker(id) {
+    const marker = state.markers.get(id);
+    const resource = state.markerResources.get(id);
+
+    if (!marker || !resource) {
+      return;
+    }
+
+    const selected = state.selectedRoutePointIds.has(id);
+    const active = state.currentFocusIds?.has(id);
+
+    marker.setIcon(createResourceIcon(resource, active, selected));
+    marker.setZIndexOffset(selected ? 1200 : active ? 900 : 500);
+  }
+
+  function updateResourceMarkers(ids) {
+    ids.forEach(updateResourceMarker);
   }
 
   function showResourceDetail(resource) {
@@ -1274,7 +1278,7 @@
     }
 
     renderSelectedRoutePoints();
-    rerenderCurrentMarkers();
+    updateResourceMarker(resource.id);
 
     if (options.keepDetail || state.currentDetailResource?.id === resource.id) {
       showResourceDetail(resource);
@@ -1285,16 +1289,18 @@
     state.activePreset = "";
     state.selectedRoutePointIds.delete(id);
     renderSelectedRoutePoints();
-    rerenderCurrentMarkers();
+    updateResourceMarker(id);
   }
 
   function clearSelectedRoutePoints(options = {}) {
     if (!options.keepPreset) {
       state.activePreset = "";
     }
+    const changedIds = [...state.selectedRoutePointIds];
+
     state.selectedRoutePointIds.clear();
     renderSelectedRoutePoints();
-    rerenderCurrentMarkers();
+    updateResourceMarkers(changedIds);
   }
 
   function fitBounds(resources) {

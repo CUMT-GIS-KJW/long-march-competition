@@ -1,0 +1,251 @@
+/* Shared visual finish: preserves each page layout while aligning the interface to the Long March archive theme. */
+:root {
+  --ui-ink: #3d1b12;
+  --ui-cinnabar: #9d251a;
+  --ui-cinnabar-deep: #64160e;
+  --ui-gold: #dfb85b;
+  --ui-paper: #fff0ca;
+  --ui-paper-muted: #edd7a3;
+  --ui-shadow: 0 12px 30px rgba(55, 13, 8, 0.18);
+  --ui-focus: 0 0 0 3px rgba(255, 225, 139, 0.44), 0 0 0 5px rgba(133, 29, 18, 0.72);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  z-index: 2;
+  outline: 0;
+  box-shadow: var(--ui-focus) !important;
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+::selection {
+  color: #fff8df;
+  background: var(--ui-cinnabar);
+}
+
+/* Repeated header and navigation treatment. */
+.topbar,
+.topbar-main,
+.tourism-topbar,
+.tourism-cartoon-topbar {
+  box-shadow: 0 5px 18px rgba(58, 12, 7, 0.18);
+}
+
+.site-nav .site-nav-btn,
+.tourism-nav button,
+.nav-btn,
+.ghost-btn {
+  letter-spacing: 0.025em;
+}
+
+.site-nav .site-nav-btn:hover,
+.tourism-nav button:hover,
+.nav-btn:hover,
+.ghost-btn:hover {
+  filter: brightness(1.07);
+}
+
+.site-nav-active,
+.site-nav .site-nav-active,
+.tourism-nav button.active,
+.tourism-nav button.site-nav-active {
+  text-shadow: 0 1px 0 rgba(255, 252, 226, 0.6);
+}
+
+/* Shared archival card depth without changing sizing or grid placement. */
+.glass,
+.left-panel,
+.right-detail,
+.tools-panel,
+.metrics-panel,
+.scene-archive,
+.archive-card,
+.cartoon-left-panel,
+.cartoon-right-panel,
+.panel-card,
+.detail-panel,
+.route-panel,
+.chart-panel {
+  box-shadow: var(--ui-shadow);
+}
+
+.archive-card,
+.panel-card,
+.detail-panel,
+.route-panel,
+.chart-panel {
+  position: relative;
+}
+
+.archive-card::before,
+.panel-card::before,
+.detail-panel::before,
+.route-panel::before,
+.chart-panel::before {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  left: 14px;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255, 235, 172, 0.68), transparent);
+  pointer-events: none;
+}
+
+.panel-kicker,
+.eyebrow {
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(255, 242, 199, 0.16);
+}
+
+/* Inputs read as paper fields across the map, analysis and study modules. */
+select,
+input:not([type="checkbox"]):not([type="radio"]),
+textarea {
+  border-color: rgba(214, 169, 76, 0.42);
+}
+
+select:hover,
+input:not([type="checkbox"]):not([type="radio"]):hover,
+textarea:hover {
+  border-color: rgba(235, 198, 100, 0.76);
+}
+
+input[type="range"] {
+  accent-color: var(--ui-cinnabar);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--ui-cinnabar);
+}
+
+/* Map controls should remain visible over bright historical map layers. */
+.leaflet-control-zoom,
+.leaflet-bar {
+  overflow: hidden;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 22px rgba(59, 20, 12, 0.22) !important;
+}
+
+.leaflet-control-zoom a,
+.leaflet-bar a {
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.leaflet-control-zoom a:hover,
+.leaflet-bar a:hover {
+  color: #fff7da !important;
+  background: var(--ui-cinnabar) !important;
+}
+
+/* Scrollbars stay subtle but discoverable on dense information panels. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(224, 184, 91, 0.56) rgba(86, 24, 15, 0.24);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(235, 198, 100, 0.76), rgba(157, 37, 26, 0.72));
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(75, 18, 11, 0.16);
+}
+
+@media (max-width: 900px) {
+  .site-nav,
+  .topnav,
+  .tourism-nav {
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .site-nav::-webkit-scrollbar,
+  .topnav::-webkit-scrollbar,
+  .tourism-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav .site-nav-btn,
+  .tourism-nav button,
+  .nav-btn,
+  .ghost-btn {
+    min-height: 36px;
+  }
+
+  .map-title h2 {
+    letter-spacing: 0.1em;
+  }
+
+  .leaflet-control-zoom a,
+  .leaflet-bar a {
+    min-width: 34px;
+    min-height: 34px;
+    line-height: 34px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-nav .site-nav-btn,
+  .tourism-nav button {
+    padding-inline: 11px;
+    font-size: 12px;
+  }
+
+  .panel-kicker,
+  .eyebrow {
+    letter-spacing: 0.16em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

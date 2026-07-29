@@ -1,5 +1,4 @@
 ﻿const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
-const EMBEDDED_DEEPSEEK_API_KEY = "sk-36efe399f4fb4f88b9d50ab97cc78f4d";
 const REQUEST_TIMEOUT_MS = 15000;
 const DEFAULT_MODEL = "deepseek-chat";
 const MAX_HISTORY_MESSAGES = 12;
@@ -14,8 +13,7 @@ function normalizeApiKey(value) {
 }
 
 function getDefaultApiKey() {
-  return normalizeApiKey(EMBEDDED_DEEPSEEK_API_KEY) ||
-    normalizeApiKey(process.env.DEEPSEEK_API_KEY);
+  return normalizeApiKey(process.env.DEEPSEEK_API_KEY);
 }
 
 function createHttpError(message, statusCode) {

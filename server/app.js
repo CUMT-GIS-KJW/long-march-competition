@@ -41,33 +41,66 @@ async function serveApi(request, response, pathname) {
   return false;
 }
 
-const server = http.createServer(async (request, response) => {
-  const url = new URL(
-    request.url,
-    `http://${request.headers.host || "localhost"}`,
-  );
-
-  if (request.method === "OPTIONS") {
-    send(response, 204, "");
+function sendRequestError(response, error) {
+  if (response.headersSent) {
+    response.destroy();
     return;
   }
 
-  if (url.pathname === "/api/health") {
-    sendSuccess(response, {
-      service: "Long March WebGIS",
-      dataMode: "static-shp-adapter",
-      featureLayout: "features/{feature}/frontend + backend",
-    });
+  if (error instanceof URIError) {
+    sendError(response, 400, "Malformed request path");
     return;
   }
 
-  if (await serveApi(request, response, url.pathname)) {
-    return;
+  console.error(error);
+  sendError(response, 500, "Internal Server Error");
+}
+
+async function handleRequest(request, response) {
+  try {
+    const url = new URL(
+      request.url,
+      `http://${request.headers.host || "localhost"}`,
+    );
+
+    if (request.method === "OPTIONS") {
+      send(response, 204, "");
+      return;
+    }
+
+    if (url.pathname === "/api/health") {
+      sendSuccess(response, {
+        service: "Long March WebGIS",
+        dataMode: "static-shp-adapter",
+        featureLayout: "features/{feature}/frontend + backend",
+      });
+      return;
+    }
+
+    if (await serveApi(request, response, url.pathname)) {
+      return;
+    }
+
+    serveStatic(request, response, url.pathname, send);
+  } catch (error) {
+    sendRequestError(response, error);
   }
+}
 
-  serveStatic(response, url.pathname, send);
-});
+function createServer() {
+  return http.createServer((request, response) => {
+    handleRequest(request, response);
+  });
+}
 
-server.listen(PORT, () => {
-  console.log(`Long March WebGIS: http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  const server = createServer();
+  server.listen(PORT, () => {
+    console.log(`Long March WebGIS: http://localhost:${PORT}`);
+  });
+}
+
+module.exports = {
+  createServer,
+  serveApi,
+};

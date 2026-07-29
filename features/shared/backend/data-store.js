@@ -9,6 +9,9 @@ const DATA_ROUTE_ROOT = path.join(DATA_ROOT, "routes");
 const DATA_GEOJSON_ROOT = path.join(DATA_ROOT, "geojson");
 const ROUTE_LAYER_ROOT = path.join(DATA_ROUTE_ROOT, "route-layers");
 const routeDataFiles = new Set(["route-layer-config.json", "routes.json"]);
+const jsonFileCache = new Map();
+const routeFeatureCache = new Map();
+let routeLayerConfigCache = null;
 
 function assertInside(root, filePath) {
   const relativePath = path.relative(root, filePath);
@@ -32,21 +35,35 @@ function resolveDataFile(filename) {
 }
 
 function readJsonFile(filePath) {
-  const text = fs.readFileSync(filePath, "utf8");
+  if (jsonFileCache.has(filePath)) {
+    return jsonFileCache.get(filePath);
+  }
 
-  return JSON.parse(text);
+  const text = fs.readFileSync(filePath, "utf8");
+  const data = JSON.parse(text);
+
+  jsonFileCache.set(filePath, data);
+  return data;
 }
 
 function readDataFile(filename) {
   return readJsonFile(resolveDataFile(filename));
 }
 
-function getRouteLayerConfigs() {
-  const configs = readDataFile("route-layer-config.json");
+function clearDataCache() {
+  jsonFileCache.clear();
+  routeFeatureCache.clear();
+  routeLayerConfigCache = null;
+}
 
-  return configs.sort((left, right) => {
-    return Number(left.display_order || 0) - Number(right.display_order || 0);
-  });
+function getRouteLayerConfigs() {
+  if (!routeLayerConfigCache) {
+    routeLayerConfigCache = readDataFile("route-layer-config.json").sort((left, right) => {
+      return Number(left.display_order || 0) - Number(right.display_order || 0);
+    });
+  }
+
+  return routeLayerConfigCache;
 }
 
 function getRouteLayerConfig(layerKey) {
@@ -69,7 +86,11 @@ function getRouteFeatureCollection(layerKey) {
     return null;
   }
 
-  return readJsonFile(filePath);
+  if (!routeFeatureCache.has(layerKey)) {
+    routeFeatureCache.set(layerKey, readJsonFile(filePath));
+  }
+
+  return routeFeatureCache.get(layerKey);
 }
 
 function sortRouteAnimation(collection) {
@@ -119,6 +140,7 @@ module.exports = {
   DATA_GEOJSON_ROOT,
   readDataFile,
   readJsonFile,
+  clearDataCache,
   getRouteLayerConfigs,
   getRouteFeatureCollection,
   sortRouteAnimation,

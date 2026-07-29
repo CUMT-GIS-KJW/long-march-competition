@@ -30,7 +30,7 @@
     terrainExaggeration: window.APP_CONFIG?.terrain?.exaggeration || 1.8,
   };
 
-  const $ = (selector) => document.querySelector(selector);
+  const { query: $ } = window.DomUtils;
 
   const CHINA_BOUNDS = {
     west: 73.4,

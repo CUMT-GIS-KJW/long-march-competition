@@ -273,7 +273,7 @@ button, select, input {
                         width: min(980px, 78%);
                         height: 210px;
                         pointer-events: none;
-                        background:     url("/assets/images/home/top-doves.png") right 12% top 34px / 190px auto no-repeat,     linear-gradient(180deg, rgba(255, 244, 219, 0.74), rgba(255, 244, 219, 0)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat;
+                        background:     url("/assets/images/home/top-doves.png") right 12% top 34px / 190px auto no-repeat,     linear-gradient(180deg, rgba(255, 244, 219, 0.74), rgba(255, 244, 219, 0)),     url("/assets/images/poetry/source-bg-display.jpg") center top / cover no-repeat;
                         filter: sepia(0.28) saturate(1.05) contrast(0.98);
                         mix-blend-mode: multiply;
                         opacity: 0.62;

@@ -8,14 +8,14 @@
 
 .app-shell {
                         grid-template-rows: 92px 1fr 76px;
-                        background:     radial-gradient(circle at 42% 16%, rgba(180, 54, 33, 0.12), transparent 24%),     linear-gradient(rgba(255, 239, 205, 0.92), rgba(232, 190, 127, 0.74)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat;
+                        background:     radial-gradient(circle at 42% 16%, rgba(180, 54, 33, 0.12), transparent 24%),     linear-gradient(rgba(255, 239, 205, 0.92), rgba(232, 190, 127, 0.74)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat;
 }
 
 .topbar-main {
                         height: 92px;
                         padding: 12px 26px 10px;
                         align-items: flex-start;
-                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg-display.jpg") center top / cover no-repeat;
                         border-bottom: 0;
                         color: var(--competition-ink);
 }
@@ -472,7 +472,7 @@
 
 /* Poster image theme from project assets. */ .app-shell {
                         position: relative;
-                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat !important;
 }
 
 .brand-block strong {

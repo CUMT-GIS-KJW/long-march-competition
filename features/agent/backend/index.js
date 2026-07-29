@@ -51,7 +51,6 @@ async function handleApi({ request, pathname, response, sendSuccess, sendError }
     const result = await chatWithAgent(payload);
     sendSuccess(response, result);
   } catch (error) {
-    console.error(error);
     sendError(response, error.statusCode || 500, error.message || "Agent request failed");
   }
 

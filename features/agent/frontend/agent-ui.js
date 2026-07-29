@@ -1,5 +1,5 @@
 (function () {
-  const $ = (selector) => document.querySelector(selector);
+  const { query: $ } = window.DomUtils;
   const panel = $("#agentPanel");
   const toggle = $("#agentToggle");
   const form = $("#agentForm");
@@ -399,7 +399,6 @@
       addMessage("assistant", result.data.reply);
       rememberMessage("assistant", result.data.reply);
     } catch (error) {
-      console.error(error);
       addMessage(
         "assistant",
         error.message ||

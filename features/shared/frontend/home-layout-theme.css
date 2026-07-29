@@ -10,7 +10,7 @@
                         width: 100vw;
                         height: 100vh;
                         color: var(--home-ink);
-                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat !important;
 }
 
 .analysis-app {
@@ -28,7 +28,7 @@
                         padding: 12px 26px 10px !important;
                         align-items: flex-start !important;
                         color: var(--home-ink) !important;
-                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg-display.jpg") center top / cover no-repeat !important;
                         border-bottom: 0 !important;
                         box-shadow: none !important;
 }
@@ -474,7 +474,7 @@
 }
 
 /* Tourism page final alignment: neutralize the older cartoon theme so it matches home. */ .tourism-app.tourism-cartoon-shell {
-                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat !important;
 }
 
 .tourism-topbar.tourism-cartoon-topbar {
@@ -483,7 +483,7 @@
                         height: 92px !important;
                         min-height: 92px !important;
                         padding: 12px 26px 10px !important;
-                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg-display.jpg") center top / cover no-repeat !important;
                         border: 0 !important;
                         border-radius: 0 !important;
                         box-shadow: none !important;
@@ -762,7 +762,7 @@
                         width: 100vw !important;
                         height: 100vh !important;
                         color: var(--home-ink) !important;
-                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        background:     radial-gradient(circle at 50% 18%, rgba(195, 62, 34, 0.1), transparent 28%),     linear-gradient(rgba(255, 239, 205, 0.94), rgba(233, 194, 132, 0.78)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat !important;
 }
 
 .analysis-app {
@@ -786,7 +786,7 @@
                         padding: 12px 26px 10px !important;
                         overflow: visible !important;
                         color: var(--home-ink) !important;
-                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg.jpg") center top / cover no-repeat !important;
+                        background:     linear-gradient(180deg, rgba(255, 232, 190, 0.9), rgba(255, 232, 190, 0.22)),     url("/assets/images/poetry/source-bg-display.jpg") center top / cover no-repeat !important;
                         border: 0 !important;
                         border-radius: 0 !important;
                         box-shadow: none !important;

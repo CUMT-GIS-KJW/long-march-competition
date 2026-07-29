@@ -50,7 +50,7 @@
   let data = {};
   let progressTimer = null;
 
-  const $ = (selector) => document.querySelector(selector);
+  const { query: $, escapeHtml } = window.DomUtils;
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   function flash(message) {
@@ -75,16 +75,6 @@
     return window.MapUtils?.formatNumber
       ? MapUtils.formatNumber(value || 0)
       : Number(value || 0).toLocaleString("zh-CN");
-  }
-
-  function escapeHtml(value) {
-    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      "\"": "&quot;",
-      "'": "&#39;",
-    }[char]));
   }
 
   function maxBy(items, getter) {

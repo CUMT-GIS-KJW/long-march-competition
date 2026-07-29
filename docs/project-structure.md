@@ -37,6 +37,7 @@ long-march-competition/
 | `features/shared/backend/data-store.js` | 后端统一数据读取入口，当前读取 `data/json`、`data/routes`、`data/geojson`。 |
 | `features/shared/backend/static-files.js` | 静态资源映射，负责 `/features`、`/assets`、`/data` 等 URL 到新目录的解析。 |
 | `features/shared/frontend/config.js` | 前端数据/API 路径、Leaflet 底图、地图中心和 DEM 配置。 |
+| `features/shared/frontend/dom-utils.js` | 前端共享 DOM 查询与 HTML 转义工具。 |
 | `features/shared/frontend/data-service.js` | 前端统一数据请求入口，API 失败时回退静态 JSON。 |
 | `features/shared/frontend/map-utils.js` | 地图图标、弹窗、数值格式化等复用工具。 |
 | `features/home/frontend/home-map.js` | 二维 Leaflet 主地图：初始化地图、加载路线图层、事件点、弹窗、筛选、播放。 |

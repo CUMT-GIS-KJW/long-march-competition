@@ -42,7 +42,7 @@ body.poetry-cursor-active, body.poetry-cursor-active * {
                         width: min(1120px, 82vw) !important;
                         height: min(680px, 76vh) !important;
                         overflow: hidden !important;
-                        background:     linear-gradient(rgba(255, 235, 196, 0.9), rgba(241, 198, 132, 0.82)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat !important;
+                        background:     linear-gradient(rgba(255, 235, 196, 0.9), rgba(241, 198, 132, 0.82)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat !important;
                         border: 1px solid rgba(255, 220, 143, 0.48) !important;
                         border-radius: 18px !important;
                         box-shadow: 0 28px 90px rgba(38, 9, 4, 0.58) !important;
@@ -947,7 +947,7 @@ body.poetry-cursor-active, body.poetry-cursor-active * {
                         display: block !important;
                         overflow: hidden;
                         border-radius: 12px;
-                        background:     linear-gradient(135deg, rgba(174, 38, 26, 0.22), rgba(255, 244, 218, 0.26) 42%, rgba(132, 24, 17, 0.2)),     url("/assets/images/poetry/source-bg.jpg") center / cover no-repeat;
+                        background:     linear-gradient(135deg, rgba(174, 38, 26, 0.22), rgba(255, 244, 218, 0.26) 42%, rgba(132, 24, 17, 0.2)),     url("/assets/images/poetry/source-bg-display.jpg") center / cover no-repeat;
 }
 
 .poetry-detail-page.active::before {
