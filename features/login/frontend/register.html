@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>登录｜红图绘长征</title>
+  <title>注册｜红图绘长征</title>
   <link rel="stylesheet" href="/features/login/frontend/login.css">
+  <link rel="stylesheet" href="/features/login/frontend/register.css">
   <link rel="stylesheet" href="/features/shared/frontend/ui-polish.css">
 </head>
 <body>
   <main class="login-page">
-    <section class="login-hero" aria-label="红图绘长征登录界面">
+    <section class="login-hero" aria-label="红图绘长征注册界面">
       <div class="login-title">
         <span>WEBGIS COMPETITION SYSTEM</span>
         <div class="login-title-main">
@@ -22,31 +23,31 @@
         <img src="/assets/images/home-poster/slogan.png" alt="重温峥嵘岁月 传承长征精神">
       </div>
 
-      <section class="login-card">
+      <section class="login-card register-card">
         <div class="login-card-mark" aria-hidden="true">
           <img src="/assets/images/home-poster/logal-display.png" alt="">
         </div>
         <div class="login-card-head">
-          <span>USER LOGIN</span>
-          <h2>系统登录</h2>
+          <span>USER REGISTER</span>
+          <h2>用户注册</h2>
         </div>
 
-        <form id="loginForm" class="login-form">
+        <form id="registerForm" class="login-form">
           <label>
             <span>账号</span>
-            <input id="username" type="text" autocomplete="username" placeholder="请输入用户名" value="admin">
+            <input id="username" type="text" placeholder="3-50个字符" required>
           </label>
           <label>
             <span>密码</span>
-            <input id="password" type="password" autocomplete="current-password" placeholder="请输入密码" value="123456">
+            <input id="password" type="password" placeholder="至少6位" required>
           </label>
-          <button type="submit">登录系统</button>
-          <p id="loginMessage" class="login-message" aria-live="polite"></p>
+          <!-- 去掉确认密码行 -->
+          <button type="submit">立即注册</button>
+          <p id="registerMessage" class="login-message" aria-live="polite"></p>
         </form>
 
-        <!-- 新增：注册入口 -->
         <div class="login-actions">
-          <a href="/features/login/frontend/register.html">还没有账号？立即注册</a>
+          <a href="/features/login/frontend/index.html">已有账号？去登录</a>
         </div>
 
         <div class="login-modules">
@@ -62,6 +63,6 @@
     </section>
   </main>
 
-  <script src="/features/login/frontend/login.js"></script>
+  <script src="/features/login/frontend/register.js"></script>
 </body>
 </html>

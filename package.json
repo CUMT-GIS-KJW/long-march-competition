@@ -12,5 +12,12 @@
     "format:css": "node scripts/format-css.js",
     "format:json": "node scripts/format-json.js"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.24.3"
+  }
 }

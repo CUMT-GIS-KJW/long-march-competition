@@ -210,7 +210,8 @@ input {
   grid-row: 1 / span 2;
   display: grid;
   align-content: center;
-  width: 100%;
+  width: 420px;           /* 固定宽度 */
+  height: 600px;          /* 固定高度，用 height 代替 min-height */
   padding: 28px 28px 24px;
   background:
     linear-gradient(180deg, rgba(255, 250, 232, 0.62), rgba(238, 203, 142, 0.34));
@@ -485,4 +486,32 @@ input {
   .login-card::before {
     height: 44px;
   }
+}
+.login-form {
+  display: grid;
+  gap: 14px;
+}
+
+/* 修改这里：减小登录按钮和注册链接之间的距离 */
+.login-actions {
+  margin-top: 4px;   /* 从 12px 改为 4px */
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.login-actions a {
+  color: var(--red);
+  font-size: 13px;   /* 从 14px 改为 13px */
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed var(--red);
+  transition: all 0.2s ease;
+  display: inline-block;
+  padding: 2px 0;    /* 从 4px 改为 2px */
+}
+
+.login-actions a:hover {
+  opacity: 0.7;
+  transform: translateY(-1px);
 }

@@ -1,0 +1,86 @@
+/* 注册页面固定大小 - 和登录页完全一致 */
+.register-card {
+  width: 420px !important;
+  height: 600px !important;  /* 和 login.css 中的高度一致 */
+}
+
+/* 注册页面微调 - 让布局和登录页一致 */
+.register-card .login-form {
+  gap: 14px;  /* 和登录页一致 */
+}
+
+.register-card .login-form label {
+  grid-template-columns: 54px minmax(0, 1fr);  /* 和登录页一致 */
+}
+
+.register-card .login-form label span {
+  font-size: 14px;  /* 和登录页一致 */
+  min-height: 38px; /* 和登录页一致 */
+}
+
+.register-card .login-form input {
+  height: 48px;     /* 和登录页一致 */
+}
+
+.register-card .login-form button {
+  height: 50px;     /* 和登录页一致 */
+  margin-top: 6px;  /* 和登录页一致 */
+}
+
+.register-card .login-card-head h2 {
+  margin: 6px 0 20px;  /* 和登录页一致 */
+}
+
+.register-card .login-card-mark {
+  width: 66px;      /* 和登录页一致 */
+  height: 66px;
+  margin: 0 auto 16px;  /* 和登录页一致 */
+}
+
+.register-card .login-card-mark img {
+  width: 54px;      /* 和登录页一致 */
+  height: 54px;
+}
+
+.login-actions {
+  margin-top: 4px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.login-actions a {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed var(--red);
+  transition: all 0.2s ease;
+  display: inline-block;
+  padding: 2px 0;
+}
+
+.login-actions a:hover {
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+
+/* 响应式 */
+@media (max-width: 620px) {
+  .register-card {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 420px !important;
+  }
+  
+  .register-card .login-form label {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  
+  .register-card .login-form label span {
+    border-radius: 4px;
+    min-height: 28px;
+    font-size: 13px;
+  }
+}
