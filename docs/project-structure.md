@@ -14,7 +14,6 @@ long-march-competition/
 │  ├─ scene3d/                     # Cesium 三维 DEM 场景
 │  ├─ poetry/                      # 诗词弹窗与诗词素材接口
 │  ├─ agent/                       # GIS 智能助手面板与后端对话接口
-│  ├─ login/                       # 登录页
 │  └─ shared/                      # 公共配置、数据服务、地图工具、静态服务工具
 ├─ data/
 │  ├─ json/                        # 事件、资源、分析结果、三维焦点等业务 JSON

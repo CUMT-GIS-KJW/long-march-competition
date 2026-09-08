@@ -93,41 +93,6 @@
                         background: rgba(158, 45, 35, 0.45);
 }
 
-.agent-key-settings {
-                        display: grid;
-                        grid-template-columns: auto minmax(0, 1fr) auto auto;
-                        gap: 7px;
-                        align-items: center;
-                        padding: 9px 10px;
-                        border-bottom: 1px solid rgba(223, 200, 139, 0.18);
-}
-
-.agent-key-label, .agent-key-status {
-                        color: #c7b98c;
-                        font: 11px/1.4 var(--serif);
-                        white-space: nowrap;
-}
-
-.agent-key-settings input {
-                        min-width: 0;
-                        padding: 7px 8px;
-                        color: #efe6d0;
-                        background: #32100c;
-                        border: 1px solid rgba(223, 200, 139, 0.22);
-                        border-radius: 8px;
-                        outline: 0;
-}
-
-.agent-key-settings button {
-                        padding: 7px 8px;
-                        color: #7a241c;
-                        background: #f6df9f;
-                        border: 1px solid rgba(223, 200, 139, 0.4);
-                        border-radius: 8px;
-                        cursor: pointer;
-                        font-size: 12px;
-}
-
 .agent-messages {
                         display: grid;
                         align-content: start;
@@ -197,13 +162,5 @@
 
                         .agent-window {
                                                 height: min(440px, calc(100vh - 150px));
-  }
-
-                        .agent-key-settings {
-                                                grid-template-columns: 1fr auto auto;
-  }
-
-                        .agent-key-label,   .agent-key-status {
-                                                display: none;
   }
 }

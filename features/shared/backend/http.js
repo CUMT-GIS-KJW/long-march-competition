@@ -1,4 +1,6 @@
 const zlib = require("zlib");
+const { pipeline } = require("stream");
+const { acceptedEncoding } = require("./content-encoding");
 
 const MIN_COMPRESS_BYTES = 1024;
 
@@ -18,20 +20,6 @@ function isCompressible(contentType) {
   return /^(application\/(json|javascript)|text\/|application\/geo\+json)/i.test(
     contentType,
   );
-}
-
-function acceptedEncoding(response) {
-  const value = String(response.req?.headers?.["accept-encoding"] || "");
-
-  if (/\bbr\b/i.test(value)) {
-    return "br";
-  }
-
-  if (/\bgzip\b/i.test(value)) {
-    return "gzip";
-  }
-
-  return "";
 }
 
 function send(
@@ -54,12 +42,15 @@ function send(
     status !== 204 &&
     payload.length >= MIN_COMPRESS_BYTES &&
     isCompressible(contentType)
-      ? acceptedEncoding(response)
+      ? acceptedEncoding(response.req?.headers?.["accept-encoding"])
       : "";
+
+  if (payload.length >= MIN_COMPRESS_BYTES && isCompressible(contentType)) {
+    headers.Vary = headers.Vary ? `${headers.Vary}, Accept-Encoding` : "Accept-Encoding";
+  }
 
   if (encoding) {
     headers["Content-Encoding"] = encoding;
-    headers.Vary = "Accept-Encoding";
   } else {
     headers["Content-Length"] = payload.length;
   }
@@ -77,14 +68,14 @@ function send(
         [zlib.constants.BROTLI_PARAM_QUALITY]: 4,
       },
     });
-    compressor.pipe(response);
+    pipeline(compressor, response, () => {});
     compressor.end(payload);
     return;
   }
 
   if (encoding === "gzip") {
     const compressor = zlib.createGzip({ level: 6 });
-    compressor.pipe(response);
+    pipeline(compressor, response, () => {});
     compressor.end(payload);
     return;
   }

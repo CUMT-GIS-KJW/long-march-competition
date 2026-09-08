@@ -28,3 +28,10 @@ npm.cmd start
 $env:PORT="8097"
 node server/app.js
 ```
+
+访问根路径会直接进入首页。
+
+AI 助手需要在 `.env` 中配置 `DEEPSEEK_API_KEY`。`.env` 已被 Git 忽略，
+不要把真实 Key 写入 `.env.example`、前端代码或请求体；修改后重启服务即可生效。
+
+运行 `npm.cmd run check` 可检查 JavaScript 语法、JSON、资源引用并执行回归测试。

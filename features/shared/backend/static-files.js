@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
+const { pipeline } = require("stream");
+const { acceptedEncoding } = require("./content-encoding");
 const { PROJECT_ROOT, ASSETS_ROOT, DATA_ROOT } = require("./data-store");
 
 const FEATURES_ROOT = path.join(PROJECT_ROOT, "features");
@@ -26,8 +28,7 @@ const mimeTypes = {
 };
 
 const pageAliases = {
-  "/": "/features/login/frontend/index.html",
-  "/login.html": "/features/login/frontend/index.html",
+  "/": "/features/home/frontend/index.html",
   "/index.html": "/features/home/frontend/index.html",
   "/zhuye.html": "/features/home/frontend/index.html",
   "/analysis.html": "/features/analysis/frontend/index.html",
@@ -77,20 +78,6 @@ function isCompressible(contentType) {
   );
 }
 
-function acceptedEncoding(request) {
-  const value = String(request.headers["accept-encoding"] || "");
-
-  if (/\bbr\b/i.test(value)) {
-    return "br";
-  }
-
-  if (/\bgzip\b/i.test(value)) {
-    return "gzip";
-  }
-
-  return "";
-}
-
 function cacheControlFor(pathname, extension) {
   if (extension === ".html") {
     return "no-cache";
@@ -108,8 +95,12 @@ function createEtag(stat) {
 }
 
 function isNotModified(request, stat, etag) {
-  if (request.headers["if-none-match"] === etag) {
-    return true;
+  const ifNoneMatch = request.headers["if-none-match"];
+  if (ifNoneMatch !== undefined) {
+    return ifNoneMatch.split(",").some((value) => {
+      const candidate = value.trim();
+      return candidate === "*" || candidate.replace(/^W\//, "") === etag.replace(/^W\//, "");
+    });
   }
 
   const modifiedSince = request.headers["if-modified-since"];
@@ -135,6 +126,10 @@ function pipeStaticFile(request, response, filePath, stat, pathname) {
     "X-Content-Type-Options": "nosniff",
   };
 
+  if (stat.size >= MIN_COMPRESS_BYTES && isCompressible(contentType)) {
+    headers.Vary = "Accept-Encoding";
+  }
+
   if (isNotModified(request, stat, etag)) {
     response.writeHead(304, headers);
     response.end();
@@ -143,7 +138,7 @@ function pipeStaticFile(request, response, filePath, stat, pathname) {
 
   const encoding =
     stat.size >= MIN_COMPRESS_BYTES && isCompressible(contentType)
-      ? acceptedEncoding(request)
+      ? acceptedEncoding(request.headers["accept-encoding"])
       : "";
 
   if (encoding) {
@@ -161,7 +156,6 @@ function pipeStaticFile(request, response, filePath, stat, pathname) {
   }
 
   const source = fs.createReadStream(filePath);
-  source.on("error", () => response.destroy());
 
   if (encoding === "br") {
     const compressor = zlib.createBrotliCompress({
@@ -169,19 +163,23 @@ function pipeStaticFile(request, response, filePath, stat, pathname) {
         [zlib.constants.BROTLI_PARAM_QUALITY]: 4,
       },
     });
-    source.pipe(compressor).pipe(response);
+    pipeline(source, compressor, response, () => {});
     return;
   }
 
   if (encoding === "gzip") {
-    source.pipe(zlib.createGzip({ level: 6 })).pipe(response);
+    pipeline(source, zlib.createGzip({ level: 6 }), response, () => {});
     return;
   }
 
-  source.pipe(response);
+  pipeline(source, response, () => {});
 }
 
 function serveStatic(request, response, pathname, send) {
+  if (request.method !== "GET" && request.method !== "HEAD") {
+    send(response, 405, "Method Not Allowed", "text/plain; charset=utf-8", { Allow: "GET, HEAD, OPTIONS" });
+    return;
+  }
   const resolvedPath = resolveStaticPath(pathname);
 
   if (!resolvedPath) {

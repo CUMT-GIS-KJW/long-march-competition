@@ -21,7 +21,7 @@ test.after(async () => {
 test("core pages and APIs remain available", async () => {
   const paths = [
     "/api/health",
-    "/login.html",
+    "/",
     "/index.html",
     "/analysis.html",
     "/scene3d.html",
@@ -82,4 +82,45 @@ test("malformed request paths return 400 without stopping the server", async () 
 
   const health = await fetch(`${baseUrl}/api/health`);
   assert.equal(health.status, 200);
+});
+
+test("static validators respect ETag precedence, lists and wildcard matching", async () => {
+  const url = `${baseUrl}/features/shared/frontend/app.css`;
+  const first = await fetch(url, { method: "HEAD" });
+  const etag = first.headers.get("etag");
+  for (const value of [`"other", ${etag}`, "*", etag.replace(/^W\//, "")]) {
+    const response = await fetch(url, { headers: { "if-none-match": value } });
+    assert.equal(response.status, 304);
+    assert.equal(response.headers.get("vary"), "Accept-Encoding");
+  }
+  const changed = await fetch(url, { headers: {
+    "if-none-match": '"stale"',
+    "if-modified-since": first.headers.get("last-modified"),
+  } });
+  assert.equal(changed.status, 200);
+  await changed.arrayBuffer();
+});
+
+test("static and API responses honor disabled compression", async () => {
+  for (const path of ["/features/shared/frontend/app.css", "/api/route-layers/route_hongyi_juntuan/features"]) {
+    const response = await fetch(baseUrl + path, { headers: {
+      "accept-encoding": "br;q=0, gzip;q=0",
+    } });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-encoding"), null);
+    assert.equal(response.headers.get("vary"), "Accept-Encoding");
+    assert.ok((await response.text()).length > 1024);
+  }
+});
+
+test("static HEAD returns metadata without a body and rejects POST", async () => {
+  const url = `${baseUrl}/features/shared/frontend/app.css`;
+  const head = await fetch(url, { method: "HEAD", headers: { "accept-encoding": "identity" } });
+  assert.equal(head.status, 200);
+  assert.ok(Number(head.headers.get("content-length")) > 1024);
+  assert.equal(await head.text(), "");
+  const post = await fetch(url, { method: "POST" });
+  assert.equal(post.status, 405);
+  assert.equal(post.headers.get("allow"), "GET, HEAD, OPTIONS");
+  await post.text();
 });

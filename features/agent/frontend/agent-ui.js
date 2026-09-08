@@ -13,9 +13,16 @@
   }
 
   const isAnalysisPage = Boolean($(".analysis-app"));
-  const apiKeyStorageKey = "long-march-deepseek-api-key";
   let sending = false;
   const history = [];
+
+  // Earlier versions stored DeepSeek credentials in the browser. Remove any
+  // leftover value; credentials now stay on the server in an ignored .env file.
+  try {
+    localStorage.removeItem("long-march-deepseek-api-key");
+  } catch (error) {
+    console.warn("无法清理旧版浏览器配置", error);
+  }
 
   function compactText(value) {
     return String(value || "").replace(/\s+/g, " ").trim();
@@ -25,21 +32,6 @@
     const element = $(selector);
 
     return compactText(element?.innerText || element?.textContent || "");
-  }
-
-  function readApiKey() {
-    return localStorage.getItem(apiKeyStorageKey) || "";
-  }
-
-  function writeApiKey(value) {
-    const apiKey = compactText(value);
-
-    if (apiKey) {
-      localStorage.setItem(apiKeyStorageKey, apiKey);
-      return;
-    }
-
-    localStorage.removeItem(apiKeyStorageKey);
   }
 
   function collectAnalysisContext() {
@@ -289,54 +281,6 @@
     addMessage("assistant", buildComprehensiveAnalysis(results, context));
   }
 
-  function createKeySettings() {
-    const settings = document.createElement("div");
-    const label = document.createElement("label");
-    const keyInput = document.createElement("input");
-    const saveButton = document.createElement("button");
-    const clearButton = document.createElement("button");
-    const status = document.createElement("span");
-
-    settings.className = "agent-key-settings";
-    label.className = "agent-key-label";
-    label.textContent = "DeepSeek Key";
-    keyInput.id = "agentApiKey";
-    keyInput.type = "password";
-    keyInput.placeholder = "不填则使用系统默认 Key";
-    keyInput.autocomplete = "off";
-    keyInput.value = readApiKey();
-    saveButton.type = "button";
-    saveButton.textContent = "保存";
-    clearButton.type = "button";
-    clearButton.textContent = "清除";
-    status.className = "agent-key-status";
-
-    function refreshStatus() {
-      status.textContent = readApiKey() ? "使用用户 Key" : "使用默认 Key";
-    }
-
-    refreshStatus();
-
-    saveButton.addEventListener("click", () => {
-      writeApiKey(keyInput.value);
-      refreshStatus();
-    });
-
-    clearButton.addEventListener("click", () => {
-      keyInput.value = "";
-      writeApiKey("");
-      refreshStatus();
-    });
-
-    keyInput.addEventListener("input", () => {
-      writeApiKey(keyInput.value);
-      refreshStatus();
-    });
-
-    settings.append(label, keyInput, saveButton, clearButton, status);
-    windowEl.insertBefore(settings, messages);
-  }
-
   function addMessage(role, text) {
     const item = document.createElement("div");
     item.className = `agent-message ${role}`;
@@ -387,7 +331,6 @@
           page: $(".analysis-app") ? "analysis" : "home",
           pageContext: collectPageContext(),
           history: history.slice(0, -1),
-          apiKey: readApiKey(),
         }),
       });
       const result = await response.json();
@@ -402,7 +345,7 @@
       addMessage(
         "assistant",
         error.message ||
-          "智能助手暂时无法连接，请检查 DeepSeek Key 或网络后重试。",
+          "智能助手暂时无法连接，请检查服务器配置或网络后重试。",
       );
     } finally {
       sending = false;
@@ -460,7 +403,5 @@
       "assistant",
       "你好，我是长征 GIS 智能助手。可以问我当前分析结果、路线解读、空间关系或答辩讲解。",
     );
-
-    createKeySettings();
   }
 })();

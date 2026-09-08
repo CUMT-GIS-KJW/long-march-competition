@@ -1,0 +1,8 @@
+# Template execution contract
+
+- **Reference:** `C:\Users\Kou Jiawei\Desktop\地理信息系统开发实习\long-march-competition\long-march-competition\.codex-doc-work\南京市唐诗寻迹总体设计报告.docx`; SHA-256 `AE3328CF9F377737A8E81B66A799F258DD1CB2D0C7B903AC60F3B4ACE09A0D4C`; 19 rendered pages; one portrait A4 section.
+- **Page system:** A4 portrait (8.27 × 11.69 in); 1.25-in left/right and 1.00-in top/bottom margins; 1.00-in header and footer distance; different first page; thin black top rule on document pages; page number at lower right.
+- **Reference components:** restrained formal cover with two centered title lines, leader/member lines and centered institution; a separate centered date page; a one-page dotted-leader TOC; content with bold black numbered headings, indented Song-style body paragraphs, and simple ruled tables.
+- **Content flow for the deliverable:** cover; date and table of contents; six compact chapters: introduction, overall design, interface design, operation design, data-structure design, and error handling/maintenance. Preserve the supplied Long March platform’s purpose, capabilities, stack and data entities while omitting screenshots and detailed table-by-table field dictionaries to meet the 15-page budget.
+- **Editable slots:** cover title/subtitle/team lines/institution; date; TOC entries; all body headings, body text and tables. The retained reference file remains unchanged; header/footer conventions and page geometry are reused.
+- **Fidelity gate:** final document retains portrait A4 page furniture, cover/date/TOC sequence, heading ladder, table readability, and lower-right page numbering. The target is approximately 15 rendered pages.

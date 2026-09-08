@@ -12,7 +12,7 @@ function normalizeApiKey(value) {
   return String(value || "").trim();
 }
 
-function getDefaultApiKey() {
+function getApiKey() {
   return normalizeApiKey(process.env.DEEPSEEK_API_KEY);
 }
 
@@ -70,11 +70,11 @@ function normalizeHistory(history) {
     });
 }
 
-async function callDeepSeek({ message, history, apiKey, pageContext }) {
-  const resolvedApiKey = normalizeApiKey(apiKey) || getDefaultApiKey();
+async function callDeepSeek({ message, history, pageContext }) {
+  const apiKey = getApiKey();
   const contextText = normalizePageContext(pageContext);
 
-  if (!resolvedApiKey) {
+  if (!apiKey) {
     throw createHttpError("DeepSeek API Key 未配置", 500);
   }
 
@@ -87,7 +87,7 @@ async function callDeepSeek({ message, history, apiKey, pageContext }) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${resolvedApiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       signal: controller.signal,
       body: JSON.stringify({
@@ -117,7 +117,12 @@ async function callDeepSeek({ message, history, apiKey, pageContext }) {
   }
 
   if (!response.ok) {
-    throw createHttpError(await response.text(), response.status);
+    const message =
+      response.status === 401 || response.status === 403
+        ? "DeepSeek 身份验证失败，请检查服务器环境变量"
+        : "DeepSeek 请求失败，请稍后重试";
+
+    throw createHttpError(message, response.status >= 500 ? 502 : response.status);
   }
 
   const data = await response.json();
@@ -140,7 +145,6 @@ async function chatWithAgent(payload) {
   const reply = await callDeepSeek({
     message,
     history: normalizeHistory(payload?.history),
-    apiKey: payload?.apiKey,
     pageContext: payload?.pageContext,
   });
 
